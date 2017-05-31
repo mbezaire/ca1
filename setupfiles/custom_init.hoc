@@ -1,0 +1,104 @@
+/************************************************************
+'ca1' model code repository
+Written by Marianne Bezaire, marianne.bezaire@gmail.com, www.mariannebezaire.com
+Latest versions of this code are available online at:
+ModelDB: 
+Open Source Brain: http://www.opensourcebrain.org/projects/nc_ca1
+
+Main code file: ../main.hoc
+This file: Last updated on April 10, 2015
+
+This file redefines the init procedure called by NEURON prior
+to running a simulation. The procedure was redefined to perform
+some time steps prior to t=0, for the purpose of allowing the
+network to settle into a steady state before the beginning of
+the simulation.
+************************************************************/
+
+proc presimulation() { local prelength, maindt, temp, secondordersav	
+														// Redefine the proc that initializes the
+														//  simulation so that it includes a "pre-run" of the
+														//  simulation to reach steady state prior to the start
+														//  of the simulation at time t = 0 ms.
+														//
+														// WARNING: Any time you redefine the init function, you
+														//  risk not completely initializing everything that needs
+														//  to be initialized. Read the Initialization section of
+														//  the NEURON Book and see this NEURON forum thread for an
+														//  example of how custom initialization can be mishandled:
+														//  https://www.neuron.yale.edu/phpBB/viewtopic.php?f=8&t=3127
+
+	maindt = dt						// Save the desired dt value to reset it after temporarily
+									//  changing dt to run a quick presimulation to allow the
+									//  network to reach steady state before we start 'recording'
+									
+	secondordersav = secondorder	// Save the desired secondorder value to reset it after
+									//  temporarily changing secondorder to run a quick presimulation
+									//  to allow the network to reach steady state before we start
+									//  'recording' its results
+    
+    prelength = $1                                                                        
+    t = -prelength 	// Set the start time for (pre) simulation; ex: -500 ms to allow the
+					//  network to reach steady state before t=0, when real simulation begins
+    
+    dt = 10 // Set dt to a large value so that the presimulation runs quickly
+
+	secondorder = 0 // Set secondorder to 0 to set the solver to the default fully implicit backward
+					//  euler for numerical integration (see NEURON ref)
+		
+	temp= cvode.active()			// Check whether cvode, a type of solver, is on
+	if (temp!=0) {cvode.active(0)}	// If cvode is on, turn it off for the "pre-run"
+															
+	while(t<-100) { fadvance() if (PrintTerminal>1) {print t}}	// Run the presimulation from t = -prelength
+															//  to t = -100 to let the network and all
+															//  its components reach  steady state.
+															//  Integrate all section equations over
+															//  the interval dt, increment t by dt, and
+															//	repeat until t at -100
+															
+	if (temp!=0) {cvode.active(1)}	// If cvode was on and then turned off, turn it back on now
+    
+	t = tstart 						// Set t to the start time of the real simulation
+	
+	dt = maindt						// Reset dt to the specified value for the simulation
+	
+	secondorder = secondordersav	// Reset secondorder to the specified value for the simulation
+}
+
+
+proc init() { 
+    // Call finitialize from within the custom init proc, just as the default
+    //  init proc does. Note that finitialize will call the INITIAL block for
+    //  all mechanisms and point processes inserted in the sections and set the
+    //  initial voltage to v_init for all sections
+	if (RandomVrest == 0.0) {
+		finitialize(v_init)
+	} else {
+		finitialize() // v_init	
+	}
+    
+    // if randomly initializing the voltage, call randomVinit, otherwise call 
+    // presimulation, which brings the network to a steady state
+    if (RandomVinit > 0.0) {
+        // initialize all cells to random voltage centered on their Vrest with stdev of 1.0
+        randomVinit(1.0)
+    } else {
+		if (RandomVrest == 0.0) {
+			presimulation (500)
+		}
+    }    
+ 	
+	if (cvode.active()){
+		cvode.re_init()				// If cvode is active, initialize the integrator
+	} else {
+		fcurrent()					// If cvode is not active, make all assigned variables
+									//	 (currents, conductances, etc) consistent with the
+									//   values of the states
+	}
+	
+	frecord_init() 					// Because we used fadvance() during the pre-run, we now need to
+									//  reinitialize the recorder count. This can be done by calling 
+									//  frecord_init(), though some other functions will also accomplish
+									//  this task by calling frecord_init themselves. See NEURON forum post:
+									//  http://www.neuron.yale.edu/phpbb/viewtopic.php?f=8&t=3127
+}

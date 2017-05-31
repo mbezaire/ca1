@@ -1,0 +1,88 @@
+/************************************************************
+'ca1' model code repository
+Written by Marianne Bezaire, marianne.bezaire@gmail.com, www.mariannebezaire.com
+In the lab of Ivan Soltesz, www.ivansolteszlab.org
+Published and latest versions of this code are available online at:
+ModelDB: 
+Open Source Brain: http://www.opensourcebrain.org/projects/nc_ca1
+
+Main code file: ../main.hoc
+This file: Last updated on April 10, 2015
+
+This file contains possible options and commands that may
+decrease the time required to execute the simulation part
+of the job. Currently there are three possible options:
+- cache efficiency: by reorganizing the memory blocks so
+	that the elements of vectors and matrices are
+	contiguous with each other, time required to access
+	the vector elements can be dramatically decreased,
+	significantly speeding the computation time during
+	the simulation. For more information, see:
+	http://www.neuron.yale.edu/neuron/static/new_doc/simctrl/cvode.html?highlight=cache_efficient#CVode.cache_efficient
+
+- queueing: Generally there is one event queue for all
+	events, but for certain models it may be more efficient
+	to have a different queueing configuration; see the
+	NEURON documentation for more details at:
+	http://www.neuron.yale.edu/neuron/static/new_doc/simctrl/cvode.html?highlight=queue_mode#CVode.queue_mode
+
+- spike compression: Both spike times and gids can be
+	compressed under certain circumstances, which can
+	significantly reduce the spike exchange time. To
+	determine the buffer size to use, one may wish
+	to run a simulation with the spike histogram flag
+	turned on, so that a spike histogram is generated.
+	For more information, see:
+	http://www.neuron.yale.edu/neuron/static/new_doc/modelspec/programmatic/network/parcon.html?highlight=spike_compress#ParallelContext.spike_compress
+
+With all of these options, it's important to run a small test
+run before and after turning on the option, and compare the
+spike rasters generated from each run to ensure that these
+options do not affect the model behavior.
+
+************************************************************/
+
+// Cache efficiency
+use_cache_efficient=1
+
+// Queue structure
+use_bin_queue=0
+
+// Spike compression
+get_spike_hist=0 	// If set to 1, then in the main.hoc
+					//  file, the procedures setupSpikeHistogram()
+					//  and printSpikeHistogram() (defined in
+					//  write_results_functions.hoc) are run to
+					//  generate a spike transfer histogram, which
+					//  may be useful to determine the nspike
+					//  argument for the pc.spike_compress command.
+
+use_spike_compression=0
+
+// Turn on or off optimization options
+{cvode.cache_efficient(use_cache_efficient)} 
+
+if (use_bin_queue==1) {
+	use_fixed_step_bin_queue = 1 // boolean
+	use_self_queue = 0 // boolean - this one may not be helpful for me, i think it's best for large numbers of artificial cells that receive large numbers of inputs
+	{mode = cvode.queue_mode(use_fixed_step_bin_queue, use_self_queue)}
+}
+
+if (use_spike_compression==1) {
+	maxstepval = 2.5 	// If spike compression is used, there can't be more than
+						//  256 dt steps in a minimum delay interval. Since dt in
+						//  this code is generally 0.01 ms, the minimum delay
+						//  interval must be 2.55 or less. This parameter, 
+						//  maxstepval, is used in the sim_execution_functions.hoc
+						//  file to set the pc.set_maxstep property.
+						
+	nspike = 3 	// Compress spiketimes; most exchanges will include
+				//  this number of spikes or fewer
+				
+	gid_compress = 0	// Compress gids; only works if there are fewer
+						//  than 256 cells on each processor.
+	
+	{nspike = pc.spike_compress(nspike, gid_compress)}
+} else {
+	maxstepval = 10
+}	

@@ -1,0 +1,305 @@
+/************************************************************
+'ca1' model code repository
+Written by Marianne Bezaire, marianne.bezaire@gmail.com, www.mariannebezaire.com
+In the lab of Ivan Soltesz, www.ivansolteszlab.org
+Published and latest versions of this code are available online at:
+ModelDB: 
+Open Source Brain: http://www.opensourcebrain.org/projects/nc_ca1
+
+Main code file: ../main.hoc
+This file: Last updated on April 9, 2015
+
+This file defines and calls proc for writing out a receipt of all the
+simulation run parameters. The receipt is written in MATLAB syntax so
+that it can be read in by the MATLAB-based SimTracker tool.
+
+The proc also ensures that the name of the run is unique. If
+the name passed into the RunName parameter was already used
+(ie, if a directory by that name already exists in the 'results'
+directory of this model repository), then the proc will find a
+new, unique name for the run (either by appending numbers to the
+proposed RunName or incrementing already-appended numbers).
+
+Note: the code in this file performs a lot of system calls, including
+one to create a new directory in the results folder. If you do not
+want this behavior, set the parameter 'OK2executeSysCmds' to 0 in the
+set_other_parameters.hoc file. See the warning message in that file
+for things to keep in mind if you set 'OK2executeSysCmds' to 0.
+************************************************************/
+
+objref frec, strobj
+
+strobj = new StringFunctions()
+
+strdef cmd, dircmd, direx, comper, version, vercomment, vercomment2
+strdef mypath, userstr, machname, machnick, outfile, edate, comver
+strdef verleft, verright
+strdef thisline, getval, result, paramstr, testline, valstr
+
+proc typeout() {local i, myline, rn, rank, gid, srcid localobj tgt, f, cell, f2c
+	if (pc.id == 0) {	// Only one processor needs to write the receipt file
+	
+		// First, check to make sure RunName has not already been used.
+		rn = -1	// rn will tell us what number to append to the RunName to make it unique
+		
+		sprint(dircmd, "[ -d \"../results/%s\" ] && echo \"AlreadyExists\" ", RunName)
+
+		{system(dircmd, direx)}	// Execute the list command and store the standard output
+								//  from it in the direx string		
+		
+		// If the RunName has already been used, we will append/increment a number at
+		//  the end of the RunName to make a new RunName, then test that RunName for 
+		//  uniqueness.
+		while (strcmp(direx,"AlreadyExists\n")==0 ) {
+			rn = rn + 1
+			sprint(dircmd, "[ -d \"../results/%s_%02.0f\" ] && echo \"AlreadyExists\" ", RunName, rn)		
+			{system(dircmd, direx)}
+		}
+		
+		// If we needed to change the RunName to make it unique, the rn flag will be >-1
+		if (rn>-1) {
+			sprint(RunName, "%s_%02.0f", RunName, rn)
+		}		
+		
+		// Create the RunName directory within the results directory; all results from the simulation
+		//  run will be stored in this directory.
+		sprint(dircmd, "mkdir ../results/%s", RunName)
+		{system(dircmd, direx)}
+
+		// check for Mercurial on the computer running this code
+		sprint(dircmd, "hg parent --template '{rev}: {desc}\n'")
+		{system(dircmd, direx)}
+		
+		// Check the length of the output string (direx)
+		index = strobj.len(direx)
+
+		if (index<1) { 	// If  the output string contains nothing (length == 0),
+						//  then we can't access Mercurial commands from this
+						//  computer, and we must resort to using placeholder
+						//  files generated on the local computer that were copied
+						//  over to the executing computer, and hope that they have
+						//  the up-to-date information about which code version will
+						//  be used to run this simulation.
+			sprint(dircmd, "cp ../hg_status.out  ../results/%s/hg_status.out", RunName)
+			{system(dircmd, direx)}	// A file that contains the output of the 'hg status' command
+			
+			sprint(dircmd, "cp ../hg_diff.out  ../results/%s/hg_diff.out", RunName)
+			{system(dircmd, direx)}	// A file that contains the output of the 'hg diff' command
+				
+			f2c = new File()		
+			
+			{system("ls vercomment.txt", direx)}
+			if (strcmp(direx,"ls: cannot access vercomment.txt: No such file or directory")==0 || strcmp(direx,"")==0 ) {
+				// if backup files do not exist, fill in placeholder info
+				vercomment="unknown"
+			} else {
+				f2c.ropen("../vercomment.txt")	// A file that contains the comment associated with
+												//  the Mercurial commit of the code version presumably
+												//  being used to run this simulation
+				myline=f2c.gets(vercomment)	
+				if (myline>1) {
+					strobj.left(vercomment, myline-1)	
+				}		
+				f2c.close
+			}
+			
+			{system("ls version.txt", direx)}
+			if (strcmp(direx,"ls: cannot access version.txt: No such file or directory")==0 || strcmp(direx,"")==0 ) {
+				// if backup files do not exist, fill in placeholder info
+				version="unknown"
+			} else {
+				f2c.ropen("../version.txt")	// A file that contains the version number associated with
+											//  the Mercurial commit of the code version presumably
+											//  being used to run this simulation
+				f2c.scanstr(version)			
+				f2c.close	
+			}	
+		} else {	// If the original check returns something, then we can access Mercurial commands
+					//  from this computer (which is ideal).
+					
+			sprint(dircmd, "hg status")
+			{system(dircmd, direx)}
+			if (strcmp(direx,"")>0) {	// Check to see if there are any changes to the code on this
+										//  computer to make it differ from the active version. If
+										//  so, then record those changes (via the 'hg status' and
+										//  'hg diff' commands) into files.
+				comver = "Yes"
+				sprint(dircmd, "hg status > ../results/%s/hg_status.out", RunName)
+				{system(dircmd, direx)}
+				
+				sprint(dircmd, "hg diff > ../results/%s/hg_diff.out", RunName)
+				{system(dircmd, direx)}
+			} else {
+				comver = "No"
+			}
+			
+			sprint(dircmd, "hg parent --template '{rev}: {desc}\n'")
+			{system(dircmd, direx)}	// This will return the 'friendly' version number and
+									//  the comment associated with this commit of the code.
+									//  Beware that the friendly version number is not 
+									//  necessarily consistent between computers. It is safer
+									//  to only work in terms of the full version number, though
+									//  that number is hard to appreciate when you just want a
+									//  list of incrementing numbers corresponding to subsequent
+									//  code versions.
+			
+			if (strobj.len(direx)<2) {
+				vercomment="unknown"
+			} else {
+				strobj.left(direx, strobj.len(direx)-1) // hg parent rev/desc
+				vercomment=direx
+			}
+			
+			// Parse out the friendly version number and comment (this may not be necessary if we
+			//  just separately executed commands to return the version number and the comment).
+			i = strobj.substr(vercomment, "'")
+			while (i>0) {
+				verleft = vercomment
+				strobj.left(verleft, i)
+
+				verright = vercomment
+				strobj.right(verright, i+1)
+				
+				sprint(vercomment,"%s''%s", verleft, verright)
+				
+				i = strobj.substr(verright, "'")
+				if (i>0) {
+					i = i + strobj.len(verleft)+2
+				}
+			}
+
+			sprint(dircmd, "hg parent --template '{node}\n'")
+			{system(dircmd, direx)}
+			if (strobj.len(direx)<2) {
+				version="unknown"
+			} else {
+				strobj.left(direx, strobj.len(direx)-1)
+				version=direx
+			}
+		}
+
+		system("cd ..;pwd",mypath)
+		if (strobj.len(mypath)<2) {
+			mypath="unknown"
+		} else {
+			strobj.left(mypath, strobj.len(mypath)-1) // path to the model repository
+		}
+		system("whoami", userstr)
+		if (strobj.len(userstr)<2) {
+			userstr="unknown"
+		} else {
+			strobj.left(userstr, strobj.len(userstr)-1) // person logged into computer
+		}
+		{system("hostname", machname)}
+		if (strobj.len(machname)<2) {
+			machname="unknown"
+		} else {
+			strobj.left(machname, strobj.len(machname)-1) // name of the computer
+		}
+		machnick =  machname	// nickname for host machine, usually second term in address		
+		i = strobj.substr(machnick, ".")
+		if (i>0) {
+			strobj.right(machnick, i+1)
+			i = strobj.substr(machnick, ".")
+			if (i>0) {
+				strobj.left(machnick, i)
+			}
+		}
+
+		{system("date \"+%d-%b-%Y %H:%M:%S\"", edate)}	// Current date-time, will be considered
+		if (strobj.len(edate)<2) {						//  the execution date-time.
+		edate="unknown"
+		} else {
+			strobj.left(edate, strobj.len(edate)-1)
+		}
+
+		// Now create a receipt file, open it, and write all the run metadata as well as the parameter
+		//  values to the file.
+		sprint(outfile, "../results/%s/runreceipt.txt", RunName)
+		frec = new File(outfile)
+		frec.wopen()
+		frec.printf("NumProcessors = %g;\n", pc.nhost)
+		frec.printf("ExecutionDate = '%s';\n", edate)
+		frec.printf("ExecutedBy = '%s';\n", userstr)
+		if (strcmp(machnick,"local")!=0) {
+			frec.printf("Machine = '%s';\n", machnick)
+		}
+		frec.printf("MachineFull = '%s';\n", machname)
+		frec.printf("ModelVerComment='%s';\n", vercomment)
+		frec.printf("ModelVersion='%s';\n", version)
+		frec.printf("ModelDirectory ='%s';\n", mypath)
+		frec.printf("NEURONVersion ='%s';\n", nrnversion(2)) // version number and mercurial changeset
+		frec.printf("WorkDirChg ='%s';\n", comver) // whether this job was run using a model working directory that
+														// had been changed since the last version update													
+														// If no, the run can therefore be easily reproduced(No)
+														// If yes, we won't have any record of the changes and that
+														// will limit our ability to reproduce the run unless
+														// we record the changes, which we do in that case (Yes)
+														
+		printmyvars()	// Prints all the parameter values into the receipt file (parameters found in parameters.hoc)
+		frec.close()
+	}
+
+	pc.barrier()					// Wait for all ranks to get to this point
+
+	// Also generate a results file that contains a table of all the cell types in the model.
+	sprint(cmd,"../results/%s/celltype.dat", RunName)
+	f = new File(cmd)
+	if (pc.id == 0) { 				// Write header to file 1 time only
+		f.wopen()
+		f.printf("celltype\ttechtype\ttypeIndex\trangeStart\trangeEnd\n")
+		for i=0, numCellTypes-1 {
+			f.printf("%s\t%s\t%d\t%d\t%d\n", cellType[i].cellType_string, cellType[i].technicalType, i, cellType[i].cellStartGid, cellType[i].cellEndGid)
+		}
+		f.close()
+	}
+}
+
+
+// This function reads in the parameters.hoc file to get a list of all parameters, and then for
+//  each parameter, calls a function that gets the current value of the parameter (which may be
+//  different from the value listed in parameters.hoc if someone passed in a new value when
+//  calling the main superdeep.hoc file to run), and then writes it to the receipt file.
+proc printmyvars() {local strlen localobj pfobj
+	pfobj = new File()
+	pfobj.ropen("../setupfiles/parameters.hoc")
+	while (pfobj.gets(thisline)>-1) {
+		testline=thisline
+		strobj.left(testline, 1) // testline
+		if (strcmp(testline,"d")==0) {
+			result=thisline
+			strobj.right(result, 13)
+			strlen = strobj.head(result, "\",", paramstr)
+			if (strobj.len(paramstr)>0) {
+				{sprint(getval, "printnow(%s, paramstr)", paramstr)}
+				{execute1(getval)} 	// This has the effect of passing in the parameter value
+			}						//  as the first argument and the parameter name as the
+		}							//  second argument.
+	}
+	pfobj.close
+}
+
+// This function gets the current value of the passed in parameter (argument $1 or $s1), taking
+//  into account the variable type of the parameter, and writes it out to the receipt file
+//  along with the name of the parameter (argument $s2), using MATLAB syntax so the file can
+//  be read in by the SimTracker later.
+proc printnow() {
+	if (argtype(1)==0) {
+		{frec.printf("%s = %g;\n", $s2, $1)}
+	} else {
+		if (argtype(1)==2) {
+			{frec.printf("%s = '%s';\n", $s2, $s1)}
+		} 
+	}
+}
+
+typeout()	// Call the function we defined in this file.
+
+{pc.barrier()}				// Wait for all processors to get to this point
+							//  to ensure that the next command is not run
+							//  before processor 0 (which just did all the work)
+							//  is ready.
+
+{pc.broadcast(RunName, 0)} 	// Send RunName parameter to all processors,
+							//  in case host 0 changed it to ensure a
+							//  unique value.

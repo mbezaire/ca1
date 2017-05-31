@@ -1,0 +1,53 @@
+/************************************************************
+'ca1' model code repository
+Written by Marianne Bezaire, marianne.bezaire@gmail.com, www.mariannebezaire.com
+In the lab of Ivan Soltesz, www.ivansolteszlab.org
+Published and latest versions of this code are available online at:
+ModelDB: 
+Open Source Brain: http://www.opensourcebrain.org/projects/nc_ca1
+
+Main code file: ../main.hoc
+This file: Last updated on April 10, 2015
+
+This file will write out the position of each cell in the
+network, as well as the rank number of the processor (host)
+that owns the cell. However, writing out this file is not
+actually necessary - all the information from it can be
+calculated offline given:
+- number of cells of each type in the model
+- order in which the cells were created (listed in cellnumbers_###.dat)
+- parameters specifying the dimensions and layers of the 3D volume of the model
+- positionfcns.mod algorithms
+- the number of processors used for the simulation job
+- the knowledge that the cells were distributed among the processors using roundrobin
+************************************************************/
+
+proc posout() {local pci, pcti, rank, gid, srcid localobj tgt, f, cell
+	pc.barrier()	// Wait for all ranks to get to this point
+	sprint(cmd,"./results/%s/position.dat", RunName)
+	f = new File(cmd)
+	if (pc.id == 0) { 				// Write header to file 1 time only
+		f.wopen()
+		f.printf("cell\tx\ty\tz\thost\n")
+		f.close()
+	}
+	for rank = 0, pc.nhost-1 {				// For each processor, allow processor to append to file the positions of its cells
+		if (rank == pc.id) {				// Ensure that each processor runs once
+			f.aopen() 						// Open for appending to file
+			for pcitr(&pci, &pcti, &gid, cellType[0].cellStartGid, cellType[numCellTypes-1].cellEndGid) { // Use the pciter over all cells
+				if (pc.gid_exists(gid)) {	// If cell exists on this machine
+					cell = pc.gid2cell(gid)	// 	create an object refereing to the cell
+					
+					// Write out the 3d position coordinates and host processor of each cell
+					if (cell.is_art()==0) {
+						f.printf("%d\t%f\t%f\t%f\t%d\n", gid, cell.x, cell.y, cell.z, pc.id)
+					} else {
+						f.printf("%d\t%f\t%f\t%f\t%d\n", gid, cell.xpos, cell.ypos, cell.zpos, pc.id)
+					}
+				}
+			}		
+			f.close()
+		}
+		pc.barrier()	// Wait till all processors are at this point before letting the next processor open the file, to
+	}					//  ensure that they are sharing the file properly (in this case, writing to it in serial).
+}

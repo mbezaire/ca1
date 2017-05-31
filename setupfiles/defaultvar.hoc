@@ -1,0 +1,54 @@
+/************************************************************
+'ca1' model code repository
+Written by Marianne Bezaire, marianne.bezaire@gmail.com, www.mariannebezaire.com
+In the lab of Ivan Soltesz, www.ivansolteszlab.org
+Latest versions of this code are available online at:
+ModelDB: 
+Open Source Brain: http://www.opensourcebrain.org/projects/nc_ca1
+
+Main code file: ../main.hoc
+This file: Last updated on April 9, 2015
+
+This file defines the default_var proc, which was written by Michael Hines.
+
+The proc allows you to specify and use default variables, so that you have 
+the option of either defining the variable at the command line when executing
+the code, or using a default value set in the code:
+
+AT THE COMMAND LINE:
+$ ... nrniv -mpi -c myvariable=20 mymodelcode.hoc
+$ ... nrniv -mpi -c "strdef mystr" -c mystr="\"hello\"" mymodelcode.hoc
+
+OR IN THE CODE:
+default_var("myvariable",10)
+// where the variable myvariable was not previous defined or set
+// in the code
+
+Note that both strings and numbers can be defined using default_var.
+************************************************************/
+
+proc default_var() {localobj s
+	s = new String()
+	if (name_declared($s1) == 0) {	// If the name of the variable used
+									//  at the command line has not yet
+									//  been defined in the code
+									
+		if (argtype(2) == 2) {		// If the variable is type string
+		
+			sprint(s.s, "~strdef %s", $s1)	// Create a string of the command
+			
+			execute(s.s)					// Run the command to define a new string object
+			
+			sprint(s.s, "%s = \"%s\"", $s1, $s2)	// Set the string object
+													//  equal to the string value
+													
+		}else{
+			hoc_ac_ = $2					// Set a temporary variable equal to the
+											//  desired value of the variable
+											
+			sprint(s.s, "%s = hoc_ac_", $s1)	// Create a string of the command
+		}
+		execute(s.s)							// Run the command to set the variable
+												//  to the desired value
+	}
+}

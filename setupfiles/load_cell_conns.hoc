@@ -1,0 +1,120 @@
+/************************************************************
+'ca1' model code repository
+Written by Marianne Bezaire, marianne.bezaire@gmail.com, www.mariannebezaire.com
+In the lab of Ivan Soltesz, www.ivansolteszlab.org
+Latest versions of this code are available online at:
+ModelDB: 
+Open Source Brain: http://www.opensourcebrain.org/projects/nc_ca1
+
+Main code file: ../main.hoc
+This file: Last updated on April 9, 2015
+
+This file loads connectivity information for each cell type into the 
+CellCategoryInfo object already created for that cell type. For each
+cell type, it stores information about connections made from other
+cells onto that cell type (incoming connections).
+
+It reads in a particular connectivity dataset as specified in the
+parameters:
+./datasets/conndata_###.dat  where ### is the parameter ConnData
+************************************************************/
+
+strdef cmdstr, cmdstr1, pre_type, post_type
+objref f2
+
+proc conn_cells() {local num, wgt, syn
+	for i=0, numCellTypes-1 {
+	
+		// Create variables of each celltype's index into the CellCategoryInfo array
+		sprint(cmdstr, "%s_idx = %g", cellType[i].cellType_string, i) 
+		{execute1(cmdstr)}
+		
+		// Create placeholder vectors to store the incoming connections properties
+		//  for each cell type's connections onto this cell type. The properties include:
+		cellType[i].numConns = new Vector(numCellTypes)	// Number of connections from all
+														//  cells of one type onto a single
+														//  instance of the post-synaptic
+														//  cell type (aka, the convergence)
+														
+		cellType[i].numSyns = new Vector(numCellTypes)	// Number of synapses to make for
+														//  each connection that is made from
+														//  a single presynaptic cell of a
+														//  particular type to a single post-
+														//  synaptic cell of a particular type
+														//  (since, when a cell connects to
+														//  another cell, it often forms
+														//  multiple connections)
+														
+		cellType[i].wgtConns = new Vector(numCellTypes)	// The weight of each synapse to be
+														//  formed between these two cell
+														//  types, in terms of the maximum
+														//  conductance (amplitude) of the
+														//  synapse (synapse mechanisms in
+														//  this model always specify their
+														//  synaptic conductances in units
+														//  of uS, micro-Seimens).
+	}
+
+	// load file
+	f2 = new File()
+	sprint(cmdstr, path2ConnData, ConnData)	// Open the ConnData dataset specified by the user (a
+	f2.ropen(cmdstr)											//  3-digit number), which gives the number of
+																//  connection types in the model, followed by one
+																//  line for each connection type, which gives
+																//  information about the presynaptic and postsynaptic
+																//  cell types, and the properties of the connection
+																//  (weight, convergence or number of incoming connections,
+																//  and number of synapses, as explained in detail above)
+
+	numConnTypes = f2.scanvar			// Scan the first line, which contains a number giving the # of connection types
+	
+	for r=0,numConnTypes-1 {
+	
+		f2.scanstr(pre_type)			// Read in the presynaptic cell type (the friendly name)
+		
+		f2.scanstr(post_type)			// Read in the postsynaptic cell type (the friendly name)
+		
+		// Read in the connection properties (see above for detailed explanations of each property)
+		wgt = f2.scanvar				// Synapse weight
+		num = f2.scanvar				// Convergence (number of connections)
+		syn = f2.scanvar				// Number of synapses per connection
+
+		// Specify which variables to use (the indices that correspond to the pre- and postsynaptic cell types)
+		//  for determining which instance in the CellCategoryInfo array to modify, and which vector instance
+		//  within that CellCategoryInfo to modify with the newly scanned in connection properties.
+		sprint(cmdstr, "%s_idx", pre_type)
+		sprint(cmdstr1, "%s_idx", post_type)
+		
+		if ((name_declared(cmdstr) > 0) && (name_declared(cmdstr1) > 0)) {
+		
+			// For connection types that are susceptible to axonal sprouting (changes in connectivity),
+			//  alter the number of connections made according to the PercentAxonSprouting parameter. In
+			//  the example below, this alteration would only occur for connections from granulecells to
+			//  other granulecells. Also, the number of connections made is then calculated according to
+			//  total number of cells, not according to an initial number of connections that was specified
+			//  in the ConnData file (though the code could be rewritten to do that when biologically appropriate).
+			sprint(cmdstr, "if ((strcmp(pre_type,\"granulecell\")==0) && (strcmp(post_type,\"granulecell\")==0)) {num = PercentAxonSprouting/100*cellType[%s_idx].numCells*cellType[%s_idx].numCells}", pre_type, post_type)
+			{execute1(cmdstr)}
+
+			// For the postsynaptic cell's instance of CellCategoryInfo, find the numConns' vector
+			//  entry corresponding to the presynaptic cell type and set it equal to the number
+			//  of connections read in from the file
+			sprint(cmdstr, "cellType[%s_idx].numConns.x[%s_idx] = %f", pre_type, post_type, num)
+			{execute1(cmdstr)}
+			
+			// For the postsynaptic cell's instance of CellCategoryInfo, find the numSyns' vector
+			//  entry corresponding to the presynaptic cell type and set it equal to the number
+			//  of synapses per connection read in from the file
+			sprint(cmdstr, "cellType[%s_idx].numSyns.x[%s_idx] = %f", pre_type, post_type, syn)
+			{execute1(cmdstr)}
+			
+			// For the postsynaptic cell's instance of CellCategoryInfo, find the wgtConns' vector
+			//  entry corresponding to the presynaptic cell type and set it equal to the weight
+			//  of the synapse as read in from the file
+			sprint(cmdstr, "cellType[%s_idx].wgtConns.x[%s_idx] = %f", pre_type, post_type, wgt)
+			{execute1(cmdstr)}
+		}
+	}
+	f2.close()
+}
+conn_cells()

@@ -1,0 +1,108 @@
+/************************************************************
+'ca1' model code repository
+Written by Marianne Bezaire, marianne.bezaire@gmail.com, www.mariannebezaire.com
+In the lab of Ivan Soltesz, www.ivansolteszlab.org
+Published and latest versions of this code are available online at:
+ModelDB: 
+Open Source Brain: http://www.opensourcebrain.org/projects/nc_ca1
+
+Main code file: ../main.hoc
+This file: Last updated on April 9, 2015
+
+This file sets other model parameters that users would either
+change very infrequently, or that depend on the parameter values
+set in the parameters.hoc file.
+************************************************************/
+
+objref LayerVector, strobj, mypoint
+strdef cmdstr, layers, tmpstr, path2ConnData, path2SynData
+
+proc SetOtherParameters() {local ind, i, layernum, tempheight
+
+	// Parse the string input that defines the number of layers in the model and their
+	//  thickness or height. This string input is stored in the LayerHeights parameter.
+	//  Now we will convert it to a vector called LayerVector, with one entry for each
+	//  layer, giving the height of that layer in microns.
+	strobj = new StringFunctions()
+	tmpstr = LayerHeights
+	ind = strobj.substr(tmpstr,";")
+	layers = tmpstr
+	strobj.left(layers, ind)
+	sscanf(layers,"%g", &layernum)
+	{sprint(cmdstr, "LayerVector=new Vector(%g)",  layernum)} // List of Zo (starting height) values, 1 for each layer
+	{execute1(cmdstr)}
+	
+	for i=0, layernum-1 {
+		strobj.right(tmpstr, ind+1)
+		ind = strobj.substr(tmpstr,";")
+		layers = tmpstr
+		strobj.left(layers, ind)
+		sscanf(layers,"%g", &tempheight)
+		LayerVector.x[i] = tempheight
+	}
+	
+	// If we scale down the number of cells in the model, also scale down the 3D volume that they will be
+	//  distributed in. For now, we just scale down the length and width of the prism, but not the thickness
+	//  of the layers of the network (ie, we leave the Z or height dimension untouched).
+	scTransverseLength = TransverseLength / sqrt(Scale)
+	scLongitudinalLength = LongitudinalLength / sqrt(Scale)
+		
+	distres = 5		// The resolution of the axonal bouton distribution function
+					//  for all cells in the network, in terms of steps. Ex: if
+					//  this is set to 5, the Gaussian distribution is solved at
+					//  5 distances from the soma of the cell, starting at the
+					//  soma location and ending at 80% of the total axonal extent
+					//  of the cell.
+					
+	axconvel = 250	// Axonal conduction velocity in microns/ms (Bartos et al. 2002)
+
+	tstart = 0		// Start time of simulation
+	
+	tstop = SimDuration	// End time of simulation
+	
+	dt = TemporalResolution		// Integration interval for fadvance (see NEURON reference)
+	
+	secondorder = 2	// A global variable which specifies the time integration method
+					// 	(see NEURON reference)
+					
+	v_init = -60	// All voltages of all sections are initialized to this voltage (mV)
+	
+	N = 1			// Specifies step resolution (see NEURON reference for steps_per_ms),
+					// 	sometimes 1, sometimes 4
+
+	steps_per_ms = 1*N/(dt)		// Controls the intervals at which points are plotted
+	
+	celsius = 34				// The temperature at which to run the simulation (affects
+								//  some ion channel calculations)
+	
+	strdef xposstr, yposstr, zposstr		// Extract the X, Y, Z location values for the LFP electrode
+	mypoint = new Vector(3)		//  from the ElectrodePoint string into the mypoint vector
+
+	strobj.head(ElectrodePoint,";",xposstr)
+	sscanf(xposstr,"%g", &mypoint.x[0])
+	
+	strobj.tail(ElectrodePoint,";",yposstr)
+	strobj.head(yposstr,";",yposstr)
+	sscanf(yposstr,"%g", &mypoint.x[1])
+	
+	strobj.tail(ElectrodePoint,";[0-9]+;",zposstr)
+	sscanf(zposstr,"%g", &mypoint.x[2])
+															
+	OK2executeSysCmds = 1 	// If you don't like the NEURON code to make new directories, concatenate files,
+							//  or delete files, set this parameter to 0. Watch out though, if this is set to
+							//  0, the code will use whatever RunName you supply or 'none' if you do not
+							//  supply a RunName. This means:
+							//  - the program will expect a directory named 'RunName' to be in the results directory
+							//  - the program will overwrite any existing files in the ./results/RunName directory
+							
+	if (OK2executeSysCmds==0) {
+		CatFlag = 0			// Overwrite the CatFlag if necessary. If it is specified that executing system commands
+							//  is *not* okay, we definitely do not want CatFlag to be 1 (do not allow concatenating
+							//  results files)
+	}
+	
+	// Paths to ConnData and SynData dataset files
+	path2ConnData = "../datasets/conndata_%g.dat"
+	path2SynData = "../datasets/syndata_%g.dat"	
+}	
+SetOtherParameters()

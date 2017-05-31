@@ -1,0 +1,51 @@
+// This file sets the default values of parameters
+//  in such a way that they can be overridden using
+//  certain options at the command line
+ 
+default_var("RunName","none")		// Name of simulation run
+default_var("UID","0")		// Unique ID for this simulation run
+default_var("Stimulation","spontaneous")		// Filename of the stimulation protocol used to stimulate the network
+default_var("Connectivity","try_all_randfaststim")		// Filename of the connection protocol used to connect the cells of the network
+default_var("Scale",1000)		// Network scale (1:Scale)
+default_var("SimDuration",300)		// Duration of time simulated, in milliseconds
+default_var("RandomSeeds",0)		// Method used to assign seeds to random processors
+default_var("Positioning","")		// Algorithm used to position the cells
+default_var("PrintVoltage",1)		// Flag for recording and printing intracellular voltage traces for select cells
+default_var("PrintTerminal",1)		// Level of printouts to screen (affects run time) 0: minimal, 1: some, 2: max printouts
+default_var("PrintConnDetails",0)		// Flag for printing the detailed connection matrix
+default_var("PrintCellPositions",1)		// Flag for printing the cell positions
+default_var("PrintConnSummary",1)		// Flag for printing the summary connection matrix
+default_var("TransverseLength",1000)		// Length of the network subfield in the transverse direction in microns
+default_var("LongitudinalLength",4000)		// Length of the network subfield in the longitudinal direction in microns
+default_var("LayerHeights","4;100;50;200;100;")		// Vector of heights of each network subfield layer in microns (from basal to molecular layer)
+default_var("SpatialResolution",100)		// Spatial discretization method or resolution
+default_var("ConnData",100)		// Number of the connection dataset to use
+default_var("SynData",100)		// Number of the synapse kinetics dataset that was used to prepare the cell definition files
+default_var("NumData",100)		// Number of the cells dataset to use
+default_var("TemporalResolution",0.1)		// Temporal resolution of the simulation (in ms)
+default_var("NumTraces",100)		// The maximum number of cells to record intracellularly, for each cell type
+default_var("FracTraces",50)		// The percent of cells to record intracellularly, for each cell type
+default_var("JobNumber",0)		// Job number assigned by supercomputer
+default_var("StepBy",100)		// Number of ms to run at a time
+default_var("JobHours",4)		// Number of hours to let the run go for
+default_var("EstWriteTime",660)		// Number of seconds to save for the run to write out its results
+default_var("TopProc","")		// NEURON process name in the top command
+default_var("DegreeStim",10)		// Degree of stimulation; meaning depends on Stimulation type
+default_var("CatFlag",1)		// Whether to concatenate and remove trace connection files
+default_var("RandomSeedsConn",0)		// Starting highIndex used by connectivity streams
+default_var("RandomSeedsStim",0)		// Starting highIndex used by stimulation streams
+default_var("AxConVel",0)		// Axonal conduction delay in um/ms, usually 250-500
+default_var("myConDelay",1.2)		// Axonal conduction delay
+default_var("NumTracesPyr",3000)		// The maximum number of pyramidal cells to record intracellularly
+default_var("MaxEDist",1000)		// The maximum distance in microns away from an electrode point that LFP contributions from cells should be included
+default_var("lfp_dt",.5)		// The time step for recording the LFP trace
+default_var("ElectrodePoint","200;100;120")		// X,Y,Z coordinates of LFP recording electrode, in microns, separated by semicolon
+default_var("ComputeNpoleLFP",1)		// Compute the LFP using all or a fraction of compartments from nearby pyramidal cells
+default_var("ComputeDipoleLFP",0)		// Compute the LFP using two compartments (dipole) of nearby pyramidal cells
+default_var("LFPCellTypes","pyramidalcell")		// semicolon separated list of cell types to record LFP from (give full name of celltype) -- ONLY WORKS FOR NPOLE!
+default_var("RandomVrest",0.0)		// Standard deviation away from Vrest for RMP of each cell
+default_var("RandomVinit",0)		// Positive value indicates that initial voltages should be randomized
+default_var("PhasicData",100)		//  Which phasic dataset to use for oscillation/phasic stimulation
+default_var("PercentCellDeath",0)		//  Percent of cells that are killed (removed), for cell types flagged for cell death
+default_var("RandomSynWgt",0)		// >0 indicates that synapse weights should vary with the specified weight as the mean. 1: a normal distribution, 2: a lognormal distribution, 3: a uniform distribution
+default_var("synVar",0.03)		//  Fraction of the mean synapse weight that should be set as the standard deviation in the normal distribution of synapse weights for randomized synapse weights

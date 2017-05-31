@@ -1,0 +1,19 @@
+// $Id: setpointers.hoc,v 1.4 2008/12/02 22:19:41 ted Exp ted $
+// set up the pointers after the sections have been created
+
+proc setpointers() { local done localobj cell
+	cell = pc.gid2cell(gidOI)
+  grindaway()  // in interpxyz.hoc, determines interpolated locations of nodes
+  forsec cell.all {
+    if (ismembrane("xtra")) {
+	for (x, 0) {
+		setpointer im_xtra(x), i_membrane(x)
+		setpointer ex_xtra(x), e_extracellular(x)
+	}
+    }
+  }
+}
+
+print "After any change to cell geometry or nseg, be sure to invoke setpointers()"
+
+setpointers()

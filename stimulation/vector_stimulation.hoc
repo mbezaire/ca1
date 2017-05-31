@@ -1,0 +1,45 @@
+strdef fn
+objref pattern_, tvec_, idvec_
+proc gridcellStims() { local i, reli, pci, jgid, celltype, numspikes, numconns, precell, pretype, syntype, postcell, normweight, delay localobj cell, f2		// Connect the perforant path cells to the model cells
+	jgid = 619
+	if (pc.gid_exists(jgid)) {
+		f2 = new File()
+		sprint(fn, "./stimvecs/gridconns_%g.dat", jgid)
+		//sprint(fn, "./stimulation/stimvecs/gridconns_%g.dat", jgid)
+		f2.ropen(fn)
+		numconns = f2.scanvar			// # cell types, including 1 for pp cells
+		for i=1, numconns {
+			precell=f2.scanvar
+			postcell=f2.scanvar
+			pretype=f2.scanvar
+			syntype=f2.scanvar
+			normweight=f2.scanvar
+			delay=f2.scanvar
+			cell = pc.gid2cell(postcell)
+			printf("pre=%g post=%g syntype=%g\n", precell, postcell, syntype)
+			nc_appendo(precell, cell, 0, syntype, normweight*2e-2, delay+2*dt)
+		}
+		cellType[0].numCons.x[1] +=numconns
+		f2.close()
+
+		pattern_ = new PatternStim()
+
+		f2 = new File()
+		//f2.ropen("./stimulation/stimvecs/gc_vec.dat")
+		f2.ropen("./stimvecs/gc_vec.dat")
+		numspikes = f2.scanvar
+		i=f2.scanvar // Don't need this, just a placeholder value
+		tvec_ = new Vector(numspikes)
+		idvec_ = new Vector(numspikes)
+
+		for i=0, numspikes-1 {
+			tvec_.x[i] = f2.scanvar // spike time in ms
+			idvec_.x[i] = f2.scanvar // gid of NetStim to make fire
+		}
+		f2.close()
+
+		pattern_.fake_output = 1
+		pattern_.play(tvec_, idvec_)
+	}
+}
+gridcellStims()

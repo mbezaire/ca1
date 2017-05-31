@@ -1,0 +1,106 @@
+{load_file("nrngui.hoc")}				// Standard definitions - NEURON library file
+
+chdir("setupfiles")
+{load_file("../setupfiles/defaultvar.hoc")}	// Contains the proc definition for default_var proc
+{default_var("NumData",100)}		// for paired recording, use these synapse weights
+{default_var("SynData",100)}		// for paired recording, use these synapse weights
+{default_var("path2ConnData","../datasets/conndata_%g.dat")}		// for paired recording, use these synapse weights
+{default_var("path2SynData","../datasets/syndata_%g.dat")}		// for paired recording, use these synapse weights
+{default_var("filesavepath","../cells")}		// for paired recording, use these synapse weights
+
+{load_file("../setupfiles/SynStore.hoc")}	// Contains the template that defines a 
+
+strdef cmdstr
+objref f2
+	f2 = new File()
+	sprint(cmdstr, "../datasets/cellnumbers_%g.dat", NumData)
+	f2.ropen(cmdstr)		// Open the celltype
+	
+	numCellTypes = f2.scanvar       // Scan the first line, which contains a number giving the
+									// # cell types, including stimulating (artificial) cells (still?)
+
+objref celltypestring[numCellTypes], techstring[numCellTypes], cellType[numCellTypes], cell
+double cellnumvar[numCellTypes], cellLayerflag[numCellTypes], cellArtflag[numCellTypes]
+
+begintemplate CellCategoryInfo
+	public cellType_string, technicalType, setCellTypeParams, SynList, setSynList
+	objref SynList, this
+	strdef cellType_string, technicalType
+	proc setCellTypeParams(){
+		cellType_string = $s1		// Name of the cell type
+		technicalType = $s2
+	}
+	
+	proc setSynList(){			// From a file, read in the constants
+		objref SynList[$1]
+	}
+endtemplate CellCategoryInfo	
+
+for i=0, numCellTypes-1 {
+	celltypestring[i]= new String()
+	techstring[i] = new String()
+	f2.scanstr(celltypestring[i].s)				// Scan in the cell name
+	f2.scanstr(techstring[i].s)
+	cellnumvar[i]=f2.scanvar					// Scan in the initial (before sclerosis) number of each cell type
+	cellLayerflag[i]=f2.scanvar					// Scan the layer flag (hilar=2, granular=1, molecular=0), where hilar cells
+	cellArtflag[i]=f2.scanvar					// Scan the layer flag (hilar=2, granular=1, molecular=0), where hilar cells
+
+	cellType[i] = new CellCategoryInfo(i)	// Make one object for each cell type to store cell type info
+	cellType[i].setCellTypeParams(celltypestring[i].s, techstring[i].s)
+}
+
+{load_file("../setupfiles/load_cell_syns.hoc")}	// Load in the cell connectivity info
+
+DegreeStim=1
+strdef filestr
+sprint(filestr,"%s/allsyns.dat",filesavepath) 
+objref fAll, fSyn
+fAll = new File(filestr)
+fAll.wopen()
+sprint(filestr,"%s/synlist.dat",filesavepath)
+fSyn = new File(filestr)
+fSyn.wopen()
+
+strdef cmdstr, tempFileStr
+objref newSecRef
+for i = 0, numCellTypes-1 {
+	if (cellArtflag[i]==0) {
+		sprint(tempFileStr,"../cells/class_%s.hoc", cellType[i].technicalType)	// Concatenate the
+		load_file(tempFileStr)			// Load the file with the template that defines the class
+		sprint(cmdstr, "cell = new %s(i,i,i)", cellType[i].technicalType)
+		{execute1(cmdstr)}
+		ist = 0
+		ien = 0
+		myi = 0
+		access cell.soma[0]
+		{distance()}
+
+		for precellType = 0, numCellTypes-1 {
+			ist = myi
+			for r=0, cellType[i].SynList[precellType].count()-1 {
+				sprint(cmdstr,"newSecRef = cell.%s",cellType[i].SynList[precellType].object(r).SecRefStr)
+				execute(cmdstr) // sets newSecRef
+							
+				forsec newSecRef {		
+					for (x,0) {
+						execute(cellType[i].SynList[precellType].object(r).CondStr)
+						 if (y==1) {
+							fSyn.printf("%s %s %g %s\n", cellType[i].cellType_string, cellType[precellType].cellType_string, myi, secname())
+							myi = myi + 1
+						}
+					}
+				}
+			}
+			ien = myi - 1
+			if (ien>=ist) {fAll.printf("%s %s %g %g\n", cellType[i].cellType_string, cellType[precellType].cellType_string, ist, ien)}
+		}
+	}
+}
+
+fAll.close()
+fSyn.close()
+
+
+f2.close
+quit()
+

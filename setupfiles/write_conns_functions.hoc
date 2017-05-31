@@ -1,0 +1,336 @@
+/************************************************************
+'ca1' model code repository
+Written by Marianne Bezaire, marianne.bezaire@gmail.com, www.mariannebezaire.com
+In the lab of Ivan Soltesz, www.ivansolteszlab.org
+Published and latest versions of this code are available online at:
+ModelDB: 
+Open Source Brain: http://www.opensourcebrain.org/projects/nc_ca1
+
+Main code file: ../main.hoc
+This file: Last updated on April 10, 2015
+
+This file defines the procedures that may be used to write out
+connectivity information. There are 5 procedures here; the first
+one should always be called. Depending on user preferences, one
+of the remaining four should also be called:
+
+printNumConFile: This procedure prints the total number of connections
+(not synapses) made between each possible combination of presynaptic
+cell type and postsynaptic cell type, per processor to a file called
+'numcons.dat'.
+
+allCellConns*: These procedures print detailed connectivity information
+for EVERY connection in the model, at the level of the synapses. This
+includes the presynaptic cell gid, the postsynaptic cell gid, and the
+synapse index (synapse type in the postsynaptic cell's potential synapse
+list) to a file called 'connections.dat'. Only one of these procedures
+should be run, depending on user preference, and these procedures should
+never be called for large networks because they will take too long and
+generate too much data to feasibly store.
+- allCellConnsSerial: each processor takes its turn writing the synapse
+                      data for all connections for all postsynaptic cells
+					  that it owns
+- allCellConnsParallel: each processor writes its own file (still includes
+					  all the same data) and, optionally if the CatFlag
+					  parameter is set to 1, concatenates the files in
+					  parallel to create one results file.
+
+recordedCellConns*: These procedures print detailed connectivity information
+for specific cells of interest, at the level of the synapses. This
+includes the presynaptic cell gid, the postsynaptic cell gid, and the
+synapse index (synapse type in the postsynaptic cell's potential synapse
+list) to a file called 'cell_syns.dat'. The cells of interest are the ones
+that were chosen to have their somatic voltages recorded throughout the
+simulation. For those cells, all connections (and all synapses comprising
+those connections) to which the cells are either presynaptic or postsynaptic
+are recorded. These procedures can be called for large networks, because they
+only write out data for a small subset of cells within the network and will not
+generate too large of a results file(s), assuming the user has specified an
+appropriate number of cells to that will have their voltages recorded (using
+the NumTraces and FracTraces parameters).
+- recordedCellConnsSerial: each processor takes its turn writing the synapse
+						   data for all connections for the postsynaptic cells
+					       of interest that it owns
+- recordedCellConnsParallel: each processor writes its own file (still includes
+							 all the same data) and, optionally if the CatFlag
+							 parameter is set to 1, concatenates the files in
+							 parallel to create one results file.
+************************************************************/
+
+// Print a summary file of the number of connections per processor
+//  between each combination of cell type, for the connections 
+//  onto the postsynaptic cells owned by each processor.
+proc printNumConFile() {local i, j localobj f
+	pc.barrier() // Wait for all processors to get to this point
+	sprint(cmd,"./results/%s/numcons.dat", RunName)	// Define the results file name
+	f = new File(cmd)
+	if (pc.id == 0) {	// Write header to file 1 time only
+		f.wopen()
+		f.printf("host\tpretype\tposttype\tnumCons\n")	// host: processor number (0 to # processors - 1)
+		f.close()										// pretype: index into cell type for presynaptic cell
+	}													// posttype: index into cell type for postsynaptic cell
+														// numCons: number of connections (not synapses) from
+														//  all presynaptic cells of type pretype and all post-
+														//  synaptic cells of type posttype that are owned by
+														//  this processor
+	
+	for rank = 0, pc.nhost-1 {				// For each processor, allow processor to append to file the positions of its cells
+		if (rank == pc.id) {				// Ensure that each processor runs once
+			f.aopen() 						// Open for appending to file
+			for i = 0, numCellTypes-1 {		// For each presynaptic cell type
+				for j = 0, numCellTypes-1 {	// For each postsynaptic cell type
+					f.printf("%g\t%d\t%d\t%d\n", pc.id, i, j, cellType[i].numCons.x[j])	// Print the number of connections
+				}
+			}
+			f.close()
+		}		
+		pc.barrier()	// All the other processors wait for 
+	}					//  the writing one to finish, so
+}						//  that they each take turns.
+
+// Print a detailed list of all connections in the model,
+//  at the level of the individual synapses comprising a
+//  connection. Each processor writes to the same file,
+//  one at a time.
+proc allCellConnsSerial() {local i, rank, srcid localobj tgt, f
+	pc.barrier() // Wait for all processors to get to this point
+	sprint(cmd,"./results/%s/connections.dat", RunName)
+	f = new File(cmd)
+	if (pc.id == 0) {	// Write header to file 1 time only
+		f.wopen()
+		f.printf("source\ttarget\tsynapse\n")	// source: presynaptic cell gid
+		f.close()								// target: postsynaptic cell gid
+	}											// synapse: synapse id (index into 
+												//  list of potential synapse 
+												//  types for this postsynaptic cell
+     
+	for rank = 0, pc.nhost-1 {				// For each processor, allow processor to append to file its connection info
+		if (rank == pc.id) {				// Ensure that each processor runs once
+			f.aopen() 						// Open for appending to file
+			for i=0, nclist.count -1 {		// For each synapse in the list of all synapses
+				srcid = nclist.o(i).srcgid()	// Get the gid of the source cell
+				tgt = nclist.o(i).syn			// Get a reference to the synapse object on the target cell
+				f.printf("%d\t%d\t%d\n", srcid, tgt.cid, tgt.sid)	// Print source gid, target gid, synapse id
+			}
+			f.close()
+		}		
+		pc.barrier()	// All the other processors wait for 
+	}					//  the writing one to finish, so
+}						//  that they each take turns.
+
+// Print a detailed list of all connections in the model,
+//  at the level of the individual synapses comprising a
+//  connection. Each processor writes to its own file, in
+//  parallel, and then the files are concatenated into a
+//  single file in parallel if CatFlag==1. If CatFlag==0,
+//  the files are not concatenated and there will be one
+//  for each processor in the results folder. In this case,
+//  if using the SimTracker, it will concatenate the files
+//  automatically after uploading the results.
+proc allCellConnsParallel() {local i, g, rank, srcid localobj tgt, f	// Write out the connections list, including synapse type
+	pc.barrier()									// Wait for all ranks to get to this point
+
+	sprint(cmd,"./results/%s/suballconns_%g.dat", RunName, pc.id)	// Include the processor number in the file
+	f = new File(cmd)												//  name so that each processor prints to
+	f.wopen()														//  its own file
+	
+	for i=0, nclist.count -1 {		// For each synapse in the list of all synapses
+		srcid = nclist.o(i).srcgid()	// Get the gid of the source cell
+		tgt = nclist.o(i).syn			// Get a reference to the synapse object on the target cell
+		f.printf("%d\t%d\t%d\n", srcid, tgt.cid, tgt.sid)	// Print source gid, target gid, synapse id
+	}
+	f.close()
+	pc.barrier()	// Wait till all processors have finished printing their files
+	
+	g=1
+	if (CatFlag==1) {	// If the user is okay with system commands concatenating all processors'
+						//  results file into one results file, then proceed. Parallelize the
+						//  concatenation as much as possible using the following algorithm.
+						//  Ex: if there were 8 processors, with indices 0 - 7, then the
+						//  concatenation happens in the following minimal number of steps:
+						//  1. processor 1 adds its file contents to those for processor 0;
+						//     at the same time as 1 --> 0, these other transfers are also
+						//     occurring: 3 --> 2, 5 --> 4, 7 --> 6.
+						//  2. The next level of concatenation occurs: 2 -->0 and 6 --> 4
+						//  3. The final concatenation occurs: 4 --> 0.
+		while (pc.nhost>g) {
+			g=g*2
+			if ((pc.id/g - int(pc.id/g))==0.5) {
+				sprint(dircmd,"cat ./results/%s/suballconns_%g.dat >> ./results/%s/suballconns_%g.dat", RunName, pc.id, RunName, int(pc.id-g/2))
+				{system(dircmd, direx)}			
+				sprint(dircmd,"rm ./results/%s/suballconns_%g.dat", RunName, pc.id)
+				{system(dircmd, direx)}			
+			}
+			pc.barrier()
+		}
+	}
+	
+	// Create the final file that all the separate result file contents will be concatenated into.
+	//  Even if CatFlag==0 (ie, concatenation is not going to happen online during the execution
+	//  of the simulation), still create this placeholder file. If using the SimTracker to manage
+	//  simulations, upon uploading the results into the SimTracker, the files will be concatenated
+	//  into this placeholder results file by the SimTracker.
+	if (pc.id==0) {
+		sprint(cmd,"./results/%s/connections.dat", RunName)
+		f = new File(cmd)
+		if (pc.id == 0) {
+			f.wopen()
+			f.printf("source\ttarget\tsynapse\n")
+			f.close()
+			if (CatFlag==1) {	// If the user is okay with system commands concatenating files,
+								//  then all the files have been concatenated into the results file
+								//  for processor 0, and now they will be transferred to the final
+								//  results file.
+				sprint(dircmd,"cat ./results/%s/suballconns_%g.dat >> ./results/%s/connections.dat", RunName, pc.id, RunName)
+				{system(dircmd, direx)}		
+				sprint(dircmd,"rm ./results/%s/suballconns_%g.dat", RunName, pc.id)
+				{system(dircmd, direx)}	
+			}	
+		}
+	}	
+}
+
+objref traceidxlist
+traceidxlist = new Vector()
+
+// Print a detailed list of all connections to and from
+//  the 'cells of interest' in the model, at the level 
+//  of the individual synapses comprising a connection.
+//  Cells of interest are those picked within the
+//  'recordvoltageauto.hoc' file, according to the 
+//  NumTraces and FracTraces parameters, to have their
+//  somatic voltages recorded throughout the simulation.
+//  Each processor writes to the same file, one at a time.
+proc recordedCellConnsSerial() {local i, tr, rank, srcid localobj tgt, f	// Write out the connections list, including synapse type
+	pc.barrier()									// Wait for all ranks to get to this point
+	sprint(cmd,"./results/%s/cell_syns.dat", RunName)
+	f = new File(cmd)
+	if (pc.id == 0) { 								// Write header to file 1 time only
+		f.wopen()
+		f.printf("source\ttarget\tsynapse\n")
+		f.close()
+	}
+	for rank = 0, pc.nhost-1 {				// For each processor, allow processor to append to file its connection info
+		if (rank == pc.id) {				// Ensure that each processor runs once
+			f.aopen() 						// Open for appending to file
+			for i=0, nclist.count -1 {		// For each synapse in the list of all synapses
+				tgt = nclist.o(i).syn			// Get a reference to the target cell
+				srcid = nclist.o(i).srcgid()	// Get the gid of the source cell
+				myflag=0
+				for tr = 0, numtrace-1 {	// For this synapse, if either the presynaptic cell 
+											//  or the postsynaptic cell is in the list of cells
+											//  of interest (the traceidxlist, here we are
+											//  checking each entry in this list), then flag the
+											//  synapse to be printed to the result file. This
+											//  ensures that all incoming and outgoing connections
+											//  for a cell of interest are recorded in the file.
+											
+					if (traceidxlist.x[tr]==tgt.cid || traceidxlist.x[tr]==srcid) {	// If this is a cell of interest
+						myflag=1	// Flag the synapse for printing
+					}
+				}
+				if (myflag==1) {	// If the synapse was flagged (after reviewing the whole
+									//  traceidxlist list), then print its info.
+					f.printf("%d\t%d\t%d\n", srcid, tgt.cid, tgt.sid)	// Print source gid, target gid, synapse id
+				}
+			}
+			f.close()
+		}		
+		pc.barrier()	// All the other processors wait for 
+	}					//  the writing one to finish, so
+}						//  that they each take turns.
+
+// Print a detailed list of all connections to and from
+//  the 'cells of interest' in the model, at the level 
+//  of the individual synapses comprising a connection.
+//  Cells of interest are those picked within the
+//  'recordvoltageauto.hoc' file, according to the 
+//  NumTraces and FracTraces parameters, to have their
+//  somatic voltages recorded throughout the simulation.
+//  Each processor writes to its own file, in parallel,
+//  and then the files are concatenated into a single
+//  file in parallel if CatFlag==1. If CatFlag==0, the
+//  files are not concatenated and there will be one for
+//  each processor in the results folder. In this case, if
+//  using the SimTracker, it will concatenate the files
+//  automatically after uploading the results.
+proc recordedCellConnsParallel() {local i, tr, rank, srcid localobj tgt, f
+	pc.barrier()	// Wait for all processors to get to this point
+	sprint(cmd,"./results/%s/subconns_%g.dat", RunName, pc.id)	// Open a unique file for each processor
+	f = new File(cmd)
+	f.wopen()
+	for i=0, nclist.count -1 {		// For each connection in the list
+		srcid = nclist.o(i).srcgid()	// Get the gid of the source cell
+		tgt = nclist.o(i).syn			// Get a reference to the target cell
+		myflag=0
+		for tr = 0, numtrace-1 {	// For this synapse, if either the presynaptic cell 
+									//  or the postsynaptic cell is in the list of cells
+									//  of interest (the traceidxlist, here we are
+									//  checking each entry in this list), then flag the
+									//  synapse to be printed to the result file. This
+									//  ensures that all incoming and outgoing connections
+									//  for a cell of interest are recorded in the file.
+											
+			if (traceidxlist.x[tr]==tgt.cid || traceidxlist.x[tr]==srcid) {	// If this is a cell of interest
+				myflag=1	// Flag the synapse for printing
+			}
+		}
+		if (myflag==1) {	// If the synapse was flagged (after reviewing the whole
+							//  traceidxlist list), then print its info.
+			f.printf("%d\t%d\t%d\n", srcid, tgt.cid, tgt.sid)	// Print source gid, target gid, synapse id
+		}
+	}
+	f.close()
+	pc.barrier()	// Wait for all processors to finish writing to their files
+	
+	g=1
+	if (CatFlag==1) {	// If the user is okay with system commands concatenating all processors'
+						//  results file into one results file, then proceed. Parallelize the
+						//  concatenation as much as possible using the following algorithm.
+						//  Ex: if there were 8 processors, with indices 0 - 7, then the
+						//  concatenation happens in the following minimal number of steps:
+						//  1. processor 1 adds its file contents to those for processor 0;
+						//     at the same time as 1 --> 0, these other transfers are also
+						//     occurring: 3 --> 2, 5 --> 4, 7 --> 6.
+						//  2. The next level of concatenation occurs: 2 -->0 and 6 --> 4
+						//  3. The final concatenation occurs: 4 --> 0.
+		while (pc.nhost>g) {
+			g=g*2
+			if ((pc.id/g - int(pc.id/g))==0.5) {
+				sprint(dircmd,"cat ./results/%s/subconns_%g.dat >> ./results/%s/subconns_%g.dat", RunName, pc.id, RunName, int(pc.id-g/2))
+				{system(dircmd, direx)}		
+	
+				//  After each file's contents are consolidated, remove that file
+				sprint(dircmd,"rm ./results/%s/subconns_%g.dat", RunName, pc.id)
+				{system(dircmd, direx)}		
+			}
+			pc.barrier()
+		}	
+	}
+	
+	// Create the final file that all the separate result file contents will be concatenated into.
+	//  Even if CatFlag==0 (ie, concatenation is not going to happen online during the execution
+	//  of the simulation), still create this placeholder file. If using the SimTracker to manage
+	//  simulations, upon uploading the results into the SimTracker, the files will be concatenated
+	//  into this placeholder results file by the SimTracker.
+	if (pc.id==0) {
+		sprint(cmd,"./results/%s/cell_syns.dat", RunName)
+		f = new File(cmd)
+		if (pc.id == 0) { 								// Write header to file 1 time only
+			f.wopen()
+			f.printf("source\ttarget\tsynapse\n")
+			f.close()
+			if (CatFlag==1) {	// If the user is okay with system commands concatenating files,
+								//  then all the files have been concatenated into th results file
+								//  for processor 0, and now they will be transferred to the final
+								//  results file.
+				sprint(dircmd,"cat ./results/%s/subconns_%g.dat >> ./results/%s/cell_syns.dat", RunName, pc.id, RunName)
+				{system(dircmd, direx)}		
+	
+				//  After each file's contents are consolidated, remove that file
+				sprint(dircmd,"rm ./results/%s/subconns_%g.dat", RunName, pc.id)
+				{system(dircmd, direx)}	
+			}	
+		}
+	}
+}

@@ -1,0 +1,92 @@
+/************************************************************
+'ca1' model code repository
+Written by Marianne Bezaire, marianne.bezaire@gmail.com, www.mariannebezaire.com
+In the lab of Ivan Soltesz, www.ivansolteszlab.org
+Published and latest versions of this code are available online at:
+ModelDB: 
+Open Source Brain: http://www.opensourcebrain.org/projects/nc_ca1
+
+Main code file: ../main.hoc
+This file: Last updated on April 10, 2015
+
+This file defines two procedures related to spontaneous stimulation:
+1. connectStims: this is used when each cell needs to have its own,
+   unique excitatory spike train input. This procedure connects
+   a specific artificial cell to each real cell of the model, so that
+   each real cell has its own independent input. When this procedure
+   is used, then the artificial cells should NOT be connected to the
+   real cells within the connectivity algorithm. If the connectivity
+   algorithm is used instead, the difference is that any particular
+   artificial cell could be connected to 0, 1, or multiple real cells
+   in lines with whatever positioning and axonal distribution properties
+   have been specified. This is a good alternative for when the
+   artificial cells are meant to mimic real inputs to a network.
+2. setNoise: this procedure sets the properties of the random number
+   generators that are then associated to the noise functionality of
+   the artificial cells. Each artificial cell has its own, unique
+   random stream that is associated to its noise algorithm. The noise
+   algorithm then draws from that random number stream to determine
+   the interspike intervals that define the spike train pattern of the cell.
+************************************************************/
+
+// The connectStims procedure connects a specific artificial cell to each real cell of the model, and it
+//  does this for each artificial cell type. It expects there to be enough artificial cells of each type
+//  that a unique artificial cell can be connected with each real cell of the model. The specific
+//  artificial cell that is connected to each real cell has a gid that is related to the gid of the real
+//  cell.
+proc connectStims() { local wgt, reli, typei, jgid, postcelltype, precelltype localobj cell
+	for precelltype=0, numCellTypes-1 {	// For each potential presynaptic cell type
+		if (cellType[precelltype].is_art==1) {	// If the cell is an artificial cell type
+			for postcelltype=0, numCellTypes-1 {	// For each potential postsynaptic cell type
+				if (cellType[postcelltype].is_art==0) {	// If the cell is a real cell type
+					wgt = cellType[precelltype].wgtConns.x[postcelltype]	// Check the weight specified for this connection
+					if (wgt > 0) {											//  and if stronger than 0, make the connections
+					
+						// For each cell of type postsynaptic cell type owned by this processor
+						for pcitr(&reli, &typei, &jgid, cellType[postcelltype].cellStartGid, cellType[postcelltype].cellEndGid) {
+							if (pc.gid_exists(jgid)) {
+								cell = pc.gid2cell(jgid)	// Create a reference to the postsynaptic cell
+
+								if (cell.pre_list.o(precelltype).count()>0) {	// If potential synapses have been defined for this connection type
+								
+									// Make a single synapse connection from a specific artificial cell to a specific real cell, 
+									//  where the cells that are connected are related by their gids.
+									nc_appendo(jgid-cellType[postcelltype].cellEndGid-1+cellType[precelltype].cellStartGid, cell, precelltype, 0, wgt, 3)
+									cellType[precelltype].numCons.x[postcelltype] +=1	// Increment the connection counter
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+if (MakeArtConns==0) {	// Only make connections from artificial cells if they 
+	connectStims()		//  have not been connected at another time (ie, in the
+}						//  connectivity algorithm)
+
+proc setNoise() {local reli, typei, jgid, idx localobj cell 
+	for idx=0, numCellTypes-1 {
+		if (cellType[idx].is_art==1) {	// If the cell type is artificial, set the random stream
+										//  associated with the noise in its spike times
+			
+			// For all the artificial cells of this type, owned by this processor
+			for pcitr(&reli, &typei, &jgid, cellType[idx].cellStartGid, cellType[idx].cellEndGid) {
+				cell = pc.gid2cell(jgid)	// Create a reference to the artificial cell
+				ranstimlist.object(reli).r.negexp(1) 	// Using a negative exponential distribution to determine
+														//  the interspike interval (ISI) gives Poisson-distributed 
+														//  spike times. Always use 1 as the argument; the interval
+														//  for the netstim will set the 'rate' (or average ISI).
+														//
+														// For another example (which defines the randomstream class 
+														//  differently, and therefore calls different commands at 
+														//  different times) see the following file:
+														// <http://senselab.med.yale.edu/modeldb/showmodel.asp?model=83319&file=\destexhe_benchmarks\NEURON\common\netstim.hoc>
+				cell.noiseFromRandom(ranstimlist.object(reli).r)	// Set this random stream as the random number
+			}														//  generator for the noise functionality of
+		}															//  the spike generator.
+	}
+}
+setNoise()

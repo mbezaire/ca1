@@ -1,0 +1,47 @@
+proc stimulateCells() { local i, pci, typei, jgid, celltype, stimcelltype, counter localobj cell		// Connect the perforant path cells to the model cells
+	for stimcelltype=0, numCellTypes-1 {
+		if (cellType[stimcelltype].is_art==1) {
+			for i= cellType[stimcelltype].cellStartGid, cellType[stimcelltype].cellEndGid {
+				for celltype=0, numCellTypes-1 {
+					if (cellType[celltype].is_art==0) {
+						if (strcmp(cellType[celltype].cellType_string,"pyramidalcell")==0) {	// Connect to some granule cells
+							// Make 1 connection to each cell in the middle 10% (45th - 54th percentiles) of the cell group -- only works if >2 granule cells
+							for pcitr(&pci, &typei, &jgid, cellType[celltype].cellStartGid + int(45/100*cellType[celltype].numCells) - 1, cellType[celltype].cellStartGid + int(54/100*cellType[celltype].numCells) - 1) {
+								if (pc.gid_exists(jgid)) {
+									cell = pc.gid2cell(jgid)
+									nc_appendo(i, cell, stimcelltype, 0, 2e-2, 3)  
+									nc_appendo(i, cell, stimcelltype, 1, 2e-2, 3) 
+									cellType[stimcelltype].numCons.x[celltype] +=2
+								}
+							}
+						}
+						if (strcmp(cellType[celltype].cellType_string,"pvbasketcell")==0) {	// Connect to some basket cells
+							// Make 1 connection to each cell in the middle 10% (45th - 54th percentiles) of the cell group -- only works if >2 basket cells
+							for pcitr(&pci, &typei, &jgid, cellType[celltype].cellStartGid + int(45/100*cellType[celltype].numCells) - 1, cellType[celltype].cellStartGid + int(54/100*cellType[celltype].numCells) - 1) {
+								if (pc.gid_exists(jgid)) {
+									cell = pc.gid2cell(jgid)
+									nc_appendo(i, cell, stimcelltype, 0, 1e-2, 3) 
+									nc_appendo(i, cell, stimcelltype, 1, 1e-2, 3)  
+									cellType[stimcelltype].numCons.x[celltype] +=2
+								}
+							}	
+						}
+						if (strcmp(cellType[celltype].cellType_string,"mossycell")==0) {	// Connect to some mossy cells
+							// Make 10 connections to the middle 10% (45th - 54th percentiles) of mossy cells; may make multiple connections on one cell
+							for j = 45, 54 {
+								jgid=cellType[celltype].cellStartGid + int(j/100*cellType[celltype].numCells) -1
+								if (pc.gid_exists(jgid)) {
+									cell = pc.gid2cell(jgid)
+									ransynlist.object(int(jgid/pc.nhost)).r.discunif(0,3)	// There are 4 types of synapses pp can make onto mossy cells
+									nc_appendo(i, cell, stimcelltype, ransynlist.object(int(jgid/pc.nhost)).repick, 1.75e-2, 3)
+									cellType[stimcelltype].numCons.x[celltype] +=1
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+stimulateCells()									// Make connections between the perforant path and some cells

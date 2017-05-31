@@ -1,0 +1,128 @@
+/************************************************************
+'ca1' model code repository
+Written by Marianne Bezaire, marianne.bezaire@gmail.com, www.mariannebezaire.com
+In the lab of Ivan Soltesz, www.ivansolteszlab.org
+Published and latest versions of this code are available online at:
+ModelDB: 
+Open Source Brain: http://www.opensourcebrain.org/projects/nc_ca1
+
+Main code file: ../main.hoc
+This file: Last updated on April 10, 2015
+
+This file defines a SynStore class that is used to store
+information about the possible synapses that can be made onto
+a postsynaptc cell by each presynaptic cell type. One SynStore
+object is created for each line in a SynData file, corresponding
+to a single synapse type between a presynaptic and postsynaptic
+cell, where that synapse type can be implemented at certain
+locations on the postsynaptic cell.
+
+There may be multiple SynStores for a given presynaptic and 
+postsynaptic cell if there are multiple entries (lines) for 
+that combination in the SynData file. All SynStore entries
+for a given presynaptic and postsynaptic cell combination are
+stored in a list organized by presynaptic cell, within the 
+postsynaptic cell's CellType array entry.
+
+The SynStore content is then used when a cell of the postsynaptic
+cell type is created. For each point within each section of the
+postsynaptic cell that meets the criteria stored in the SynStore
+(section list member and point meeting the distance criteria),
+a synapse object is defined and added to the list of potential
+synapes that a presynaptic cell can innervate when it is connecting
+to that postsynaptic cell. During the connection process, the
+particular synapse object(s) to be innervated will be
+determined. It is possible that some created synapse objects will
+not be innervated and therefore will not be used during the
+simulation, while other objects may be innervated multiple times.
+************************************************************/
+begintemplate SynStore			// Define a template that stores
+								//  information about synapse
+								//  types and locations for a
+								//  given combination of pre-
+								//  synaptic and postsynaptic
+								//  cell types.
+	
+	// Public variables, accessible from outside template
+	public init, SecRefStr,CheckCond1,CheckCond2
+	public tau1,tau2,efirst,tau1a,tau2a,ea,tau1b,tau2b,eb
+	public NewSynStr, SynStr, CondStr, GABAabFlag, SynType, Scaling
+	
+	// Define strings
+	strdef NewSynStr, SynStr, CondStr, SecRefStr
+	strdef CheckCond1,CheckCond2, SynType, Scaling
+
+	proc init(){			// Define a proc to set the parameters
+							//  upon creation of SynStore object
+										
+		SecRefStr = $s1		// String that gives the same of the
+							//  section list containing all sections
+							//  that can possible have this synapse
+							//  type
+		
+		SynType = $s2		// Synapse mechanism (corresponding to a
+							//  a synapse definition in a mod file)
+		
+		CheckCond1 = $s3	// A condition that a point in a section
+							//  must satisfy for a synapse to be
+							//  created at that point. Usually is
+							//  a minimum distance that the point
+							//  must be away from the soma
+		
+		CheckCond2 = $s4	// A 2nd condition that a point in a
+							//  section must satisfy for a synapse
+							//  to be created at that point. Usually
+							//  is a maximum distance that the point
+							//  must be away from the soma
+									
+		if (strcmp(SynType,"ExpGABAab")==0) {	// A GABA_A,B synapse
+			GABAabFlag=1
+			
+			// GABA A component
+			tau1a = $5				// Rise time constant
+			tau2a = $6				// Decay time constant
+			ea = $7					// Reversal potential (Cl-)
+			
+			// GABA B component
+			tau1b = $8				// Rise time constant
+			tau2b = $9				// Decay time constant
+			eb = $10				// Reversal potential (K+)
+			
+		} else {				// Not a GABA_A,B synapse
+			GABAabFlag=0
+			tau1 = $5				// Rise time constant
+			tau2 = $6				// Decay time constant
+			efirst = $7				// Reversal potential of synapse
+			
+			if (strcmp(SynType,"MyExp2Sidnw")==0) {	// If using a mechanism
+													//  that allows weight 
+													//  to scale with
+													//  distance
+													
+				sprint(Scaling,"syn.nw = %s", $s8)	// Scaling equation
+			}
+		}
+		
+		// Define some commands that will be run within the postsynaptic cell
+		//  template when a new instance of that cell type is being created
+		//  and individual synapse objects need to be defined based on the
+		//  contents of the SynStores associated with that postsynaptic cell
+		
+		sprint(NewSynStr,"newSecRef = %s", SecRefStr)	// Command to define reference
+														//  to section list where
+														//  synapses of this type can
+														//  be made
+														
+		sprint(SynStr,"syn = new %s(x)", SynType) 	// Command to define the synapse
+													//  mechanism to use (ex: ExpGABAab,
+													//  MyExp2Sidnw, MyExp2Sid
+													
+		sprint(CondStr,"y=(5e-6+%s && 5e-6+%s)", CheckCond1, CheckCond2)	// Command to
+																	//  define conditions
+																	//  to check for points
+																	//  along section where
+																	//  synapses are to be made
+
+	}
+
+endtemplate SynStore

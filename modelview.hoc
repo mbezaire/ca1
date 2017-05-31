@@ -1,0 +1,212 @@
+/************************************************************
+For more information, consult ModelDoc.pdf
+************************************************************/
+NumData=101
+ConnData=430
+SynData=120
+
+loadstart = startsw()					// record the start time of the set up
+/***********************************************************************************************
+I.  LOAD LIBRARIES
+***********************************************************************************************/
+{load_file("nrngui.hoc")}				// Standard definitions - NEURON library file
+
+{load_file("netparmpi.hoc")}			// Contains the template that defines the properties of
+										//  the ParallelNetManager class, which is used to set
+										//   up a network that runs on parallel processors
+										
+{load_file("./setupfiles/ranstream.hoc")}	// Contains the template that defines a RandomStream
+											//  class used to produce random numbers
+											// 	for the cell noise (what type of noise?)
+											
+{load_file("./setupfiles/CellCategoryInfo.hoc")}	// Contains the template that defines a 
+													//  CellCategoryInfo class used to store
+													// 	celltype-specific parameters
+
+{load_file("./setupfiles/SynStore.hoc")}	// Contains the template that defines a 
+													
+{load_file("./setupfiles/defaultvar.hoc")}	// Contains the proc definition for default_var proc
+
+{load_file("./setupfiles/parameters.hoc")}	// Loads in operational and model parameters that can
+											//  be changed at command line											
+
+{load_file("./setupfiles/set_other_parameters.hoc")}// Loads in operational and model parameters
+													//  that can't be changed at command line
+
+/***********************************************************************************************
+II. SET MODEL SIZE, CELL DEFINITIONS
+***********************************************************************************************/
+celsius=34
+
+{load_file("./setupfiles/load_cell_category_info.hoc")}	// Reads the 'cells2include.hoc' file and
+														//  loads the information into one
+														//  'CellCategoryInfo' object for each cell
+														//  type (bio or art cells?). Info includes
+														//  number of cells, gid ranges, type name 
+
+{load_file("./setupfiles/load_cell_conns.hoc")}	// Load in the cell connectivity info
+{load_file("./setupfiles/load_cell_syns.hoc")}	// Load in the cell connectivity info
+
+
+strdef tempFileStr, cmd						// Define a string reference to store the name of the
+										//  current cell template file
+
+proc loadCellTemplates(){local i		// Proc to load the template that defines (each) cell class
+
+	for i=0, numCellTypes-1 {			// Iterate over each cell type in cells2include (and art cells?)
+	
+		sprint(tempFileStr,"./cells/class_%s.hoc",cellType[i].technicalType)	// Concatenate the
+																				//  path and file
+																				
+		load_file(tempFileStr)			// Load the file with the template that defines the class
+										//  for each cell type
+	}
+}	
+loadCellTemplates()						// Run the newly defined proc
+
+proc calcNetSize(){local i				// Calculate the final network size (after any cell death)
+	cellType[0].numCells = 1
+	cellType[0].updateGidRange(0)	// Update the gid range for each
+	
+	totalCells = 0						// Initialize totalCells (which counts the number of 'real'
+										//  cells) so we can add to it iteratively in the 'for' loop
+										
+	ncell = cellType[0].numCells		// Initialize ncell (which counts all 'real' and 'artificial'
+										//  cells) so we can add to it iteratively in the 'for' loop
+										
+	for i=1,numCellTypes-1 {			// Run the following code for 'real' cell types only - need a different way of singling out real cells?	
+		cellType[i].numCells = 1
+		cellType[i].updateGidRange(cellType[i-1].cellEndGid+1)	// Update the gid range for each
+																//  cell type
+		
+		totalCells = totalCells + cellType[i].numCells			// Update the total number of cells
+																//   after sclerosis, not including
+																//   artificial cells
+		
+		ncell = ncell + cellType[i].numCells 					// Update the total number of cells
+																//   after sclerosis, including
+																//   artificial cells
+	}
+}
+calcNetSize()
+
+proc calcBinSize(){local NumGCells
+
+	for i=0, numCellTypes-1 {		// Using the specified dimensions of the network (in um) and
+									//  the total number of cells of each type, set the number
+									//  of bins in X, Y, Z dimensions such that the cells will be
+									//  evenly distributed throughout the allotted volume
+									// just changed this so even the stim cells will be allotted, as now we have some
+									// stimulation protocols that incorporate stim cell position
+	
+		cellType[i].setBins(scLongitudinalLength,scTransverseLength,LayerVector.x[cellType[i].layerflag])  
+									// For the z length, use the height of the layer in which the
+									// cell somata are found for this cell type
+	}
+}
+calcBinSize()
+
+/***********************************************************************************************
+III.SET UP PARALLEL CAPABILITY AND WRITE OUT RUN RECEIPT
+***********************************************************************************************/
+objref pnm, pc, nc, nil
+proc parallelizer() {
+	pnm = new ParallelNetManager(ncell)	// Set up a parallel net manager for all the cells
+	pc = pnm.pc
+	pnm.round_robin()					// Incorporate all processors - cells 0 through ncell-1
+										//	are distributed throughout the hosts
+										//	(cell 0 goes to host 0, cell 1 to host 1, etc)
+}
+parallelizer()
+
+iterator pcitr() {local i2, startgid	// Create iterator for use as a standard 'for' loop
+										//  throughout given # cells usage:
+										//  for pcitr(&i1, &i2, &gid, it_start, it_end) {do stuff}
+										//  it_start and it_end let you define range over
+										//  which to iterate
+										//  i1 is the index of the cell on the cell list for that host
+										//  i2 is the index of that cell for that cell type on that host
+	numcycles = int($4/pc.nhost)
+	extra = $4%pc.nhost
+	addcycle=0
+	if (extra>pc.id) {addcycle=1}
+	startgid=(numcycles+addcycle)*pc.nhost+pc.id
+	i1 = numcycles+addcycle // the index into the cell # on this host.
+	i2 = 0 // the index of the cell in that cell type's list on that host
+	if (startgid<=$5) {
+		for (i3=startgid; i3 <= $5; i3 += pc.nhost) {	// Just iterate through the cells on
+														//  this host(this simple statement
+														//  iterates through all the cells on
+														//  this host and only these cells because 
+														//  the roundrobin call made earlier dealt
+														//  the cells among the processors in an
+														//  orderly manner (like a deck of cards)
+				$&1 = i1
+				$&2 = i2
+				$&3 = i3
+				iterator_statement
+				i1 += 1
+				i2 += 1
+		}
+	}
+}
+
+objref  strobj
+strobj = new StringFunctions()
+strdef direx
+if (strcmp(UID,"0")==0 && pc.id==0) {
+	type = unix_mac_pc() // 1 if unix, 2 if mac, 3 if mswin, or 4 if mac osx darwin
+	if (type<3) {
+		{system("uuidgen", direx)} // unix or mac
+		strobj.left(direx, strobj.len(direx)-1)
+	} else {
+		{system("cscript //NoLogo setupfiles/uuid.vbs", direx)} // pc
+	}
+	UID = direx
+}
+
+loadtime = startsw() - loadstart		// Calculate the set up time (now - recorded start time) in seconds
+if (pc.id == 0) {printf("\nTIME HOST 0: %g seconds (set up)\n************\n", loadtime)}
+createstart = startsw()					// Record the start time of the cell creation
+
+/***********************************************************************************************
+IV. CREATE, UNIQUELY ID, AND POSITION CELLS
+***********************************************************************************************/
+
+objref cells, ransynlist, ranstimlist, raninitlist, ranwgtlist, ranlfplist
+cells = new List()						
+ransynlist = new List()
+ranstimlist = new List()
+raninitlist = new List()
+ranwgtlist = new List()
+ranlfplist = new List()
+													
+{load_file("./setupfiles/create_cells_pos.hoc")}	// Creates each cell on its assigned host
+													//  and sets its position using the algorithm
+													//  defined above
+i=0
+ij=0
+gid=0
+objref cell
+for pcitr(&i, &ij, &gid, 0, ncell-1) {
+	if (pc.gid_exists(gid)) {
+		cell = pc.gid2cell(gid)
+		cell.position(gid*1000,0,0)
+	}
+}
+
+strdef cmd
+
+createtime = startsw() - createstart	// Calculate time taken to create the cells
+if (pc.id == 0) {printf("\nTIME HOST 0: %g seconds (created cells)\n************\n", createtime)}
+connectstart = startsw()				// Grab start time of cell connection
+
+oldtimeout = pc.timeout(0)
+
+/***********************************************************************************************
+V. Launch ModelView
+***********************************************************************************************/
+load_file("mview.hoc")
+mview()
+//objref m
+//m = new ModelView(0)

@@ -1,0 +1,133 @@
+/************************************************************
+'ca1' model code repository
+Written by Marianne Bezaire, marianne.bezaire@gmail.com, www.mariannebezaire.com
+In the lab of Ivan Soltesz, www.ivansolteszlab.org
+Published and latest versions of this code are available online at:
+ModelDB: 
+Open Source Brain: http://www.opensourcebrain.org/projects/nc_ca1
+
+Main code file: ../main.hoc
+This file: Last updated on April 9, 2015
+
+This file defines a RandomStream class that can be used to assign unique,
+stable random number generators to each cell in the model network. The
+uniqueness and stability of the generators is assured by careful setting of
+the low index and high index seeds that initialize the generator. These
+seeds are set with a known, unique combination of numbers that is different
+for each cell in the model and that ensures no part of the random number stream
+used in setting up or running the model overlaps with any other part that is used.
+
+The random number generator mechanism used here is the MCellRan4 one. For more
+information about it, see the NEURON Programmer's Reference Entry at:
+http://www.neuron.yale.edu/neuron/static/new_doc/programming/math/random.html?highlight=mcellran4#Random.MCellRan4
+
+Note that if you set the high index seed to 0, a random high index number
+will be used! You will then need to record this number (it is returned when you
+set the seeds) somewhere in order to use it to reproduce the same simulation.
+For that reason, I always set the high index seed to something higher than 0.
+
+Note, you may also wish to use the Random123 random number generator instead of
+MCellRan4. However, be aware that it may be incompatible with some compilers (if
+you need to build NEURON from the source, say to install on a supercomputer).
+http://www.neuron.yale.edu/neuron/static/docs/help/neuron/general/classes/random.html#Random123
+************************************************************/
+
+begintemplate RandomStream
+	public r, repick, start, lowIndex, seq	// Define variables and funcs that are
+											//  accessible from outside the class
+											//  object
+									
+	objref r						// Define a new object
+	
+	proc init() {					// Define an init proc that runs whenever
+									//  a new member of the RandomStream
+									//  class is instantiated
+									
+		highIndex = $1				// Arg 1 specifies the HIGH INDEX.
+									//  The high index gives the position
+									//  along this cell's random stream
+									//  where the generator will start picking
+									//  numbers.
+									//
+									// This model is designed so that you can
+									//  pass in a specific, common high index
+									//  value that is used for all random streams.
+									//  The model also records how far along its
+									//  stream each random number generator
+									//  advances during setup and/or simulation
+									//  and returns the max of value in the results.
+									//  The advantage of this is it allows the user
+									//  to then specify a new, higher high index
+									//  value to run a statistically independent
+									//  version of the same model simulation.
+		
+		lowIndex = $2				// Arg 2 specifies the LOW INDEX.
+									//  The low index specifies which random
+									//  stream to use.
+									//
+									//  The model is designed so that every
+									//  low index seed used by a random number
+									//  generator is automatically set to a
+									//  number related to the gid of the cell to
+									//  which the generator is assigned (ex:
+									//  gid or gid+n*[total number of cells in 
+									//  model]. The advantage of this approach
+									//  is that it's an easy way to ensure that
+									//  each cell is using unique random streams
+									//  for each task that requires random numbers
+									//  AND that it ensures the same network
+									//  configuration will always assign the same
+									//  random number streams to the same cell,
+									//  regardless of how many processors are
+									//  actually used to run the parallel
+									//  NEURON simulation.
+									
+																		
+		r = new Random()			// Set the object r to a Random object
+		
+		start()						// Run the 'start' func (defined below)
+									//  on this newly created RandomStream
+	}
+	func start() {					// Define a 'start' func for this class
+
+		return r.MCellRan4(highIndex, lowIndex)
+									// The function sets the random stream
+									//  used by this generator (lowIndex) and
+									//  the starting position of the generator
+									//  along the stream (highIndex). It returns
+									//  a random number obtained using the 
+									//  MCellRan4 algorithm.
+									//  
+									// Note that this start function will be
+									//  called as soon as the random stream
+									//  object is defined, before the distribution
+									//  of the numbers to be returned (ex: normal,
+									//  uniform, poisson) is set. It is important
+									//  to set the starting position first, for
+									//  reproducibility, as some distributions
+									//  use information from the previous state
+									//  (stream & position) of the generator to
+									//  decide which number to return.
+	}
+	func repick() {					// Define a 'repick' func for this class
+	
+		return r.repick()			// Subsequent random numbers are picked
+									//  from the same random number stream
+									//  that was already defined (lowIndex),
+									//  advancing sequentially down the
+									//  stream (from the initial position
+									//  specified by the highIndex value).
+									//  Note that some distributions actually
+									//  increment the position by more than
+									//  one with each call, but most distributions
+									//  increment the position of the stream
+									//  by one with each pick.
+	}
+	
+	func seq() {					// This functions returns the current high index
+		return r.seq()				//  (position) within the stream, so you can tell
+									//  how far down the stream the generator has 
+									//  advanced (related to the number of times you
+									//  called the repick function).
+	}
+endtemplate RandomStream

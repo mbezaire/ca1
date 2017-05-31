@@ -1,0 +1,394 @@
+/************************************************************
+'ca1' model code repository
+Written by Marianne Bezaire, marianne.bezaire@gmail.com, www.mariannebezaire.com
+In the lab of Ivan Soltesz, www.ivansolteszlab.org
+Published and latest versions of this code are available online at:
+ModelDB: 
+Open Source Brain: http://www.opensourcebrain.org/projects/nc_ca1
+
+Main code file: ../main.hoc
+This file: Last updated on April 10, 2015
+
+This file defines several procedures for writing the results
+of the simulation, including:
+- SpikeOutSerial: print out the times and cell gids for all spikes,
+			in serial (one processor prints at a time)
+- SpikeOutParallel: print out the times and cell gids for all
+			spikes, in parallel (each processor prints to
+			its own results file, and all files are concatenated
+			at the end if CatFlag==1).
+- SummaryOut: print a summary of some of the job properties,
+			including total number of cell types, cells, spikes, 
+			and synapses, as well as run time, spike exchange 
+			time, and load balance across processors.
+- TimeOutSerial: print out the time taken for each part of the simulation
+			job, by each processor.
+- highIndexOut: for each of the random number streams used, print
+			out the maximum high index used (across all processors
+			and cell types).
+- setupSpikeHistogram: generate a histogram of numbers of spikes
+			transferred by each processor at each time step.
+- printSpikeHistogram: print out the results of the spike
+			histogram.
+
+These procedures, except for setupSpikeHistogram, are called
+after the simulation is run. Either spikeout or spikeoutfast
+should be called, but not both. Note that the procedure to
+write out the results of the voltage trace recordings is
+defined in the recordvoltageauto.hoc file, not here.
+************************************************************/
+
+// Print a list of all spikes, including the time at which
+//  each spike occurred and the gid of the cell that spiked.
+//  Each processor writes to the same file, one at a time.
+proc SpikeOutSerial() {local i, rank  localobj f
+	pc.barrier()									// Wait for all processors to get to this point
+	sprint(cmd,"./results/%s/spikeraster.dat", RunName)
+	f = new File(cmd)
+	if (pc.id == 0) { 								// Write header to file 1 time only
+		f.wopen()
+		f.close()
+	}
+	
+	for rank = 0, pc.nhost-1 {				// For each processor, allow processor to append to file the spike times of its cells
+		if (rank == pc.id) {				// Ensure that each processor runs once
+			f.aopen() 						// Open for appending to file
+			for i=0, pnm.idvec.size-1 {
+				f.printf("%.3f %d\n", pnm.spikevec.x[i], pnm.idvec.x[i])	// Print the spike time and spiking cell gid
+			}
+			f.close()
+		}
+		pc.barrier()		// Make sure each processor waits its turn.
+	}
+}
+
+// Print a list of all spikes, including the time at which
+//  each spike occurred and the gid of the cell that spiked.
+//  Each processor writes to its own file, in parallel, and
+//  then the files are concatenated into a single file
+//  in parallel if CatFlag==1. If CatFlag==0, the files 
+//  are not concatenated and there will be one for each 
+//  processor in the results folder. In this case, if using
+//  the SimTracker, it will concatenate the files automatically
+//  after uploading the results.
+proc SpikeOutParallel() {local i  localobj f
+	sprint(cmd,"./results/%s/spikeraster_%g.dat", RunName, pc.id)
+	f = new File(cmd)
+	f.wopen()
+	for i=0, pnm.idvec.size-1 {
+		f.printf("%.3f %d\n", pnm.spikevec.x[i], pnm.idvec.x[i])	// Print the spike time and spiking cell gid
+	}
+	f.close()
+
+	
+	g=1
+	if (CatFlag==1) {	// If the user is okay with system commands concatenating all processors'
+						//  results file into one results file, then proceed. Parallelize the
+						//  concatenation as much as possible using the following algorithm.
+						//  Ex: if there were 8 processors, with indices 0 - 7, then the
+						//  concatenation happens in the following minimal number of steps:
+						//  1. processor 1 adds its file contents to those for processor 0;
+						//     at the same time as 1 --> 0, these other transfers are also
+						//     occurring: 3 --> 2, 5 --> 4, 7 --> 6.
+						//  2. The next level of concatenation occurs: 2 -->0 and 6 --> 4
+						//  3. The final concatenation occurs: 4 --> 0.
+		pc.barrier()
+		while (pc.nhost>g) {
+			g=g*2
+			if ((pc.id/g - int(pc.id/g))==0.5) {
+				sprint(dircmd,"cat ./results/%s/spikeraster_%g.dat >> ./results/%s/spikeraster_%g.dat", RunName, pc.id, RunName, int(pc.id-g/2))
+				{system(dircmd, direx)}			
+				sprint(dircmd,"rm ./results/%s/spikeraster_%g.dat", RunName, pc.id)
+				{system(dircmd, direx)}			
+			}
+			pc.barrier()
+		}
+	}
+	pc.barrier()
+	if (pc.id==0) {
+		if (CatFlag==1) {	// If the user is okay with system commands concatenating files,
+							//  then all the files have been concatenated into the results file
+							//  for processor 0, and now they will be transferred to the final
+							//  results file.
+			sprint(dircmd,"cat ./results/%s/spikeraster_0.dat >> ./results/%s/spikeraster.dat", RunName, RunName)
+			{system(dircmd, direx)}		
+			sprint(dircmd,"rm ./results/%s/spikeraster_%g.dat", RunName, pc.id)
+			{system(dircmd, direx)}	
+		}	
+	}
+}
+
+// Print a summary of some of the job properties, data that
+//  are displayed in the SimTracker for executed jobs, if
+//  using the SimTracker. Data written include: total
+//  number of cell types, cells, spikes, and synapses,
+//  as well as run time, spike exchange time, and 
+//  load balance across processors.
+//  Only one processor writes everything to the file.
+proc SummaryOut() {local alltime, allct, allspk localobj f
+	allct = pc.allreduce(nclist.count,1)	// Add the total number of synapses
+											//  created on each processor to get
+											//  the total across the whole network.
+											
+	allspk = pc.allreduce(pnm.idvec.size,1)	// Add the total number of spikes
+											//  registered on each processor to get
+											//  the total number of spikes generated
+											//  during the whole simulation.
+											
+	comptime = pc.step_time					// Get each processor's simulation
+											//  computation time.
+											
+	avgcomp = pc.allreduce(comptime, 1)/pc.nhost	// Get the average amount of time
+													//  required by a processor to
+													//  solve the simulation.
+	maxcomp = pc.allreduce(comptime, 2)	// Get the maximum amount of time
+										//  required by any processor to
+										//  solve the simulation.
+										
+	loadbal=1			// Placeholder, ideal load balance value = 1 (fraction, range from 0 - 1)
+	exchtime=0			// Placeholder, ideal spike exchange time  = 0 (ms)
+	
+	if (maxcomp>0) {	// Compute the load balance from the average and maximum
+						//  computation time. Load balances of 0.95 and higher are
+						//  ideal; 0.7 and higher are usually acceptable.
+		loadbal=avgcomp/maxcomp
+		exchtime= $1 - maxcomp	// Spike exchange time is calculated as the difference
+								//  between the maximum amount of time required to solve
+								//  the simulation (by the slowest processor) and the
+								//  full time spent during the simulation phase (full
+								//  time calculated by starting the timer right before
+								//  calling pc.solve() or equivalent, and stopping the
+								//  timer right after the solve step completes).
+	}
+
+	if (pc.id == 0) {	// Write header to file 1 time only
+		alltime = startsw() - loadstart	// Calculate the total amount of time taken to
+										//  execute the job, from the very start of the
+										//  job to this point (assuming SumNumOut is
+										//  run after all the other results-writing
+										//  functions, and is therefore one of the last
+										//  commands to run prior to the quit command).
+										//
+										//  This time can then be used to determine how
+										//  much time was spent writing results (by
+										//  subtracting the time spent in all the other
+										//  steps, which were explicitly tracked).
+										
+		sprint(cmd,"./results/%s/sumnumout.txt", RunName)
+		f = new File(cmd)
+		f.wopen()
+		f.printf("NumCells = %g;\nNumSpikes = %g;\nNumConnections = %g;\nRunTime = %g;\nNumCellTypes = %g;\nLoadBalResult = %g;\nExchangeResult = %g;\n", ncell, allspk, allct, alltime, numCellTypes, loadbal, exchtime)	// Print the summary values
+		f.close()
+	}
+}
+
+// Print the time taken by each processor
+//  to perform each step of the job,
+//  including setting up the job, creating
+//  the cells, connecting the cells, and
+//  running the simulation. Note that the
+//  time taken to write the results is not
+//  printed here, but can be determined by
+//  subtracting the time for all these
+//  steps from the total run time of the
+//  job, as reported in the SumNumOut proc.
+//  Each processor writes to the same file, one at a time.
+proc TimeOutSerial() {local i, rank, gid, srcid localobj tgt, f, cell
+	pc.barrier()					// Wait for all processors to get to this point
+	sprint(cmd,"./results/%s/runtimes.dat", RunName)
+	f = new File(cmd)
+	if (pc.id == 0) { 				// Write header to file 1 time only
+		f.wopen()
+		f.printf("host\tset up\tcreated cells\tconnected cells\tran simulation\t\n")
+		f.close()
+	}
+	
+	for rank = 0, pc.nhost-1 {				// For each processor, allow processor to append 
+		if (rank == pc.id) {				//  its runtimes to file. Ensure that each
+					 						//  processor runs once.
+											
+			f.aopen() 						// Open for appending to file.
+			f.printf("%g\t%g\t%g\t%g\t%g\n", pc.id, loadtime, createtime, connecttime, runtime)
+			f.close()
+		}
+		pc.barrier()						// Wait for each processor to finish before
+	}										//  moving onto the next one.
+}
+
+// Print the highest position that the highIndex
+//  of each type of random number stream achieved.
+//  There will only be one number per stream type,
+//  representing the maximum for all cells of all
+//  types, across all processors. This information
+//  is useful for determining a new value of the
+//  highIndex to use as the initial seed, such that
+//  a statistically independent version of the
+//  same job can be executed (ie, if one run ended
+//  with a maximum highIndex of 20,000 for its
+//  stimulation random number stream, to run a
+//  second, statistically independent job, the
+//  starting highIndex for the stimulation random
+//  stream in the second job would need to be
+//  greater than 20,000, and the other random
+//  stream highIndices would also need to be set
+//  higher than the previous maxima achieved).
+//  Only one processor writes everything to the file.
+proc highIndexOut() {local i, ij, gid localobj cell, f
+	pc.barrier()					// Wait for all processors to get to this point
+	sprint(cmd,"./results/%s/MaxHighIndex.txt", RunName)
+	f = new File(cmd)
+	
+	// Maximum highIndex for the connectivity RandomStream
+	// This value is computed differently than the other
+	//  two RandomStreams' maxima because the highIndex
+	//  was incremented in a compiled mod function. The
+	//  number of increments made was then returned to hoc
+	//  and stored in the cellType array for reference here.
+	perRankmax=0
+	for j = 0, numCellTypes-1 {	// Find the highest highIndex across all cell types
+		if (cellType[j].LastHighIndex>perRankmax) {
+			perRankmax=cellType[j].LastHighIndex
+		}
+	}
+	pc.barrier()					// Wait for all processors to get to this point
+	maxconn = pc.allreduce(perRankmax, 2)	// Find the highest highIndex
+											//  across all processors (second
+											//  argument of 2 specifies to
+											//  find the maximum across all
+											//  processors).
+	
+	// Maximum highIndex for the synapse RandomStream
+	perRankmax=0
+	
+	// For each cell, check if the last highIndex used
+	//  was greater than the currently known maximum
+	//  highIndex. If so, then update the maximum highIndex.
+	for pcitr(&i, &ij, &gid, 0, ncell-1) {	
+		if (pc.gid_exists(gid)) {
+			cell = pc.gid2cell(gid)
+			if (ransynlist.object(cell.randi).seq()>perRankmax) {
+				perRankmax=ransynlist.object(cell.randi).seq()
+			}	
+		}
+	}
+	pc.barrier()					// Wait for all processors to get to this point
+	maxsyn = pc.allreduce(perRankmax, 2)
+	
+	// Maximum highIndex for the stimulation RandomStream
+	perRankmax=0
+	
+	// For each cell, check if the last highIndex used
+	//  was greater than the currently known maximum
+	//  highIndex. If so, then update the maximum highIndex.
+	for pcitr(&i, &ij, &gid, 0, ncell-1) {	
+		if (pc.gid_exists(gid)) {
+			cell = pc.gid2cell(gid)
+			if (ranstimlist.object(cell.randi).seq()>perRankmax) {
+				perRankmax=ranstimlist.object(cell.randi).seq()
+			}	
+		}
+	}
+	pc.barrier()					// Wait for all processors to get to this point
+	maxstim = pc.allreduce(perRankmax, 2)
+	
+	// Write out the maximum highIndices
+	//  used for each RandomStream type.
+	if (pc.id == 0) { 				// Write header to file 1 time only
+		f.wopen()
+		f.printf("connection_highIndex=%f;\nsynapse_highIndex=%f;\nstimulation_highIndex=%f;\n",maxconn,maxsyn,maxstim)
+		f.close()
+	}
+}
+
+
+// Set up the spike transfer
+//  histogram to capture the
+//  number of spikes transferred
+//  at each timestep (specifically,
+//  the frequency with which n spikes
+//  are transferred at a time step).
+objref spkhist, f4
+strdef cmd
+proc setupSpikeHistogram() {
+	spkhist = new Vector(pc.nhost)
+	if (pc.id==0) {
+		pc.max_histogram(spkhist)
+	}
+}
+
+// Print out the results of the
+//  spike histogram after the
+//  simulation is solved.
+proc printSpikeHistogram() {
+	sprint(cmd,"./results/%s/spkhist.dat", RunName)
+	f4 = new File(cmd)
+	f4.wopen()
+
+	// Open for appending to file
+	for i=0, pc.nhost-1 {
+		f4.printf("%d\t%d\n", i, spkhist.x[i])	// Print two pieces of information:
+												//  i: the number of spikes sent
+												//  spkhist.x[i]: the number of times this
+												//		number of spikes was sent
+												//
+												// Don't be confused by size of the vector
+												//  equalling the number of processors in
+												//  the job, or using the total number of
+												//  processors in the job to bound the upper
+												//  limit of the for loop. The index i does
+												//  not actually stand for the number of
+												//  processors, but for the number of spikes
+												//  transferred after one time step.
+	}
+	f4.close()
+}
+
+// Print the average LFP trace (times and LFP values) for the network    
+proc writeLFP() { localobj f, lfpvec, lfptrace
+    sprint(cmd,"./results/%s/lfp.dat", RunName)
+    f = new File(cmd)
+    f.wopen()
+    
+    // Open for appending to file
+    for i=0, lfplist.count()-1 {
+        lfpvec = lfplist.o(i)
+		f.printf("%g\t%g\n", lfpvec.x[0], lfpvec.x[1])	// Prints time and average LFP value
+    }
+    f.close()
+ }
+
+// Print the LFP trace for each recorded pyramidal cell
+proc writeLFPTraces() { local i,j,k,celltype,startgid,endgid localobj f, lfpvec, lfptrace
+    if (name_declared("traceidxlist")) {       
+        for celltype=0, numCellTypes-1 {
+	    if (strcmp(cellType[celltype].cellType_string, "pyramidalcell")==0) {	// Find the gid range
+                startgid = cellType[celltype].cellStartGid						//  of the pyramidal cells
+                endgid = cellType[celltype].cellEndGid
+                break
+            }
+        }
+        
+        j = 0
+        for i=0, traceidxlist.size()-1 {
+            
+           gid = traceidxlist.x(i)
+            
+            if (pc.gid_exists(gid) && (gid >= startgid) && (gid <= endgid)) {	// For the recorded pyramidal
+																				//  cells only
+                lfptrace = lfptracelist.o(j)
+                
+                sprint(cmd,"./results/%s/lfptrace_%g.dat", RunName, gid)	// Make a separate file
+                f = new File(cmd)											//  for each recorded cell
+                f.wopen()
+                
+                for k = 0, lfptrace.count()-1 {
+                    lfpvec = lfptrace.o(k)
+					f.printf("%g\t%g\n", lfpvec.x[0], lfpvec.x[1])	// Prints time and LFP value
+                }
+                
+                f.close()
+                j = j + 1
+            }
+        }
+    }
+}

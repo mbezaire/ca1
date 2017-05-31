@@ -1,0 +1,108 @@
+objref numSynTypesVec
+numSynTypesVec = new Vector()
+objref tmpcell
+
+proc createCells(){ local i, ij, si, pci, cellind, runresult, gid	// Create cells and assign a GID to each cell
+	cellind=celltypeOI			
+	for fastitr(&i, &ij, &gid, cellType[cellind].cellStartGid, gidOI) { // use the pciter over all cells of this type
+		if (pc.gid_exists(gid)) { 
+			// sprint(cmd, "{cellType[%g].CellList[%g]=new %s(%g,%g)}", cellind, ij, cellType[cellind].technicalType, gid, i) //+cellType[cellind].cellStartGid) // why add the startgid to the gid? 
+			i=0
+			sprint(cmd, "{cellType[%g].CellList[%g]=new %s(%g,%g,%g)}", cellind, ij, celltype2use, gid, i, cellind) //+cellType[cellind].cellStartGid) // why add the startgid to the gid? 
+			{runresult=execute(cmd)} //prints a zero!		// This command was written as a string so
+											//	the cell object doesn't have to be hard coded
+
+			cells.append(cellType[cellind].CellList[ij])	// Append each cell to cells list
+			cellType[cellind].numThisHost = ij+1 // set number of cells of this type on this host (but add 1 b/c ij is zero based)
+
+			ransynlist.append(new RandomStream(1+RandomSeedsConn, gid + 1*ncell)) // Create a new random number generator for each cell,
+														//	with a unique stream. This will be used to determine
+														//	what type of synapse is used in connections
+														// lowindex = gid is used in the connection algorithm in the mod file
+			ranstimlist.append(new RandomStream(1+RandomSeedsStim, gid + 2*ncell)) // Create a new random number generator for each cell, used by netstims for setting spont stim.
+			raninitlist.append(new RandomStream(1+RandomSeedsStim, gid + 3*ncell)) // Create a new random number generator for each cell, used to set random initial voltage
+
+			cellType[cellind].CellList[ij].connect_pre(nil, nc)	// Create an empty connection for use by the spike detector
+			pc.cell(gid, nc)									// Associate the cell with its gid and its spike generation location
+			
+			for si=0, cellType[cellind].CellList[ij].pre_list.count-1 {	// Iterate over each pre cell type's synapse list
+				for j=0, cellType[cellind].CellList[ij].pre_list.o(si).count-1 {		// Iterate through each synapse in the list
+					cellType[cellind].CellList[ij].pre_list.o(si).o(j).cid=gid			// Set the cell id for each synapse
+																						//  Note: Parameters added to Syn2Gid mechanism
+				}
+			}
+			
+			pnm.spike_record(gidOI)
+			
+			for xidx=0,cellType[cellind].CellList[ij].pre_list.count()-1 {
+				numSynTypesVec.append(cellType[cellind].CellList[ij].pre_list.o(xidx).count())
+			}
+			
+			pc.broadcast(numSynTypesVec,pc.id)
+										
+			addheight=0
+			if (cellType[cellind].layerflag>0) {addheight=LayerVector.sum(0,cellType[cellind].layerflag-1)}
+
+			xpos=get_x_pos(gid,cellType[cellind].cellStartGid,cellType[cellind].dentateXBins,cellType[cellind].dentateYBins*cellType[cellind].dentateZBins,cellType[cellind].dentateXBinSize)	// Algorithmically generate cell position
+			ypos=get_y_pos(gid,cellType[cellind].cellStartGid,cellType[cellind].dentateYBins,cellType[cellind].dentateZBins,cellType[cellind].dentateYBinSize)	// Algorithmically generate cell position
+			zpos=get_z_pos(gid,cellType[cellind].cellStartGid,cellType[cellind].dentateZBins,cellType[cellind].dentateZBinSize,addheight)	// Algorithmically generate cell position
+			cellType[cellind].CellList[ij].position(xpos,ypos,zpos)									// Record cell position in cell object								
+
+		}
+	} 
+
+	nc = nil // Then clear the reference to the netcon object, which should destroy the netcon (because all refs would have been removed)
+}
+createCells()
+
+objref newcellType[numCellTypes]
+for i=0, numCellTypes-1 {
+	newcellType[i] = new CellCategoryInfo(i)	// Make one object for each cell type to store cell type info
+	newcellType[i].setCellTypeParams(cellType[i].cellType_string, cellType[i].technicalType, cellType[i].cellStartGid, cellType[i].numCells, cellType[i].layerflag, cellType[i].is_art)	// Set parameters
+}
+
+pc.barrier()
+for xidx=0,numSynTypesVec.size()-1 {
+	if (xidx==celltypeOI) {tmpcell = newcellType[xidx].CellList[0]}
+	if (xidx>0) {
+		newcellType[xidx].numCells = numSynTypesVec.x[xidx]
+		newcellType[xidx].updateGidRange(newcellType[xidx-1].cellEndGid+1)	// Update the gid range for each
+	} else {
+		newcellType[xidx].numCells = numSynTypesVec.x[xidx] + 1
+		newcellType[xidx].updateGidRange(1)	// Update the gid range for each
+	}
+	if (xidx==celltypeOI) {newcellType[xidx].CellList[0] = tmpcell}
+}
+/*
+proc createStimCells(){ local i, ij, si, pci, cellind, runresult, gid	// Create cells and assign a GID to each cell
+	basegid = 1
+	for cellind=0, numSynTypesVec.size()-1 { // cellType[celltypeOI].CellList[ij].pre_list.count()-1 {
+		numSynTypes = numSynTypesVec.x[cellind] // cellType[cellind].CellList[ij].pre_list.o(precellType).count()
+		for pcitr(&i, &ij, &gid, basegid, basegid + numSynTypes-1) {// use the pciter on this one cell to find owner rank for it: conns2make.x[r+1]
+			if (pc.gid_exists(gid)) { // && cells2make.x[gid]==-1) {
+				if (stimflag==0) {
+					sprint(cmd, "{newcellType[%g].CellList[%g]=new ppvec(%g,%g)}", cellind, ij, gid, i) //+cellType[cellind].cellStartGid) // why add the startgid to the gid? 
+				} else { 
+					sprint(cmd, "{newcellType[%g].CellList[%g]=new sintrain(%g,%g)}", cellind, ij, gid, i) //+cellType[cellind].cellStartGid) // why add the startgid to the gid? 
+				}
+				{runresult=execute(cmd)} //prints a zero!		// This command was written as a string so
+												//	the cell object doesn't have to be hard coded
+																										
+				cells.append(newcellType[cellind].CellList[ij])	// Append each cell to cells list
+				newcellType[cellind].numThisHost = ij+1 // set number of cells of this type on this host (but add 1 b/c ij is zero based)
+				//cells2make.x[gid]=gid
+				
+				newcellType[cellind].CellList[ij].connect_pre(nil, nc)	// Create an empty connection for use by the spike detector
+				pc.cell(gid, nc)									// Associate the cell with its gid and its spike generation location
+
+				pnm.spike_record(gid)						// Record all spikes of all cells on this machine into the
+															//  vectors pnm.spikevec (spiketimes) and pnm.idvec (gids)
+				addheight=0
+				if (newcellType[cellind].layerflag>0) {addheight=LayerVector.sum(0,newcellType[cellind].layerflag-1)}
+			}
+		}
+		basegid = basegid + numSynTypes
+	}
+}
+createStimCells()
+*/

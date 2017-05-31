@@ -1,0 +1,646 @@
+/************************************************************
+For more information, consult ModelDoc.pdf
+************************************************************/
+
+loadstart = startsw()					// record the start time of the set up
+/***********************************************************************************************
+I.  LOAD LIBRARIES
+***********************************************************************************************/
+{load_file("nrngui.hoc")}				// Standard definitions - NEURON library file
+
+{load_file("netparmpi.hoc")}			// Contains the template that defines the properties of
+										//  the ParallelNetManager class, which is used to set
+										//   up a network that runs on parallel processors
+										
+{load_file("./setupfiles/ranstream.hoc")}	// Contains the template that defines a RandomStream
+											//  class used to produce random numbers for variability
+											
+{load_file("./setupfiles/CellCategoryInfo.hoc")}	// Contains the template that defines a 
+													//  CellCategoryInfo class used to store
+													// 	celltype-specific parameters
+
+{load_file("./setupfiles/SynStore.hoc")}	// Contains the template that defines a holder of
+											//  synapse type info
+													
+{load_file("./setupfiles/defaultvar.hoc")}	// Contains the proc definition for default_var proc
+
+{load_file("./setupfiles/parameters.hoc")}	// Loads in operational and model parameters that can
+											//  be changed at command line	
+										
+{load_file("./setupfiles/set_other_parameters.hoc")}// Loads in operational and model parameters
+													//  that can't be changed at command line
+
+{load_file("./setupfiles/check_for_files.hoc")}	// Checks that the necessary chosen files exist
+												//  (datasets, connectivity, and stimulation)
+												
+/***********************************************************************************************
+II. SET MODEL SIZE, CELL DEFINITIONS
+***********************************************************************************************/
+
+{load_file("./setupfiles/load_cell_category_info.hoc")}	// Reads the 'cells2include.hoc' file and
+														//  loads the information into one
+														//  'CellCategoryInfo' object for each cell
+														//  type (bio or art cells?). Info includes
+														//  number of cells, gid ranges, type name 
+
+{load_file("./setupfiles/load_cell_conns.hoc")}	// Load in the cell connectivity info
+{load_file("./setupfiles/load_cell_syns.hoc")}	// Load in the synapse info
+
+
+strdef tempFileStr						// Define a string reference to store the name of the
+										//  current cell template file
+
+proc loadCellTemplates(){local i		// Proc to load the template that defines (each) cell class
+
+	for i=0, numCellTypes-1 {			// Iterate over each cell type in cells2include (and art cells?)
+	
+		sprint(tempFileStr,"./cells/class_%s.hoc",cellType[i].technicalType)	// Concatenate the
+																				//  path and file
+																				
+		load_file(tempFileStr)			// Load the file with the template that defines the class
+										//  for each cell type
+	}
+}	
+loadCellTemplates()						// Run the newly defined proc
+
+proc calcNetSize(){local i				// Calculate the final network size (after any cell death)
+	//cellType[0].numCells = cellType[numCellTypes-1].cellEndGid - cellType[0].cellEndGid + 4*2 // just added now for spontburst
+	//cellType[0].updateGidRange(0)
+
+	totalCells = 0						// Initialize totalCells (which counts the number of 'real'
+										//  cells) so we can add to it iteratively in the 'for' loop
+										
+	ncell = 0		// Initialize ncell (which counts all 'real' and 'artificial'
+										//  cells) so we can add to it iteratively in the 'for' loop
+										
+	for i=0,numCellTypes-1 {			// Run the following code for 'real' cell types only - need a different way of singling out real cells?
+	
+		
+		cellType[i].numCells = 1
+			
+		cellType[i].updateGidRange(cellType[i-1].cellEndGid+1)	// Update the gid range for each
+																//  cell type
+		
+		totalCells = totalCells + cellType[i].numCells			// Update the total number of cells
+																//   after sclerosis, not including
+																//   artificial cells
+		
+		ncell = ncell + cellType[i].numCells 					// Update the total number of cells
+																//   after sclerosis, including
+																//   artificial cells
+	}
+}
+calcNetSize()
+
+proc calcBinSize(){local NumGCells
+
+	for i=0, numCellTypes-1 {		// Using the specified dimensions of the network (in um) and
+									//  the total number of cells of each type, set the number
+									//  of bins in X, Y, Z dimensions such that the cells will be
+									//  evenly distributed throughout the allotted volume
+									// just changed this so even the stim cells will be allotted, as now we have some
+									// stimulation protocols that incorporate stim cell position
+	
+		cellType[i].setBins(LongitudinalLength,TransverseLength,LayerVector.x[cellType[i].layerflag])  
+									// For the z length, use the height of the layer in which the
+									// cell somata are found for this cell type
+	}
+}
+calcBinSize()
+
+/***********************************************************************************************
+III.SET UP PARALLEL CAPABILITY AND WRITE OUT RUN RECEIPT
+***********************************************************************************************/
+objref pnm, pc, nc, nil
+proc parallelizer() {
+	pnm = new ParallelNetManager(ncell)	// Set up a parallel net manager for all the cells
+	pc = pnm.pc
+	pnm.round_robin()					// Incorporate all processors - cells 0 through ncell-1
+										//	are distributed throughout the hosts
+										//	(cell 0 goes to host 0, cell 1 to host 1, etc)
+}
+parallelizer()
+
+iterator pcitr() {local i2, startgid	// Create iterator for use as a standard 'for' loop
+										//  throughout given # cells usage:
+										//  for pcitr(&i1, &i2, &gid, it_start, it_end) {do stuff}
+										//  it_start and it_end let you define range over
+										//  which to iterate
+										//  i1 is the index of the cell on the cell list for that host
+										//  i2 is the index of that cell for that cell type on that host
+	numcycles = int($4/pc.nhost)
+	extra = $4%pc.nhost
+	addcycle=0
+	if (extra>pc.id) {addcycle=1}
+	startgid=(numcycles+addcycle)*pc.nhost+pc.id
+	i1 = numcycles+addcycle // the index into the cell # on this host.
+	i2 = 0 // the index of the cell in that cell type's list on that host
+	if (startgid<=$5) {
+		for (i3=startgid; i3 <= $5; i3 += pc.nhost) {	// Just iterate through the cells on
+														//  this host(this simple statement
+														//  iterates through all the cells on
+														//  this host and only these cells because 
+														//  the roundrobin call made earlier dealt
+														//  the cells among the processors in an
+														//  orderly manner (like a deck of cards)
+				$&1 = i1
+				$&2 = i2
+				$&3 = i3
+				iterator_statement
+				i1 += 1
+				i2 += 1
+		}
+	}
+}
+
+objref  strobj
+strobj = new StringFunctions()
+strdef direx, cmdstr, cmd
+
+loadtime = startsw() - loadstart		// Calculate the set up time (now - recorded start time) in seconds
+if (pc.id == 0) {printf("\nTIME HOST 0: %g seconds (set up)\n************\n", loadtime)}
+createstart = startsw()					// Record the start time of the cell creation
+
+/***********************************************************************************************
+IV. CREATE, UNIQUELY ID, AND POSITION CELLS
+***********************************************************************************************/
+
+strdef direx1, direx2, TopProc, TopCommand
+
+objref cells, ransynlist, ranwgtlist, ranlfplist, ranstimlist, raninitlist
+cells = new List()						
+ransynlist = new List()
+ranstimlist = new List()
+raninitlist = new List()
+ranwgtlist = new List()
+ranlfplist = new List()
+
+{load_file("./setupfiles/create_cells_pos.hoc")}	// Creates each cell on its assigned host
+													//  and sets its position using the algorithm
+													//  defined above
+													
+
+/***********************************************************************************************
+V. WRITE OUT MORPH DATA AND IMAGES
+***********************************************************************************************/
+
+strdef websitepath, websitepathchan
+sprint(websitepath,"%s/cells",reposdir)
+sprint(websitepathchan,"%s/channels",reposdir)
+// websitepath="/cygdrive/c/Users/maria_000/Documents/Websites/modelgraphic/cells"
+// websitepathchan="/cygdrive/c/Users/maria_000/Documents/Websites/modelgraphic/channels"
+
+numlists=6
+objref mysecs[numlists]
+
+// 0  All
+// 1 Soma
+// 2 Axon
+// 3 Dendrites
+// 4   Apical
+// 5   Basal
+/*
+// 6   Proximal
+// 7   Distal
+*/
+
+mysecs[0] = new String()
+mysecs[0].s = "all"
+
+mysecs[1] = new String()
+mysecs[1].s = "soma_list"
+
+mysecs[2] = new String()
+mysecs[2].s = "axon_list"
+
+mysecs[3] = new String()
+mysecs[3].s = "dendrite_list"
+
+mysecs[4] = new String()
+mysecs[4].s = "apical_list"
+
+mysecs[5] = new String()
+mysecs[5].s = "basal_list"
+
+/*
+mysecs[6] = new String()
+mysecs[6].s = "proximal_list"
+
+mysecs[7] = new String()
+mysecs[7].s = "distal_list"
+*/
+objref cell, f, f2, ss
+reli=0
+typei=0
+jgid=0
+objref g, mt
+strdef mname, tmpstr, cmderevstr, cmdstr, location, description, myname, channame
+
+								
+objref sf
+sf = new StringFunctions()
+objref fprop
+strdef myfile
+
+description = "Description"
+strdef mystr
+
+for celltype=0, numCellTypes-1 {
+	if (cellType[celltype].is_art==0) {
+		for pcitr(&reli, &typei, &jgid, cellType[celltype].cellStartGid, cellType[celltype].cellEndGid) {
+			if (pc.gid_exists(jgid)) {
+				cell = pc.gid2cell(jgid)
+				
+				fprop = new File()
+				sprint(myfile,"%s/%s/cellproptable.txt",websitepath ,cellType[celltype].cellType_string)
+				// print "gonna write out to ", myfile
+				fprop.wopen(myfile)
+				fprop.printf("Ra,%.1f,ohm*cm,Axial resistance\ncm,%.1f,uF/cm2,Membrane capacitance\ncelsius,%.1f,o C, Temperature\n", cell.soma.Ra, cell.soma.cm, celsius)
+				{fprop.close}
+
+
+				soma_list_area=0
+				soma_list_length=0
+				soma_list_totdiam=0
+				soma_list_totsec=0
+					
+
+				forsec cell.soma_list {
+				//psection()
+					for (x,0) soma_list_area += area(x)
+					soma_list_length += L
+					soma_list_totdiam += diam
+					soma_list_totsec +=1
+				}
+				soma_list_diam=soma_list_totdiam/soma_list_totsec
+
+				apical_list_area=0
+				apical_list_length=0
+				apical_list_totdiam=0
+				apical_list_totsec=0
+				forsec cell.apical_list {
+					for (x,0) apical_list_area += area(x)
+					apical_list_length += L
+					apical_list_totdiam += diam
+					apical_list_totsec +=1
+				}
+				if (apical_list_totsec>0) {
+					apical_list_diam=apical_list_totdiam/apical_list_totsec
+				} else {
+					apical_list_diam=0
+				}
+
+				basal_list_area=0
+				basal_list_length=0
+				basal_list_totdiam=0
+				basal_list_totsec=0
+				forsec cell.basal_list {
+					for (x,0) basal_list_area += area(x)
+					basal_list_length += L
+					basal_list_totdiam += diam
+					basal_list_totsec +=1
+				}
+				if (basal_list_totsec>0) {
+					basal_list_diam=basal_list_totdiam/basal_list_totsec
+				} else {
+					basal_list_diam=0
+				}
+
+				dendrite_list_area=0
+				dendrite_list_length=0
+				dendrite_list_totdiam=0
+				dendrite_list_totsec=0
+				forsec cell.dendrite_list {
+					for (x,0) dendrite_list_area += area(x)
+					dendrite_list_length += L
+					dendrite_list_totdiam += diam
+					dendrite_list_totsec +=1
+				}
+				dendrite_list_diam=dendrite_list_totdiam/dendrite_list_totsec
+
+				proximal_list_area=0
+				proximal_list_length=0
+				proximal_list_totdiam=0
+				proximal_list_totsec=0
+				distal_list_area=0
+				distal_list_length=0
+				distal_list_totdiam=0
+				distal_list_totsec=0
+
+				
+				access cell.soma
+				distance()
+				forsec cell.dendrite_list {
+					flag=0
+					for (x,0) {
+						if (distance(x)<50) {
+							proximal_list_area += area(x)
+							flag=1
+						} else {
+							distal_list_area += area(x)
+							flag=0
+						}
+					}
+					
+					if (flag==1) {
+						proximal_list_length += L
+						proximal_list_totdiam += diam
+						proximal_list_totsec +=1
+					} else {
+						distal_list_length += L
+						distal_list_totdiam += diam
+						distal_list_totsec +=1
+					}
+				}
+				if (proximal_list_totsec>0) {
+					proximal_list_diam=proximal_list_totdiam/proximal_list_totsec
+				} else {
+					proximal_list_diam=0
+				}
+
+				if (distal_list_totsec>0) {
+					distal_list_diam=distal_list_totdiam/distal_list_totsec
+				} else {
+					distal_list_diam=0
+				}
+
+				axon_list_area=0
+				axon_list_length=0
+				axon_list_totdiam=0
+				axon_list_totsec=0
+				forsec cell.axon_list {
+					for (x,0) axon_list_area += area(x)
+					axon_list_length += L
+					axon_list_totdiam += diam
+					axon_list_totsec +=1
+				}
+				
+				if (axon_list_totsec>0) {
+					axon_list_diam=axon_list_totdiam/axon_list_totsec
+				} else {
+					axon_list_diam=0
+				}
+
+				all_area=0
+				all_length=0
+				all_totdiam=0
+				all_totsec=0
+				forsec cell.all {
+					for (x,0) all_area += area(x)
+					all_length += L
+					all_totdiam += diam
+					all_totsec +=1
+				}
+				all_diam=all_totdiam/all_totsec
+
+				strdef mystr, cmdstr
+
+				objref f
+				strdef myfile
+				f = new File()
+				sprint(myfile,"%s/%s/morphtable.txt",websitepath ,cellType[celltype].cellType_string)
+				f.wopen(myfile)
+
+				// All
+				// Soma
+				// Axon
+				// Dendrites
+				//   Apical
+				//   Basal
+				//
+				//   Proximal
+				//   Distal
+
+				strdef mypart, mystr
+				for k=0,numlists-1 {
+					mypart=mysecs[k].s
+					
+					if (strcmp(mypart,"all")!=0) {
+						strobj.left(mypart, strobj.len(mypart)-5)
+					}
+
+					sprint(cmdstr,"{f.printf(\"%%s,%%0.1f,%%0.1f,%%0.1f,%%0.0f\\n\", mypart, %s_area, %s_length, %s_diam, %s_totsec)}", mysecs[k].s, mysecs[k].s, mysecs[k].s, mysecs[k].s)
+					execute1(cmdstr)
+				}
+				{f.close}
+
+				print cellType[celltype].cellType_string, " diam checks:"
+				forsec cell.all { for(x,0) { if (diam(x) <=0.01) print secname(), diam(x) } }
+
+				print cellType[celltype].cellType_string, " length checks:"
+				forsec cell.all { if (L<=0.001) print secname(), L }
+
+				/*
+				0 white
+				1 black
+				2 red
+				3 blue
+				4 green
+				5 orange
+				6 brown
+				7 violet
+				8 yellow
+				9 gray
+				*/
+				
+				cell.position(0,0,0)
+
+				strdef mypart, mystr
+				objref ss
+				ss = new Shape(cell.all)
+
+				for k=0,numlists-1 {
+					mypart = mysecs[k].s
+					if (strcmp(mypart,"all")!=0) {
+						strobj.left(mypart, strobj.len(mypart)-5)
+						ss.color_all(1)
+						sprint(cmdstr, "ss.color_list(cell.%s, 2)", mysecs[k].s)
+						execute(cmdstr)
+					} else {
+						ss.color_all(1)
+					}
+					ss.rotate()
+					ss.show(0) //show diameters
+					sprint(cmdstr, "ss.printfile(\"%s/%s/%s.ps\")", websitepath, cellType[celltype].cellType_string, mypart) // later converted to mypart.png
+					execute(cmdstr)
+				}
+				
+				objref ss
+				objref strobj
+				strobj = new StringFunctions()
+				strdef beforestr, aftstr
+				
+				////////////////////////////////
+				// Ion Channel Plot and Table //
+				////////////////////////////////
+				f = new File()
+				sprint(myfile,"%s/%s/channeltable.txt",websitepath ,cellType[celltype].cellType_string)
+				f.wopen(myfile)
+				
+				poshorz = 2000
+				posvert = -2000
+				cell.position(poshorz,posvert,0)
+				access cell.soma {
+					mt = new MechanismType(0)
+				}
+				k = 0
+				for i=0, mt.count()-1 {
+					anywhereflag = 0
+					mt.select( i )
+					mt.selected(mname)
+					if (strobj.substr(mname,"ch_")==0) {
+						channame = mname
+						sf.right(channame,3)
+						if (celltype==0) {
+							f2 = new File()
+							sprint(myfile,"%s/%s/celltable.txt",websitepathchan , channame)
+							f2.wopen(myfile)
+						} else {
+							sprint(myfile,"%s/%s/celltable.txt",websitepathchan , channame)
+							f2.aopen(myfile)
+						}
+// print "ion channel = ", mname, ", or = ", channame
+						sprint(tmpstr, "gmax_%s", mname) // "cell.soma.%s(0.5)", tmpstr
+												
+						peakvalue = 0
+						location = ""
+						erev = 0
+						leftmost = poshorz
+						rightmost = poshorz
+						topmost = posvert
+						bottommost = posvert
+						
+						sprint(cmdstr, "testvalue = gmax_%s(x)", mname)
+						forsec cell.all {
+							myname = secname()
+							grr = sf.substr(myname, ".")
+							sf.right(myname, grr+1)
+							grr = sf.substr(myname, "[")
+							sf.left(myname, grr)
+							
+							for tt=0,n3d()-1 {
+								if (x3d(tt)<leftmost) {leftmost=x3d(tt)}
+								if (x3d(tt)>rightmost) {rightmost=x3d(tt)}
+								if (y3d(tt)<bottommost) {bottommost=y3d(tt)}
+								if (y3d(tt)>topmost) {topmost=y3d(tt)}
+							}
+
+							for (x,0) {								
+								if (ismembrane(mname)) {
+									anywhereflag = 1
+
+									execute(cmdstr)
+									if (testvalue>peakvalue) {
+										peakvalue = testvalue
+										sprint(location,"%s", myname)
+									} else {
+										if ((testvalue==peakvalue) && (sf.substr(location,myname)==-1)) {
+											sprint(location,"%s; %s", location, myname)
+										}
+									}
+								}
+							}
+						}
+						
+						if (anywhereflag==1) {
+							sprint(cmdstr, "grep \"TITLE\" ./%s.mod", mname)
+							{system(cmdstr, description)}
+							if (sf.len(description)>7) {
+								sf.right(description, 6)
+								sf.left(description, sf.len(description)-1)
+							} else {
+							description = "not available"
+							}
+							index = strobj.substr(description, ",")
+							while (index>-1) {
+								strobj.head(description, ",", beforestr)
+								strobj.tail(description, ",", aftstr)
+								sprint(description, "%s;%s", beforestr,aftstr)
+								index = strobj.substr(description, ",")
+							}
+							
+							strdef tailstr, headstr
+							sprint(cmdstr, "grep \"USEION\" ./%s.mod", mname)
+							{system(cmdstr, mystr)}
+							if (sf.len(mystr)>0) {
+								sf.tail(mystr, "USEION ", tailstr)
+								sf.head(tailstr, " ", headstr)
+							} else {
+								sprint(headstr, "_%s", mname)
+							}
+							if (sf.len(headstr)>0) {
+								sprint(cmdstr, "erev = e%s", headstr)
+								{execute(cmdstr)}
+								f.printf("%s,%.0f,%s,%f,%s\n", channame, erev, description, peakvalue, location) // Channel Gmax Erev Location Description
+								f2.printf("%s,%.0f,%s,%f,%s\n", cellType[celltype].cellType_string, erev, description, peakvalue, location) // Cell Gmax Erev Location Description
+							} else {
+								f.printf("%s,unk,%s,%f,%s\n", channame, description, peakvalue, location) // Channel Gmax Erev Location Description
+								f2.printf("%s,unk,%s,%f,%s\n", cellType[celltype].cellType_string, description, peakvalue, location) // Cell Gmax Erev Location Description
+							}
+							
+							
+							g = new PlotShape(cell.all)  // new PlotShape(cell.all)
+							g.variable(tmpstr)
+							mleft = leftmost
+							mbottom = bottommost
+							mwidth = rightmost - leftmost
+							mheight = topmost - bottommost
+							sleft = 49
+							top = 151
+							swidth = 467
+							sheight = 345
+							
+							// print cellType[celltype].cellType_string, ": ", mwidth, " x ", mheight
+							
+							//g.size(-199.999,199.999,-147.615,147.615)
+							//g.view(-199.999, -147.615, 399.998, 295.23, 49, 151, 467.1, 344.8)
+							// see documentation of Shape.view
+							// to discover the values for your particular cell,
+							// use the GUI to create a Shape plot,
+							// then save it to a session file and steal the values from that file
+							g.exec_menu("Shape Plot") // makes color scale appear
+							  // and colors each segment according to a color scale
+							
+							g.rotate()
+							g.show(0) //show diameters
+
+							g.colormap(5)
+							g.colormap(0, 0, 0, 143)
+							g.colormap(1, 0, 112, 255)
+							g.colormap(2, 80, 255, 175)
+							g.colormap(3, 255, 207, 0)
+							g.colormap(4, 239, 0, 0)
+/*
+							g.colormap(10)
+							g.colormap(0, 0, 0, 143)
+							g.colormap(1, 0, 0, 255)
+							g.colormap(2, 0, 112, 255)
+							g.colormap(3, 0, 223, 255)
+							g.colormap(4, 80, 255, 175)
+							g.colormap(5, 191, 255, 64)
+							g.colormap(6, 255, 207, 0)
+							g.colormap(7, 255, 96, 0)
+							g.colormap(8, 239, 0, 0)
+							g.colormap(9, 128,  0, 0)
+*/
+							g.scale(0,peakvalue)
+							g.size(mleft, mleft+mwidth, mbottom, mbottom+mheight)
+							g.view(mleft, mbottom, mwidth, mheight, sleft, top, swidth, sheight)
+							
+							sprint(cmdstr, "g.printfile(\"%s/%s/%s.ps\")", websitepath, cellType[celltype].cellType_string, channame) // later converted to channame.png
+							// print cmdstr
+							execute(cmdstr)
+							objref g
+						}
+
+						{k = k+1}
+						{f2.close}			
+					} 							
+				}
+				{f.close}			
+			}
+		}
+	}
+}
+
+quit()

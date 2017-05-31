@@ -1,0 +1,241 @@
+/************************************************************
+'ca1' model code repository
+Written by Marianne Bezaire, marianne.bezaire@gmail.com, www.mariannebezaire.com
+In the lab of Ivan Soltesz, www.ivansolteszlab.org
+Published and latest versions of this code are available online at:
+ModelDB: 
+Open Source Brain: http://www.opensourcebrain.org/projects/nc_ca1
+
+Main code file: ../main.hoc
+This file: Last updated on April 10, 2015
+
+This file sets up the solution portion of the simulation,
+including running a custom initialization procedure,
+executes the simulation, and then writes all the results 
+to file.
+
+It also includes a procedure definition to check the
+time remaining during a simulation to ensure there will
+be sufficient time to write results before the allotted
+supercomputing time runs out. In addition, it includes 
+a call to associate this procedure to an event handler
+so that the procedure is called at specific intervals
+throughout the simulation.
+************************************************************/
+
+// Define the custom "run" function, which calls the custom
+//  initialization function and performs other commands
+//  necessary to set up the simulation, then issues the psolve
+//  command that actually runs the simulation, then calls all
+//  the procedures (previously defined in write_results_functions.hoc)
+//  necessary to write the results functions.
+proc rrun(){									// Run the network simulation and write out the results
+
+	pnm.want_all_spikes() 						// Record all spikes of all cells on this machine into the
+												//  vectors pnm.spikevec (spiketimes) and pnm.idvec (gids)
+												
+	local_minimum_delay = pc.set_maxstep(maxstepval)	// Set every machine's max step size to minimum delay of
+														//  all netcons created on pc using pc.gid_connect, but
+														//  not larger than 10
+
+	stdinit()									// Call the init fcn (which is redefined in this code) and
+												//  then make other standard calls
+
+	runstart = startsw()						// Get the start time of the simulation
+	pc.psolve(tstop)							// Equivalent to calling cvode.solve(tstop) but for parallel NEURON;
+												//  solve will be broken into steps determined by the result of
+												//  set_maxstep
+
+	runtime = startsw() - runstart				// Calculate the time taken to run the simulation
+	if (pc.id == 0) {printf("\nTIME HOST 0: %g seconds (ran simulation)\n************\n", runtime)}
+	
+												// Compute the load balance	of the simulation			
+
+	writestart = startsw()						// Record the time at which the program started writing results
+	
+	comptime = pc.step_time						// Every processor reports its computation time into comptime
+	pc.barrier()
+	avgcomp = pc.allreduce(comptime, 1)/pc.nhost	// allreduce with argument 1 returns the average comptime value from all processors
+	maxcomp = pc.allreduce(comptime, 2)				// allreduce with argument 2 returns the maximum comptime value from all processors
+	if  (PrintTerminal>0) {
+		if (maxcomp>0) {							// Print a summary message to screen
+			if (pc.id == 0) { printf("load_balance = %.3f\n", avgcomp/maxcomp)} 		// Compute and print the load balance
+			if (pc.id == 0) { printf("exchange_time = %.2f ms\n",  runtime - maxcomp) } 	// Compute and print the spike exchange time
+																							//  (all time not spent on computation).
+		} else {
+			if (pc.id == 0) { printf("no load balance info available\nno spike exchange info available\n")}
+		}
+	}
+		
+	SpikeOutParallel()	// Each processor writes out a file "spikeraster_#.dat" where # is the processor.
+						//  The file contains the spike times (in ms) and spiking cells (by gid) into a 
+						//  file called "spikeraster.dat"
+	
+	TimeOutSerial()	// Write out a file "runtimes.dat" of run times for each code section
+	
+	highIndexOut() 	// Write a file "MaxHighIndex.dat" how much of the random streams this run used, for a statistically independent run,
+					//  start the next run with random seeds that are greater than the maximum number reported in this file
+
+	if (ComputeDipoleLFP > 0) {	// Write out the LFP recordings to "lfp.dat" for the average LFP and lfp_gid.dat for each cell that was recorded
+		if (pc.id == 0) {
+			writeLFP()		// Average LFP
+		}
+
+		writeLFPTraces()	// LFP traces per each cell
+	} else if (ComputeNpoleLFP > 0) {	// Write out the LFP recordings to "lfp.dat" for the average LFP and lfp_gid.dat for each cell that was recorded
+		if (pc.id == 0) {
+			writeLFP()		// Average LFP
+		}
+	}
+		
+	if (PrintVoltage>0) {voltageout()}			// Write out any voltages that were recorded during simulation
+	if (PrintConnDetails==1) {allCellConnsParallel()}	// Write the file of all cell connections (pre and post gids, synapse type,
+										//  host on which cell exists), "connections.dat"
+
+	if ((PrintConnDetails==0) && (PrintVoltage==1)) {recordedCellConnsParallel()}	// If detailed connections are not being written out, at least write them out for cells that are being traced
+		
+	SummaryOut(runtime)	// Write out the file "sumnumout.dat" with the total number of cells, spikes, and connections in the network
+	writetime = startsw() - writestart				// Calculate write time of program
+	totaltime = startsw() - loadstart				// Calculate total time taken by whole program
+	allottedtime = JobHours*3600					// Calculate total time allotted to program in seconds
+	
+	// Print a summary message of the time taken for each part of the code, as well as the name of the run
+	if (pc.id == 0) {
+		printf("****\nTIME SUMMARY for host 0\nset up in %g seconds\ncreated cells in %g seconds\nconnected cells in %g seconds\nran simulation in %g seconds\nwrote results in %g seconds\nTOTAL TIME   = %g seconds\nALLOTTED TIME = %g seconds\n************\nThis run is called: %s\n************\n", loadtime, createtime, connecttime, runtime, writetime, totaltime, allottedtime, RunName)}
+}
+
+
+// Associate a procedure, defined below, to an
+//  event handler so that it runs at specified
+//  times throughout the simulation. The first
+//  argument specifies when the handler will
+//  be called. The argument of 2 sets the handler
+//  to be called just before return from 
+//  finitialize, which should be when t=0. The
+//  second argument specifies the procedure to
+//  run, midbal. When midbal is run, it specifies
+//  to call midbal again at a specific interval,
+//  set using the StepBy parameter.
+
+objref fihw
+fihw = new FInitializeHandler(2, "midbal()")
+walltime = startsw()
+
+// The midbal procedure checks how long the most
+//  recent interval took to complete, and then
+//  checks how much time remains in the allotted
+//  time (the allotted time having been passed in
+//  via the JobHours parameter, and the time
+//  remaining computed as 'now - start time'). If 
+//  there is enough time for another interval to 
+//  complete (assuming it takes the same amount 
+//  of time as the most recent interval) AND for 
+//  writing the results (given the estimated write 
+//  time parameter, EstWriteTime), then the simulation
+//  is allowed to continue and the midbal procedure
+//  is set to run after the next interval.
+//
+// If there is not enough time for both another interval
+//  and the estimated write time, then the simulation
+//  is stopped early so the results can be written to
+//  file in the remaining time.
+//
+// In general, the EstWriteTime parameter should be set
+//  generously to allow for slight variations in time
+//  required to run each interval, and to play it safe.
+//  It is generally more useful to have a shorter simulation
+//  with results intact than to risk losing all simulation
+//  results and wasting supercomputing time (and real time).
+//  However, the midbal procedure could be rewritten to
+//  write interim results to file after each interval, and
+//  then any final write time at the end of the simulation
+//  could be estimated more miserly since there is a lower
+//  risk of losing all results entirely.
+strdef cmd, cmdo
+newtstop = tstop
+warningflag=0
+proc midbal() {local wt, thisstep
+	wt = startsw()	// Get current time
+	if (t>0) {
+		thisstep = wt - walltime	// Calculate the real time taken by the most
+									//  recent simulation interval.
+		simleft = tstop - t			// Calculate the remaining simulation time
+									//  to be solved.
+									
+		compleft = JobHours*3600 - (startsw() - loadstart) 	// Calculate the remaining real
+															//  time in which the simulation
+															//  can be solved.
+															
+		// If it appears there will not be enough time to complete the whole simulation,
+		//  and if a warning to this nature has not already been issued, then issue a
+		//  warning to stdout.
+		if (warningflag==0 && (simleft/StepBy*thisstep+EstWriteTime)>compleft && pc.id == 0) {
+			newtstop = int((compleft-EstWriteTime)/thisstep)*StepBy + t	// Compute the likely new end time of the simulation
+			
+			// Print the warning statement
+			print "Not enough time to complete ", tstop,  " ms simulation, simulation will likely stop around ", newtstop, " ms"
+			warningflag=1	// Set the warning flag so that the statement isn't repeatedly printed (each time midbal runs)
+		}
+		
+		// Always print how much real time the most recent interval took to be solved.
+		if (pc.id == 0) { printf("%g ms interval at t=%g ms was %g s\n", StepBy, t, thisstep) }
+		
+		// If there is not enough time for another interval (estimated to take the same amount of time
+		//  as the most recent one) to complete AND for the results to be written out (assuming the
+		//  writing step takes the amount of time specified in the EstWriteTime parameter), then
+		//  stop the simulation now and proceed to write out the results.
+		if ((thisstep+EstWriteTime)>compleft && t<tstop) {
+			{pc.barrier()}
+			
+			// Since the SimDuration parameter (the length of the simulation) is being overridden,
+			//  update that parameter value in the run receipt if possible. If not possible, because
+			//  user does not want system commands run, then issue a warning that user should update
+			//  the run receipt manually. This update should happen on the supercomputer, prior to
+			//  uploading the results to one's personal computer.
+			sprint(cmd,"cat results/%s/runreceipt.txt | sed -e 's/^SimDuration = [^ ]*/SimDuration = %g;/' > x ; mv x results/%s/runreceipt.txt", RunName, t, RunName)
+			if (pc.id == 0) {
+				if (CatFlag == 1) {
+					{system(cmd,cmdo)} 
+				} else {
+					print "** WARNING: Unable to update runreceipt.txt with new simulation stop time"
+					print "** Please manually update runreceipt.txt with SimDuration = ", t, ";"
+				}
+			}
+			if (pc.id == 0) { print "simulation stopped early at t=", t, " ms"}
+			
+			// Set tstop to the current simulation time, which will cause
+			//  the simulation to end now.
+			tstop = t
+			stoprun = 1	// A flag watched by run executors in NEURON to determine if a run should be stopped prior to the next time step
+		}
+	}
+	// Update the start time of the next interval.
+	walltime = wt
+	
+	// Set the midbal procedure to run at the end of the next interval.
+	cvode.event(t+StepBy, "midbal(0)")
+}
+
+
+// Associate a procedure, defined below, to an
+//  event handler so that it runs at specified
+//  times throughout the simulation. The argument 
+//  specifies the procedure to run, sample_lfp.
+//  It will run when t=0. When it is run, it specifies
+//  to call sample_lfp again at a specific interval,
+//  set using the lfp_dt value defined within the
+//  ./setupfiles/dipole_lfp.hoc file.
+
+objref fih1, fih2
+if (ComputeDipoleLFP > 0) {
+	// execute sample_lfp() at t = 0,
+	// right after the mechanism INITIAL blocks have been executed
+	fih1 = new FInitializeHandler("sample_lfp()")
+    }
+    
+
+if (ComputeNpoleLFP > 0) {
+    // execute sample_lfp() at t = 0,
+    // right after the mechanism INITIAL blocks have been executed
+    fih2 = new FInitializeHandler("sample_npole_lfp()")
+}

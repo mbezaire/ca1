@@ -1,0 +1,2 @@
+{load_file("spontaneous_stimulation.hoc")}	// Load in the cell connectivity info
+{load_file("ripple_stimulation.hoc")}	// Load in the cell connectivity info

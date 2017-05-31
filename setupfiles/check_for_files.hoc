@@ -1,0 +1,45 @@
+/************************************************************
+'ca1' model code repository
+Written by Marianne Bezaire, marianne.bezaire@gmail.com, www.mariannebezaire.com
+In the lab of Ivan Soltesz, www.ivansolteszlab.org
+Published and latest versions of this code are available online at:
+ModelDB: 
+Open Source Brain: http://www.opensourcebrain.org/projects/nc_ca1
+
+Main code file: ../main.hoc
+This file: Last updated on April 9, 2015
+
+This file executes several checks for files necessary to run
+this particular simulation, namely the files specified by
+the parameters chosen for this run (the datasets, stimulation,
+and connectivity files). If they are not present, it prints
+a message and quits the simulation. Note that this code is
+run on every processor in the job, so the message may be
+printed many times.
+************************************************************/
+
+strdef cmdstr, outstr
+{sprint(cmdstr,"dir ../datasets/conndata_%g.dat", ConnData)}
+{exitcode1 = system(cmdstr, outstr)}
+if (exitcode1>0) {print "../datasets/conndata_", ConnData, ".dat does not exist in ", getcwd()}
+
+{sprint(cmdstr,"dir ../datasets/syndata_%g.dat", SynData)}
+{exitcode2 = system(cmdstr, outstr)}
+if (exitcode2>0) {print "../datasets/syndata_", SynData, ".dat does not exist in ", getcwd()}
+
+{sprint(cmdstr,"dir ../datasets/cellnumbers_%g.dat", NumData)}
+{exitcode3 = system(cmdstr, outstr)}
+if (exitcode3>0) {print "../datasets/cellnumbers_", NumData, ".dat does not exist in ", getcwd()}
+
+{sprint(cmdstr,"dir ../connectivity/%s_connections.hoc", Connectivity)}
+{exitcode4 = system(cmdstr, outstr)}
+if (exitcode4>0) {print "../connectivity/", Connectivity, "_connections.hoc does not exist in ", getcwd()}
+
+{sprint(cmdstr,"dir ../stimulation/%s_stimulation.hoc", Stimulation)}
+{exitcode5 = system(cmdstr, outstr)}
+if (exitcode5>0) {print "../stimulation/", Stimulation, "_stimulation.hoc does not exist in ", getcwd()}
+
+if ((exitcode1+exitcode2+exitcode3+exitcode4+exitcode5)>0) {
+	{print "One or more necessary files are missing, quitting the job now."}
+	{quit()}
+}

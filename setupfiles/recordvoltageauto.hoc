@@ -1,0 +1,124 @@
+/************************************************************
+'ca1' model code repository
+Written by Marianne Bezaire, marianne.bezaire@gmail.com, www.mariannebezaire.com
+In the lab of Ivan Soltesz, www.ivansolteszlab.org
+Latest versions of this code are available online at:
+ModelDB: 
+Open Source Brain: http://www.opensourcebrain.org/projects/nc_ca1
+
+Main code file: ../main.hoc
+This file: Last updated on April 9, 2015
+
+This file defines procedures for recording and writing out the
+somatic membrane potential from a subset of model cells. The
+membrane potential is recorded at every time step of the simulation
+for the chosen cells and then written to separate results files
+for each cell.
+
+The cells that are recorded from are chosen as either the first
+X cells of each type or every 1/Xth cell of each type, where X
+is a number determined by the fraction of cells you want to
+record from, a maximum number of cells that can be recorded, and
+the total number of cells of that type.
+
+Note that you do not necessarily need to record and write to file
+during the simulation. If you simply record all the connections
+onto the cells of interest, as well as the spike raster of all
+spike times of all cells in the network (or at least those cells
+that connect to the cells of interest), that information is
+sufficient to recreate the voltage traces later, on a personal
+computer (without using extra supercomputing resources).
+
+However, for various reasons you may not want to do that, and
+so this functionality is made available in the model code.
+
+See also the write_conns_functions.hoc file, which ensures that
+all cells of interest have their presynaptic and postsynaptic
+connections fully documented in the results package.
+************************************************************/
+
+objref tracenamelist[1], tracevector, tracepclist, traceidxlist, tracetypelist, f2
+strdef cmdstr
+
+numtrace = 0
+tracevector = new Vector(numCellTypes)
+for i=0,numCellTypes-1 {
+	if (cellType[i].is_art==0) {	// Only real cells have voltages that can be traced
+		if (strcmp(cellType[i].cellType_string,"pyramidalcell")==1) {
+			numpercent = int(cellType[i].numCells/(100/FracTraces))+1
+			if (numpercent>NumTracesPyr) {		// For pyramidal cells, always record from
+				numpercent = NumTracesPyr		//  1% of the cells, up to 3,000 cells max.
+			}	
+		} else {
+			numpercent = int(cellType[i].numCells/(100/FracTraces))+1	// Calculate how many cells of this type
+			if (numpercent>NumTraces) {									//  should be traced. If the number is
+				numpercent = NumTraces									//  larger than the maximum number of
+			}															//  traces allowed, set it to the max.
+		}
+		if (numpercent>cellType[i].numCells) {						// If the number is higher than the total
+			numpercent = cellType[i].numCells						//  number of cells of that type, then
+		}															//  set it to the number of cells.
+		tracevector.x[i] = numpercent		
+		numtrace = numtrace + numpercent
+	}
+}
+
+objref tracenamelist[numtrace]
+tracepclist = new Vector(numtrace)
+traceidxlist = new Vector(numtrace)
+tracetypelist = new Vector(numtrace)
+
+tr = 0
+objref cell
+for i=0,numCellTypes-1 {
+	if (cellType[i].is_art==0) {					// For each cell type, 
+		for k = 0, tracevector.x[i]-1 {				//  for the desired number of traces,
+													//  create and set up the vector for
+													//  recording the membrane potential.
+													
+			tracenamelist[tr] = new String()		// For every recorded cell, track the cell type
+			tracenamelist[tr].s = cellType[i].cellType_string
+			tracepclist.x[tr] = k					// For every recorded cell, track the cell type trace index
+			
+			sprint(cmdstr, "objref %s%g", tracenamelist[tr].s, tracepclist.x[tr])
+			{execute(cmdstr)}
+			
+			tracetypelist.x[tr] = i					// For every recorded cell, track the cell type index		
+			
+			// For every recorded cell, choose and track the gid using one of the following:
+			traceidxlist.x[tr]=cellType[i].cellStartGid + k*int(cellType[i].numCells/tracevector.x[i]) // Record from every 1/xth cell
+			//traceidxlist.x[tr]=cellType[i].cellStartGid + k  // Record from first x cells
+		
+			if (pc.gid_exists(traceidxlist.x[tr])) {	// If cell exists on this machine,
+														//  create and set up recording vector.
+				sprint(cmdstr, "%s%g = new Vector(%g)", tracenamelist[tr].s, tracepclist.x[tr], (tstop-tstart)/dt)	// Create vector
+				{execute(cmdstr)}
+				cell = pc.gid2cell(traceidxlist.x[tr])
+				sprint(cmdstr, "%s%g.record(&cell.soma.v(0.5))", tracenamelist[tr].s, tracepclist.x[tr])	// Record cell's somatic
+				{execute(cmdstr)}																			//  membrane potential
+			}																								//  into vector.
+			tr=tr+1
+		}
+	}
+}
+
+// Define proc for writing out voltage traces, to be called after the simulation is run.
+objref f
+proc voltageout() {local tr, rank, gid, srcid localobj tgt
+	for tr = 0, numtrace-1 {						// Write out voltage traces for all traced cells.
+		if (pc.gid_exists(traceidxlist.x[tr])) {	// If cell exists on this machine,
+													//  generate a results file for it.
+			sprint(outfile, "results/%s/trace_%s%g.dat", RunName, tracenamelist[tr].s, traceidxlist.x[tr])
+			f = new File(outfile)
+			f.wopen()
+			f.printf("t\tv\n")
+			for i=0, (tstop-tstart)/dt-1 {			// Write out the somatic membrane potential
+													//  at each time step of the simulation, as
+													//  it was recorded into the vector.
+				sprint(cmdstr, "f.printf(\"%%g\\t%%g\\n\", i*dt, %s%g.x[i])", tracenamelist[tr].s, tracepclist.x[tr], i)
+				execute(cmdstr)
+			}
+			f.close()
+		}
+	}
+}

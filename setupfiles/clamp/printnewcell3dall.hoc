@@ -1,0 +1,207 @@
+objref f, f2, f3
+f = new File("myAA.txt")
+f2 = new File("myAAconn.txt")
+f3 = new File("myAAappend.txt")
+f.wopen()
+f2.wopen()
+f3.wopen()
+
+objref sref, strobj, listOshifts
+strobj = new StringFunctions()
+strdef mychild, mychildorig, myparent, myparentorigshort, myparentorig,myparentname, myparentoldnum, myparentnumtmp, cmdstr
+
+listOshifts = new Vector(1000)
+i=0
+forsec cell.dendrite_list {
+	listOshifts.x[i] = i
+	i=i+1
+}
+
+listOshifts = listOshifts.resize(i)
+
+i=0
+r=0
+
+f.printf("\nproc shape3d_%g() {\n", r)	
+r+=1
+
+forsec cell.soma_list { //forsec "soma" {
+	f.printf("\tsoma[%g] {pt3dclear()\n", i)
+	z = n3d()
+	for y=0,z-1 {
+		calcdist = sqrt(x3d(y)*x3d(y) + y3d(y)*y3d(y) + z3d(y)*z3d(y))
+		f.printf("\t\tpt3dadd(%g, %g, %g, %g) // distance from (0,0,0) = %g\n", x3d(y), y3d(y), z3d(y), diam3d(y), calcdist)
+	}
+	f.printf("\t}\n")
+	i+=1
+}
+
+i=0
+past50 = 0
+past100 = 0
+past200 = 0
+origi=0
+strdef mychildorigfull, mychildorig, mychildname, mychildoldnum
+forsec cell.dendrite_list { 
+	// connect section to parent
+    y = parent_connection()
+	x = section_orientation()
+	mychildorigfull = secname()
+	sref = new SectionRef()
+	sref.parent() {myparentorig=secname()}
+	strobj.tail(myparentorig, "[.]", myparentorigshort)
+	strobj.tail(mychildorigfull, "[.]", mychildorig)
+	strobj.head(mychildorig, "[\[]", mychildname)
+	strobj.tail(mychildorig, "[\[]", mychildoldnum)
+	
+	sprint(cmdstr,"mychildnewnum = listOshifts.x[%s", mychildoldnum)
+	execute(cmdstr)
+	sprint(mychild,"%s[%g]", mychildname, mychildnewnum)
+	
+	strobj.head(myparentorigshort, "[\[]", myparentname)
+	
+	if (strcmp(myparentname,"dend")==0) {
+		strobj.tail(myparentorigshort, "[\[]", myparentoldnum)
+		
+		sprint(cmdstr,"myparentnewnum = listOshifts.x[%s", myparentoldnum)
+		execute(cmdstr)
+
+		// this will likely only work if 1 ends of parents are used... not sure about 0.5s anymore
+		sprint(myparent,"%s[%g]", myparentname, myparentnewnum)
+		if (y!=1) {print "may be a problem for child ", mychild, " connected to original parent ", myparentorigshort, " (now ", myparent ,") at ", y}
+	} else {
+		myparent = myparentorigshort
+	}
+	f2.printf("connect %s(%g), %s(%g)\n", mychild, x, myparent, y)
+
+
+	// write 3d points
+	check = int(origi/3)
+	if ((origi-check*3)==0 && origi>0) {
+		f.printf("}\n\nproc shape3d_%g() {\n", r)	
+		r+=1
+	}
+	f.printf("\tdend[%g] {pt3dclear()\n", i)
+	z = n3d()
+	
+	if (y3d(0)<0) {
+		f3.printf("dend[%g] apical_list.append()\n", i)
+	} else {
+		f3.printf("dend[%g] basal_list.append()\n", i)
+	}
+	
+	for y=0,z-1 {
+
+		calcdist = sqrt(x3d(y)*x3d(y) + y3d(y)*y3d(y) + z3d(y)*z3d(y))
+		/*		
+		if (calcdist>=50 && past50==0 && calcdist<100 && y<z-1 && y>0) {
+			f.printf("\t\tpt3dadd(%g, %g, %g, %g) // distance from (0,0,0) = %g\n", x3d(y), y3d(y), z3d(y), diam3d(y), calcdist)
+			f.printf("\t}\n")
+			i+=1
+			f.printf("\tdend[%g] {pt3dclear() // Newly added section!\n", i)
+			for xi=origi, listOshifts.size-1 {
+				listOshifts.x[xi] += 1
+			}
+			past50=1
+			past100=0
+			past200=0
+			f2.printf("connect dend[%g](0), dend[%g](1)\n", i, i-1)
+			f3.printf("dend[%g] bdend.append()\n", i)
+			if (y3d(y)<0) {
+				f3.printf("dend[%g] apical_list.append()\n", i)
+			} else {
+				f3.printf("dend[%g] basal_list.append()\n", i)
+			}
+		}
+		if (calcdist>=100 && past100==0 && calcdist<200 && y<z-1 && y>0) {
+			f.printf("\t\tpt3dadd(%g, %g, %g, %g) // distance from (0,0,0) = %g\n", x3d(y), y3d(y), z3d(y), diam3d(y), calcdist)
+			f.printf("\t}\n")
+			i+=1
+			f.printf("\tdend[%g] {pt3dclear() // Newly added section!\n", i)
+			for xi=origi, listOshifts.size-1 {
+				listOshifts.x[xi] += 1
+			}
+			past50=1
+			past100=1
+			past200=0
+			f2.printf("connect dend[%g](0), dend[%g](1)\n", i, i-1)
+			f3.printf("dend[%g] cdend.append()\n", i)
+			if (y3d(y)<0) {
+				f3.printf("dend[%g] apical_list.append()\n", i)
+			} else {
+				f3.printf("dend[%g] basal_list.append()\n", i)
+			}
+		}
+		if (calcdist>=200 && past200==0 && y<z-1 && y>0) {
+			f.printf("\t\tpt3dadd(%g, %g, %g, %g) // distance from (0,0,0) = %g\n", x3d(y), y3d(y), z3d(y), diam3d(y), calcdist)
+			f.printf("\t}\n")
+			i+=1
+			f.printf("\tdend[%g] {pt3dclear() // Newly added section!\n", i)
+			for xi=origi, listOshifts.size-1 {
+				listOshifts.x[xi] += 1
+			}
+			past50=1
+			past100=1
+			past200=1
+			f2.printf("connect dend[%g](0), dend[%g](1)\n", i, i-1)
+			f3.printf("dend[%g] ddend.append()\n", i)
+			if (y3d(y)<0) {
+				f3.printf("dend[%g] apical_list.append()\n", i)
+			} else {
+				f3.printf("dend[%g] basal_list.append()\n", i)
+			}
+		}
+		if (calcdist<50) {
+			if (y==0) {
+				f3.printf("dend[%g] adend.append()\n", i)
+			}
+			past50=0
+			past100=0
+			past200=0
+		}
+		if (calcdist>50 && calcdist<100) {
+			if (y==0) {
+				f3.printf("dend[%g] bdend.append()\n", i)
+			}
+			past50=1
+			past100=0
+			past200=0
+		}		
+		if (calcdist>100 && calcdist<200) {
+			if (y==0) {
+				f3.printf("dend[%g] cdend.append()\n", i)
+			}
+			past50=1
+			past100=1
+			past200=0
+		}
+		if (calcdist>200) {
+			if (y==0) {
+				f3.printf("dend[%g] ddend.append()\n", i)
+			}
+			past50=1
+			past100=1
+			past200=1
+		}*/
+		
+		f.printf("\t\tpt3dadd(%g, %g, %g, %g) // distance from (0,0,0) = %g\n", x3d(y), y3d(y), z3d(y), diam3d(y), calcdist)
+	}
+	f.printf("\t}\n")
+	i+=1
+	origi+=1
+}
+
+f.printf("} // r finished at %g\n", r-1)
+
+
+f.printf("proc size_sections() {\n")
+for xi=0, r-1 {
+	f.printf("\tshape3d_%g()\n", xi)
+}
+f.printf("}\n")
+
+
+f.close()
+f2.close()
+f3.close()
+

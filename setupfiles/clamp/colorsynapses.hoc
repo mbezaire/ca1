@@ -1,0 +1,71 @@
+{load_file("nrngui.hoc")}				// Standard definitions - NEURON library file
+{load_file("./setupfiles/defaultvar.hoc")}	// Contains the proc definition for default_var proc
+
+default_var("studycell","poolosyncell") // Run Comments  // -c 'strdef RunName ' 'RunName = "Woo"'
+default_var("precell","eccell") // Run Comments  // -c 'strdef RunName ' 'RunName = "Woo"'
+default_var("postcell","pyramidalcell") // Run Comments  // -c 'strdef RunName ' 'RunName = "Woo"'
+default_var("repodir","/home/casem/repos/ca1") // Run Comments  // -c 'strdef RunName ' 'RunName = "Woo"'
+default_var("RunName","079") // Run Comments  // -c 'strdef RunName ' 'RunName = "Woo"'
+
+strdef dircmd, direx
+{sprint(dircmd, "cd %s/", repodir)}
+{system(dircmd, direx)}
+
+numCellTypes = 1
+objref cellType[numCellTypes]
+begintemplate CellCategoryInfo
+	public cellType_string
+	strdef cellType_string
+endtemplate CellCategoryInfo
+
+r=0
+cellType[r] = new CellCategoryInfo()
+cellType[r].cellType_string = postcell
+
+strdef mypath, cmdstr, pathstr
+sprint(mypath, "%s/cells/class_%s.hoc", repodir, studycell)
+{load_file(mypath)}
+
+gid=0
+objref pyrcello, ncrec
+sprint(cmdstr,"pyrcello = new %s(gid, gid)", studycell)
+execute1(cmdstr)
+
+objref ss, nobj
+ss = new Shape(pyrcello.all)
+ss.color_list(pyrcello.all, 1)
+
+
+objref f2
+f2 = new File()
+sprint(cmdstr, "%s/cellclamp_results/%s/%s.%s.sids.dat", repodir, RunName, precell, postcell)				
+f2.ropen(cmdstr)		// Open the celltype
+
+numsyns = f2.scanvar	
+strdef mydend
+
+
+for i=0, numsyns-1 {
+	synvar=f2.scanvar					// Scan in the initial (before sclerosis) number of each cell type
+	synid=f2.scanvar					// Scan in the initial (before sclerosis) number of each cell type
+	f2.scanstr(mydend)				// Scan in the cell name
+
+	sprint(cmdstr,"pyrcello.%s ss.color(2)", mydend)
+	execute1(cmdstr)
+}
+f2.close
+
+ss.show(0)
+{sprint(pathstr,"%s/cellclamp_results/%s/%s.%s.used.eps", repodir, RunName, precell, postcell)}								
+ss.printfile(pathstr)
+
+
+ss = new Shape(pyrcello.all)
+ss.color_list(pyrcello.all, 1)
+sprint(cmdstr,"ss.color_list(pyrcello.%s_list, 2)", precell)
+print cmdstr
+execute1(cmdstr)
+ss.show(0)
+{sprint(pathstr,"%s/cellclamp_results/%s/%s.%s.available.eps", repodir, RunName, precell, postcell)}								
+ss.printfile(pathstr)
+quit()

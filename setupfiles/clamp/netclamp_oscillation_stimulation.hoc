@@ -1,0 +1,53 @@
+f2 = new File()
+sprint(cmdstr, "../../networkclamp_results/%s/%s/phasicdata.dat", origRunName, resultsfolder)
+f2.ropen(cmdstr)		// Open the celltype
+
+numppTypes = f2.scanvar			// Scan the first line, which contains a number giving the
+
+objref pptype[numppTypes]
+double fmax[numppTypes], noise[numppTypes], depth[numppTypes], phase[numppTypes]
+
+for i=0, numppTypes-1 {
+	pptype[i] = new String()
+	f2.scanstr(pptype[i].s)
+	fmax[i] = f2.scanvar
+	noise[i] = f2.scanvar
+	depth[i] = f2.scanvar
+	phase[i] = f2.scanvar
+}
+f2.close()
+
+
+period = 125 // Onint + Offint		// Oscillation period in ms
+
+proc ppSin() { local ppi, i, wgt, reli, typei, jgid, celltype, counter, jstart, jend, jtot localobj mycell		// Connect the perforant path cells to the model cells
+	// find ppecsin index
+	for ppi=0, numppTypes-1 {
+		for celltype=0, numCellTypes-1 {
+			if (strcmp(cellType[celltype].cellType_string, pptype[ppi].s)==0) {
+				idx = celltype 
+				for pcitr(&reli, &typei, &jgid, cellType[idx].cellStartGid, cellType[idx].cellEndGid) {
+					if (pc.gid_exists(jgid) && jgid!=gidOI && cells2make.x[jgid]>-1) {
+						// mycell = pc.gid2cell(jgid)
+						cellType[idx].CellList[typei].fmax(fmax[ppi]) // max freq
+						cellType[idx].CellList[typei].start(0)
+						cellType[idx].CellList[typei].noise(noise[ppi])
+
+						//mod_params
+						cellType[idx].CellList[typei].period(period)
+						cellType[idx].CellList[typei].number(1e9) // number of periods - last to the end of the simulation
+						cellType[idx].CellList[typei].depth(depth[ppi]) // this should be argument 7 instead of noise, since we know diff inrns modulated diff'ly
+						cellType[idx].CellList[typei].phase(phase[ppi]*period/360)
+						
+						{ranstimlist.object(cellType[idx].CellList[typei].randi).r.negexp(1)}// Set up the generator to pick a uniform dist of numbers between 0 and 1
+						{cellType[idx].CellList[typei].setnoiseFromRandomNS(ranstimlist.object(cellType[idx].CellList[typei].randi).r)}
+						
+						{raninitlist.object(cellType[idx].CellList[typei].randi).r.uniform(0,1)}// Set up the generator to pick a uniform dist of numbers between 0 and 1
+						{cellType[idx].CellList[typei].setnoiseFromRandomPP(raninitlist.object(cellType[idx].CellList[typei].randi).r)}
+					}
+				}
+			}
+		}
+	}
+}
+ppSin()

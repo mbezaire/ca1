@@ -1,0 +1,584 @@
+
+loadstart = startsw()					// record the start time of the set up
+/***********************************************************************************************
+I.  LOAD LIBRARIES
+***********************************************************************************************/
+{load_file("nrngui.hoc")}				// Standard definitions - NEURON library file
+
+{load_file("netparmpi.hoc")}			// Contains the template that defines the properties of
+										//  the ParallelNetManager class, which is used to set
+										//   up a network that runs on parallel processors
+chdir("../")										
+{load_file("../setupfiles/ranstream.hoc")}	// Contains the template that defines a RandomStream
+											//  class used to produce random numbers
+											// 	for the cell noise (what type of noise?)
+											
+{load_file("../setupfiles/CellCategoryInfo.hoc")}	// Contains the template that defines a 
+													//  CellCategoryInfo class used to store
+													// 	celltype-specific parameters
+													
+{load_file("../setupfiles/defaultvar.hoc")}	// Contains the proc definition for default_var proc
+
+{load_file("../setupfiles/parameters.hoc")}	// Loads in operational and model parameters that can
+											//  be changed at command line											
+{load_file("../setupfiles/set_other_parameters.hoc")}// Loads in operational and model parameters
+													//  that can't be changed at command line
+default_var("gidOI", 0) // Run Comments  // -c 'strdef RunName ' 'RunName = "Woo"'
+default_var("cellindOI", 0) // Run Comments  // -c 'strdef RunName ' 'RunName = "Woo"'
+default_var("spkflag", 0) // Run Comments  // -c 'strdef RunName ' 'RunName = "Woo"'
+default_var("resultsfolder", "00001") // Run Comments  // -c 'strdef RunName ' 'RunName = "Woo"'
+default_var("runname", "None") // Run Comments  // -c 'strdef RunName ' 'RunName = "Woo"'
+
+/***********************************************************************************************
+II. SET MODEL SIZE, CELL DEFINITIONS
+***********************************************************************************************/
+celsius=34
+
+{load_file("../setupfiles/load_cell_category_info.hoc")}	// Reads the 'cells2include.hoc' file and
+														//  loads the information into one
+														//  'CellCategoryInfo' object for each cell
+														//  type (bio or art cells?). Info includes
+														//  number of cells, gid ranges, type name 
+
+{load_file("../setupfiles/load_cell_conns.hoc")}	// Load in the cell connectivity info
+
+
+strdef tempFileStr						// Define a string reference to store the name of the
+										//  current cell template file
+objref fAll, fSyn
+
+proc loadCellTemplates(){local i		// Proc to load the template that defines (each) cell class
+
+	for i=0, numCellTypes-1 {			// Iterate over each cell type in cells2include (and art cells?)
+	
+		sprint(tempFileStr,"../cells/class_%s.hoc",cellType[i].technicalType)	// Concatenate the
+																				//  path and file
+																				
+		load_file(tempFileStr)			// Load the file with the template that defines the class
+										//  for each cell type
+	}
+}	
+loadCellTemplates()
+
+proc calcNetSize(){local i				// Calculate the final network size (after any cell death)
+	//cellType[0].numCells = cellType[numCellTypes-1].cellEndGid - cellType[0].cellEndGid + 4*2 // just added now for spontburst
+	//cellType[0].updateGidRange(0)
+
+	totalCells = 0						// Initialize totalCells (which counts the number of 'real'
+										//  cells) so we can add to it iteratively in the 'for' loop
+										
+	ncell = cellType[0].numCells		// Initialize ncell (which counts all 'real' and 'artificial'
+										//  cells) so we can add to it iteratively in the 'for' loop
+										
+	for i=1,numCellTypes-1 {			// Run the following code for 'real' cell types only - need a different way of singling out real cells?
+	
+		if (cellType[i].layerflag==0) {	// For cell types in layer 0, which are susceptible to death
+		
+			cellType[i].numCells = int(cellType[i].numCells * ((100-PercentCellDeath)/100))
+										// Calculate the number of cells surviving after cell loss
+			
+			if (cellType[i].numCells == 0) {cellType[i].numCells = 1}	// If all cells of one type
+																		//  are killed, let 1 live
+		}
+		cellType[i].updateGidRange(cellType[i-1].cellEndGid+1)	// Update the gid range for each
+																//  cell type
+		
+		totalCells = totalCells + cellType[i].numCells			// Update the total number of cells
+																//   after sclerosis, not including
+																//   artificial cells
+		
+		ncell = ncell + cellType[i].numCells 					// Update the total number of cells
+																//   after sclerosis, including
+																//   artificial cells
+	}
+	random_stream_offset_= 62086*2+2
+						//(totalCells*2+2)	// How far down the random 'stream' to start the next
+											//  stream section -the difference between the next
+											//  starting point and the previous one must be higher
+											//  than the length of each stream section, where each
+											//  section's length is equal to the # of times this 
+											//  generator will be called per cell x random type (what is x random type?)
+
+}
+calcNetSize()
+
+proc calcBinSize(){local NumGCells
+
+	for i=0, numCellTypes-1 {		// Using the specified dimensions of the network (in um) and
+									//  the total number of cells of each type, set the number
+									//  of bins in X, Y, Z dimensions such that the cells will be
+									//  evenly distributed throughout the allotted volume
+									// just changed this so even the stim cells will be allotted, as now we have some
+									// stimulation protocols that incorporate stim cell position
+	
+		cellType[i].setBins(LongitudinalLength,TransverseLength,LayerVector.x[cellType[i].layerflag])  
+									// For the z length, use the height of the layer in which the
+									// cell somata are found for this cell type
+	}
+}
+calcBinSize()
+
+print "ncell = ", ncell
+/***********************************************************************************************
+III.SET UP PARALLEL CAPABILITY AND WRITE OUT RUN RECEIPT
+***********************************************************************************************/
+objref pnm, pc, nc, nil
+proc parallelizer() {
+	pnm = new ParallelNetManager(ncell)	// Set up a parallel net manager for all the cells
+	pc = pnm.pc
+	pnm.round_robin()					// Incorporate all processors - cells 0 through ncell-1
+										//	are distributed throughout the hosts
+										//	(cell 0 goes to host 0, cell 1 to host 1, etc)
+}
+parallelizer()
+
+iterator pcitr() {local i2, startgid	// Create iterator for use as a standard 'for' loop
+										//  throughout given # cells usage:
+										//  for pcitr(&i1, &i2, &gid, it_start, it_end) {do stuff}
+										//  it_start and it_end let you define range over
+										//  which to iterate
+										//  i1 is the index of the cell on the cell list for that host
+										//  i2 is the index of that cell for that cell type on that host
+	numcycles = int($4/pc.nhost)
+	extra = $4%pc.nhost
+	addcycle=0
+	if (extra>pc.id) {addcycle=1}
+	startgid=(numcycles+addcycle)*pc.nhost+pc.id
+	i1 = numcycles+addcycle // the index into the cell # on this host.
+	i2 = 0 // the index of the cell in that cell type's list on that host
+	if (startgid<=$5) {
+		for (i3=startgid; i3 <= $5; i3 += pc.nhost) {	// Just iterate through the cells on
+														//  this host(this simple statement
+														//  iterates through all the cells on
+														//  this host and only these cells because 
+														//  the roundrobin call made earlier dealt
+														//  the cells among the processors in an
+														//  orderly manner (like a deck of cards)
+				$&1 = i1
+				$&2 = i2
+				$&3 = i3
+				iterator_statement
+				i1 += 1
+				i2 += 1
+		}
+	}
+}
+
+objref  strobj
+strobj = new StringFunctions()
+strdef direx
+if (strcmp(UID,"0")==0 && pc.id==0) {
+	type = unix_mac_pc() // 1 if unix, 2 if mac, 3 if mswin, or 4 if mac osx darwin
+	if (type<3) {
+		{system("uuidgen", direx)} // unix or mac
+		strobj.left(direx, strobj.len(direx)-1)
+	} else {
+		{system("cscript //NoLogo setupfiles/uuid.vbs", direx)} // pc
+	}
+	UID = direx
+}
+
+//{load_file("../setupfiles/save_run_info.hoc")}
+objref frec
+strdef cmd, dircmd, direx, comper, version, vercomment, vercomment2, mypath, userstr, machname, machnick, outfile, edate, comver
+
+loadtime = startsw() - loadstart		// Calculate the set up time (now - recorded start time) in seconds
+if (pc.id == 0) {printf("\nTIME HOST 0: %g seconds (set up)\n************\n", loadtime)}
+createstart = startsw()					// Record the start time of the cell creation
+
+/***********************************************************************************************
+IV. CREATE, UNIQUELY ID, AND POSITION CELLS
+***********************************************************************************************/
+
+objref cells, ransynlist, ranstimlist
+cells = new List()						
+ransynlist = new List()
+ranstimlist = new List()
+
+//{load_file("../setupfiles/position_functions.hoc")}	// Defines the algorithm used to set the
+													//  positions of the cells
+i=0
+ij=0
+gid=0
+objref nc
+//1. Make a cell of interest
+for pcitr(&i, &ij, &gid, gidOI, gidOI) {// use the pciter over all cells of this type
+	if (pc.gid_exists(gid)) {
+			sprint(cmd, "cellType[%g].CellList[%g]=new %s(%g,%g)", cellindOI, ij, cellType[cellindOI].technicalType, gid, i) //+cellType[cellind].cellStartGid) // why add the startgid to the gid? 
+			{runresult=execute1(cmd)} 		// This command was written as a string so
+			cells.append(cellType[cellindOI].CellList[ij])	// Append each cell to cells list
+			cellType[cellindOI].numThisHost = ij+1 // set number of cells of this type on this host (but add 1 b/c ij is zero based)
+			cellType[cellindOI].CellList[ij].connect_pre(nil, nc)	// Create an empty connection for use by the spike detector
+			pc.cell(gid, nc)									// Associate the cell with its gid and its spike generation location
+			pnm.spike_record(gid)
+	}
+}
+objref nc
+//2. make as many ppsponts as there are gidvector files													
+//proc createCells(){ local i, ij, si, pci, cellind, runresult, gid, mygid	// Create cells and assign a GID to each cell
+	f2 = new File()
+	sprint(cmdstr, "../networkclamp_results/%s/%s/gids2make.dat", runname, resultsfolder)
+	f2.ropen(cmdstr)		// Open the celltype
+	numGids = f2.scanvar			// Scan the first line, which contains a number giving the
+
+	for g=0, numGids-1 {	
+		mygid = f2.scanvar
+		cellind = f2.scanvar
+
+		for pcitr(&i, &ij, &gid, mygid, mygid) {// use the pciter over all cells of this type
+			if (pc.gid_exists(gid) && gid!=gidOI) {
+				sprint(cmd, "cellType[%g].CellList[%g]=new ppspont(%g,%g)", cellind, ij, gid, i) //+cellType[cellind].cellStartGid) // why add the startgid to the gid? 
+				
+				{runresult=execute1(cmd)} 		// This command was written as a string so
+												//	the cell object doesn't have to be hard coded
+				cells.append(cellType[cellind].CellList[ij])	// Append each cell to cells list
+				cellType[cellind].numThisHost = ij+1 // set number of cells of this type on this host (but add 1 b/c ij is zero based)
+				
+				// Random streams
+				// randomlist.append(new RandomStream(highIndex, lowIndex)
+				// each cell can make use of three different random streams, specified with lowIndexes based on the cell's gid:
+				//		lowIndex		Stream Name		Stream Purpose
+				//		gid				n/a				Used in the fastconn/repeatconn mechanisms to determine which cells are connected
+				//		gid + 1*ncell	ransynlist		Used in the connectivity hoc file to determine which synapses are used in each connection formed
+				//		gid + 2*ncell	ranstimlist		Used in the stimulation hoc file (only by NetStims) to randomize the stimulation of the network
+				//
+				// Running independent simulations:
+				//	Set the highIndex starting values using the RandomSeeds variable
+				//	Make sure that simulations are independent of each other by checking that the beginning and end highIndex values
+				//	 of each simulation DO NOT OVERLAP.
+				//	The beginning highIndex value is always = 1+RandomSeeds.
+				//	The max ending highIndex value used by each type of stream is printed in the MaxHighIndex.txt file.
+				//	Consult the MaxHighIndex.txt file of a previous run, and then set RandomSeeds higher than any of its values,
+				//	 to make your next run statistically independent
+				//
+				// To run the same network under different conditions (under different stimulation), only change RandomSeedsStim (the highIndex for ranstimlist)
+				// To run different networks under the same conditions (using different connectivity), only change RandomSeedsConn (the highIndex for ransynlist and the connectivity stream)
+				ransynlist.append(new RandomStream(1+RandomSeedsConn, gid + 1*ncell)) // Create a new random number generator for each cell,
+															//	with a unique stream. This will be used to determine
+															//	what type of synapse is used in connections
+															// lowindex = gid is used in the connection algorithm in the mod file
+				ranstimlist.append(new RandomStream(1+RandomSeedsStim, gid + 2*ncell)) // Create a new random number generator for each cell, used by netstims for setting spont stim.
+
+				cellType[cellind].CellList[ij].pp.start = -1
+				cellType[cellind].CellList[ij].pp.interval = 1e9
+				cellType[cellind].CellList[ij].pp.number = -0
+				cellType[cellind].CellList[ij].pp.noise = 0			
+				
+				cellType[cellind].CellList[ij].connect_pre(nil, nc)	// Create an empty connection for use by the spike detector
+				pc.cell(gid, nc)									// Associate the cell with its gid and its spike generation location
+				pnm.spike_record(gid)
+				
+				if (cellType[cellind].CellList[ij].is_art==0) {									// For non ppstim cells, assign position, initialize synapse cid and sid				
+					for si=0, cellType[cellind].CellList[ij].pre_list.count-1 {	// Iterate over each pre cell type's synapse list
+						for j=0, cellType[cellind].CellList[ij].pre_list.o(si).count-1 {		// Iterate through each synapse in the list
+							cellType[cellind].CellList[ij].pre_list.o(si).o(j).cid=gid			// Set the cell id for each synapse
+																								//  Note: Parameters added to Syn2Gid mechanism
+						}
+					}
+
+					if ((ij%int(cellType[cellind].numCells/10+1) == 0) && (PrintTerminal>2)) {
+						print cellType[cellind].cellType_string, ": ", i
+					}
+				}				
+				
+				xpos=get_x_pos(gid,cellType[cellind].numCells,cellType[cellind].cellStartGid,cellType[cellind].dentateXBins,cellType[cellind].dentateYBins*cellType[cellind].dentateZBins,cellType[cellind].dentateXBinSize)	// Algorithmically generate cell position
+				ypos=get_y_pos(gid,cellType[cellind].numCells,cellType[cellind].cellStartGid,cellType[cellind].dentateYBins,cellType[cellind].dentateZBins,cellType[cellind].dentateYBinSize)	// Algorithmically generate cell position
+				zpos=get_z_pos(gid,cellType[cellind].numCells,cellType[cellind].cellStartGid,cellType[cellind].dentateZBins,cellType[cellind].dentateZBinSize,cellType[cellind].layerflag)	// Algorithmically generate cell position
+				cellType[cellind].CellList[ij].position(xpos,ypos,zpos)									// Record cell position in cell object
+								
+			}
+		} 
+	}
+	f2.close()
+	nc = nil // Then clear the reference to the netcon object, which should destroy the netcon (because all refs would have been removed)
+	if  (PrintTerminal>0) {print "Host ", pc.id, " created cells."}
+//}
+//createCells()
+
+ 
+//3. set the ppspont spike times - use the vectors if spkflag==1 else use the oscillation or whatever
+objref pattern_, tvec_, idvec_
+if (spkflag==1) {
+	f2 = new File()
+	sprint(cmdstr, "../networkclamp_results/%s/%s/spiketimes2use.dat", runname, resultsfolder)
+	f2.ropen(cmdstr)		// Open the celltype
+	numSpikes = f2.scanvar			// Scan the first line, which contains a number giving the
+	tvec_ = new Vector(numSpikes)
+	idvec_ = new Vector(numSpikes)
+	for n=0,numSpikes-1 {
+		idvec_.x[n] = f2.scanvar // gid of NetStim to make fire
+		tvec_.x[n] = f2.scanvar // spike time in ms
+		//print "id: ", 
+	}
+	f2.close()
+
+	pattern_ = new PatternStim()
+
+	pattern_.fake_output = 1
+	pattern_.play(tvec_, idvec_)	
+} else {
+}
+
+//4. Connect them to the cell
+
+{load_file("./setupfiles/dipole_lfp.hoc")}			// Defines the code to calculate the LFP
+
+{load_file("../setupfiles/nc_append_functions.hoc")}	// Defines nc_append and nc_appendo, which 
+
+f2 = new File()
+sprint(cmdstr, "../networkclamp_results/%s/%s/conns2make.dat", runname, resultsfolder)
+f2.ropen(cmdstr)		// Open the celltype
+
+print "gonna make conns!"													
+
+
+counter=0
+numConns = f2.scanvar			// Scan the first line, which contains a number giving the
+print "numConns = ", numConns
+for n=0, numConns-1 {
+	pregid = f2.scanvar // precell, postcell, precelltype, syn, weight, delay
+	postgid = f2.scanvar
+	precelltype = f2.scanvar
+	syn = f2.scanvar
+	weight = f2.scanvar
+	delay = f2.scanvar
+	print "postgid: ", postgid, ", = ", pc.gid_exists(postgid), ". pregid: ", pregid, ", = ", pc.gid_exists(pregid)
+	if (pc.gid_exists(postgid) && pc.gid_exists(pregid)) {
+		nc_append(pregid, postgid, precelltype, syn, weight + (pregid+1)*1000, delay)	// Make the connection  // the latter part is for tracing the big bug, used by exp2sid mech (it will take away this extra part)
+		counter +=1
+	} else {
+		print "could not make connection"
+	}
+}
+f2.close()
+
+//5. Add the recorders
+vrec = 0  // extracellularly recorded potential
+
+print "made conns!"													
+
+objref mytrace, myvrec, cell
+
+if (pc.gid_exists(gidOI)) {
+	cell = pc.gid2cell(gidOI)
+	print "cell is located at: ", cell.x, ", ", cell.y, ", ", cell.z
+	mytrace = new Vector((tstop-tstart)/dt)
+	mytrace.record(&cell.soma.v(0.5))
+	
+	forsec cell.all {
+		insert extracellular
+		insert xtra
+	}
+
+	myvrec = new Vector((tstop-tstart)/dt)
+	myvrec.record(&lfp_xtra)
+}
+
+load_file("clamp/interpxyz.hoc")	// only interpolates sections that have extracellular
+load_file("clamp/setpointers.hoc")	// automatically calls grindaway() in interpxyz.hoc
+
+//6. Run the simulation
+
+celsius=34
+
+// https://www.neuron.yale.edu/phpBB/viewtopic.php?f=8&t=3103 goes into how I implemented the LFP recording with psolve
+/*func fieldrec() { local sum, i localobj cell
+	sum = 0
+	cell = pc.gid2cell(gidOI)
+	forsec cell.all {
+		if (ismembrane("xtra")) {
+			// avoid nodes at 0 and 1 ends, which shouldn't make any contribution
+			for (x,0) sum += er_xtra(x)
+		}
+	}
+	return sum
+}*/
+
+load_file("clamp/calcrxc.hoc")	// computes transfer r between segments and recording electrodes
+
+proc init() { local dtsav, temp, secsav, secondordersav	// Redefine the proc that initializes the
+														//  simulation (why?)
+
+	dtsav = dt						// Save the desired dt value to reset it after temporarily
+									//  changing dt to run a quick presimulation to allow the
+									//  network to reach steady state before we start 'recording'
+									
+	secondordersav = secondorder	// Save the desired secondorder value to reset it after
+									//  temporarily changing secondorder to run a quick presimulation
+									//  to allow the network to reach steady state before we start
+									//  'recording' its results
+
+	finitialize(v_init)	// Call finitialize from within the custom init proc, just as the default
+						//  init proc does. Note that finitialize will call the INITIAL block for
+						//  all mechanisms and point processes inserted in the sections and set the
+						//	initial voltage to v_init for all sections
+
+	t = -200			// Set the start time for (pre) simulation; -500 ms to allow the network to
+						// reach steady state before t = 0, when the real simulation begins
+						
+	dt= 10				// Set dt to a large value so that the presimulation runs quickly
+	
+	secondorder = 0		// Set secondorder to 0 to set the solver to the default fully implicit backward
+						//  euler for numerical integration (see NEURON ref)
+		
+	temp= cvode.active()			// Check whether cvode, a type of solver (?) is on
+	if (temp!=0) {cvode.active(0)}	// If cvode is on, turn it off while running the presimulation
+
+	while(t<-100) { fadvance() if (PrintTerminal>2) {print t}}	// Run the presimulation from t = -500
+															//  to t = -100 (why not 0?) to let the
+															//  network and all its components reach
+															//  steady state. Integrate all section
+															//  equations over the interval dt,
+															//  increment t by dt, and repeat until
+															//  t at -100
+															
+	if (temp!=0) {cvode.active(1)}	// If cvode was on and then turned off, turn it back on now
+	
+	t = tstart 						// Set t to the start time of the simulation
+	
+	dt = dtsav						// Reset dt to the specified value for the simulation
+	
+	secondorder = secondordersav	// Reset secondorder to the specified value for the simulation
+	
+	if (cvode.active()){
+		cvode.re_init()				// If cvode is active, initialize the integrator
+	} else {
+		fcurrent()					// If cvode is not active, make all assigned variables
+									//	 (currents, conductances, etc) consistent with the
+									//   values of the states
+	}
+	frecord_init() // see email from ted - fadvance() increments the recorder, so we need to fix the index it ends up at
+}
+use_cache_efficient=1
+get_spike_hist=0
+use_bin_queue=0
+use_spike_compression=0
+if (use_spike_compression==1) {
+	maxstepval = 2.5
+} else {
+	maxstepval = 10
+}	
+
+
+print "Before the run!"													
+														
+proc rrun(){									// Run the network simulation and write out the results
+	//pnm.spike_record(gid)
+	//pnm.want_all_spikes() 						// Record all spikes of all cells on this machine into the
+												//  vectors pnm.spikevec (spiketimes) and pnm.idvec (gids)
+												
+	local_minimum_delay = pc.set_maxstep(maxstepval)	// Set every machine's max step size to minimum delay of
+												//  all netcons created on pc using pc.gid_connect, but
+												//  not larger than 10
+	if (pc.id==0 && use_spike_compression==1) {print "Host ", pc.id, " has local_minimum_delay=", local_minimum_delay}
+
+
+	stdinit()									// Call the init fcn (which is redefined in this code) and
+												//  then make other standard calls (to stop watch, etc)
+
+	runstart = startsw()							// grab start time of the simulation
+
+	pc.psolve(tstop)							// Equivalent to calling cvode.solve(tstop) but for parallel NEURON;
+												//  solve will be broken into steps determined by the result of
+												//  set_maxstep
+
+	runtime = startsw() - runstart				// Calculate runtime of simulation
+												// Print a time summary message to screen
+	writestart = startsw()
+	comptime = pc.step_time
+	avgcomp = pc.allreduce(comptime, 1)/pc.nhost
+	maxcomp = pc.allreduce(comptime, 2)
+	if (maxcomp>0) {
+		if (pc.id == 0) { printf("load_balance = %g\n", avgcomp/maxcomp)}
+		if (pc.id == 0) { printf("exchange_time = %g\n",  runtime - maxcomp) }
+	} else {
+		if (pc.id == 0) { printf("no load balance info available\nno spike exchange info available\n")}
+	}
+}
+
+
+objref fih
+if (ComputeLFP > 0) {
+	// execute sample_lfp() at t = 0,
+	// right after the mechanism INITIAL blocks have been executed
+	fih = new FInitializeHandler("sample_lfp()")
+}
+
+{cvode.cache_efficient(use_cache_efficient)} // always double check that this addition does not affect the spikeraster (via pointers in mod files, etc)
+
+if (use_bin_queue==1) {
+	use_fixed_step_bin_queue = 1 // boolean
+	use_self_queue = 0 // boolean - this one may not be helpful for me, i think it's best for large numbers of artificial cells that receive large numbers of inputs
+	{mode = cvode.queue_mode(use_fixed_step_bin_queue, use_self_queue)}
+}
+
+if (use_spike_compression==1) {
+	nspike = 3 // compress spiketimes or not
+	gid_compress = 0 //only works if fewer than 256 cells on each proc
+	{nspike = pc.spike_compress(nspike, gid_compress)}
+}
+
+objref spkhist
+if (get_spike_hist==1) {
+	spkhist = new Vector(pc.nhost)
+	if (pc.id==0) {
+		pc.max_histogram(spkhist)
+	}
+}
+
+
+rrun()	// Run the network simulation (in proc rrun)
+
+//7. Write out the spike times and voltage records
+strdef outfile
+objref f
+if (pc.gid_exists(gidOI)) {	// If cell exists on this machine
+	sprint(outfile, "../networkclamp_results/%s/%s/mytrace_%d_soma.dat", runname, resultsfolder, gidOI)
+	f = new File(outfile)
+	f.wopen()
+	f.printf("t\tv\n")
+	for i=0, (tstop-tstart)/dt-1 {
+		f.printf("%g\t%g\n", i*dt, mytrace.x[i])
+	}
+	f.close()
+
+	sprint(outfile, "../networkclamp_results/%s/%s/myvrec_%d_soma.dat", runname, resultsfolder, gidOI)
+	f = new File(outfile)
+	f.wopen()
+	f.printf("t\tv\n")
+	for i=0, (tstop-tstart)/dt-1 {
+		f.printf("%g\t%f\n", i*dt, myvrec.x[i])
+	}
+	f.close()
+
+}
+
+proc spikeout() {local i, rank  localobj f				// Write out a spike raster (cell, spike time)
+	pc.barrier()									// Wait for all ranks to get to this point
+	sprint(cmd,"../networkclamp_results/%s/%s/spikeraster.dat", runname, resultsfolder)
+	f = new File(cmd)
+	if (pc.id == 0) { 								// Write header to file 1 time only
+		f.wopen()
+		f.close()
+	}
+	
+	for rank = 0, pc.nhost-1 {				// For each processor, allow processor to append to file the spike times of its cells
+		if (rank == pc.id) {				// Ensure that each processor runs once
+			f.aopen() 						// Open for appending to file
+			for i=0, pnm.idvec.size-1 {
+				f.printf("%.3f %d\n", pnm.spikevec.x[i], pnm.idvec.x[i])	// Print the spike time and spiking cell gid
+			}
+			f.close()
+		}
+		pc.barrier()
+	}
+}
+spikeout()
+
+{pc.runworker()} 	// Everything after this line is executed only by the host node
+					//  The NEURON website describes this as "The master host returns immediately. Worker hosts
+					//  start an infinite loop of requesting tasks for execution." 
+					
+{pc.done()}			// Sends the quit message to the worker processors, which then quit NEURON
+
+quit()	// Sends the quit message to the host processor, which then quits NEURON

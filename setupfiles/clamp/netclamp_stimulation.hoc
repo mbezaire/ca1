@@ -1,0 +1,39 @@
+f2 = new File()
+sprint(cmdstr, "./results/%s/spikeraster.dat", origRunName)
+f2.ropen(cmdstr)		// Open the celltype
+if (!f2.isopen()) { 
+	sprint(cmdstr, "../results/%s/spikeraster.dat", origRunName)
+	f2.ropen(cmdstr)		// Open the celltype
+	if (!f2.isopen()) { 
+		sprint(cmdstr, "../../results/%s/spikeraster.dat", origRunName)
+		f2.ropen(cmdstr)		// Open the celltype
+	}
+}
+// numSpikes = 29 //211894 //f2.scanvar			// Scan the first line, which contains a number giving the
+objref tvec_, idvec_, pattern_
+tvec_ = new Vector()
+idvec_ = new Vector()
+nidx=0
+
+while (f2.eof()==0) {
+	tmptime = f2.scanvar
+	tmpgid = f2.scanvar
+	// if (n<20) {print "tmpgid = ", tmpgid, ", cells2make.x[tmpgid] ", cells2make.x[tmpgid], ", gidOI - ", gid)(}
+	if (tmpgid!=gidOI && cells2make.x[tmpgid]>-1) {
+		idvec_.append(tmpgid) // gid of NetStim to make fire
+		tvec_.append(tmptime) // spike time in ms
+		nidx +=1
+	}
+}
+
+f2.close()
+
+if (nidx>0) {
+	idvec_.resize(nidx)
+	tvec_.resize(nidx)
+
+	pattern_ = new PatternStim()
+
+	pattern_.fake_output = 1
+	pattern_.play(tvec_, idvec_)	
+}

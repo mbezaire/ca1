@@ -1,0 +1,27 @@
+begintemplate pptype
+	public pp, connect_pre, is_art, acell, noiseFromRandom, setnoiseFromRandom
+	create acell
+	objref pp
+
+	proc init() {
+		actemp() 		
+	}
+	
+	proc actemp() {
+			acell pp = new MyNetStim(.5)
+			pp.interval = 1e9 
+			pp.number = 1
+			pp.noise = 0
+			pp.start = 50
+	}
+	
+	proc setnoiseFromRandom() {
+		pp.noiseFromRandom($o1)
+	}
+	
+	func is_art() {return 1}
+	
+	proc connect_pre() {acell $o2 = new NetCon(pp, $o1)}
+	
+endtemplate pptype
+

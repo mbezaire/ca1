@@ -1,0 +1,246 @@
+{load_file("nrngui.hoc")}				// Standard definitions - NEURON library file
+{load_file("setupfiles/defaultvar.hoc")}	// Contains the proc definition for default_var proc
+
+strdef repodir // studycell
+strdef pathstr
+{sprint(pathstr,"%s/%s", "setupfiles", "parameters.hoc")}								
+{load_file(pathstr)}	// Loads in operational and model parameters
+
+{sprint(pathstr,"%s/%s", "setupfiles", "set_other_parameters.hoc")}								
+{load_file(pathstr)}// Loads in operational and model parameters
+
+default_var("studycell","axoaxoniccell") // Run Comments  // -c 'strdef RunName ' 'RunName = "Woo"'
+
+repodir="/cygdrive/c/Users/M/Desktop/repos/ca1"
+gid=0
+numCellTypes=1
+objref cellType
+
+strdef mypath, cmdstr, pathstr
+sprint(mypath, "%s/cellframes/class_%s.hoc", repodir, studycell)
+{load_file(mypath)}
+
+objref cell, ncrec
+sprint(cmdstr,"cell = new %s(gid, gid)", studycell)
+execute1(cmdstr)
+
+numlists=5
+objref mysecs[numlists]
+mysecs[0] = new String()
+mysecs[0].s = "soma_list"
+
+mysecs[1] = new String()
+mysecs[1].s = "dendrite_list"
+
+mysecs[2] = new String()
+mysecs[2].s = "apical_list" // "prox_list"
+
+mysecs[3] = new String()
+mysecs[3].s = "basal_list" // "axon_list"
+
+mysecs[4] = new String()
+mysecs[4].s = "all"
+
+soma_list_area=0
+soma_list_length=0
+soma_list_totdiam=0
+soma_list_totsec=0
+forsec cell.soma_list {
+	for (x,0) soma_list_area += area(x)
+	soma_list_length += L
+	soma_list_totdiam += diam
+	soma_list_totsec +=1
+}
+soma_list_diam=soma_list_totdiam/soma_list_totsec
+
+dendrite_list_area=0
+dendrite_list_length=0
+dendrite_list_totdiam=0
+dendrite_list_totsec=0
+forsec cell.dendrite_list {
+	for (x,0) dendrite_list_area += area(x)
+	dendrite_list_length += L
+	dendrite_list_totdiam += diam
+	dendrite_list_totsec +=1
+}
+dendrite_list_diam=dendrite_list_totdiam/dendrite_list_totsec
+
+prox_list_area=0
+prox_list_length=0
+prox_list_totdiam=0
+prox_list_totsec=0
+access cell.soma
+distance()
+forsec cell.apical_list { // prox_list {
+	flag=0
+	for (x,0) {
+		if (distance(x)<50) {
+			prox_list_area += area(x)
+			flag=1
+		}
+	}
+	
+	if (flag==1) {
+		prox_list_length += L
+		prox_list_totdiam += diam
+		prox_list_totsec +=1
+	}
+}
+prox_list_diam=prox_list_totdiam/prox_list_totsec
+
+
+axon_list_area=0
+axon_list_length=0
+axon_list_totdiam=0
+axon_list_totsec=0
+forsec cell.basal_list { // axon_list {
+	for (x,0) axon_list_area += area(x)
+	axon_list_length += L
+	axon_list_totdiam += diam
+	axon_list_totsec +=1
+}
+axon_list_diam=axon_list_totdiam/axon_list_totsec
+
+all_area=0
+all_length=0
+all_totdiam=0
+all_totsec=0
+forsec cell.all {
+	for (x,0) all_area += area(x)
+	all_length += L
+	all_totdiam += diam
+	all_totsec +=1
+}
+all_diam=all_totdiam/all_totsec
+
+strdef mystr, cmdstr
+
+objref f
+strdef myfile
+f = new File()
+sprint(myfile,"getcelldata.m")
+f.wopen(myfile)
+
+for k=0,numlists-1 {
+	i=k+1
+	mystr=mysecs[k].s
+	sprint(cmdstr,"{f.printf(\"morphdata(%g).name='%s';morphdata(%g).area=%%g;\", %s_area)}", i, mystr, i, mystr)
+	execute1(cmdstr)
+	sprint(cmdstr,"{f.printf(\"morphdata(%g).length=%%g;morphdata(%g).diam=%%g;morphdata(%g).totalsections=%%g;\\n\", %s_length, %s_diam, %s_totsec)}", i, i, i, mystr, mystr, mystr)
+	execute1(cmdstr)
+}
+{f.close}
+
+print studycell, " diam checks:"
+forsec cell.all { for(x,0) { if (diam(x) <=0.01) print secname(), diam(x) } }
+
+print studycell, " length checks:"
+forsec cell.all { if (L<=0.001) print secname(), L }
+
+print "done"
+
+sublists=9
+objref mylists[sublists] //[17]
+
+mylists[0] = new String()
+mylists[1] = new String()
+mylists[2] = new String()
+mylists[3] = new String()
+mylists[4] = new String()
+mylists[5] = new String()
+mylists[6] = new String()
+mylists[7] = new String()
+mylists[8] = new String()
+/*
+mylists[9] = new String()
+mylists[10] = new String()
+mylists[11] = new String()
+mylists[12] = new String()
+mylists[13] = new String()
+mylists[14] = new String()
+mylists[15] = new String()
+mylists[16] = new String()*/
+
+mylists[0].s="dendrite"
+mylists[1].s="axon"
+mylists[2].s="soma"
+mylists[3].s="apical"
+mylists[4].s="basal"
+mylists[5].s="adend" //pvbasketcell
+mylists[6].s="bdend" // olmcell
+mylists[7].s="cdend" // ngfcell
+mylists[8].s="ddend" // scacell
+/*
+mylists[9].s="eccell"
+mylists[10].s="ca3cell"
+mylists[11].s="mscell"
+mylists[12].s="ivycell"
+mylists[13].s="cckcell"
+mylists[14].s="bistratifiedcell"
+mylists[15].s="axoaxoniccell"
+mylists[16].s="pyramidalcell"*/
+
+/*
+0 white
+1 black
+2 red
+3 blue
+4 green
+5 orange
+6 brown
+7 violet
+8 yellow
+9 gray
+*/
+
+objref ss
+ss = new Shape(cell.all)
+for k=0,4 { //sublists-1 {
+	ss.color_all(1)
+	if (k<5) {
+		sprint(cmdstr, "ss.color_list(cell.%s_list, 2)", mylists[k].s)
+	} else {
+		sprint(cmdstr, "ss.color_list(cell.%s, 2)", mylists[k].s)
+	}
+	execute(cmdstr)
+	ss.rotate()
+	ss.show(0) //show diameters
+	sprint(cmdstr, "ss.printfile(\"mycellview_%s.ps\")", mylists[k].s)
+	print cmdstr
+	execute(cmdstr)
+}
+
+quit()
+
+//shape.rotate(xorg, yorg, zorg, xrad, yrad, zrad)
+//shape.rotate(0, 0, 0, 1, 1, 1)
+
+// With no args the view is in the xy plane.
+// With args, incrementally rotate about the indicated origin by the amount given in radians around the current view coordinates (order is sequentially about x,y,z axes)
+
+/*
+i=1
+//printf("morphdata(%g).name='%s';morphdata(%g).area=%f;morphdata(%g).length=%f;morphdata(%g).diam=%f;morphdata(%g).totalsections=%g;\n", i, "soma", i, soma_area, i, soma_length, i, soma_diam, i, soma_totsec)
+
+sprint(cmdstr,"printf(\"morphdata(i).name='%s';morphdata(i).area=%%f;morphdata(i).length=%%f;morphdata(i).diam=%%f;morphdata(i).totalsections=%%g;\\n\", %s_area, %s_length, %s_diam, %s_totsec)", mystr, mystr, mystr, mystr, mystr)
+execute(cmdstr)
+i=2
+mystr="dendrite_list"
+printf(cmdstr,"printf(""morphdata(i).name='%s';morphdata(i).area=%%f;morphdata(i).length=%%f;morphdata(i).diam=%%f;morphdata(i).totalsections=%%g;\\n"", %s_area, %s_length, %s_diam, %s_totsec)", mystr, mystr, mystr, mystr, mystr)
+execute(cmdstr)
+i=3
+mystr="axon"
+printf(cmdstr,"printf(""morphdata(i).name='%s';morphdata(i).area=%%f;morphdata(i).length=%%f;morphdata(i).diam=%%f;morphdata(i).totalsections=%%g;\\n"", %s_area, %s_length, %s_diam, %s_totsec)", mystr, mystr, mystr, mystr, mystr)
+execute(cmdstr)
+i=4
+mystr="total"
+printf(cmdstr,"printf(""morphdata(i).name='%s';morphdata(i).area=%%f;morphdata(i).length=%%f;morphdata(i).diam=%%f;morphdata(i).totalsections=%%g;\\n"", %s_area, %s_length, %s_diam, %s_totsec)", mystr, mystr, mystr, mystr, mystr)
+execute(cmdstr)
+*/
+
+//print "soma_area=", soma_area, "; soma_length=", soma_length, "; soma_diam=", soma_diam, "; soma_totsec=", soma_totsec, ";"
+//print "dendrite_list_area: ", dendrite_list_area, "; dendrite_list_length=", dendrite_list_length, "; dendrite_list_diam=", dendrite_list_diam, "; dendrite_list_totsec=", dendrite_list_totsec, ";"
+//print "axon_area: ", axon_area, "; axon_length=", axon_length, "; axon_diam=", axon_diam, "; axon_totsec=", axon_totsec, ";"
+//print "all_area: ", all_area, "; all_length=", all_length, "; all_diam=", all_diam, "; all_totsec=", all_totsec, ";"
+
+

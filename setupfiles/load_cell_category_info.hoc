@@ -1,0 +1,96 @@
+/************************************************************
+'ca1' model code repository
+Written by Marianne Bezaire, marianne.bezaire@gmail.com, www.mariannebezaire.com
+In the lab of Ivan Soltesz, www.ivansolteszlab.org
+Latest versions of this code are available online at:
+ModelDB: 
+Open Source Brain: http://www.opensourcebrain.org/projects/nc_ca1
+
+Main code file: ../main.hoc
+This file: Last updated on April 9, 2015
+
+This file creates the instances of the CellCategoryInfo template, one
+for each cell type, and loads in the information about each cell type
+into each object.
+
+It adjusts the number of each cell type based on the Scale parameter
+of the model and also whether any cells are subject to cell death (for
+modeling injuries to the network).
+
+It reads in a particular cellnumbers dataset as specified in the
+parameters:
+./datasets/cellnumbers_###.dat  where ### is the parameter NumData
+************************************************************/
+
+objref f2												// Define object reference for the cellnumbers file
+
+objref celltypestring[1], techstring[1], cellType[1]	// Define placeholder objects with a size of one, then
+														//  redefine them with the correct size in the proc
+
+double cellnumvar[1], cellLayerflag[1], cellArtflag[1], numCellTypes[1]	// Define placeholder doubles with a size
+																		//  of one, then redefine them with the
+																		//  correct size in the proc
+objref pnmtmp, pctmp, nil
+proc loadCellCategoryInfo() {local i, startpos			// This function will load celltype info into a CellCategoryInfo
+														//  object (one object per cell type)
+	f2 = new File()
+	sprint(cmdstr, "../datasets/cellnumbers_%g.dat", NumData)	// Open the NumData dataset specified by the user (a
+	f2.ropen(cmdstr)											//  3-digit number), which gives the number of cell
+																//  types in the model, followed by one line for each
+																//  cell type, which gives information about the type,
+																//  number of cells, layer in which they are found, etc.
+	
+	numCellTypes = f2.scanvar			// Scan the first line, which contains a number giving the # of cell types
+
+	// Define variables to temporarily hold data scanned from file
+	objref celltypestring[numCellTypes], techstring[numCellTypes], cellType[numCellTypes]
+	double cellnumvar[numCellTypes], cellLayerflag[numCellTypes], cellArtflag[numCellTypes]
+
+	for i=0, numCellTypes-1 {				// For each cell type in the model
+		celltypestring[i]= new String()
+		techstring[i] = new String()
+		f2.scanstr(celltypestring[i].s)				// Scan in the friendly cell name
+		f2.scanstr(techstring[i].s)					// Scan in the technical cell name
+		
+		cellnumvar[i]=f2.scanvar					// Scan in the number of each cell type
+		cellLayerflag[i]=f2.scanvar					// Scan the layer index (layers are defined by the user in the 
+													//  LayerHeights parameter)
+													
+		cellArtflag[i]=f2.scanvar					// Scan in artificial flag, 1 = artificial cell, 0 = real cell
+		
+		cellnumvar[i]=int(cellnumvar[i]/Scale + .5)	// Scale down the number of cells in the model based on the Scale parameter
+		
+		// The 'if' condition below is where cells are flagged for cell death, as mentioned in the comments for the 
+		//  PercentCellDeath parameter in the parameters.hoc file
+		if (cellLayerflag[i]==0) {		// For cell types in a certain layer (in this example, layer index 0) are
+										//  susceptible to death (because you are modeling an injury, for example)
+										//  then use the PercentCellDeath parameter to calculate how many cells should
+										//  survive.									
+			cellnumvar[i] = int(cellnumvar[i] * ((100-PercentCellDeath)/100))
+		}
+		
+		if (cellnumvar[i]<1) {
+			cellnumvar[i]=1 			// If all cells of a type are killed or 
+										//  if the number of cells is scaled down
+										//  to less than 1, ensure there is one
+										//  cell of that type in the model.
+		}		
+	}
+	f2.close()	// Close the cellnumbers dataset file
+
+	startpos=0	// Start the gid range at 0
+	for i=0, numCellTypes-1 {
+		cellType[i] = new CellCategoryInfo(i)	// Make one object for each cell type to store the info for that cell type
+		
+		// Set the properties of that cell type (the properties that were read in from the cellnumbers dataset file)
+		cellType[i].setCellTypeParams(celltypestring[i].s, techstring[i].s, startpos, cellnumvar[i], cellLayerflag[i], cellArtflag[i])	
+		
+		// Initialize a placeholder vector that will store information about connectivity from other cell types to this cell type 
+		cellType[i].numCons = new Vector(numCellTypes,0)
+		
+		cellType[i].setCellTypeDist				// Load the axonal distribution file
+		
+		startpos = startpos + cellnumvar[i]		// Increment the startGid for the next cell type's call to setCellTypeParams
+	}
+}
+loadCellCategoryInfo()

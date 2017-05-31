@@ -1,0 +1,105 @@
+/************************************************************
+'superdeep' model code repository
+Written by Marianne Bezaire, marianne.bezaire@gmail.com, www.mariannebezaire.com
+In the lab of Ivan Soltesz, www.ivansolteszlab.org
+Latest versions of this code are available online at:
+ModelDB: 
+Open Source Brain: http://www.opensourcebrain.org/projects/nc_ca1
+
+Main code file: ../main.hoc
+This file: Last updated on April 9, 2015
+
+This file defines three different functions that create
+synapses between cells:
+
+- For connections where the postsynaptic cell is a real cell:
+#1: When it's convenient to pass in the gid of the postsynaptic
+	cell instead of the object reference
+#2: When it's convenient to pass in the object reference to the
+	postsynaptic cell instead of the gid
+	
+- For connections where the postsynaptic cell is an artificial cell:
+#3: In this case, the object reference to the postsynaptic, 
+	artificial cell is passed in and the connection is made
+	directly onto the artificial cell as opposed to a synapse
+	object attached to the cell.
+	
+Certain forms of stimulation require artificial cells to be under
+the control of other artificial cells (ex: rhythmic bursting),
+which is why it is necessary to have a function that allows
+incoming connections to be made onto artificial cells.	
+************************************************************/
+
+objref nclist
+nclist = new List()
+
+// Strategy #1: real postsynaptic cell with gid passed in
+func nc_append() { localobj cell, nc
+	if (pc.gid_exists($2)) {			// Check if cell exists on this machine.
+		cell = pc.gid2cell($2)			//  If so, then get cell object reference
+										//  from the postsynaptic cell gid that
+										//  was passed in as argument $2
+
+		// Then create the connection between the presynaptic cell and the
+		//  synapse object on the postsynaptic cell:
+		//  $1: gid of presynaptic cell
+		//  $3: cell type index of presynaptic cell
+		//  $4: synapse type (index into list of potential synapses for that
+		//					  presynaptic cell type)
+		nc = pc.gid_connect($1, cell.pre_list.o($3).o($4))
+		
+		// Set other properties of the connection
+		nc.weight = $5	// Synaptic connection weight
+		nc.delay = $6	// Delay time (axonal delay)
+		
+		// Add the synapse to the list of synaptic connections
+		nclist.append(nc)
+	}
+	return nclist.count-1
+}
+
+// Strategy #2: real postsynaptic cell with cell object reference passed in
+func nc_appendo() { localobj  nc
+	// Since the postsynaptic cell object reference already
+	//  exists, no need to check if postsynaptic cell exists
+	//  on this machine (it clearly does). So create the
+	//  connection between the presynaptic cell and the synapse
+	//  object on the postsynaptic cell:
+	//  $1: gid of presynaptic cell
+	//  $o2: postsynaptic cell object reference
+	//  $3: cell type index of presynaptic cell
+	//  $4: synapse type (index into list of potential synapses for that
+	//					  presynaptic cell type)
+	nc = pc.gid_connect($1, $o2.pre_list.o($3).o($4))
+																		
+	// Set other properties of the connection
+	nc.weight = $5	// Synaptic connection weight
+	nc.delay = $6	// Delay time (axonal delay)
+	
+	// Add the synapse to the list of synaptic connections
+	nclist.append(nc)
+
+	return nclist.count-1
+}
+
+
+// Strategy #3: artificial postsynaptic cell with cell object reference passed in
+func nc_appendstim() { localobj  nc
+	// Since the postsynaptic cell object reference already
+	//  exists, no need to check if postsynaptic cell exists
+	//  on this machine (it clearly does). So create the
+	//  connection between the presynaptic cell and the
+	//  postsynaptic cell object:
+	//  $1: gid of presynaptic cell
+	//  $o2: postsynaptic cell object reference
+	nc = pc.gid_connect($1, $o2)
+		
+	// Set other properties of the connection
+	nc.weight = $3	// Synaptic connection weight
+	nc.delay = $4	// Delay time (axonal delay)
+	
+	// Add the synapse to the list of synaptic connections
+	nclist.append(nc)
+
+	return nclist.count-1
+}

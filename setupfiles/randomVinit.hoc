@@ -1,0 +1,58 @@
+/************************************************************
+'ca1' model code repository
+Written by Ivan Raikov, ivan.g.raikov@gmail.com
+In the lab of Ivan Soltesz, www.ivansolteszlab.org
+Published and latest versions of this code are available online at:
+ModelDB: 
+Open Source Brain: http://www.opensourcebrain.org/projects/nc_ca1
+
+Main code file: ../main.hoc
+This file: Last updated on April 9, 2015
+
+This file enables the functionality to initialize all nodes of
+all compartments of all cells to a random voltage from a normal 
+distribution centered on x with standard deviation of stdev. 
+This initialization only happens if the RandomVinit parameter 
+is greater than 0.
+************************************************************/
+
+proc randomVinit() { local x, stdev, celltype, pci, gid, i, typei localobj cell, r
+	// Set the initial voltage of all compartments of each cell to a randomly
+	//  determined value, which is picked from a normal distribution where the
+	//  average value equals the specified Vrest of the cell and the standard
+	//  deviation is equal to the value passed into this function as argument 1 ($1).
+	//  The value of the voltage can be different for each node of each compartment 
+	//  of each cell.
+    
+    stdev = $1	// Standard deviation of the normal distribution, in mV.
+    
+    for celltype=0, numCellTypes-1 {
+        
+		if (cellType[celltype].is_art == 0) {
+				
+			for pcitr(&i, &typei, &gid, cellType[celltype].cellStartGid, cellType[celltype].cellEndGid) {
+					
+				cell = pc.gid2cell(gid)
+				r = raninitlist.object(i).r
+				r.normal(cell.Vrest, stdev)		// Set the random number generator to
+												//  a normal distribution where the mean
+												//  value is equal to the cell's Vrest and
+												//  the standard deviation is equal to argument
+												//  1 (usually 1.0 mV).
+                
+                forsec cell.all { 	// Iterate over all sections of this cell
+                    
+                    for (x,0) { 	// Iterate over all internal nodes of this section
+                        v = r.repick()	// Set the voltage of this node to a randomly
+										//  picked value from the above normal distribution
+                    }
+                    
+                }
+            }
+        }
+        
+    }
+    
+    finitialize()
+
+}

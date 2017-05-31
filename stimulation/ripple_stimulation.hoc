@@ -1,0 +1,69 @@
+ca3rip_idx=-1
+oncell_idx=-1
+
+proc ripcellStims() { local i, wgt, reli, typei, jgid, celltype, counter, jstart, jend, jtot localobj cell
+    
+    for celltype=0, numCellTypes-1 {
+        // determine ca3ripcell index
+	if (strcmp(cellType[celltype].cellType_string, "ca3ripcell")==0) {
+	    ca3rip_idx = celltype 
+	}
+        
+        // determine oncell index
+	if (strcmp(cellType[celltype].cellType_string, "oncell")==0) {
+	    oncell_idx = celltype 
+            
+	}
+    }
+    
+    // connect oncells to ca3 'ripple' cells
+    for pcitr(&reli, &typei, &jgid, cellType[ca3rip_idx].cellStartGid, cellType[ca3rip_idx].cellEndGid) {
+        
+        if (pc.gid_exists(jgid)) {
+            
+            cell = pc.gid2cell(jgid) // ca3ripcell
+            
+            nc_appendstim(cellType[oncell_idx].cellStartGid, cell, 1.0, 3.0) // 3ms delay
+	    cellType[oncell_idx].numCons.x[ca3rip_idx] +=1
+	}
+        
+        
+    }
+    
+}
+
+
+ripcellStims()
+
+
+proc ripcellOn() {local reli, typei, jgid localobj cell
+
+    // connect oncells to ca3 'ripple' cells
+    for pcitr(&reli, &typei, &jgid, cellType[oncell_idx].cellStartGid, cellType[oncell_idx].cellEndGid) {
+        
+        if (pc.gid_exists(jgid)) {
+            
+            cell = pc.gid2cell(jgid) // ca3ripcell
+            
+            cell.number = 1e9
+            cell.start = Onint
+            cell.interval = Offint
+            cell.noise = 0
+	}
+    }
+        
+    // connect oncells to ca3 'ripple' cells
+    for pcitr(&reli, &typei, &jgid, cellType[ca3rip_idx].cellStartGid, cellType[ca3rip_idx].cellEndGid) {
+        
+        if (pc.gid_exists(jgid)) {
+            
+            cell = pc.gid2cell(jgid) // ca3ripcell
+			
+            cell.number = 5
+            cell.interval = 7
+            cell.start = -1
+            cell.noise = 0
+	}
+    }
+}
+ripcellOn()

@@ -1,0 +1,27 @@
+proc stimulateCells() { local i, pci, jgid, celltype, stimcelltype, counter localobj cell		// Connect the perforant path cells to the model cells
+	for stimcelltype=0, numCellTypes-1 {
+		if (cellType[stimcelltype].is_art==1) {
+			for i= cellType[stimcelltype].cellStartGid, cellType[stimcelltype].cellEndGid {
+				for celltype=0, numCellTypes-1 {
+					if (cellType[celltype].is_art==0) {
+						if (strcmp(cellType[celltype].cellType_string,"pyramidalcell")==0) {	// Connect to some granule cells
+							if (pc.gid_exists(cellType[celltype].cellStartGid)) {
+								cell = pc.gid2cell(cellType[celltype].cellStartGid)
+								nc_appendo(i, cell, stimcelltype, 0, 2e-2, 3)  
+								cellType[stimcelltype].numCons.x[celltype] +=1
+							}
+						}
+						if (strcmp(cellType[celltype].cellType_string,"pvbasketcell")==0 || strcmp(cellType[celltype].cellType_string,"dgbasketcell")==0) {	// Connect to some basket cells
+							if (pc.gid_exists(cellType[celltype].cellStartGid)) {
+								cell = pc.gid2cell(cellType[celltype].cellStartGid)
+								nc_appendo(i, cell, stimcelltype, 0, 1e-2, 3) 
+								cellType[stimcelltype].numCons.x[celltype] +=1
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+stimulateCells()									// Make connections between the perforant path and some cells

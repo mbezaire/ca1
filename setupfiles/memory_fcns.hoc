@@ -1,0 +1,86 @@
+/************************************************************
+'ca1' model code repository
+Written by Marianne Bezaire, marianne.bezaire@gmail.com, www.mariannebezaire.com
+In the lab of Ivan Soltesz, www.ivansolteszlab.org
+Published and latest versions of this code are available online at:
+ModelDB: 
+Open Source Brain: http://www.opensourcebrain.org/projects/nc_ca1
+
+Main code file: ../main.hoc
+This file: Last updated on April 10, 2015
+
+This file defines a function that can be used to monitor the
+memory usage by the model code throughout the simulation. It
+can use two different strategies for doing this:
+1. Use NEURON's wrapper for the system mallinfo function;
+	see comments in the nrn_mallinfo NEURON source code at:
+	http://www.neuron.yale.edu/hg/neuron/nrn/rev/3073f460b6c9
+	and then see documentation on the mallinfo function to know
+	more about what's actually getting returned by the wrapper:
+	http://man7.org/linux/man-pages/man3/mallinfo.3.html
+	
+2. Extract memory-related outputs from the system "top" command
+
+By default, it attempts to use both strategies, writing each
+output to a separate file. Beware that either strategy may fail:
+- strategy #1 will fail if the computer does not have the system
+  function 'mallinfo' available - not all computers do - and in
+  that case it will always return a value of -1
+- strategy #2 will fail if the process name for the NEURON process
+  is different than what the user has specified in the TopProc
+  parameter (it is usually either nrniv or special, depending on
+  how NEURON was compiled on that machine. When in doubt, try
+  nrniv first). Strategy #2 will also fail if you run it on a
+  machine that does not have the system function 'top' available.
+************************************************************/
+
+strdef direx1, TopCommand
+
+func mallinfo() {local m 			// Arguments to this function:
+									//  $1 is the previous memory usage (from previous call to mallinfo)
+									//  $s2 is a string comment describing what stage the code is at
+									
+        m = nrn_mallinfo(0) // This function is a wrapper for the system function mallinfo
+							//  The argument of 0 causes it to return "hblkhd+uordblks",
+							//  which is the sum of these two properties:
+							//  - The number of bytes in blocks currently allocated using mmap(2)
+							//  - The total number of bytes used by in-use allocations
+							//
+							//  Other options for what can be returned are:
+							//	0 hblkhd+uordblks
+							//	1 uordblks
+							//	2 hblkhd
+							//	3 arena 
+							//	4 fordblks 
+							//	5 hblks 
+							//	6 hblkhd + arena
+							// 
+							// For an explanation of what these terms mean, see:
+							//  http://man7.org/linux/man-pages/man3/mallinfo.3.html
+							
+        if (pc.id == 0) {
+			if (PrintTerminal>1) {printf("Memory (host 0) - %s: %ld.  Since last call: %ld\n", $s2, m, m - $1)}
+			
+			memfile.printf("%s\t%f\t%ld\t%ld\n", $s2, startsw()-loadstart, m, m - $1)	// Print the code stage,
+																						//  current memory usage,
+																						//  and difference in 
+																						//  memory usage since 
+																						//  last call
+			
+			if (OK2executeSysCmds==1) {
+				// Create a system command that calls the top command and extracts the NEURON process's memory info from the process list
+				sprint(TopCommand,"top -p `pgrep %s | head -n20 | tr \"\\n\" \",\" | sed 's/,$//'` -n1 -b | tail -n2 | head -n1", TopProc)
+
+				if (strcmp(TopProc,"")!=0) { system(TopCommand, direx1)}	// As long as the NEURON 
+																			//  process name parameter 
+																			//  was specified (usually 
+																			//  nrniv or special), 
+																			//  execute the system command 
+																			//  and save the output into
+																			//  the direx1 string
+																			
+				topfile.printf("%s\t%s\n", $s2, direx1)	// Print the extracted top output into a file
+			}
+		}
+        return m // Return the current memory usage (to be passed into this function at the next call)
+}
