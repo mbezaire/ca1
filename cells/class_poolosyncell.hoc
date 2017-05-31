@@ -1,0 +1,773 @@
+begintemplate poolosyncell
+
+// public variables
+public is_art, gid, randi, Vrest
+public init, topol, basic_shape, subsets, geom, biophys
+public pre_list, connect_pre
+
+public soma, apical, basal, axon
+public all, basal_list, apical_list, soma_list, axon_list, rad_list, lm_list, dendrite_list
+public x, y, z, position, myroot, Vrest
+
+public pyramidalcell_list, axoaxoniccell_list, bistratifiedcell_list, cckcell_list
+public ivycell_list, ngfcell_list, olmcell_list, pvbasketcell_list, scacell_list
+public eccell_list, ca3cell_list, mscell_list
+public NumSoma, NumApical, NumBasal, NumAxon
+
+// strings
+strdef myroot
+
+// objects
+objref syn, pre_list, templist, rootlist, this
+
+//external variables
+external numCellTypes, cellType
+
+// create the sections[segments]
+NumSoma=13
+NumApical=127
+NumBasal=60
+NumAxon=2
+create soma[NumSoma], apical[NumApical], basal[NumBasal], axon[NumAxon]
+
+// set the initialization code, which is run whenever a new object
+// of this class is instantiated
+proc init() {
+	gid = $1
+	randi = $2
+	Vrest = -66 // -65 // $3 resting membrane potential in mV
+	// cell sections: soma, dendrites, axon
+	append_sections() // append all sections to the section list
+	connect_sections()// connect soma, dendrites, axon
+	size_sections1()	// set the size dimensions of each section
+	size_sections2()	// set the size dimensions of each section
+	size_sections3()	// set the size dimensions of each section
+	define_shape()
+	
+	// subcellular mechanisms: channels, pumps, transporters
+	mechinit()			// local fcn: set values for max conductances and reversal potentials of ion channels and other ephys parameters that are subject to fitting
+	insert_mechs()		// local fcn: insert ion channels and actually set values determined in the mechinit fcn
+	
+	set_nseg()		// set the number of segments in each section
+					// if this is driven by an error-minimization rule,
+					// make sure to do it after setting the morphology
+					// and inserting the mechanisms, as it depends on those
+	get_root()
+	rotate_shape()
+	
+	pre_list = new List() // define a list for the presynaptic connections
+	define_synapses($3)	// local fcn: define all possible synaptic connections received by this cell
+}
+
+proc connect_sections() {
+	soma[0] {connect soma[1]  (0), 1
+			connect basal[0] (0),0
+			connect basal[20] (0),0
+			connect basal[23] (0),0
+			connect basal[41] (0),0}
+
+	soma[1]  connect soma[2]  (0), 1
+	soma[2]  {connect soma[3]  (0), 1
+			 connect axon[0](0),0.5}
+	axon[0]  connect axon[1](0),1
+	soma[3]  connect soma[4]  (0), 1
+	soma[4]  connect soma[5]  (0), 1
+	soma[5]  connect soma[6]  (0), 1
+	soma[6]  connect soma[7]  (0), 1
+	soma[7]  connect soma[8]  (0), 1
+	soma[8]  connect soma[9]  (0), 1
+	soma[9]  connect soma[10]  (0), 1
+	soma[10]  connect soma[11]  (0), 1
+	soma[11]  connect soma[12]  (0), 1
+
+	soma[12]  connect apical[0]  (0), 1
+
+	apical[0]   connect apical[ 1]  (0), 1
+	apical[1]   connect apical[ 2]  (0), 1
+	apical[2]  {connect apical[121]  (0), 1
+				connect apical[ 3]  (0), 1}
+	apical[3]   connect apical[ 4]  (0), 1
+	apical[4]   connect apical[ 5]  (0), 1
+	apical[5]  {connect apical[ 6]  (0), 1
+				connect apical[113]  (0), 1}
+	apical[6]  {connect apical[ 7]  (0), 1
+				connect apical[112]  (0), 1}
+	apical[7]  {connect apical[106]  (0), 1
+				connect apical[ 8]  (0), 1}
+	apical[8]  {connect apical[ 9]  (0), 1
+				connect apical[105]  (0), 1}
+	apical[9]  {connect apical[103]  (0), 1
+				connect apical[ 10] (0), 1}
+	apical[10] {connect apical[ 11] (0), 1
+				connect apical[102]  (0), 1}
+	apical[11] {connect apical[101]  (0), 1
+				connect apical[ 12] (0), 1}
+	apical[12] {connect apical[ 13] (0), 1
+				connect apical[90]   (0), 1}
+	apical[13] {connect apical[78]  (0), 1
+				connect apical[ 14] (0), 1}
+	apical[14] {connect apical[76]  (0), 1
+				connect apical[ 15] (0), 1}
+	apical[15] {connect apical[ 16] (0), 1
+				connect apical[64]  (0), 1}
+	apical[16] {connect apical[26]  (0), 1
+				connect apical[ 17] (0), 1}
+	apical[17]  connect apical[ 18] (0), 1
+	apical[18] {connect apical[ 19] (0), 1
+				connect apical[21]  (0), 1}
+	apical[19]  connect apical[ 20] (0), 1
+	apical[21] {connect apical[ 22] (0), 1
+				connect apical[23]  (0), 1}
+	apical[23] {connect apical[ 24] (0), 1
+				connect apical[25]  (0), 1}
+	apical[26]  connect apical[ 27] (0), 1
+	apical[27] {connect apical[ 28] (0), 1
+				connect apical[39]  (0), 1}
+	apical[28]  connect apical[ 29] (0), 1
+	apical[29]  connect apical[ 30] (0), 1
+	apical[30] {connect apical[ 31] (0), 1
+				connect apical[38]  (0), 1}
+	apical[31] {connect apical[ 32] (0), 1
+				connect apical[35]  (0), 1}
+	apical[32] {connect apical[ 33] (0), 1
+				connect apical[34]  (0), 1}
+	apical[35] {connect apical[ 36] (0), 1
+				connect apical[37]  (0), 1}
+	apical[39] {connect apical[ 40] (0), 1
+				connect apical[59]  (0), 1}
+	apical[40] {connect apical[ 41] (0), 1
+				connect apical[50]  (0), 1}
+	apical[41] {connect apical[ 42] (0), 1
+				connect apical[49]  (0), 1}
+	apical[42]  connect apical[ 43] (0), 1
+	apical[43] {connect apical[ 44] (0), 1
+				connect apical[48]  (0), 1}
+	apical[44] {connect apical[ 45] (0), 1
+				connect apical[47]  (0), 1}
+	apical[45]  connect apical[ 46] (0), 1
+	apical[50] {connect apical[ 51] (0), 1
+				connect apical[52]  (0), 1}
+	apical[52] {connect apical[ 53] (0), 1
+				connect apical[56]  (0), 1}
+	apical[53] {connect apical[ 54] (0), 1
+				connect apical[55]  (0), 1}
+	apical[56] {connect apical[ 57] (0), 1
+				connect apical[58]  (0), 1}
+	apical[59] {connect apical[ 60] (0), 1
+				connect apical[61]  (0), 1}
+	apical[61] {connect apical[ 62] (0), 1
+				connect apical[63]  (0), 1}
+	apical[64] {connect apical[ 65] (0), 1
+				connect apical[72]  (0), 1}
+	apical[65] {connect apical[ 66] (0), 1
+				connect apical[71]  (0), 1}
+	apical[66] {connect apical[ 67] (0), 1
+				connect apical[70]  (0), 1}
+	apical[67] {connect apical[ 68] (0), 1
+				connect apical[69]  (0), 1}
+	apical[72]  connect apical[ 73] (0), 1
+	apical[73] {connect apical[ 74] (0), 1
+				connect apical[75]  (0), 1}
+	apical[76]  connect apical[ 77] (0), 1
+	apical[78] {connect apical[ 79] (0), 1
+				connect apical[80]  (0), 1}
+	apical[80] {connect apical[ 81] (0), 1
+				connect apical[89]   (0), 1}
+	apical[81] {connect apical[ 82] (0), 1
+				connect apical[88]   (0), 1}
+	apical[82] {connect apical[ 83] (0), 1
+				connect apical[87]   (0), 1}
+	apical[83] {connect apical[ 84] (0), 1
+				connect apical[85]  (0), 1}
+	apical[85]  connect apical[ 86] (0), 1
+	apical[90]  {connect apical[ 91]  (0), 1
+				connect apical[100]  (0), 1}
+	apical[91]  {connect apical[ 92]  (0), 1
+				connect apical[97]   (0), 1}
+	apical[92]  {connect apical[ 93]  (0), 1
+				connect apical[96]   (0), 1}
+	apical[93]  {connect apical[ 94]  (0), 1
+				connect apical[95]   (0), 1}
+	apical[97]  {connect apical[ 98]  (0), 1
+				connect apical[99]   (0), 1}
+	apical[103]  connect apical[ 104] (0), 1
+	apical[106] {connect apical[ 107] (0), 1
+				connect apical[109]  (0), 1}
+	apical[107]  connect apical[ 108] (0), 1
+	apical[109] {connect apical[ 110] (0), 1
+				connect apical[111]  (0), 1}
+	apical[113] {connect apical[ 114] (0), 1
+				connect apical[120]  (0), 1}
+	apical[114]  connect apical[ 115] (0), 1
+	apical[115] {connect apical[ 116] (0), 1
+				connect apical[119]  (0), 1}
+	apical[116]  connect apical[ 117] (0), 1
+	apical[117]  connect apical[ 118] (0), 1
+	apical[121]  connect apical[ 122] (0), 1
+	apical[122] {connect apical[ 123] (0), 1
+				connect apical[126]  (0), 1}
+	apical[123] {connect apical[ 124] (0), 1
+				connect apical[125]  (0), 1}
+	basal[0] {connect basal[1]  (0), 1
+				connect basal[12]  (0), 1}
+	basal[1] {connect basal[2]  (0), 1
+				connect basal[9]  (0), 1}
+	basal[2] {connect basal[3]  (0), 1
+				connect basal[8]  (0), 1}
+	basal[3] {connect basal[4]  (0), 1
+				connect basal[5]  (0), 1}
+	basal[5] {connect basal[6]  (0), 1
+				connect basal[7]  (0), 1}
+	basal[9] {connect basal[10]  (0), 1
+				connect basal[11]  (0), 1}
+	basal[12] {connect basal[13]  (0), 1
+				connect basal[19]  (0), 1}
+	basal[13]  connect basal[14]  (0), 1
+	basal[14] {connect basal[15]  (0), 1
+				connect basal[18]  (0), 1}
+	basal[15] {connect basal[16]  (0), 1
+				connect basal[17]  (0), 1}
+	basal[20] {connect basal[ 21] (0), 1
+				connect basal[22] (0), 1}
+	basal[23] {connect basal[ 24] (0), 1
+				connect basal[38]  (0), 1}
+	basal[24] {connect basal[ 25] (0), 1
+				connect basal[33]  (0), 1}
+	basal[25] connect basal[ 26] (0), 1
+	basal[26] {connect basal[ 27] (0), 1
+				connect basal[32] (0), 1}
+	basal[27] {connect basal[ 28] (0), 1
+				connect basal[31] (0), 1}
+	basal[28] {connect basal[ 29] (0), 1
+				connect basal[30] (0), 1}
+	basal[33] {connect basal[ 34] (0), 1
+				connect basal[37]  (0), 1}
+	basal[34] {connect basal[ 35] (0), 1
+				connect basal[36]  (0), 1}
+	basal[38] {connect basal[ 39] (0), 1
+				connect basal[40]  (0), 1}
+	basal[41] {connect basal[ 42] (0), 1
+				connect basal[59]  (0), 1}
+	basal[42] {connect basal[ 43] (0), 1
+				connect basal[51]  (0), 1}
+	basal[43] connect basal[ 44] (0), 1
+	basal[44] {connect basal[ 45] (0), 1
+				connect basal[50] (0), 1}
+	basal[45] {connect basal[ 46] (0), 1
+				connect basal[49] (0), 1}
+	basal[46] {connect basal[ 47] (0), 1
+				connect basal[48] (0), 1}
+	basal[51] {connect basal[ 52] (0), 1
+				connect basal[54]  (0), 1}
+	basal[52] connect basal[ 53] (0), 1
+	basal[54] {connect basal[ 55] (0), 1
+				connect basal[58]  (0), 1}
+	basal[55] {connect basal[ 56] (0), 1
+				connect basal[57]  (0), 1}
+}
+
+
+objref all, basal_list, apical_list, soma_list, axon_list, rad_list, lm_list, dendrite_list
+objref pyramidalcell_list, axoaxoniccell_list, bistratifiedcell_list, cckcell_list
+objref ivycell_list, ngfcell_list, olmcell_list, pvbasketcell_list, scacell_list
+objref eccell_list, ca3cell_list, mscell_list
+
+proc append_sections() { local i
+	NumSoma=13
+	NumApical=127
+	NumBasal=60
+	NumAxon=2
+
+	objref all, basal_list, apical_list, soma_list, axon_list, rad_list, lm_list, dendrite_list
+	objref pyramidalcell_list, axoaxoniccell_list, bistratifiedcell_list, cckcell_list
+	objref ivycell_list, ngfcell_list, olmcell_list, pvbasketcell_list, scacell_list
+	objref eccell_list, ca3cell_list, mscell_list
+
+	all = new SectionList()
+	basal_list = new SectionList()
+	apical_list = new SectionList()
+	soma_list = new SectionList()
+	axon_list = new SectionList()
+	rad_list = new SectionList()
+	lm_list = new SectionList()
+	dendrite_list = new SectionList()
+
+	pyramidalcell_list = new SectionList()
+	axoaxoniccell_list = new SectionList()
+	bistratifiedcell_list = new SectionList()
+	cckcell_list = new SectionList()
+	ivycell_list = new SectionList()
+	ngfcell_list = new SectionList()
+	olmcell_list = new SectionList()
+	pvbasketcell_list = new SectionList()
+	scacell_list = new SectionList()
+	eccell_list = new SectionList()
+	ca3cell_list = new SectionList()
+	mscell_list = new SectionList()
+
+	axon[1] all.append()
+	axon[1] axon_list.append()
+	axon[0] all.append()
+	axon[0] axon_list.append()
+	
+	for i=0,NumSoma-1 soma[i] { all.append()
+								soma_list.append()}	
+	for i=0,NumBasal-1 basal[i] { all.append()
+								basal_list.append()			
+								dendrite_list.append()}			
+	for i=0,NumApical-1 apical[i] { all.append()
+								apical_list.append()	
+								dendrite_list.append()}	
+
+
+
+	for i=0, 17 apical[i] { rad_list.append()}
+	for i=26, 28 apical[i] { rad_list.append()}
+	for i=64, 64 apical[i] { rad_list.append()}
+	for i=76, 80 apical[i] { rad_list.append()}
+	for i=90, 126 apical[i] { rad_list.append()}
+
+	for i=18, 25 apical[i] { lm_list.append()}
+	for i=29, 63 apical[i] { lm_list.append()}
+	for i=65, 75 apical[i] { lm_list.append()}
+	for i=81, 89 apical[i] { lm_list.append()}
+
+// precell lists
+	forsec basal_list {pyramidalcell_list.append()}
+	forsec axon_list {axoaxoniccell_list.append()}
+	forsec basal_list {bistratifiedcell_list.append()}
+	forsec rad_list {bistratifiedcell_list.append()}
+	forsec soma_list {cckcell_list.append()}
+	forsec basal_list {ivycell_list.append()}
+	forsec rad_list {ivycell_list.append()}
+	forsec lm_list {ngfcell_list.append()}
+	forsec lm_list {olmcell_list.append()}
+	forsec soma_list {pvbasketcell_list.append()}
+	forsec basal_list {scacell_list.append()}
+	forsec rad_list {scacell_list.append()}
+	forsec lm_list {eccell_list.append()}
+	forsec lm_list {eccell_list.append()}
+	forsec lm_list {eccell_list.append()} // append the same list 3 times to weight it more heavily against the basal list for synapse choice for eccells
+	forsec rad_list {ca3cell_list.append()}
+	forsec rad_list {mscell_list.append()}
+	forsec basal_list {eccell_list.append()}
+	forsec basal_list {ca3cell_list.append()}
+}
+
+
+proc size_sections1() {
+	axon[0]  {nseg=5 diam=1 L=50}
+	axon[1]  {nseg=10 diam=0.7 L=250}
+	soma[0]  {nseg=1 diam= 3.4  L= .5  }
+	soma[1]  {nseg=1 diam= 3.4  L= .1  }
+	soma[2]  {nseg=1 diam= 5.8  L= .5852348  }
+	soma[3]  {nseg=1 diam= 7.4  L= 2.362393  }
+	soma[4]  {nseg=1 diam= 8.4  L= 1.030922  }
+	soma[5]  {nseg=1 diam= 9  L= 5.08973  }
+	soma[6]  {nseg=1 diam= 8.4  L= 2.161421  }
+	soma[7]  {nseg=1 diam= 7.4  L= 1.391761  }
+	soma[8]  {nseg=1 diam= 7  L= .7244999  }
+	soma[9]  {nseg=1 diam= 6.8  L= 1.021421  }
+	soma[10]  {nseg=1 diam= 5.8  L= .8354636  }
+	soma[11]  {nseg=1 diam= 4.8  L= .6500001  }
+	soma[12]  {nseg=1 diam= 4.2  L= 1.947434  }
+
+	apical[0]   {nseg=1 diam= 3.8  L= 2.715308  }
+	apical[1]   {nseg=1 diam= 3.6  L= 5.401713  }
+	apical[2]   {nseg=1 diam= 3  L= 3.876953  }
+	apical[3]   {nseg=1 diam= 3  L= 4.32302  }
+	apical[4]   {nseg=1 diam= 2.2  L= 9.503437  }
+	apical[5]   {nseg=2 diam= 2  L= 45.0123  }
+	apical[6]   {nseg=1 diam= 2  L= 31.20716  }
+	apical[7]   {nseg=1 diam= 2  L= 22.61171  }
+	apical[8]   {nseg=2 diam= 2  L= 37.90814  }
+	apical[9]   {nseg=1 diam= 2  L= 1.899714  }
+	apical[10]  {nseg=1 diam= 2  L= 2.305321  }
+	apical[11]  {nseg=1 diam= 2  L= 3.767573  }
+	apical[12]  {nseg=2 diam= 2  L= 33.49711  }
+	apical[13]  {nseg=10 diam= 2  L= 70.09814  }
+	apical[14]  {nseg=2 diam= 2  L= 40.81264  }
+	apical[15]  {nseg=1 diam= 2  L= 15.2801  }
+	apical[16]  {nseg=1 diam= 2  L= 17.47857  }
+	apical[17]  {nseg=8 diam= 1  L= 108.7753  }
+	apical[18]  {nseg=1 diam= .8  L= 10.96036  }
+	apical[19]  {nseg=2 diam= .8  L= 16.21915  }
+	apical[20]  {nseg=2 diam= .4  L= 26.14653  }
+	apical[21]  {nseg=6 diam= .4  L= 119.6609  }
+	apical[22]  {nseg=3 diam= .4  L= 39.18561  }
+	apical[23]  {nseg=3 diam= .4  L= 34.66425  }
+	apical[24]  {nseg=2 diam= .4  L= 31.36501  }
+	apical[25]  {nseg=2 diam= .4  L= 29.33217  }
+	apical[26]  {nseg=2 diam= 2  L= 31.1963  }
+	apical[27]  {nseg=4 diam= 1.4  L= 40.56636  }
+	apical[28]  {nseg=1 diam= 1.4  L= 4.73629  }
+	apical[29]  {nseg=5 diam= .8  L= 57.43425  }
+	apical[30]  {nseg=1 diam= .4  L= 21.68407  }
+	apical[31]  {nseg=1 diam= .4  L= 20.0452  }
+	apical[32]  {nseg=3 diam= .4  L= 64.84853  }
+	apical[33]  {nseg=3 diam= .4  L= 58.52066  }
+	apical[34]  {nseg=10 diam= .4  L= 230.365  }
+	apical[35]  {nseg=2 diam= .4  L= 37.58863  }
+	apical[36]  {nseg=4 diam= .4  L= 77.22144  }
+	apical[37]  {nseg=5 diam= .4  L= 112.0059  }
+	apical[38]  {nseg=2 diam= .4  L= 37.58242  }
+	apical[39]  {nseg=8 diam= .8  L= 89.90406  }
+	apical[40]  {nseg=1 diam= .8  L= 5.726318  }
+	apical[41]  {nseg=1 diam= .8  L= 1.514942  }
+	apical[42]  {nseg=2 diam= .8  L= 23.88437  }
+	apical[43]  {nseg=1 diam= .4  L= 3.340797  }
+	apical[44]  {nseg=1 diam= .4  L= 3.250262  }
+	apical[45]  {nseg=4 diam= .4  L= 86.1567  }
+	apical[46]  {nseg=3 diam= .4  L= 46.10009  }
+	apical[47]  {nseg=1 diam= .4  L= 23.62396  }
+	apical[48]  {nseg=4 diam= .4  L= 78.09839  }
+	apical[49]  {nseg=2 diam= .4  L= 41.05293  }
+	apical[50]  {nseg=3 diam= .4  L= 64.45201  }
+	apical[51]  {nseg=6 diam= .4  L= 135.1048  }
+	apical[52]  {nseg=4 diam= .4  L= 70.09399  }
+	apical[53]  {nseg=1 diam= .4  L= 11.29383  }
+	apical[54]  {nseg=3 diam= .4  L= 57.12379  }
+	apical[55]  {nseg=3 diam= .4  L= 51.23798  }
+	apical[56]  {nseg=1 diam= .4  L= .226719  }
+	apical[57]  {nseg=2 diam= .4  L= 42.9783  }
+	apical[58]  {nseg=6 diam= .4  L= 130.2097  }
+	apical[59]  {nseg=2 diam= .4  L= 26.79343  }
+	apical[60]  {nseg=5 diam= .4  L= 125.4406  }
+	apical[61]  {nseg=2 diam= .4  L= 32.70949  }
+	apical[62]  {nseg=2 diam= .4  L= 46.61235  }
+	apical[63]  {nseg=3 diam= .4  L= 55.72121  }
+	apical[64]  {nseg=5 diam= .4  L= 116.3788  }
+	apical[65]  {nseg=1 diam= .4  L= 13.57025  }
+	apical[66]  {nseg=6 diam= .4  L= 118.638  }
+	apical[67]  {nseg=1 diam= .4  L= 24.19888  }
+	apical[68]  {nseg=4 diam= .4  L= 96.23538  }
+	apical[69]  {nseg=3 diam= .4  L= 59.93812  }
+	apical[70]  {nseg=2 diam= .4  L= 64.90414  }
+	apical[71]  {nseg=1 diam= .4  L= .365519  }
+	apical[72]  {nseg=5 diam= .4  L= 118.724  }
+	apical[73]  {nseg=1 diam= .4  L= 5.153612  }
+	apical[74]  {nseg=7 diam= .4  L= 159.0847  }
+	apical[75]  {nseg=3 diam= .4  L= 65.16338  }
+	apical[76]  {nseg=3 diam= .8  L= 32.91693  }
+	apical[77]  {nseg=4 diam= .4  L= 84.05488  }
+	apical[78]  {nseg=3 diam= .8  L= 49.03632  }
+	apical[79]  {nseg=3 diam= .4  L= 65.3413  }
+	apical[80]  {nseg=7 diam= .4  L= 144.8597  }
+	apical[81]  {nseg=1 diam= .4  L= 2.782626  }
+	apical[82]  {nseg=1 diam= .4  L= 10.63182  }
+	apical[83]  {nseg=1 diam= .4  L= 14.79619  }
+	apical[84]  {nseg=1 diam= .4  L= 24.52155  }
+	apical[85]  {nseg=1 diam= .4  L= 19.95786  }
+	apical[86]  {nseg=1 diam= .4  L= 22.937  }
+	apical[87]   {nseg=1 diam= .4  L= 29.18237  }
+	apical[88]   {nseg=4 diam= .4  L= 93.45203  }
+	apical[89]   {nseg=3 diam= .4  L= 82.16525  }
+	apical[90]   {nseg=2 diam= 1  L= 28.88242  }
+	apical[91]   {nseg=1 diam= 1  L= 3.312038  }
+	apical[92]   {nseg=2 diam= 1  L= 31.43214  }
+	apical[93]   {nseg=4 diam= 1  L= 65.21848  }
+	apical[94]   {nseg=4 diam= 1  L= 65.93275  }
+	apical[95]   {nseg=1 diam= .4  L= 2.210091  }
+}
+
+proc size_sections2() {
+	apical[96]   {nseg=4 diam= .4  L= 80.05907  }
+	apical[97]   {nseg=1 diam= .4  L= 12.09364  }
+	apical[98]   {nseg=2 diam= .4  L= 40.26765  }
+	apical[99]   {nseg=2 diam= .4  L= 51.40726  }
+	apical[100]  {nseg=5 diam= .4  L= 113.2667  }
+	apical[101]  {nseg=6 diam= .4  L= 149.6538  }
+	apical[102]  {nseg=12 diam= .4  L= 271.828  }
+	apical[103]  {nseg=1 diam= .8  L= 19.2613  }
+	apical[104]  {nseg=5 diam= .4  L= 94.12336  }
+	apical[105]  {nseg=8 diam= .4  L= 170.9137  }
+	apical[106]  {nseg=1 diam= .8  L= 5.102267  }
+	apical[107]  {nseg=1 diam= .8  L= 10.26147  }
+	apical[108]  {nseg=6 diam= .4  L= 117.1293  }
+	apical[109]  {nseg=2 diam= .8  L= 30.43381  }
+	apical[110]  {nseg=4 diam= .4  L= 80.42423  }
+	apical[111]  {nseg=10 diam= .4  L= 202.9251  }
+	apical[112]  {nseg=7 diam= .4  L= 155.1176  }
+	apical[113]  {nseg=1 diam= 1.4  L= 11.20985  }
+	apical[114]  {nseg=1 diam= 1.4  L= 8.052182  }
+	apical[115]  {nseg=1 diam= .4  L= 17.14739  }
+	apical[116]  {nseg=1 diam= .4  L= 17.07239  }
+	apical[117]  {nseg=1 diam= .4  L= 3.802383  }
+	apical[118]  {nseg=4 diam= .4  L= 79.13516  }
+	apical[119]  {nseg=7 diam= .4  L= 132.4294  }
+	apical[120]  {nseg=1 diam= .8  L= 7.493482  }
+	apical[121]  {nseg=1 diam= .8  L= 16.02206  }
+	apical[122]  {nseg=1 diam= .4  L= 2.194287  }
+	apical[123]  {nseg=1 diam= .4  L= 14.77226  }
+	apical[124]  {nseg=4 diam= .4  L= 85.29885  }
+	apical[125]  {nseg=5 diam= .4  L= 108.0732  }
+	apical[126]  {nseg=4 diam= .4  L= 89.57475  }
+}
+
+proc size_sections3() {
+	basal[0]  {nseg=1 diam= .8  L= 2.888482  }
+	basal[1]  {nseg=1 diam= .8  L= 12.67608  }
+	basal[2]  {nseg=1 diam= .4  L= 6.226819  }
+	basal[3]  {nseg=2 diam= .4  L= 28.07395  }
+	basal[4]  {nseg=1 diam= .4  L= 19.26636  }
+	basal[5]  {nseg=1 diam= .4  L= 13.94479  }
+	basal[6]  {nseg=5 diam= .4  L= 110.2079  }
+	basal[7]  {nseg=4 diam= .4  L= 75.98547  }
+	basal[8]  {nseg=8 diam= .4  L= 153.798  }
+	basal[9]  {nseg=4 diam= .4  L= 91.32814  }
+	basal[10]  {nseg=3 diam= .4  L= 72.40762  }
+	basal[11]  {nseg=3 diam= .4  L= 68.55269  }
+	basal[12]  {nseg=1 diam= .8  L= 16.80424  }
+	basal[13]  {nseg=1 diam= .8  L= 14.56381  }
+	basal[14]  {nseg=1 diam= .4  L= .4899998  }
+	basal[15]  {nseg=1 diam= .4  L= 5.744193  }
+	basal[16]  {nseg=4 diam= .4  L= 116.2063  }
+	basal[17]  {nseg=3 diam= .4  L= 60.7986  }
+	basal[18]  {nseg=7 diam= .4  L= 140.8884  }
+	basal[19]  {nseg=4 diam= .4  L= 82.97742  }
+	basal[20] {nseg=2 diam= .4  L= 36.26253  }
+	basal[21] {nseg=5 diam= .4  L= 100.4919  }
+	basal[22] {nseg=3 diam= .4  L= 72.16766  }
+	basal[23] {nseg=1 diam= 1  L= 12.02422  }
+	basal[24] {nseg=1 diam= .8  L= 4.843154  }
+	basal[25] {nseg=1 diam= .8  L= 3.307597  }
+	basal[26] {nseg=1 diam= .4  L= 11.31487  }
+	basal[27] {nseg=1 diam= .4  L= 25.26186  }
+	basal[28] {nseg=1 diam= .4  L= 26.09189  }
+	basal[29] {nseg=3 diam= .4  L= 64  }
+	basal[30] {nseg=3 diam= .4  L= 70  }
+	basal[31] {nseg=4 diam= .4  L= 81.94038  }
+	basal[32] {nseg=7 diam= .4  L= 157.9888  }
+	basal[33]  {nseg=1 diam= .4  L= 12.65634  }
+	basal[34]  {nseg=2 diam= .4  L= 47.59445  }
+	basal[35]  {nseg=4 diam= .4  L= 87.35556  }
+	basal[36]  {nseg=5 diam= .4  L= 92.50491  }
+	basal[37]  {nseg=1 diam= .4  L= 21.87688  }
+	basal[38]  {nseg=4 diam= .4  L= 86.62627  }
+	basal[39]  {nseg=3 diam= .4  L= 74.35841  }
+	basal[40]  {nseg=4 diam= .4  L= 92.61662  }
+	basal[41] {nseg=1 diam= 1  L= 9.526773  }
+	basal[42] {nseg=1 diam= 1  L= 3.523762  }
+	basal[43] {nseg=1 diam= .8  L= 11.17033  }
+	basal[44] {nseg=1 diam= .4  L= 5.654395  }
+	basal[45] {nseg=1 diam= .4  L= 10.01039  }
+	basal[46] {nseg=1 diam= .4  L= 21.26989  }
+	basal[47] {nseg=2 diam= .4  L= 38.8982  }
+	basal[48] {nseg=6 diam= .4  L= 125.4449  }
+	basal[49] {nseg=7 diam= .4  L= 137.2615  }
+	basal[50] {nseg=3 diam= .4  L= 66.48241  }
+	basal[51]  {nseg=1 diam= 1  L= .5340415  }
+	basal[52]  {nseg=1 diam= 1  L= 7.411953  }
+	basal[53]  {nseg=4 diam= .4  L= 80.27492  }
+	basal[54]  {nseg=1 diam= .8  L= 11.25394  }
+	basal[55]  {nseg=1 diam= .4  L= 7.328401  }
+	basal[56]  {nseg=5 diam= .4  L= 100.9536  }
+	basal[57]  {nseg=2 diam= .4  L= 32.70675  }
+	basal[58]  {nseg=8 diam= .4  L= 165.4767  }
+	basal[59]  {nseg=8 diam= .4  L= 161.9148  }	
+}
+
+
+proc rotate_shape() {local i
+	forsec all {
+		for i=0,n3d()-1 {
+			pt3dchange(i, y3d(i), x3d(i), z3d(i), diam3d(i))
+		}
+	}
+}
+
+external lambda_f
+proc set_nseg() {
+  forsec all { nseg = int((L/(0.1*lambda_f(100))+.9)/2)*2 + 1  }
+}
+
+proc mechinit() {
+	NumSoma=13
+	NumApical=127
+	NumBasal=60
+	NumAxon=2
+
+	Rm = 28000 // 5555 // 
+	RmDend = Rm/2
+	RmSoma = Rm
+	RmAx = Rm
+
+	Cm    = 1
+	CmSoma= Cm
+	CmAx  = Cm
+	CmDend = Cm*2
+
+	celsius = 34.0  
+
+	RaAll= 150 
+	RaSoma=150 
+	RaAx = 50
+
+
+	ekval = -90
+	enaval = 55
+	eHCNval = -30
+	eleakval = 	Vrest // not lower than ekval
+
+	gNav     = 0.032 // Nav conductance in mho/cm2
+	gNavaxon = 0.064 // axon multiplier for Nav conductance
+	gKdr     = 0.003 // Kdr conductance in mho/cm2
+	gKvAdist = 0.008 // distal KvA conductance in mho/cm2
+	gKvAprox = 0.008 // proximal KvA conductance in mho/cm2
+	gHCN     = 0.0006 // hcurrent conductance in mho/cm2 --> 6 pS/um2
+}
+	
+proc insert_mechs() {
+	access soma[5]
+	distance() // calculates the distance between location 0 of the currently accessed section (as the origin) to a second point (but with this usage, it just sets the origin point) 
+
+	axon[1] {
+		insert ch_Navaxonp gmax_ch_Navaxonp=gNavaxon
+		insert ch_Kdrp gmax_ch_Kdrp=gKdr
+		insert pas e_pas=eleakval g_pas = 1/RmAx Ra=RaAx cm=CmAx
+		insert ch_KvAproxp gmax_ch_KvAproxp = gKvAprox*0.2
+	}
+
+	axon[0] {
+		insert ch_Navaxonp  gmax_ch_Navaxonp=gNavaxon
+		insert ch_Kdrp  gmax_ch_Kdrp=gKdr 
+		insert pas e_pas=eleakval g_pas = 1/RmAx Ra=RaAx cm=CmAx
+		insert ch_KvAproxp gmax_ch_KvAproxp = gKvAprox*0.2
+	}
+
+	for i=0,NumSoma-1 soma[i] {   
+		insert ch_HCNp gmax_ch_HCNp=gHCN
+		vhalfl_ch_HCNp=-82
+		insert ch_Navp  gmax_ch_Navp=gNav     
+		ar2_ch_Navp=1
+		insert ch_Kdrp gmax_ch_Kdrp=gKdr
+		insert ch_KvAproxp gmax_ch_KvAproxp = gKvAprox
+		insert pas e_pas=eleakval g_pas = 1/RmSoma Ra=RaSoma cm=CmSoma
+	}
+
+	for i=0,NumBasal-1 basal[i] {
+		insert ch_Navp    gmax_ch_Navp=gNav   
+		ar2_ch_Navp=1
+		insert ch_Kdrp gmax_ch_Kdrp=gKdr 
+		insert ch_KvAproxp gmax_ch_KvAproxp = gKvAprox
+		insert pas e_pas=eleakval g_pas = 1/RmDend Ra=RaAll cm=CmDend
+	}
+
+	for i=0,NumApical-1 apical[i] {
+		insert pas e_pas=eleakval g_pas = 1/RmDend Ra=RaAll  cm=CmDend
+		if (diam>0.5 && distance(0.5)<500) {
+			insert ch_HCNp gmax_ch_HCNp = gHCN
+			insert ch_Navp 
+			ar2_ch_Navp=0.8
+			gmax_ch_Navp=gNav
+			insert ch_Kdrp 
+			gmax_ch_Kdrp=gKdr
+			insert ch_KvAproxp
+			insert ch_KvAdistp
+			gmax_ch_KvAproxp=0
+			gmax_ch_KvAdistp=0
+
+			for (x,0){ xdist = distance(x)
+				if (xdist>500) {xdist=500}
+				gmax_ch_HCNp(x) = gHCN*(1+1.5*xdist/100)
+				if (xdist > 100){
+					vhalfl_ch_HCNp=-90
+					gmax_ch_KvAdistp(x) = gKvAdist*(1+xdist/100)
+				} else {
+					vhalfl_ch_HCNp=-82
+					gmax_ch_KvAproxp(x) = gKvAprox*(1+xdist/100)
+				}
+			}
+		}
+	}
+
+	forall {
+        v=Vrest
+        if (ismembrane("ch_Navaxonp") || ismembrane("ch_Navp")) {ena=enaval}
+        if (ismembrane("ch_Kdrp") || ismembrane("ch_KvAproxp") || ismembrane("ch_KvAdistp")) {ek=ekval}
+        if (ismembrane("ch_HCNp") ) {e_ch_HCNp=eHCNval}
+	}
+}
+
+
+func is_art() { return 0 }
+
+proc connect_pre() {  // $o1 target point process, $o2 returned NetCon
+	soma $o2 = new NetCon (&v(1), $o1)
+			$o2.threshold = -10
+}
+
+proc position(){ local i
+	forall {
+		for i = 0, n3d()-1 {
+			pt3dchange(i, $1-x+x3d(i), $2-y+y3d(i), $3-z+z3d(i), diam3d(i))
+		}
+	}
+	x = $1  y = $2  z = $3	
+}
+
+proc get_root() {local i localobj sref
+	rootlist = new SectionList()
+	rootlist.allroots()
+	i=0
+	forsec all {
+		for(x,0) { if (diam(x) <=0.01) print "small diameter at ", secname(), diam(x) }
+		if (L<=0.001) print "small length at: ", secname(), L
+		sref = new SectionRef()
+		if (sref.has_parent==0) {
+			myroot = secname()
+			i=i+1
+		}
+	}
+	if (i>1) {
+		print "WARNING: cell ", gid, " has ", i, " root sections!"
+	}
+}
+
+strdef myStr
+
+objref newSecRef, syn
+proc define_synapses() {
+	ind = $1
+	i = 0
+
+	access soma[0]
+	{distance()}
+
+	for celltype = 0, numCellTypes-1 {
+		templist = new List ()
+		for r=0, cellType[ind].SynList[celltype].count()-1 {
+			execute(cellType[ind].SynList[celltype].object(r).NewSynStr, this) // sets newSecRef
+						
+			forsec newSecRef {		
+				for (x,0) {
+					execute(cellType[ind].SynList[celltype].object(r).CondStr, this)
+					 if (y==1) {
+						execute(cellType[ind].SynList[celltype].object(r).SynStr, this)
+						if (cellType[ind].SynList[celltype].object(r).GABAabFlag==0) {
+							syn.tau1 = cellType[ind].SynList[celltype].object(r).tau1
+							syn.tau2 = cellType[ind].SynList[celltype].object(r).tau2
+							syn.e = cellType[ind].SynList[celltype].object(r).efirst
+							if (strcmp(cellType[ind].SynList[celltype].object(r).SynType,"MyExp2Sidnw")==0) {
+								execute(cellType[ind].SynList[celltype].object(r).Scaling, this)
+							}
+						} else {
+							syn.tau1a = cellType[ind].SynList[celltype].object(r).tau1a
+							syn.tau2a = cellType[ind].SynList[celltype].object(r).tau2a
+							syn.ea = cellType[ind].SynList[celltype].object(r).ea
+							syn.tau1b = cellType[ind].SynList[celltype].object(r).tau1b
+							syn.tau2b = cellType[ind].SynList[celltype].object(r).tau2b
+							syn.eb = cellType[ind].SynList[celltype].object(r).eb
+						}
+						syn.sid = i
+						templist.append(syn)
+						i = i + 1
+					}
+				}
+			}
+		}
+		pre_list.append(templist)
+		findme = 1
+	}
+}
+endtemplate poolosyncell

@@ -1,0 +1,434 @@
+begintemplate ivycell
+public init, connect_sections, size_sections, append_sections
+public mechinit, insert_mechs, set_biophys, get_root
+public  pre_list, connect_pre, is_art, is_connected, gid, randi
+public soma, dend
+public all, basal_list, apical_list, soma_list, axon_list, dendrite_list
+public x, y, z, position, myroot, Vrest
+public NumSoma, NumApical, NumBasal, NumAxon
+
+// strings
+strdef myroot
+
+// objects
+objref syn, pre_list, templist, rootlist
+objref this
+// external variables
+external numCellTypes, cellType
+
+// create the sections[segments]
+NumSoma=1
+NumApical=16
+NumBasal=0
+NumAxon=0
+create soma[NumSoma], dend[NumApical]
+
+
+proc init() {
+	gid = $1
+	randi = $2
+	
+	// morphology
+	connect_sections()	// local fcn: connect soma, dendrites, axon initial segment
+	size_sections()		// local fcn: set the size dimensions of each section
+	define_shape()		// builtin fcn: fill in 3d info for sections defined by only L and diam, translate 3d points for consistency with their connections 
+  	append_sections()	// local fcn: append all sections to the section list
+	set_nseg()			// local fcn: set the number of segments in each section
+	get_root()			// local fcn: perform morphology checks
+
+	// electrophysiology
+	mechinit()			// local fcn: set values for max conductances and reversal potentials of ion channels and other ephys parameters that are subject to fitting
+	insert_mechs()		// local fcn: insert ion channels and actually set values determined in the mechinit fcn
+	set_chanparams()	// local fcn: after all channels have been inserted, then their other parameters can be set	
+	// synapses
+	pre_list = new List() // define a list for the presynaptic connections
+	define_synapses($3)	// local fcn: define all possible synaptic connections received by this cell
+}
+
+proc connect_sections() { local i
+ 	connect dend[0](0), soma(1)
+	for i=0,3 {
+		connect dend[i+1](0), dend[i](1)
+	}
+
+  	connect dend[5](0), soma(1)
+	for i=5,8 {
+		connect dend[i+1](0), dend[i](1)
+	}
+	
+  	connect dend[10](0), soma(0)
+	for i=10,11 {
+		connect dend[i+1](0), dend[i](1)
+	}
+
+  	connect dend[13](0), soma(0)
+	for i=13,14 {
+		connect dend[i+1](0), dend[i](1)
+	}
+}
+
+proc size_sections() {
+	soma[0] {pt3dclear()
+		pt3dadd(0, 0, 0, 10) // distance from (0,0,0) = 0
+		pt3dadd(0, 10, 0, 10) // distance from (0,0,0) = 10
+		pt3dadd(0, 20, 0, 10) // distance from (0,0,0) = 20
+	}
+	dend[0] {pt3dclear()
+		pt3dadd(0, 20, 0, 4) // distance from (0,0,0) = 20
+		pt3dadd(19.4709, 66.053, 0, 4) // distance from (0,0,0) = 68.8631
+		pt3dadd(38.9418, 112.106, 0, 4) // distance from (0,0,0) = 118.677
+	}
+	dend[1] {pt3dclear()
+		pt3dadd(38.9418, 112.106, 0, 3) // distance from (0,0,0) = 118.677
+		pt3dadd(58.4128, 158.159, 0, 3) // distance from (0,0,0) = 168.601
+		pt3dadd(77.8837, 204.212, 0, 3) // distance from (0,0,0) = 218.56
+	}
+	dend[2] {pt3dclear()
+		pt3dadd(77.8837, 204.212, 0, 2) // distance from (0,0,0) = 218.56
+		pt3dadd(116.826, 296.318, 0, 2) // distance from (0,0,0) = 318.516
+		pt3dadd(155.767, 388.424, 0, 2) // distance from (0,0,0) = 418.494
+	}
+	dend[3] {pt3dclear()
+		pt3dadd(155.767, 388.424, 0, 1.5) // distance from (0,0,0) = 418.494
+		pt3dadd(175.238, 434.477, 0, 1.5) // distance from (0,0,0) = 468.486
+		pt3dadd(194.709, 480.531, 0, 1.5) // distance from (0,0,0) = 518.48
+	}
+	dend[4] {pt3dclear()
+		pt3dadd(194.709, 480.531, 0, 1) // distance from (0,0,0) = 518.48
+		pt3dadd(214.18, 526.584, 0, 1) // distance from (0,0,0) = 568.475
+		pt3dadd(233.651, 572.637, 0, 1) // distance from (0,0,0) = 618.47
+	}
+	dend[5] {pt3dclear()
+		pt3dadd(0, 20, 0, 4) // distance from (0,0,0) = 20
+		pt3dadd(-19.4709, 66.053, 0, 4) // distance from (0,0,0) = 68.8631
+		pt3dadd(-38.9418, 112.106, 0, 4) // distance from (0,0,0) = 118.677
+	}
+	dend[6] {pt3dclear()
+		pt3dadd(-38.9418, 112.106, 0, 3) // distance from (0,0,0) = 118.677
+		pt3dadd(-58.4128, 158.159, 0, 3) // distance from (0,0,0) = 168.601
+		pt3dadd(-77.8837, 204.212, 0, 3) // distance from (0,0,0) = 218.56
+	}
+	dend[7] {pt3dclear()
+		pt3dadd(-77.8837, 204.212, 0, 2) // distance from (0,0,0) = 218.56
+		pt3dadd(-116.826, 296.318, 0, 2) // distance from (0,0,0) = 318.516
+		pt3dadd(-155.767, 388.424, 0, 2) // distance from (0,0,0) = 418.494
+	}
+	dend[8] {pt3dclear()
+		pt3dadd(-155.767, 388.424, 0, 1.5) // distance from (0,0,0) = 418.494
+		pt3dadd(-175.238, 434.477, 0, 1.5) // distance from (0,0,0) = 468.486
+		pt3dadd(-194.709, 480.531, 0, 1.5) // distance from (0,0,0) = 518.48
+	}
+	dend[9] {pt3dclear()
+		pt3dadd(-194.709, 480.531, 0, 1) // distance from (0,0,0) = 518.48
+		pt3dadd(-214.18, 526.584, 0, 1) // distance from (0,0,0) = 568.475
+		pt3dadd(-233.651, 572.637, 0, 1) // distance from (0,0,0) = 618.47
+	}
+	dend[10] {pt3dclear()
+		pt3dadd(0, 0, 0, 2) // distance from (0,0,0) = 0
+		pt3dadd(-19.4709, -46.0531, 0, 2) // distance from (0,0,0) = 50
+		pt3dadd(-38.9418, -92.1061, 0, 2) // distance from (0,0,0) = 100
+	}
+	dend[11] {pt3dclear()
+		pt3dadd(-38.9418, -92.1061, 0, 1.5) // distance from (0,0,0) = 100
+		pt3dadd(-58.4128, -138.159, 0, 1.5) // distance from (0,0,0) = 150
+		pt3dadd(-77.8837, -184.212, 0, 1.5) // distance from (0,0,0) = 200
+	}
+	dend[12] {pt3dclear()
+		pt3dadd(-77.8837, -184.212, 0, 1) // distance from (0,0,0) = 200
+		pt3dadd(-97.3546, -230.265, 0, 1) // distance from (0,0,0) = 250
+		pt3dadd(-116.826, -276.318, 0, 1) // distance from (0,0,0) = 300
+	}
+	dend[13] {pt3dclear()
+		pt3dadd(0, 0, 0, 2) // distance from (0,0,0) = 0
+		pt3dadd(19.4709, -46.053, 0, 2) // distance from (0,0,0) = 50
+		pt3dadd(38.9419, -92.1061, 0, 2) // distance from (0,0,0) = 100
+	}
+	dend[14] {pt3dclear()
+		pt3dadd(38.9419, -92.1061, 0, 1.5) // distance from (0,0,0) = 100
+		pt3dadd(58.4128, -138.159, 0, 1.5) // distance from (0,0,0) = 150
+		pt3dadd(77.8837, -184.212, 0, 1.5) // distance from (0,0,0) = 200
+	}
+	dend[15] {pt3dclear()
+		pt3dadd(77.8837, -184.212, 0, 1) // distance from (0,0,0) = 200
+		pt3dadd(97.3546, -230.265, 0, 1) // distance from (0,0,0) = 250
+		pt3dadd(116.826, -276.318, 0, 1) // distance from (0,0,0) = 300
+	}
+}
+
+objref all, basal_list, apical_list, dendrite_list, soma_list, axon_list
+proc append_sections() { local i
+	objref all, basal_list, apical_list, dendrite_list, soma_list, axon_list
+
+	all = new SectionList()
+	basal_list = new SectionList()
+	apical_list = new SectionList()
+	soma_list = new SectionList()
+	axon_list = new SectionList()
+	dendrite_list = new SectionList()
+
+	soma all.append()
+	soma soma_list.append()
+	for i=0,15 {
+		dend[i] all.append()
+		dend[i] dendrite_list.append()
+	}
+
+	for i=0,9 {
+		dend[i] apical_list.append()
+	}
+
+	for i=10,15 {
+		dend[i] basal_list.append()
+	}
+}
+
+
+external lambda_f
+proc set_nseg() {
+  	forsec all { nseg = int((L/(0.1*lambda_f(100))+.9)/2)*2 + 1  }
+}
+
+
+
+proc mechinit() {
+
+	// resting membrane potential. Must lie between Na+ and K+ reversal potentials
+	Vrest=-65
+	
+	// Temperature of simulation
+	celsius = 34.0  
+
+	// Membrane resistance in ohm*cm2
+	RmDend = 5555 //1/0.00018 
+	RmSoma = 5555 //1/0.00018 
+
+	// Membrane capacitance in uF/cm2
+	CmSoma= 1.4
+	CmDend = 1.4
+
+	// Axial resistance in ohm*cm
+	RaDend= 100
+	RaSoma= 100	
+	
+	// Calcium concentrations in mM
+	ca_outside = 2
+	ca_inside = 5.e-6 // 50.e-6
+	catau = 10
+
+	// reversal potentials in mV
+	ekval = -90	
+	enaval = 55
+	eHCNval = -30
+	ecaval = 8.314*(273.15+celsius)/(2*9.649e4)*log(ca_outside/ca_inside)*1000 // about 170, otherwise set to 130
+	
+	if (Vrest<ekval) Vrest=ekval // Cell cannot rest lower than K+ reversal potential
+	if (Vrest>enaval) Vrest=enaval // Cell cannot rest higher than Na+ reversal potential
+	eleakval = Vrest
+
+	// max ion channel conductances in mho/cm2
+	gNav     = 0.15 // soma: // 0.12 //original 0.030 to .055 ; lm: //0.5  	//original 0.015
+	gKdr     = 0.013    // Delayed rectifier potassium
+	gKvA 	 = 0.00015 // Proximal A-type potassium
+	gHCN     = 0.00002 // HCN (hyperpolarization-activated cyclic nucleotide-gated channel)
+	gCavN    = 0.0008 //   T-type calcium
+	gCavL    = 0.005 //  L-type calcium
+	gKvCaB	 = 0.0000002 // Big potassium channel: voltage and calcium gated 
+	gKCaS	 = 0.000002 //  Small potassium channel: calcium gated		
+
+	gNasoma=3.7860265 
+	gNadend=0.25918894  
+	gKvA=5.2203905e-06
+	kdrf=0.15514516
+	kdrfdend = 0.0021817289
+	gleak=8.470825e-05
+	gCavL=0.056108352
+	gCavN=0.00058169587
+	gKvCaB=1.0235317e-06 
+	gKCaS=4.5152237e-07  
+	myRa = 14 //75
+	CM = 1.8 //1.8
+	offset1=20
+	offset2=20
+	offset3=13.5816 
+	offset4=13.35371
+	slope1=0.68266
+	slope2=0.56966
+	slope3=1.18592
+	slope4=49.4896
+	offset5=9
+	offset6=9
+	slope5=.07
+	slope6=.264
+}
+
+proc insert_mechs() {
+
+	forsec all {
+		insert iconc_Ca
+			catau_iconc_Ca = 10
+			caiinf_iconc_Ca = 5.e-6
+		insert ch_KvAngf
+	gmax_ch_KvAngf = gKvA
+		insert ch_CavN  // HAV-N- Ca channel
+	gmax_ch_CavN =   gCavN
+		insert ch_CavL 
+	gmax_ch_CavL=gCavL
+		insert ch_KCaS
+	gmax_ch_KCaS=gKCaS
+		insert ch_KvCaB
+	gmax_ch_KvCaB =gKvCaB
+	cm=CM
+	} 
+
+	soma {
+	insert ch_Navngf
+	gmax_ch_Navngf=gNasoma //0.10*gna_scale
+	offset1_ch_Navngf=offset1
+	offset2_ch_Navngf=offset2
+	offset3_ch_Navngf=offset3
+	offset4_ch_Navngf=offset4
+	slope1_ch_Navngf=slope1
+	slope2_ch_Navngf=slope2
+	slope3_ch_Navngf=slope3
+	slope4_ch_Navngf=slope4
+	ena = 55 
+		insert ch_Kdrfastngf
+	gmax_ch_Kdrfastngf=kdrf 
+	offset5_ch_Kdrfastngf=offset5 
+	offset6_ch_Kdrfastngf=offset6 
+	slope6_ch_Kdrfastngf=slope6 
+	slope5_ch_Kdrfastngf=slope5	
+//		insert ch_Kdrslow
+//	gmax_ch_Kdrslow=kdrf 
+	
+	insert ch_leak
+	gmax_ch_leak = gleak
+	} 
+
+	access soma
+	distance()
+	forsec dendrite_list {
+		for (x,0) {
+			if (distance(x)<100) {
+			insert ch_Navngf
+			gmax_ch_Navngf=gNadend //0.08*gna_scale
+			offset1_ch_Navngf=offset1
+			offset2_ch_Navngf=offset2
+			offset3_ch_Navngf=offset3
+			offset4_ch_Navngf=offset4
+			slope1_ch_Navngf=slope1
+			slope2_ch_Navngf=slope2
+			slope3_ch_Navngf=slope3
+			slope4_ch_Navngf=slope4
+			ena = 55 
+				insert ch_Kdrfastngf
+			gmax_ch_Kdrfastngf=kdrfdend //.007
+			offset5_ch_Kdrfastngf=offset5 
+			offset6_ch_Kdrfastngf=offset6 
+			slope6_ch_Kdrfastngf=slope6 
+			slope5_ch_Kdrfastngf=slope5	
+			}
+		}
+	}
+
+	forsec dendrite_list {
+	insert ch_leak
+	gmax_ch_leak = gleak
+	}
+}
+
+proc set_chanparams() {
+	forsec all {Ra=myRa}
+	forsec all {ek=-90  eca=130
+		 e_ch_leak =-60
+	cao_iconc_CaZ=2 
+		//cao_ccanl=2 
+		}  // make catau slower70e-3 	cao=2 cai=50.e-6 
+}
+
+
+	proc connect_pre() {  // $o1 target point process, $o2 returned NetCon
+	soma $o2 = new NetCon (&v(1), $o1)
+			$o2.threshold = -15
+
+	}
+
+	func is_art()  { return 0 }
+
+proc position(){ local i
+	forall {
+		for i = 0, n3d()-1 {
+			pt3dchange(i, $1-x+x3d(i), $2-y+y3d(i), $3-z+z3d(i), diam3d(i))
+		}
+	}
+	x = $1  y = $2  z = $3	
+}
+
+proc get_root() {local i localobj sref
+	rootlist = new SectionList()
+	rootlist.allroots()
+	i=0
+	forsec all {
+		sref = new SectionRef()
+		if (sref.has_parent==0) {
+			myroot = secname()
+			i=i+1
+		}
+		for(x,0) {
+			if (diam(x) <=0.01) print "WARNING: tiny diameter of ",  diam(x), " um at ", secname(), ", point ", x, "!"
+			if (diam3d(x) <=0.01) print "WARNING: tiny 3d diameter of ", diam3d(x), " um at ", secname(), ", point ", x, "!"
+		}
+		if (L <=0.001) print "WARNING: tiny length of ", L, " um at ", secname(), "!"
+	}
+	if (i>1) {
+		print "WARNING: cell ", gid, " has ", i, " root sections!"
+	}
+}
+
+strdef myStr
+
+objref newSecRef, syn
+proc define_synapses() {
+	ind = $1
+	i = 0
+
+	access soma[0]
+	{distance()}
+
+	for celltype = 0, numCellTypes-1 {
+		templist = new List ()
+		for r=0, cellType[ind].SynList[celltype].count()-1 {
+			execute(cellType[ind].SynList[celltype].object(r).NewSynStr, this) // sets newSecRef
+						
+			forsec newSecRef {		
+				for (x,0) {
+					execute(cellType[ind].SynList[celltype].object(r).CondStr, this)
+					 if (y==1) {
+						execute(cellType[ind].SynList[celltype].object(r).SynStr, this)
+						if (cellType[ind].SynList[celltype].object(r).GABAabFlag==0) {
+							syn.tau1 = cellType[ind].SynList[celltype].object(r).tau1
+							syn.tau2 = cellType[ind].SynList[celltype].object(r).tau2
+							syn.e = cellType[ind].SynList[celltype].object(r).efirst
+							if (strcmp(cellType[ind].SynList[celltype].object(r).SynType,"MyExp2Sidnw")==0) {
+								execute(cellType[ind].SynList[celltype].object(r).Scaling, this)
+							}
+						} else {
+							syn.tau1a = cellType[ind].SynList[celltype].object(r).tau1a
+							syn.tau2a = cellType[ind].SynList[celltype].object(r).tau2a
+							syn.ea = cellType[ind].SynList[celltype].object(r).ea
+							syn.tau1b = cellType[ind].SynList[celltype].object(r).tau1b
+							syn.tau2b = cellType[ind].SynList[celltype].object(r).tau2b
+							syn.eb = cellType[ind].SynList[celltype].object(r).eb
+						}
+						syn.sid = i
+						templist.append(syn)
+						i = i + 1
+					}
+				}
+			}
+		}
+		pre_list.append(templist)
+		findme = 1
+	}
+}
+endtemplate ivycell

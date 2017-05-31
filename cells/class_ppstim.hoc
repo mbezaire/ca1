@@ -1,0 +1,20 @@
+begintemplate ppstim
+
+	public pp, connect_pre, is_art, acell
+	create acell
+	objref pp
+
+	proc init() {
+		actemp() 		
+	}
+		proc actemp() {
+				acell pp = new MyNetStim(.5)
+				pp.interval = 100
+				pp.number = 1
+				pp.start = 5
+				}
+
+	func is_art() {return 1}
+	proc connect_pre() {acell $o2 = new NetCon(pp, $o1)}
+
+endtemplate ppstim

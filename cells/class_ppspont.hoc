@@ -1,0 +1,36 @@
+begintemplate ppspont
+
+	public pp, connect_pre, is_art, noiseFromRandom, setnoiseFromRandom, randi, gid
+	public x, y, z, position, xpos, ypos, zpos
+	external DegreeStim
+	objref pp
+
+	proc init() {
+		gid = $1
+		randi = $2
+		actemp(gid,randi) 	
+	}
+		proc actemp() {
+				pp = new MyNetStim(.5)
+				pp.interval = 1000/DegreeStim // 100 for Rob and Jonas
+				pp.number = 1e9
+				pp.noise = 1				
+				pp.start = 0
+				pp.gid = $1
+				pp.randi = $2
+			}
+	proc setnoiseFromRandom() {
+		pp.noiseFromRandom($o1)
+	}
+
+	func is_art() {return 1}
+	
+	proc connect_pre() {$o2 = new NetCon(pp, $o1)}
+
+	proc position(){
+		x = $1  y = $2  z = $3	
+		xpos = $1  ypos = $2  zpos = $3	
+		pp.position(xpos, ypos, zpos)
+	}
+
+endtemplate ppspont

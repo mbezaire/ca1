@@ -1,0 +1,191 @@
+/*
+Encapsulates a NetStim and an SGate artificial spiking cell connected like this
+  NS--< SGate
+so that the SGate's output is a spike train whose "instantaneous mean frequency"
+is modulated by a sinusoid of the form
+1 + depth*(cos(2*PI*(t-start)/period) - 1)/2
+Thus the mean spike frequency varies between a maximum of fmax = 1/ns.interval
+and a minimum of fmin = fmax*(1-depth).
+
+If you need statistically independent spike streams, be sure to pair
+the NetStim and the SGate with separate instances of the Random class
+as per the comments in their NMODL source code.
+
+Remark to myself:  consider using an FInitializeHandler 
+to turn the NetStim on & off.
+
+NTC 5/2/2012
+*/
+
+begintemplate sintrain
+	public pp // this is the thing that should be the spike source for NetCons
+	// associate this with a Random.uniform(0,1) instance for statistical independence
+	public ns // to make it easy to associate the NetStim with its own Random.negexp(1)
+	public fmax // arg is in Hz!
+	public noise, start, period, number, depth, phase
+	public connect_pre, is_art, randi, gid, noiseFromRandomPP, noiseFromRandomNS, setnoiseFromRandomPP, setnoiseFromRandomNS
+	public x, y, z, position, xpos, ypos, zpos
+
+  objref ns, pp, nc
+
+  proc init() {
+ 		gid = $1
+		randi = $2
+
+	ns = new MyNetStim(.5)
+    pp = new SGate()
+    nc = new NetCon(ns, pp)
+    nc.delay = 0
+
+    ns.number = 1e9
+    fmax(1000)
+    noise(1)
+    start(0)
+
+    period(150)
+    number(1)
+    depth(0.75)
+    phase(0)
+	
+	ns.gid = $1
+	ns.randi = $2
+	
+	pp.gid = $1
+	pp.randi = $2
+  }
+
+  // the following are to be used for setting/getting param values
+
+  func fmax() { local retval
+    if (numarg()==1) {
+      retval = $1
+      if (retval<=0) {
+        print retval, " out of range for high frequency"
+        retval = -1 // return -1 to signal an error
+      } else {
+        ns.interval = 1000/retval
+      }
+    } else {
+     retval = 1000/ns.interval
+    }
+    return retval
+  }
+
+  func noise() {
+    if (numarg()==1) {
+      retval = $1
+      if ((retval<0) || (retval>1)) {
+        print retval, " out of range for noise"
+        retval = -1
+      } else {
+        ns.noise = retval
+      }
+    } else {
+      retval = ns.noise
+    }
+    return retval
+  }
+
+  func start() {
+    if (numarg()==1) {
+      retval = $1
+      if (retval<0) {
+        print retval, " out of range for start time"
+        retval = -1
+      } else {
+        ns.start = retval // no point having ns generate anything before it is needed
+        pp.start = retval
+      }
+    } else {
+      retval = ns.start
+    }
+    return retval
+  }
+
+  func period() {
+    if (numarg()==1) {
+      retval = $1
+      if (retval<=0) {
+        print retval, " out of range for modulation period"
+        retval = -1 // return -1 to signal an error
+      } else {
+        pp.period = retval
+      }
+    } else {
+      retval = pp.period
+    }
+    return retval
+  }
+
+  func phase() {
+    if (numarg()==1) {
+      retval = $1
+      if (retval<0) {
+        print retval, " phase less than 0"
+        pp.phase = 0
+      } else {
+        pp.phase = retval
+      }
+    } else {
+      retval = pp.phase
+    }
+    return retval
+  }
+
+  func number() {
+    if (numarg()==1) {
+      retval = $1
+      if (retval<=0) {
+        print retval, " out of range for number of modulation periods"
+        retval = -1 // return -1 to signal an error
+      } else {
+        pp.number = retval
+      }
+    } else {
+      retval = pp.number
+    }
+    return retval
+  }
+
+  func depth() {
+    if (numarg()==1) {
+      retval = $1
+      if ((retval<0) || (retval>1)) {
+        print retval, " out of range for modulation depth"
+        retval = -1 // return -1 to signal an error
+      } else {
+        pp.depth = retval
+      }
+    } else {
+      retval = pp.depth
+    }
+    return retval
+  }
+
+  // these last three are cribbed from Network Builder hoc code--
+  // they'd be part of any template based on an artificial spiking cell
+
+
+  obfunc connect_pre() { localobj nc
+    nc = new NetCon(pp, $o1)
+    if (numarg() == 2) { $o2 = nc }
+    return nc
+  }
+
+	func is_art() {return 1}
+	
+
+	proc position(){
+		x = $1  y = $2  z = $3	
+		xpos = $1  ypos = $2  zpos = $3	
+		ns.position(xpos, ypos, zpos)
+	}
+ 
+  proc setnoiseFromRandomPP() {
+  	pp.noiseFromRandom($o1) // pass an instance of the Random class that is set to the Random.uniform(0,1) distribution for the gate
+  }
+  proc setnoiseFromRandomNS() {
+  	ns.noiseFromRandom($o1) // pass an instance of the Random class that is set to the Random.negexp(1) distribution for the poisson spike train
+  }
+
+endtemplate sintrain

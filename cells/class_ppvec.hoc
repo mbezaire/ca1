@@ -1,0 +1,32 @@
+begintemplate ppvec
+
+	public pp, connect_pre, is_art, noiseFromRandom, setnoiseFromRandom, randi, gid
+	public x, y, z, position, xpos, ypos, zpos
+	objref pp
+
+	proc init() {
+		gid = $1
+		randi = $2
+		actemp(gid,randi) 	
+	}
+		proc actemp() {
+				pp = new MyNetStim(.5)
+				pp.interval = 1
+				pp.number = 5
+				pp.start = -5
+				pp.gid = $1
+				pp.randi = $2
+				}
+
+	func is_art() {return 1}
+	
+	proc connect_pre() {$o2 = new NetCon(pp, $o1)}
+
+	proc position(){
+		x = $1  y = $2  z = $3	
+		xpos = $1  ypos = $2  zpos = $3	
+		pp.position(xpos, ypos, zpos)
+	}
+
+
+endtemplate ppvec
