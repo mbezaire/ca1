@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<neuroml xmlns="http://www.neuroml.org/schema/neuroml2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.neuroml.org/schema/neuroml2 https://raw.github.com/NeuroML/NeuroML2/development/Schemas/NeuroML2/NeuroML_v2beta4.xsd" id="NeuroML_ionChannel">
+
+    <notes>NeuroML file containing a single ion channel</notes>
+
+    <ionChannel id="KCaS" conductance="1pS" type="ionChannelHH" species="k">
+        
+        <notes>Ca++ activated K+ channel description (modeled by Marianne Bezaire)</notes>
+        
+        <gateHHrates id="q" instances="2">
+            <q10Settings type="q10ExpTemp" q10Factor="3" experimentalTemp="34 degC"/>
+            <forwardRate type="Bezaire_KCaS_alphaq"/>
+            <reverseRate type="Bezaire_KCaS_betaq"/>
+        </gateHHrates>
+                            
+    </ionChannel>
+   
+    
+    <ComponentType name="Bezaire_KCaS_alphaq"
+            extends="baseVoltageConcDepRate"
+            description="forward rate to describe KCaS">
+        
+        <Constant name="TIME_SCALE" dimension="time" value="1 ms"/>
+        <Constant name="CONC_SCALE" dimension="concentration" value="1 mM"/>
+        
+        <Dynamics>
+            <DerivedVariable name="ca_conc_i" dimension="none" value="caConc / CONC_SCALE"/>
+            
+            <DerivedVariable name="r" dimension="per_time" value="(12.5 * ca_conc_i * ca_conc_i) / TIME_SCALE" exposure="r"/>          
+        </Dynamics>
+
+    </ComponentType>
+    
+    <ComponentType name="Bezaire_KCaS_betaq"
+            extends="baseVoltageDepRate"
+            description="reverse rate to describe KCaS">
+        
+        <Constant name="TIME_SCALE" dimension="time" value="1 ms"/>
+        
+        <Dynamics>         
+            <DerivedVariable name="r" dimension="per_time" value="2.5e-4 / TIME_SCALE" exposure="r"/>          
+        </Dynamics>
+          
+    </ComponentType>
+    
+</neuroml>

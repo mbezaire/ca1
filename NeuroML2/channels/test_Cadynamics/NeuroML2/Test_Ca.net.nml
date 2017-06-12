@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<neuroml xmlns="http://www.neuroml.org/schema/neuroml2" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://www.neuroml.org/schema/neuroml2  ../../../../../../NeuroML2/Schemas/NeuroML2/NeuroML_v2beta4.xsd" 
+         id="olm1">
+    
+    <include href="../../Capool.nml"/>
+    <include href="ica_clamp.channel.nml"/>
+    
+    <include href="../../CavL.channel.nml"/>
+    <include href="../../CavN.channel.nml"/>
+    <include href="../../KvCaB.channel.nml"/>
+
+    <!-- Passive conductance -->
+    <ionChannel id="passive_chan" type="ionChannelPassive" conductance="1pS" species="non_specific"/>
+
+    
+    <!-- Cellular properties -->
+    <cell id="cell1">
+
+        <morphology id="just_a_cylinder">
+
+            <segment id="0" name="Soma">
+                <proximal x="0.0" y="0.0" z="0.0" diameter="1.0"/>
+                <distal x="0.0" y="0.0" z="10.0" diameter="1.0"/>
+            </segment>
+
+            <segmentGroup id="soma_group">
+                <member segment="0"/>
+            </segmentGroup>
+
+        </morphology>
+        
+        <biophysicalProperties id="biophys">
+
+            <membraneProperties>
+
+                <channelDensity condDensity="0.3mS_per_cm2" id="passive" ionChannel="passive_chan" erev="-65 mV" ion="non_specific"/>
+                <channelDensity condDensity="0mS_per_cm2" id="ica_clamp_all" ionChannel="ica_clamp" erev="50mV" ion="ca"/> <!-- condDensity="1e-3"-->
+                <channelDensity condDensity="10mS_per_cm2" id="KvCaB_all" ionChannel="KvCaB" erev="-90mV" ion="k"/>
+                <channelDensityNernst condDensity="5mS_per_cm2" id="CavN_all" ionChannel="CavN" ion="ca"/>
+                <channelDensityGHK2 condDensity="15mS_per_cm2" id="CavL_all" ionChannel="CavL" ion="ca"/>
+                
+                <spikeThresh value="0 mV"/>
+                <specificCapacitance value="1.0 uF_per_cm2"/>
+                <initMembPotential value="-65.0 mV"/>
+
+            </membraneProperties>
+
+            <intracellularProperties>
+               
+                <species id="ca" ion="ca" concentrationModel="Capool"
+                         initialConcentration="5e-5 mM" initialExtConcentration="2 mM"/>
+           
+                <resistivity value="0.1 kohm_cm"/>
+
+            </intracellularProperties>
+
+        </biophysicalProperties>
+
+    </cell>
+
+    <!-- Point process: Current clamp -->
+    <pulseGenerator id="IClamp" delay="40ms" duration="120ms" amplitude="0.01nA"/>
+
+
+    <!-- Create a single-cell network -->
+    <network id="net1" type="networkWithTemperature" temperature = "34 degC">
+        <population id="pop" component="cell1" type="populationList" size="1">
+            <instance id="0">
+                <location x="0" y="0" z="0"/>
+            </instance>
+        </population>
+
+
+        <inputList id="IClamp" component="IClamp" population="pop">
+            <input id="0" target="../pop/0/cell1" destination="synapses"/>
+        </inputList>
+
+    </network>
+
+</neuroml>

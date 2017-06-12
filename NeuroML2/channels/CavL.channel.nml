@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<neuroml xmlns="http://www.neuroml.org/schema/neuroml2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.neuroml.org/schema/neuroml2 https://raw.github.com/NeuroML/NeuroML2/development/Schemas/NeuroML2/NeuroML_v2beta4.xsd" id="NeuroML_ionChannel">
+
+    <notes>NeuroML file containing a single ion channel</notes>
+
+    <ionChannel id="CavL" conductance="1pS" type="ionChannelHH" species="ca">
+        
+        <notes>L-type Ca++ channel description (from Jaffe 1994 - modeled by Lawrence 2006)</notes>
+        
+        <gate id="m" type="gateHHrates" instances="2">
+            <forwardRate type="HHExpLinearRate" rate="156.9per_ms" midpoint="81.5mV" scale="10mV"/>
+            <reverseRate type="HHExpRate" rate="0.29per_ms" midpoint="0mV" scale="-10.86mV"/>
+        </gate>
+        
+        <gate id="h" type="gateHHInstantaneous" instances="1">
+            <steadyState type="Bezaire_CavL_ssh"/>
+        </gate>
+                            
+    </ionChannel>
+    
+    
+    <ComponentType name="Bezaire_CavL_ssh"
+                   extends="baseVoltageConcDepVariable"
+                   description="steadyState parameter to describe CavL">
+        
+        <Constant name="CONC_SCALE" dimension="concentration" value="1 mM"/>
+
+        <Dynamics>
+            <DerivedVariable name="ca_conc_i" dimension="none" value="caConc / CONC_SCALE"/>
+            <DerivedVariable name="x" dimension="none" value="0.001 / (0.001 + ca_conc_i)" exposure="x"/>
+        </Dynamics>
+
+    </ComponentType>
+    
+</neuroml>

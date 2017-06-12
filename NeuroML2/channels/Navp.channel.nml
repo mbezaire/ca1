@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<neuroml xmlns="http://www.neuroml.org/schema/neuroml2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.neuroml.org/schema/neuroml2 https://raw.github.com/NeuroML/NeuroML2/development/Schemas/NeuroML2/NeuroML_v2beta4.xsd" id="NeuroML_ionChannel">
+
+    <notes>NeuroML file containing a single ion channel</notes>
+
+    <ionChannel id="Navp" conductance="1pS" type="ionChannelHH" species="na">
+
+        <notes>Na+ channel description (from Migliore 1997, modified in 2002)</notes>
+        
+        <gate id="m" type="gateHHratesTau" instances="3">
+            <q10Settings type="q10ExpTemp" q10Factor="2" experimentalTemp="24 degC"/>
+            <forwardRate type="HHExpLinearRate" rate="2.88per_ms" midpoint="-15mV" scale="7.2mV"/>
+            <reverseRate type="HHExpLinearRate" rate="0.8928per_ms" midpoint="-15mV" scale="-7.2mV"/>
+            <timeCourse type="Bezaire_Navp_taum"/>
+        </gate>
+        
+        <gate id="h" type="gateHHratesTauInf" instances="1">
+            <q10Settings type="q10ExpTemp" q10Factor="2" experimentalTemp="24 degC"/>
+            <forwardRate type="HHExpLinearRate" rate="0.045per_ms" midpoint="-30mV" scale="1.5mV"/>
+            <reverseRate type="HHExpLinearRate" rate="0.015per_ms" midpoint="-30mV" scale="-1.5mV"/>
+            <timeCourse type="Bezaire_Navp_tauh"/>
+            <steadyState type="HHSigmoidVariable" rate="1" midpoint="-35mV" scale="-4mV"/>
+        </gate>
+        
+        <gate id="s" type="gateHHtauInf" instances="1">
+            <q10Settings type="q10Fixed" fixedQ10="1"/>
+            <timeCourse type="Bezaire_Navp_taus"/>
+            <steadyState type="Bezaire_Navp_sss_ar2_1"/>
+        </gate>
+        
+    </ionChannel>
+    
+
+    <ionChannel id="Navapicalp" conductance="1pS" type="ionChannelHH" species="na">
+
+        <gate id="m" type="gateHHratesTau" instances="3">
+            <q10Settings type="q10ExpTemp" q10Factor="2" experimentalTemp="24 degC"/>
+            <forwardRate type="HHExpLinearRate" rate="2.88per_ms" midpoint="-15mV" scale="7.2mV"/>
+            <reverseRate type="HHExpLinearRate" rate="0.8928per_ms" midpoint="-15mV" scale="-7.2mV"/>
+            <timeCourse type="Bezaire_Navp_taum"/>
+        </gate>
+        
+        <gate id="h" type="gateHHratesTauInf" instances="1">
+            <q10Settings type="q10ExpTemp" q10Factor="2" experimentalTemp="24 degC"/>
+            <forwardRate type="HHExpLinearRate" rate="0.045per_ms" midpoint="-30mV" scale="1.5mV"/>
+            <reverseRate type="HHExpLinearRate" rate="0.015per_ms" midpoint="-30mV" scale="-1.5mV"/>
+            <timeCourse type="Bezaire_Navp_tauh"/>
+            <steadyState type="HHSigmoidVariable" rate="1" midpoint="-35mV" scale="-4mV"/>
+        </gate>
+        
+        <gate id="s" type="gateHHtauInf" instances="1">
+            <timeCourse type="Bezaire_Navp_taus"/>
+            <steadyState type="Bezaire_Navp_sss_ar2_0_8"/>
+        </gate>
+        
+    </ionChannel>
+    
+    
+     <ComponentType name="Bezaire_Navp_taum"
+                   extends="baseVoltageDepTime"
+                   description="Tau parameter to describe Navp">
+        
+        <Constant name="TIME_SCALE" dimension="time" value="1 ms"/>
+        <Constant name="VOLT_SCALE" dimension="voltage" value="1 mV"/>
+             
+        <Requirement name="alpha" dimension="per_time"/>
+        <Requirement name="beta" dimension="per_time"/>
+        <Requirement name="rateScale" dimension="none"/>   
+
+        <Dynamics>
+            <DerivedVariable name="V" dimension="none" value="v / VOLT_SCALE"/>
+            <DerivedVariable name="ALPHA" dimension="none" value="alpha * TIME_SCALE"/>
+            <DerivedVariable name="BETA" dimension="none" value="beta * TIME_SCALE"/>
+
+            <ConditionalDerivedVariable name="t" dimension="time" exposure="t">
+                <Case condition="(ALPHA + BETA) .eq. 0" value="( 0 ) * TIME_SCALE"/>
+                <Case condition="1/( (ALPHA + BETA) * rateScale )  .lt. ( 0.02 )" value="( (0.02 * rateScale) ) * TIME_SCALE"/>
+                <Case value="( 1/(ALPHA + BETA) ) * TIME_SCALE"/>
+            </ConditionalDerivedVariable>
+
+        </Dynamics>
+
+    </ComponentType>
+    
+    <ComponentType name="Bezaire_Navp_tauh"
+                   extends="baseVoltageDepTime"
+                   description="Tau parameter to describe Navp">
+        
+        <Constant name="TIME_SCALE" dimension="time" value="1 ms"/>
+        <Constant name="VOLT_SCALE" dimension="voltage" value="1 mV"/>
+        
+        <Requirement name="alpha" dimension="per_time"/>
+        <Requirement name="beta" dimension="per_time"/>
+        <Requirement name="rateScale" dimension="none"/>   
+
+        <Dynamics>
+            <DerivedVariable name="V" dimension="none" value="v / VOLT_SCALE"/>
+            <DerivedVariable name="ALPHA" dimension="none" value="alpha * TIME_SCALE"/>
+            <DerivedVariable name="BETA" dimension="none" value="beta * TIME_SCALE"/>
+
+            <ConditionalDerivedVariable name="t" exposure="t" dimension="time">
+                <Case condition="(ALPHA + BETA) .eq. 0" value="( 0 ) * TIME_SCALE"/>
+                <Case condition="1/( (ALPHA + BETA) * rateScale )  .lt. ( 0.5 )" value="( (0.5 * rateScale) ) * TIME_SCALE"/>
+                <Case value="( 1/(ALPHA + BETA) ) * TIME_SCALE"/>
+            </ConditionalDerivedVariable>
+
+        </Dynamics>
+
+    </ComponentType>
+    
+    <ComponentType name="Bezaire_Navp_taus"
+                   extends="baseVoltageDepTime"
+                   description="Tau parameter to describe Navp">
+        
+        <Constant name="TIME_SCALE" dimension="time" value="1 ms"/>
+        <Constant name="VOLT_SCALE" dimension="voltage" value="1 mV"/>
+        <Constant name="TEMP_SCALE" dimension="temperature" value="1 K"/>
+        <Constant name="R" dimension="none" value="8.315"/>
+        <Constant name="F" dimension="none" value="96480"/>
+        
+        <Requirement name="rateScale" dimension="none"/> 
+        <Requirement name="temperature" dimension="temperature"/>
+
+        <Dynamics>
+            <DerivedVariable name="V" dimension="none" value="v / VOLT_SCALE"/>
+            <DerivedVariable name="T" dimension="none" value="temperature / TEMP_SCALE"/>
+            
+            <DerivedVariable name="alpha" dimension="none" value="exp((1e-3*12*(V+45)*F) / (R*(T+0.01)))"/> <!-- NEURON code: 273.16 + celsius-->
+            <DerivedVariable name="beta" dimension="none" value="exp((1e-3*12*0.2*(V+45)*F) / (R*(T+0.01)))"/> <!-- NEURON code: 273.16 + celsius-->
+            
+            <DerivedVariable name="tmp" value="beta / (3e-4*(1 + alpha))" dimension="none"/>
+            <ConditionalDerivedVariable name="t" dimension="time" exposure="t" >
+                <Case condition="(tmp / rateScale) .lt. 10" value="10 * rateScale * TIME_SCALE"/>
+                <Case value="tmp * TIME_SCALE"/>                
+            </ConditionalDerivedVariable>
+
+        </Dynamics>
+
+    </ComponentType>
+    
+    <ComponentType name="Bezaire_Navp_sss_ar2_1"
+                   extends="baseVoltageDepVariable"
+                   description="steadyState parameter to describe Navp">
+        
+        <Constant name="no_inact" dimension="none" value="1"/> <!-- 1: no inact, 0: max inact-->
+        <Constant name="VOLT_SCALE" dimension="voltage" value="1 mV"/>
+
+        <Dynamics>
+            <DerivedVariable name="V" dimension="none" value="v / VOLT_SCALE"/>
+            
+            <DerivedVariable name="alpha" dimension="none" value="1 / (1 + exp((V+43)/2))"/>
+ 
+            <DerivedVariable name="x" exposure="x" dimension="none" value="alpha + no_inact*(1 - alpha)"/>
+        </Dynamics>
+
+    </ComponentType>
+    
+    
+    <ComponentType name="Bezaire_Navp_sss_ar2_0_8"
+                   extends="baseVoltageDepVariable"
+                   description="steadyState parameter to describe Navp">
+        
+        <Constant name="no_inact" dimension="none" value="0.8"/> <!-- 1: no inact, 0: max inact-->
+        <Constant name="VOLT_SCALE" dimension="voltage" value="1 mV"/>
+
+        <Dynamics>
+            <DerivedVariable name="V" dimension="none" value="v / VOLT_SCALE"/>
+            
+            <DerivedVariable name="alpha" dimension="none" value="1 / (1 + exp((V+43)/2))"/>
+ 
+            <DerivedVariable name="x" exposure="x" dimension="none" value="alpha + no_inact*(1 - alpha)"/>
+        </Dynamics>
+
+    </ComponentType>
+    
+</neuroml>

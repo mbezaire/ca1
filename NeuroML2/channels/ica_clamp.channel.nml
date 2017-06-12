@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<neuroml xmlns="http://www.neuroml.org/schema/neuroml2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.neuroml.org/schema/neuroml2 https://raw.github.com/NeuroML/NeuroML2/development/Schemas/NeuroML2/NeuroML_v2beta4.xsd" id="NeuroML_ionChannel">
+
+    <notes> Simple ion-channel to fix iCa (capool testing)</notes>
+
+    <ionChannel id="ica_clamp" conductance="1pS" type="ionChannelHH" species="ca">
+        
+        <gateHHInstantaneous id="x" instances="1">
+            <steadyState type="test_chan_ss"/>
+        </gateHHInstantaneous>
+                            
+    </ionChannel>
+    
+    
+    <ComponentType name="test_chan_ss"
+                   extends="baseVoltageDepVariable"
+                   description="steadyState parameter to test capool">
+        
+        <Constant name="delay" dimension="time" value="50ms"/>
+        <Constant name="duration" dimension="time" value="100ms"/>
+
+        <Dynamics>
+            <ConditionalDerivedVariable name="x" exposure="x" dimension="none">
+                <Case condition="t .lt. delay" value="0"/>
+                <Case condition="t .geq. delay .and. t .lt. duration + delay" value="1"/>
+                <Case condition="t .geq. duration + delay" value="0"/>
+            </ConditionalDerivedVariable>
+        </Dynamics>
+
+    </ComponentType>
+    
+</neuroml>

@@ -1,0 +1,378 @@
+<neuroml xmlns="http://www.neuroml.org/schema/neuroml2"  xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.neuroml.org/schema/neuroml2 https://raw.github.com/NeuroML/NeuroML2/development/Schemas/NeuroML2/NeuroML_v2beta4.xsd" id="NeuroML2_file_exported_from_NEURON">
+    <include href="../channels/HCNp.channel.nml"></include>
+    <include href="../channels/Kdrp.channel.nml"></include>
+    <include href="../channels/KvAproxp.channel.nml"></include>
+    <include href="../channels/KvAdistp.channel.nml"></include>
+    <include href="../channels/Navp.channel.nml"></include>
+    <include href="../channels/leak_chan.channel.nml"></include>
+    <cell id="cutsuridiscell">
+        <notes>Cell: cutsuridiscell exported from NEURON ModelView</notes>
+        <morphology id="morphology">
+            <segment id="0" name="Seg0_soma_0">
+                <proximal x="0.000000e+00" y="0.000000e+00" z="0.000000e+00" diameter="1.000000e+01"/>
+                <distal x="0.000000e+00" y="5.000000e+00" z="0.000000e+00" diameter="1.000000e+01"/>
+            </segment>
+            <segment id="2" name="Seg1_soma_0">
+                <parent segment="0" fractionAlong="1"/>
+                <distal x="0.000000e+00" y="1.000000e+01" z="0.000000e+00" diameter="1.000000e+01"/>
+            </segment>
+            <segment id="29" name="Seg0_axon_0">
+                <parent segment="0" fractionAlong="0.0"/>
+                <proximal x="0.000000e+00" y="0.000000e+00" z="0.000000e+00" diameter="1.000000e+00"/>
+                <distal x="0.000000e+00" y="-7.500000e+01" z="0.000000e+00" diameter="1.000000e+00"/>
+            </segment>
+            <segment id="30" name="Seg1_axon_0">
+                <parent segment="29" fractionAlong="1"/>
+                <distal x="0.000000e+00" y="-1.500000e+02" z="0.000000e+00" diameter="1.000000e+00"/>
+            </segment>
+            <segment id="25" name="Seg0_basal_2">
+                <parent segment="0" fractionAlong="0.0"/>
+                <proximal x="0.000000e+00" y="0.000000e+00" z="0.000000e+00" diameter="2.000000e+00"/>
+                <distal x="-3.550000e+01" y="-3.550000e+01" z="0.000000e+00" diameter="2.000000e+00"/>
+            </segment>
+            <segment id="26" name="Seg1_basal_2">
+                <parent segment="25" fractionAlong="1"/>
+                <distal x="-7.100000e+01" y="-7.100000e+01" z="0.000000e+00" diameter="2.000000e+00"/>
+            </segment>
+            <segment id="21" name="Seg0_basal_0">
+                <parent segment="0" fractionAlong="0.0"/>
+                <proximal x="0.000000e+00" y="0.000000e+00" z="0.000000e+00" diameter="2.000000e+00"/>
+                <distal x="3.550000e+01" y="-3.550000e+01" z="0.000000e+00" diameter="2.000000e+00"/>
+            </segment>
+            <segment id="22" name="Seg1_basal_0">
+                <parent segment="21" fractionAlong="1"/>
+                <distal x="7.100000e+01" y="-7.100000e+01" z="0.000000e+00" diameter="2.000000e+00"/>
+            </segment>
+            <segment id="3" name="Seg0_apical_0">
+                <parent segment="2" fractionAlong="1"/>
+                <proximal x="0.000000e+00" y="1.000000e+01" z="0.000000e+00" diameter="4.000000e+00"/>
+                <distal x="0.000000e+00" y="6.000000e+01" z="0.000000e+00" diameter="4.000000e+00"/>
+            </segment>
+            <segment id="4" name="Seg1_apical_0">
+                <parent segment="3" fractionAlong="1"/>
+                <distal x="0.000000e+00" y="1.100000e+02" z="0.000000e+00" diameter="4.000000e+00"/>
+            </segment>
+            <segment id="27" name="Seg0_basal_3">
+                <parent segment="26" fractionAlong="1"/>
+                <proximal x="-7.100000e+01" y="-7.100000e+01" z="0.000000e+00" diameter="1.500000e+00"/>
+                <distal x="-1.420000e+02" y="-1.420000e+02" z="0.000000e+00" diameter="1.500000e+00"/>
+            </segment>
+            <segment id="28" name="Seg1_basal_3">
+                <parent segment="27" fractionAlong="1"/>
+                <distal x="-2.124000e+02" y="-2.124000e+02" z="0.000000e+00" diameter="1.500000e+00"/>
+            </segment>
+            <segment id="23" name="Seg0_basal_1">
+                <parent segment="22" fractionAlong="1"/>
+                <proximal x="7.100000e+01" y="-7.100000e+01" z="0.000000e+00" diameter="1.500000e+00"/>
+                <distal x="1.420000e+02" y="-1.420000e+02" z="0.000000e+00" diameter="1.500000e+00"/>
+            </segment>
+            <segment id="24" name="Seg1_basal_1">
+                <parent segment="23" fractionAlong="1"/>
+                <distal x="2.124000e+02" y="-2.124000e+02" z="0.000000e+00" diameter="1.500000e+00"/>
+            </segment>
+            <segment id="5" name="Seg0_apical_1">
+                <parent segment="4" fractionAlong="1"/>
+                <proximal x="0.000000e+00" y="1.100000e+02" z="0.000000e+00" diameter="3.000000e+00"/>
+                <distal x="0.000000e+00" y="1.600000e+02" z="0.000000e+00" diameter="3.000000e+00"/>
+            </segment>
+            <segment id="6" name="Seg1_apical_1">
+                <parent segment="5" fractionAlong="1"/>
+                <distal x="0.000000e+00" y="2.100000e+02" z="0.000000e+00" diameter="3.000000e+00"/>
+            </segment>
+            <segment id="7" name="Seg0_apical_2">
+                <parent segment="6" fractionAlong="1"/>
+                <proximal x="0.000000e+00" y="2.100000e+02" z="0.000000e+00" diameter="2.000000e+00"/>
+                <distal x="0.000000e+00" y="3.100000e+02" z="0.000000e+00" diameter="2.000000e+00"/>
+            </segment>
+            <segment id="8" name="Seg1_apical_2">
+                <parent segment="7" fractionAlong="1"/>
+                <distal x="0.000000e+00" y="4.100000e+02" z="0.000000e+00" diameter="2.000000e+00"/>
+            </segment>
+            <segment id="15" name="Seg0_apical_6">
+                <parent segment="8" fractionAlong="1"/>
+                <proximal x="0.000000e+00" y="4.100000e+02" z="0.000000e+00" diameter="2.000000e+00"/>
+                <distal x="-3.550000e+01" y="4.455000e+02" z="0.000000e+00" diameter="2.000000e+00"/>
+            </segment>
+            <segment id="16" name="Seg1_apical_6">
+                <parent segment="15" fractionAlong="1"/>
+                <distal x="-7.100000e+01" y="4.810000e+02" z="0.000000e+00" diameter="2.000000e+00"/>
+            </segment>
+            <segment id="9" name="Seg0_apical_3">
+                <parent segment="8" fractionAlong="1"/>
+                <proximal x="0.000000e+00" y="4.100000e+02" z="0.000000e+00" diameter="2.000000e+00"/>
+                <distal x="3.550000e+01" y="4.455000e+02" z="0.000000e+00" diameter="2.000000e+00"/>
+            </segment>
+            <segment id="10" name="Seg1_apical_3">
+                <parent segment="9" fractionAlong="1"/>
+                <distal x="7.100000e+01" y="4.810000e+02" z="0.000000e+00" diameter="2.000000e+00"/>
+            </segment>
+            <segment id="17" name="Seg0_apical_7">
+                <parent segment="16" fractionAlong="1"/>
+                <proximal x="-7.100000e+01" y="4.810000e+02" z="0.000000e+00" diameter="1.500000e+00"/>
+                <distal x="-1.065000e+02" y="5.165000e+02" z="0.000000e+00" diameter="1.500000e+00"/>
+            </segment>
+            <segment id="18" name="Seg1_apical_7">
+                <parent segment="17" fractionAlong="1"/>
+                <distal x="-1.420000e+02" y="5.520000e+02" z="0.000000e+00" diameter="1.500000e+00"/>
+            </segment>
+            <segment id="11" name="Seg0_apical_4">
+                <parent segment="10" fractionAlong="1"/>
+                <proximal x="7.100000e+01" y="4.810000e+02" z="0.000000e+00" diameter="1.500000e+00"/>
+                <distal x="1.065000e+02" y="5.165000e+02" z="0.000000e+00" diameter="1.500000e+00"/>
+            </segment>
+            <segment id="12" name="Seg1_apical_4">
+                <parent segment="11" fractionAlong="1"/>
+                <distal x="1.420000e+02" y="5.520000e+02" z="0.000000e+00" diameter="1.500000e+00"/>
+            </segment>
+            <segment id="19" name="Seg0_apical_8">
+                <parent segment="18" fractionAlong="1"/>
+                <proximal x="-1.420000e+02" y="5.520000e+02" z="0.000000e+00" diameter="1.000000e+00"/>
+                <distal x="-1.597000e+02" y="5.697000e+02" z="0.000000e+00" diameter="1.000000e+00"/>
+            </segment>
+            <segment id="20" name="Seg1_apical_8">
+                <parent segment="19" fractionAlong="1"/>
+                <distal x="-1.774000e+02" y="5.874000e+02" z="0.000000e+00" diameter="1.000000e+00"/>
+            </segment>
+            <segment id="13" name="Seg0_apical_5">
+                <parent segment="12" fractionAlong="1"/>
+                <proximal x="1.420000e+02" y="5.520000e+02" z="0.000000e+00" diameter="1.000000e+00"/>
+                <distal x="1.597000e+02" y="5.697000e+02" z="0.000000e+00" diameter="1.000000e+00"/>
+            </segment>
+            <segment id="14" name="Seg1_apical_5">
+                <parent segment="13" fractionAlong="1"/>
+                <distal x="1.774000e+02" y="5.874000e+02" z="0.000000e+00" diameter="1.000000e+00"/>
+            </segment>
+            <segmentGroup neuroLexId="sao864921383" id="soma_0">
+                <notes>This group contains an unbranched set of segments, and all of the segmentGroups marked with
+             neuroLexId = sao864921383 form a non-overlapping set of all of the segments.
+             These segmentGroups correspond to the 'cables' of NeuroML v1.8.1, and map to/from NEURON sections.</notes>
+                <member segment="0"/>
+                <member segment="2"/>
+            </segmentGroup>
+            <segmentGroup neuroLexId="sao864921383" id="axon_0">
+                <notes>This group contains an unbranched set of segments, and all of the segmentGroups marked with
+             neuroLexId = sao864921383 form a non-overlapping set of all of the segments.
+             These segmentGroups correspond to the 'cables' of NeuroML v1.8.1, and map to/from NEURON sections.</notes>
+                <property tag="numberInternalDivisions" value="5"/>
+                <member segment="29"/>
+                <member segment="30"/>
+            </segmentGroup>
+            <segmentGroup neuroLexId="sao864921383" id="basal_2">
+                <notes>This group contains an unbranched set of segments, and all of the segmentGroups marked with
+             neuroLexId = sao864921383 form a non-overlapping set of all of the segments.
+             These segmentGroups correspond to the 'cables' of NeuroML v1.8.1, and map to/from NEURON sections.</notes>
+                <property tag="numberInternalDivisions" value="5"/>
+                <member segment="25"/>
+                <member segment="26"/>
+            </segmentGroup>
+            <segmentGroup neuroLexId="sao864921383" id="basal_0">
+                <notes>This group contains an unbranched set of segments, and all of the segmentGroups marked with
+             neuroLexId = sao864921383 form a non-overlapping set of all of the segments.
+             These segmentGroups correspond to the 'cables' of NeuroML v1.8.1, and map to/from NEURON sections.</notes>
+                <property tag="numberInternalDivisions" value="5"/>
+                <member segment="21"/>
+                <member segment="22"/>
+            </segmentGroup>
+            <segmentGroup neuroLexId="sao864921383" id="apical_0">
+                <notes>This group contains an unbranched set of segments, and all of the segmentGroups marked with
+             neuroLexId = sao864921383 form a non-overlapping set of all of the segments.
+             These segmentGroups correspond to the 'cables' of NeuroML v1.8.1, and map to/from NEURON sections.</notes>
+                <property tag="numberInternalDivisions" value="3"/>
+                <member segment="3"/>
+                <member segment="4"/>
+            </segmentGroup>
+            <segmentGroup neuroLexId="sao864921383" id="basal_3">
+                <notes>This group contains an unbranched set of segments, and all of the segmentGroups marked with
+             neuroLexId = sao864921383 form a non-overlapping set of all of the segments.
+             These segmentGroups correspond to the 'cables' of NeuroML v1.8.1, and map to/from NEURON sections.</notes>
+                <property tag="numberInternalDivisions" value="11"/>
+                <member segment="27"/>
+                <member segment="28"/>
+            </segmentGroup>
+            <segmentGroup neuroLexId="sao864921383" id="basal_1">
+                <notes>This group contains an unbranched set of segments, and all of the segmentGroups marked with
+             neuroLexId = sao864921383 form a non-overlapping set of all of the segments.
+             These segmentGroups correspond to the 'cables' of NeuroML v1.8.1, and map to/from NEURON sections.</notes>
+                <property tag="numberInternalDivisions" value="11"/>
+                <member segment="23"/>
+                <member segment="24"/>
+            </segmentGroup>
+            <segmentGroup neuroLexId="sao864921383" id="apical_1">
+                <notes>This group contains an unbranched set of segments, and all of the segmentGroups marked with
+             neuroLexId = sao864921383 form a non-overlapping set of all of the segments.
+             These segmentGroups correspond to the 'cables' of NeuroML v1.8.1, and map to/from NEURON sections.</notes>
+                <property tag="numberInternalDivisions" value="5"/>
+                <member segment="5"/>
+                <member segment="6"/>
+            </segmentGroup>
+            <segmentGroup neuroLexId="sao864921383" id="apical_2">
+                <notes>This group contains an unbranched set of segments, and all of the segmentGroups marked with
+             neuroLexId = sao864921383 form a non-overlapping set of all of the segments.
+             These segmentGroups correspond to the 'cables' of NeuroML v1.8.1, and map to/from NEURON sections.</notes>
+                <property tag="numberInternalDivisions" value="9"/>
+                <member segment="7"/>
+                <member segment="8"/>
+            </segmentGroup>
+            <segmentGroup neuroLexId="sao864921383" id="apical_6">
+                <notes>This group contains an unbranched set of segments, and all of the segmentGroups marked with
+             neuroLexId = sao864921383 form a non-overlapping set of all of the segments.
+             These segmentGroups correspond to the 'cables' of NeuroML v1.8.1, and map to/from NEURON sections.</notes>
+                <property tag="numberInternalDivisions" value="5"/>
+                <member segment="15"/>
+                <member segment="16"/>
+            </segmentGroup>
+            <segmentGroup neuroLexId="sao864921383" id="apical_3">
+                <notes>This group contains an unbranched set of segments, and all of the segmentGroups marked with
+             neuroLexId = sao864921383 form a non-overlapping set of all of the segments.
+             These segmentGroups correspond to the 'cables' of NeuroML v1.8.1, and map to/from NEURON sections.</notes>
+                <property tag="numberInternalDivisions" value="5"/>
+                <member segment="9"/>
+                <member segment="10"/>
+            </segmentGroup>
+            <segmentGroup neuroLexId="sao864921383" id="apical_7">
+                <notes>This group contains an unbranched set of segments, and all of the segmentGroups marked with
+             neuroLexId = sao864921383 form a non-overlapping set of all of the segments.
+             These segmentGroups correspond to the 'cables' of NeuroML v1.8.1, and map to/from NEURON sections.</notes>
+                <property tag="numberInternalDivisions" value="5"/>
+                <member segment="17"/>
+                <member segment="18"/>
+            </segmentGroup>
+            <segmentGroup neuroLexId="sao864921383" id="apical_4">
+                <notes>This group contains an unbranched set of segments, and all of the segmentGroups marked with
+             neuroLexId = sao864921383 form a non-overlapping set of all of the segments.
+             These segmentGroups correspond to the 'cables' of NeuroML v1.8.1, and map to/from NEURON sections.</notes>
+                <property tag="numberInternalDivisions" value="5"/>
+                <member segment="11"/>
+                <member segment="12"/>
+            </segmentGroup>
+            <segmentGroup neuroLexId="sao864921383" id="apical_8">
+                <notes>This group contains an unbranched set of segments, and all of the segmentGroups marked with
+             neuroLexId = sao864921383 form a non-overlapping set of all of the segments.
+             These segmentGroups correspond to the 'cables' of NeuroML v1.8.1, and map to/from NEURON sections.</notes>
+                <property tag="numberInternalDivisions" value="3"/>
+                <member segment="19"/>
+                <member segment="20"/>
+            </segmentGroup>
+            <segmentGroup neuroLexId="sao864921383" id="apical_5">
+                <notes>This group contains an unbranched set of segments, and all of the segmentGroups marked with
+             neuroLexId = sao864921383 form a non-overlapping set of all of the segments.
+             These segmentGroups correspond to the 'cables' of NeuroML v1.8.1, and map to/from NEURON sections.</notes>
+                <property tag="numberInternalDivisions" value="3"/>
+                <member segment="13"/>
+                <member segment="14"/>
+            </segmentGroup>
+            <segmentGroup id="all">
+                <include segmentGroup="soma_0"/>
+                <include segmentGroup="basal_0"/>
+                <include segmentGroup="basal_1"/>
+                <include segmentGroup="basal_2"/>
+                <include segmentGroup="basal_3"/>
+                <include segmentGroup="apical_0"/>
+                <include segmentGroup="apical_1"/>
+                <include segmentGroup="apical_2"/>
+                <include segmentGroup="apical_3"/>
+                <include segmentGroup="apical_4"/>
+                <include segmentGroup="apical_5"/>
+                <include segmentGroup="apical_6"/>
+                <include segmentGroup="apical_7"/>
+                <include segmentGroup="apical_8"/>
+                <include segmentGroup="axon_0"/>
+            </segmentGroup>
+            <segmentGroup id="soma_group">
+                <include segmentGroup="soma_0"/>
+            </segmentGroup>
+            <segmentGroup id="dendrite_group">
+                <include segmentGroup="basal_0"/>
+                <include segmentGroup="basal_1"/>
+                <include segmentGroup="basal_2"/>
+                <include segmentGroup="basal_3"/>
+                <include segmentGroup="apical_0"/>
+                <include segmentGroup="apical_1"/>
+                <include segmentGroup="apical_2"/>
+                <include segmentGroup="apical_3"/>
+                <include segmentGroup="apical_4"/>
+                <include segmentGroup="apical_5"/>
+                <include segmentGroup="apical_6"/>
+                <include segmentGroup="apical_7"/>
+                <include segmentGroup="apical_8"/>
+            </segmentGroup>
+            <segmentGroup id="basal_group">
+                <include segmentGroup="basal_0"/>
+                <include segmentGroup="basal_1"/>
+                <include segmentGroup="basal_2"/>
+                <include segmentGroup="basal_3"/>
+            </segmentGroup>
+            <segmentGroup id="apical_group">
+                <include segmentGroup="apical_0"/>
+                <include segmentGroup="apical_1"/>
+                <include segmentGroup="apical_2"/>
+                <include segmentGroup="apical_3"/>
+                <include segmentGroup="apical_4"/>
+                <include segmentGroup="apical_5"/>
+                <include segmentGroup="apical_6"/>
+                <include segmentGroup="apical_7"/>
+                <include segmentGroup="apical_8"/>
+                <inhomogeneousParameter id="PathLengthOverDendrites" variable="p" metric="Path Length from root"/>
+            </segmentGroup>
+            <segmentGroup id="axon_group">
+                <include segmentGroup="axon_0"/>
+            </segmentGroup>
+        </morphology>
+        <biophysicalProperties id="biophys">
+            <membraneProperties>
+                <channelDensity id="HCNsomap_soma" ionChannel="HCNsomap" condDensity="0.6mS_per_cm2" erev="-30mV" segmentGroup="soma_group" ion="non_specific"/>
+                <channelDensity id="Kdrp_soma" ionChannel="Kdrp" condDensity="3mS_per_cm2" erev="-90mV" segmentGroup="soma_group" ion="k"/>
+                <channelDensity id="Kdrp_basal" ionChannel="Kdrp" condDensity="3mS_per_cm2" erev="-90mV" segmentGroup="basal_group" ion="k"/>
+                <channelDensity id="Kdrp_axon" ionChannel="Kdrp" condDensity="3mS_per_cm2" erev="-90mV" segmentGroup="axon_group" ion="k"/>
+                <channelDensity id="KvAproxp_soma" ionChannel="KvAproxp" condDensity="8mS_per_cm2" erev="-90mV" segmentGroup="soma_group" ion="k"/>
+                <channelDensity id="KvAproxp_basal" ionChannel="KvAproxp" condDensity="8mS_per_cm2" erev="-90mV" segmentGroup="basal_group" ion="k"/>
+                <channelDensity id="KvAproxp_axon" ionChannel="KvAproxp" condDensity="1.6mS_per_cm2" erev="-90mV" segmentGroup="axon_group" ion="k"/>
+                <channelDensity id="Nav_soma" ionChannel="Navp" condDensity="32mS_per_cm2" erev="55mV" segmentGroup="soma_group" ion="na"/>
+                <channelDensity id="Navp_basal" ionChannel="Navp" condDensity="32mS_per_cm2" erev="55mV" segmentGroup="basal_group" ion="na"/>
+                <channelDensity id="leak_soma" ionChannel="leak_chan" condDensity="0.03571428571428572mS_per_cm2" erev="-66mV" segmentGroup="soma_group" ion="non_specific"/>
+                <channelDensity id="leak_dendrite" ionChannel="leak_chan" condDensity="0.07142857142857144mS_per_cm2" erev="-66mV" segmentGroup="dendrite_group" ion="non_specific"/>
+                <channelDensity id="leak_axon" ionChannel="leak_chan" condDensity="0.03571428571428572mS_per_cm2" erev="-66mV" segmentGroup="axon_group" ion="non_specific"/>
+                <channelDensityNonUniform id="HCNsomap_apical" ionChannel="HCNsomap" erev="-30mV" ion="non_specific">
+                    <variableParameter parameter="condDensity" segmentGroup="apical_group">
+                        <inhomogeneousValue inhomogeneousParameter="PathLengthOverDendrites" value="H(100 - p) * 6 * (1 + 1.5*p/100)"/>
+                    </variableParameter>
+                </channelDensityNonUniform>
+                <channelDensityNonUniform id="HCNp_apical" ionChannel="HCNp" erev="-30mV" ion="non_specific">
+                    <variableParameter parameter="condDensity" segmentGroup="apical_group">
+                        <inhomogeneousValue inhomogeneousParameter="PathLengthOverDendrites" value="H(500 - p) * H(p - 100) * 6 * (1 + 1.5*p/100)"/>
+                    </variableParameter>
+                </channelDensityNonUniform>
+                <channelDensityNonUniform id="Kdrp_apical" ionChannel="Kdrp" erev="-90mV" ion="k">
+                    <variableParameter parameter="condDensity" segmentGroup="apical_group">
+                        <inhomogeneousValue inhomogeneousParameter="PathLengthOverDendrites" value="H(500 - p) * 30"/>
+                    </variableParameter>
+                </channelDensityNonUniform>
+                <channelDensityNonUniform id="KvAproxp_apical" ionChannel="KvAproxp" erev="-90mV" ion="k">
+                    <variableParameter parameter="condDensity" segmentGroup="apical_group">
+                        <inhomogeneousValue inhomogeneousParameter="PathLengthOverDendrites" value="H(100 - p) * 80 * (1 + p/100)"/>
+                    </variableParameter>
+                </channelDensityNonUniform>
+                <channelDensityNonUniform id="KvAdistp_apical" ionChannel="KvAdistp" erev="-90mV" ion="k">
+                    <variableParameter parameter="condDensity" segmentGroup="apical_group">
+                        <inhomogeneousValue inhomogeneousParameter="PathLengthOverDendrites" value="H(500 - p) * H(p - 100) * 80 * (1 + p/100)"/>
+                    </variableParameter>
+                </channelDensityNonUniform>
+                <channelDensityNonUniform id="Navapicalp_apical" ionChannel="Navapicalp" erev="55mV" ion="na">
+                    <variableParameter parameter="condDensity" segmentGroup="apical_group">
+                        <inhomogeneousValue inhomogeneousParameter="PathLengthOverDendrites" value="H(500 - p) * 320"/>
+                    </variableParameter>
+                </channelDensityNonUniform>
+                <spikeThresh value="0mV"/>
+                <specificCapacitance value="1uF_per_cm2" segmentGroup="soma_group"/>
+                <specificCapacitance value="2uF_per_cm2" segmentGroup="dendrite_group"/>
+                <specificCapacitance value="1uF_per_cm2" segmentGroup="axon_group"/>
+                <initMembPotential value="-65.0mV"/>
+            </membraneProperties>
+            <intracellularProperties>
+                <resistivity value="0.15kohm_cm" segmentGroup="soma_group"/>
+                <resistivity value="0.15kohm_cm" segmentGroup="dendrite_group"/>
+                <resistivity value="0.05 kohm_cm" segmentGroup="axon_group"/>
+            </intracellularProperties>
+        </biophysicalProperties>
+    </cell>
+</neuroml>

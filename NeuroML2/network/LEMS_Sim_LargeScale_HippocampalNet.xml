@@ -1,0 +1,756 @@
+<Lems>
+    
+    <!-- 
+
+        This LEMS file has been automatically generated using PyNeuroML v0.1.10 (libNeuroML v0.2.13)
+
+     -->
+    
+    <!-- Specify which component to run -->
+    <Target component="Sim_LargeScale_HippocampalNet"/>
+
+    <!-- Include core NeuroML2 ComponentType definitions -->
+    <Include file="Cells.xml"/>
+    <Include file="Networks.xml"/>
+    <Include file="Simulation.xml"/>
+    
+    <Include file="../channels/CavL.channel.nml"/>
+    <Include file="../channels/CavN.channel.nml"/>
+    <Include file="../channels/HCN.channel.nml"/>
+    <Include file="../channels/HCNolm.channel.nml"/>
+    <Include file="../channels/HCNp.channel.nml"/>
+    <Include file="../channels/KCaS.channel.nml"/>
+    <Include file="../channels/Kdrfast.channel.nml"/>
+    <Include file="../channels/Kdrfastngf.channel.nml"/>
+    <Include file="../channels/Kdrp.channel.nml"/>
+    <Include file="../channels/Kdrslow.channel.nml"/>
+    <Include file="../channels/KvA.channel.nml"/>
+    <Include file="../channels/KvAdistp.channel.nml"/>
+    <Include file="../channels/KvAngf.channel.nml"/>
+    <Include file="../channels/KvAolm.channel.nml"/>
+    <Include file="../channels/KvAproxp.channel.nml"/>
+    <Include file="../channels/KvCaB.channel.nml"/>
+    <Include file="../channels/KvGroup.channel.nml"/>
+    <Include file="../channels/Nav.channel.nml"/>
+    <Include file="../channels/Navaxonp.channel.nml"/>
+    <Include file="../channels/Navbis.channel.nml"/>
+    <Include file="../channels/Navcck.channel.nml"/>
+    <Include file="../channels/Navngf.channel.nml"/>
+    <Include file="../channels/Navp.channel.nml"/>
+    <Include file="../channels/leak_chan.channel.nml"/>
+    <Include file="../channels/Capool.nml"/>
+    <Include file="../cells/axoaxonic.cell.nml"/>
+    <Include file="../cells/bistratified.cell.nml"/>
+    <Include file="../cells/cck.cell.nml"/>
+    <Include file="../cells/cutsuridis.cell.nml"/>
+    <Include file="../cells/ivy.cell.nml"/>
+    <Include file="../cells/ngf.cell.nml"/>
+    <Include file="../cells/olm.cell.nml"/>
+    <Include file="../cells/poolosyn.cell.nml"/>
+    <Include file="../cells/pvbasket.cell.nml"/>
+    <Include file="../cells/sca.cell.nml"/>
+    <Include file="../synapses/exp2Synapses.synapse.nml"/>
+    <Include file="../synapses/customGABASynapses.synapse.nml"/>
+    <Include file="stimulations.nml"/>
+    <Include file="LargeScale_HippocampalNet.net.nml"/>
+   
+    <Simulation id="Sim_LargeScale_HippocampalNet" length="100ms" step="0.01ms" target="LargeScale_HippocampalNet" seed="12345">  <!-- Note seed: ensures same random numbers used every run -->
+        
+        <Display id="disp_PC" title="Voltages Pyramidal cells" timeScale="1ms" xmin="-10.0" xmax="110.0" ymin="-80" ymax="50">
+            <Line id="PC 0: V[mV]" quantity="pop_poolosyn/0/poolosyncell/v" scale="1mV" color="#f5ec9f" timeScale="1ms"/>
+            <Line id="PC 1: V[mV]" quantity="pop_poolosyn/1/poolosyncell/v" scale="1mV" color="#4a8c49" timeScale="1ms"/>
+            <Line id="PC 2: V[mV]" quantity="pop_poolosyn/2/poolosyncell/v" scale="1mV" color="#080118" timeScale="1ms"/>
+            <Line id="PC 3: V[mV]" quantity="pop_poolosyn/3/poolosyncell/v" scale="1mV" color="#da072b" timeScale="1ms"/>
+            <Line id="PC 4: V[mV]" quantity="pop_poolosyn/4/poolosyncell/v" scale="1mV" color="#94df39" timeScale="1ms"/>
+            <Line id="PC 5: V[mV]" quantity="pop_poolosyn/5/poolosyncell/v" scale="1mV" color="#d50467" timeScale="1ms"/>
+            <Line id="PC 6: V[mV]" quantity="pop_poolosyn/6/poolosyncell/v" scale="1mV" color="#75b6fe" timeScale="1ms"/>
+            <Line id="PC 7: V[mV]" quantity="pop_poolosyn/7/poolosyncell/v" scale="1mV" color="#36927e" timeScale="1ms"/>
+            <Line id="PC 8: V[mV]" quantity="pop_poolosyn/8/poolosyncell/v" scale="1mV" color="#b18d1e" timeScale="1ms"/>
+        </Display>
+        
+        <OutputFile id="of_ngf" fileName="ngf.v.dat">
+            <OutputColumn id="v_0" quantity="pop_ngf/0/ngfcell/v"/> 
+            <OutputColumn id="v_1" quantity="pop_ngf/1/ngfcell/v"/> 
+            <OutputColumn id="v_2" quantity="pop_ngf/2/ngfcell/v"/> 
+            <OutputColumn id="v_3" quantity="pop_ngf/3/ngfcell/v"/> 
+        </OutputFile>
+        
+        <OutputFile id="of_bistratified" fileName="bistratified.v.dat">
+            <OutputColumn id="v_0" quantity="pop_bistratified/0/bistratifiedcell/v"/> 
+            <OutputColumn id="v_1" quantity="pop_bistratified/1/bistratifiedcell/v"/> 
+        </OutputFile>
+        
+        <OutputFile id="of_sca" fileName="sca.v.dat">
+            <OutputColumn id="v_0" quantity="pop_sca/0/scacell/v"/> 
+        </OutputFile>
+        
+        <OutputFile id="of_olm" fileName="olm.v.dat">
+            <OutputColumn id="v_0" quantity="pop_olm/0/olmcell/v"/> 
+            <OutputColumn id="v_1" quantity="pop_olm/1/olmcell/v"/> 
+        </OutputFile>
+        
+        <OutputFile id="of_ivy" fileName="ivy.v.dat">
+            <OutputColumn id="v_0" quantity="pop_ivy/0/ivycell/v"/> 
+            <OutputColumn id="v_1" quantity="pop_ivy/1/ivycell/v"/> 
+            <OutputColumn id="v_2" quantity="pop_ivy/2/ivycell/v"/> 
+            <OutputColumn id="v_3" quantity="pop_ivy/3/ivycell/v"/> 
+            <OutputColumn id="v_4" quantity="pop_ivy/4/ivycell/v"/> 
+            <OutputColumn id="v_5" quantity="pop_ivy/5/ivycell/v"/> 
+            <OutputColumn id="v_6" quantity="pop_ivy/6/ivycell/v"/> 
+            <OutputColumn id="v_7" quantity="pop_ivy/7/ivycell/v"/> 
+            <OutputColumn id="v_8" quantity="pop_ivy/8/ivycell/v"/> 
+        </OutputFile>
+        
+        <OutputFile id="of_pvbasket" fileName="pvbasket.v.dat">
+            <OutputColumn id="v_0" quantity="pop_pvbasket/0/pvbasketcell/v"/> 
+            <OutputColumn id="v_1" quantity="pop_pvbasket/1/pvbasketcell/v"/> 
+            <OutputColumn id="v_2" quantity="pop_pvbasket/2/pvbasketcell/v"/> 
+            <OutputColumn id="v_3" quantity="pop_pvbasket/3/pvbasketcell/v"/> 
+            <OutputColumn id="v_4" quantity="pop_pvbasket/4/pvbasketcell/v"/> 
+            <OutputColumn id="v_5" quantity="pop_pvbasket/5/pvbasketcell/v"/> 
+        </OutputFile>
+        
+        <OutputFile id="of_cck" fileName="cck.v.dat">
+            <OutputColumn id="v_0" quantity="pop_cck/0/cckcell/v"/> 
+            <OutputColumn id="v_1" quantity="pop_cck/1/cckcell/v"/> 
+            <OutputColumn id="v_2" quantity="pop_cck/2/cckcell/v"/> 
+            <OutputColumn id="v_3" quantity="pop_cck/3/cckcell/v"/> 
+        </OutputFile>
+        
+        <OutputFile id="of_axoaxonic" fileName="axoaxonic.v.dat">
+            <OutputColumn id="v_0" quantity="pop_axoaxonic/0/axoaxoniccell/v"/> 
+        </OutputFile>
+        
+        <OutputFile id="of_poolosyn" fileName="poolosyn.v.dat">
+            <OutputColumn id="v_0" quantity="pop_poolosyn/0/poolosyncell/v"/> 
+            <OutputColumn id="v_1" quantity="pop_poolosyn/1/poolosyncell/v"/> 
+            <OutputColumn id="v_2" quantity="pop_poolosyn/2/poolosyncell/v"/> 
+            <OutputColumn id="v_3" quantity="pop_poolosyn/3/poolosyncell/v"/> 
+            <OutputColumn id="v_4" quantity="pop_poolosyn/4/poolosyncell/v"/> 
+            <OutputColumn id="v_5" quantity="pop_poolosyn/5/poolosyncell/v"/> 
+            <OutputColumn id="v_6" quantity="pop_poolosyn/6/poolosyncell/v"/> 
+            <OutputColumn id="v_7" quantity="pop_poolosyn/7/poolosyncell/v"/> 
+            <OutputColumn id="v_8" quantity="pop_poolosyn/8/poolosyncell/v"/> 
+            <OutputColumn id="v_9" quantity="pop_poolosyn/9/poolosyncell/v"/> 
+            <OutputColumn id="v_10" quantity="pop_poolosyn/10/poolosyncell/v"/> 
+            <OutputColumn id="v_11" quantity="pop_poolosyn/11/poolosyncell/v"/> 
+            <OutputColumn id="v_12" quantity="pop_poolosyn/12/poolosyncell/v"/> 
+            <OutputColumn id="v_13" quantity="pop_poolosyn/13/poolosyncell/v"/> 
+            <OutputColumn id="v_14" quantity="pop_poolosyn/14/poolosyncell/v"/> 
+            <OutputColumn id="v_15" quantity="pop_poolosyn/15/poolosyncell/v"/> 
+            <OutputColumn id="v_16" quantity="pop_poolosyn/16/poolosyncell/v"/> 
+            <OutputColumn id="v_17" quantity="pop_poolosyn/17/poolosyncell/v"/> 
+            <OutputColumn id="v_18" quantity="pop_poolosyn/18/poolosyncell/v"/> 
+            <OutputColumn id="v_19" quantity="pop_poolosyn/19/poolosyncell/v"/> 
+            <OutputColumn id="v_20" quantity="pop_poolosyn/20/poolosyncell/v"/> 
+            <OutputColumn id="v_21" quantity="pop_poolosyn/21/poolosyncell/v"/> 
+            <OutputColumn id="v_22" quantity="pop_poolosyn/22/poolosyncell/v"/> 
+            <OutputColumn id="v_23" quantity="pop_poolosyn/23/poolosyncell/v"/> 
+            <OutputColumn id="v_24" quantity="pop_poolosyn/24/poolosyncell/v"/> 
+            <OutputColumn id="v_25" quantity="pop_poolosyn/25/poolosyncell/v"/> 
+            <OutputColumn id="v_26" quantity="pop_poolosyn/26/poolosyncell/v"/> 
+            <OutputColumn id="v_27" quantity="pop_poolosyn/27/poolosyncell/v"/> 
+            <OutputColumn id="v_28" quantity="pop_poolosyn/28/poolosyncell/v"/> 
+            <OutputColumn id="v_29" quantity="pop_poolosyn/29/poolosyncell/v"/> 
+            <OutputColumn id="v_30" quantity="pop_poolosyn/30/poolosyncell/v"/> 
+            <OutputColumn id="v_31" quantity="pop_poolosyn/31/poolosyncell/v"/> 
+            <OutputColumn id="v_32" quantity="pop_poolosyn/32/poolosyncell/v"/> 
+            <OutputColumn id="v_33" quantity="pop_poolosyn/33/poolosyncell/v"/> 
+            <OutputColumn id="v_34" quantity="pop_poolosyn/34/poolosyncell/v"/> 
+            <OutputColumn id="v_35" quantity="pop_poolosyn/35/poolosyncell/v"/> 
+            <OutputColumn id="v_36" quantity="pop_poolosyn/36/poolosyncell/v"/> 
+            <OutputColumn id="v_37" quantity="pop_poolosyn/37/poolosyncell/v"/> 
+            <OutputColumn id="v_38" quantity="pop_poolosyn/38/poolosyncell/v"/> 
+            <OutputColumn id="v_39" quantity="pop_poolosyn/39/poolosyncell/v"/> 
+            <OutputColumn id="v_40" quantity="pop_poolosyn/40/poolosyncell/v"/> 
+            <OutputColumn id="v_41" quantity="pop_poolosyn/41/poolosyncell/v"/> 
+            <OutputColumn id="v_42" quantity="pop_poolosyn/42/poolosyncell/v"/> 
+            <OutputColumn id="v_43" quantity="pop_poolosyn/43/poolosyncell/v"/> 
+            <OutputColumn id="v_44" quantity="pop_poolosyn/44/poolosyncell/v"/> 
+            <OutputColumn id="v_45" quantity="pop_poolosyn/45/poolosyncell/v"/> 
+            <OutputColumn id="v_46" quantity="pop_poolosyn/46/poolosyncell/v"/> 
+            <OutputColumn id="v_47" quantity="pop_poolosyn/47/poolosyncell/v"/> 
+            <OutputColumn id="v_48" quantity="pop_poolosyn/48/poolosyncell/v"/> 
+            <OutputColumn id="v_49" quantity="pop_poolosyn/49/poolosyncell/v"/> 
+            <OutputColumn id="v_50" quantity="pop_poolosyn/50/poolosyncell/v"/> 
+            <OutputColumn id="v_51" quantity="pop_poolosyn/51/poolosyncell/v"/> 
+            <OutputColumn id="v_52" quantity="pop_poolosyn/52/poolosyncell/v"/> 
+            <OutputColumn id="v_53" quantity="pop_poolosyn/53/poolosyncell/v"/> 
+            <OutputColumn id="v_54" quantity="pop_poolosyn/54/poolosyncell/v"/> 
+            <OutputColumn id="v_55" quantity="pop_poolosyn/55/poolosyncell/v"/> 
+            <OutputColumn id="v_56" quantity="pop_poolosyn/56/poolosyncell/v"/> 
+            <OutputColumn id="v_57" quantity="pop_poolosyn/57/poolosyncell/v"/> 
+            <OutputColumn id="v_58" quantity="pop_poolosyn/58/poolosyncell/v"/> 
+            <OutputColumn id="v_59" quantity="pop_poolosyn/59/poolosyncell/v"/> 
+            <OutputColumn id="v_60" quantity="pop_poolosyn/60/poolosyncell/v"/> 
+            <OutputColumn id="v_61" quantity="pop_poolosyn/61/poolosyncell/v"/> 
+            <OutputColumn id="v_62" quantity="pop_poolosyn/62/poolosyncell/v"/> 
+            <OutputColumn id="v_63" quantity="pop_poolosyn/63/poolosyncell/v"/> 
+            <OutputColumn id="v_64" quantity="pop_poolosyn/64/poolosyncell/v"/> 
+            <OutputColumn id="v_65" quantity="pop_poolosyn/65/poolosyncell/v"/> 
+            <OutputColumn id="v_66" quantity="pop_poolosyn/66/poolosyncell/v"/> 
+            <OutputColumn id="v_67" quantity="pop_poolosyn/67/poolosyncell/v"/> 
+            <OutputColumn id="v_68" quantity="pop_poolosyn/68/poolosyncell/v"/> 
+            <OutputColumn id="v_69" quantity="pop_poolosyn/69/poolosyncell/v"/> 
+            <OutputColumn id="v_70" quantity="pop_poolosyn/70/poolosyncell/v"/> 
+            <OutputColumn id="v_71" quantity="pop_poolosyn/71/poolosyncell/v"/> 
+            <OutputColumn id="v_72" quantity="pop_poolosyn/72/poolosyncell/v"/> 
+            <OutputColumn id="v_73" quantity="pop_poolosyn/73/poolosyncell/v"/> 
+            <OutputColumn id="v_74" quantity="pop_poolosyn/74/poolosyncell/v"/> 
+            <OutputColumn id="v_75" quantity="pop_poolosyn/75/poolosyncell/v"/> 
+            <OutputColumn id="v_76" quantity="pop_poolosyn/76/poolosyncell/v"/> 
+            <OutputColumn id="v_77" quantity="pop_poolosyn/77/poolosyncell/v"/> 
+            <OutputColumn id="v_78" quantity="pop_poolosyn/78/poolosyncell/v"/> 
+            <OutputColumn id="v_79" quantity="pop_poolosyn/79/poolosyncell/v"/> 
+            <OutputColumn id="v_80" quantity="pop_poolosyn/80/poolosyncell/v"/> 
+            <OutputColumn id="v_81" quantity="pop_poolosyn/81/poolosyncell/v"/> 
+            <OutputColumn id="v_82" quantity="pop_poolosyn/82/poolosyncell/v"/> 
+            <OutputColumn id="v_83" quantity="pop_poolosyn/83/poolosyncell/v"/> 
+            <OutputColumn id="v_84" quantity="pop_poolosyn/84/poolosyncell/v"/> 
+            <OutputColumn id="v_85" quantity="pop_poolosyn/85/poolosyncell/v"/> 
+            <OutputColumn id="v_86" quantity="pop_poolosyn/86/poolosyncell/v"/> 
+            <OutputColumn id="v_87" quantity="pop_poolosyn/87/poolosyncell/v"/> 
+            <OutputColumn id="v_88" quantity="pop_poolosyn/88/poolosyncell/v"/> 
+            <OutputColumn id="v_89" quantity="pop_poolosyn/89/poolosyncell/v"/> 
+            <OutputColumn id="v_90" quantity="pop_poolosyn/90/poolosyncell/v"/> 
+            <OutputColumn id="v_91" quantity="pop_poolosyn/91/poolosyncell/v"/> 
+            <OutputColumn id="v_92" quantity="pop_poolosyn/92/poolosyncell/v"/> 
+            <OutputColumn id="v_93" quantity="pop_poolosyn/93/poolosyncell/v"/> 
+            <OutputColumn id="v_94" quantity="pop_poolosyn/94/poolosyncell/v"/> 
+            <OutputColumn id="v_95" quantity="pop_poolosyn/95/poolosyncell/v"/> 
+            <OutputColumn id="v_96" quantity="pop_poolosyn/96/poolosyncell/v"/> 
+            <OutputColumn id="v_97" quantity="pop_poolosyn/97/poolosyncell/v"/> 
+            <OutputColumn id="v_98" quantity="pop_poolosyn/98/poolosyncell/v"/> 
+            <OutputColumn id="v_99" quantity="pop_poolosyn/99/poolosyncell/v"/> 
+            <OutputColumn id="v_100" quantity="pop_poolosyn/100/poolosyncell/v"/> 
+            <OutputColumn id="v_101" quantity="pop_poolosyn/101/poolosyncell/v"/> 
+            <OutputColumn id="v_102" quantity="pop_poolosyn/102/poolosyncell/v"/> 
+            <OutputColumn id="v_103" quantity="pop_poolosyn/103/poolosyncell/v"/> 
+            <OutputColumn id="v_104" quantity="pop_poolosyn/104/poolosyncell/v"/> 
+            <OutputColumn id="v_105" quantity="pop_poolosyn/105/poolosyncell/v"/> 
+            <OutputColumn id="v_106" quantity="pop_poolosyn/106/poolosyncell/v"/> 
+            <OutputColumn id="v_107" quantity="pop_poolosyn/107/poolosyncell/v"/> 
+            <OutputColumn id="v_108" quantity="pop_poolosyn/108/poolosyncell/v"/> 
+            <OutputColumn id="v_109" quantity="pop_poolosyn/109/poolosyncell/v"/> 
+            <OutputColumn id="v_110" quantity="pop_poolosyn/110/poolosyncell/v"/> 
+            <OutputColumn id="v_111" quantity="pop_poolosyn/111/poolosyncell/v"/> 
+            <OutputColumn id="v_112" quantity="pop_poolosyn/112/poolosyncell/v"/> 
+            <OutputColumn id="v_113" quantity="pop_poolosyn/113/poolosyncell/v"/> 
+            <OutputColumn id="v_114" quantity="pop_poolosyn/114/poolosyncell/v"/> 
+            <OutputColumn id="v_115" quantity="pop_poolosyn/115/poolosyncell/v"/> 
+            <OutputColumn id="v_116" quantity="pop_poolosyn/116/poolosyncell/v"/> 
+            <OutputColumn id="v_117" quantity="pop_poolosyn/117/poolosyncell/v"/> 
+            <OutputColumn id="v_118" quantity="pop_poolosyn/118/poolosyncell/v"/> 
+            <OutputColumn id="v_119" quantity="pop_poolosyn/119/poolosyncell/v"/> 
+            <OutputColumn id="v_120" quantity="pop_poolosyn/120/poolosyncell/v"/> 
+            <OutputColumn id="v_121" quantity="pop_poolosyn/121/poolosyncell/v"/> 
+            <OutputColumn id="v_122" quantity="pop_poolosyn/122/poolosyncell/v"/> 
+            <OutputColumn id="v_123" quantity="pop_poolosyn/123/poolosyncell/v"/> 
+            <OutputColumn id="v_124" quantity="pop_poolosyn/124/poolosyncell/v"/> 
+            <OutputColumn id="v_125" quantity="pop_poolosyn/125/poolosyncell/v"/> 
+            <OutputColumn id="v_126" quantity="pop_poolosyn/126/poolosyncell/v"/> 
+            <OutputColumn id="v_127" quantity="pop_poolosyn/127/poolosyncell/v"/> 
+            <OutputColumn id="v_128" quantity="pop_poolosyn/128/poolosyncell/v"/> 
+            <OutputColumn id="v_129" quantity="pop_poolosyn/129/poolosyncell/v"/> 
+            <OutputColumn id="v_130" quantity="pop_poolosyn/130/poolosyncell/v"/> 
+            <OutputColumn id="v_131" quantity="pop_poolosyn/131/poolosyncell/v"/> 
+            <OutputColumn id="v_132" quantity="pop_poolosyn/132/poolosyncell/v"/> 
+            <OutputColumn id="v_133" quantity="pop_poolosyn/133/poolosyncell/v"/> 
+            <OutputColumn id="v_134" quantity="pop_poolosyn/134/poolosyncell/v"/> 
+            <OutputColumn id="v_135" quantity="pop_poolosyn/135/poolosyncell/v"/> 
+            <OutputColumn id="v_136" quantity="pop_poolosyn/136/poolosyncell/v"/> 
+            <OutputColumn id="v_137" quantity="pop_poolosyn/137/poolosyncell/v"/> 
+            <OutputColumn id="v_138" quantity="pop_poolosyn/138/poolosyncell/v"/> 
+            <OutputColumn id="v_139" quantity="pop_poolosyn/139/poolosyncell/v"/> 
+            <OutputColumn id="v_140" quantity="pop_poolosyn/140/poolosyncell/v"/> 
+            <OutputColumn id="v_141" quantity="pop_poolosyn/141/poolosyncell/v"/> 
+            <OutputColumn id="v_142" quantity="pop_poolosyn/142/poolosyncell/v"/> 
+            <OutputColumn id="v_143" quantity="pop_poolosyn/143/poolosyncell/v"/> 
+            <OutputColumn id="v_144" quantity="pop_poolosyn/144/poolosyncell/v"/> 
+            <OutputColumn id="v_145" quantity="pop_poolosyn/145/poolosyncell/v"/> 
+            <OutputColumn id="v_146" quantity="pop_poolosyn/146/poolosyncell/v"/> 
+            <OutputColumn id="v_147" quantity="pop_poolosyn/147/poolosyncell/v"/> 
+            <OutputColumn id="v_148" quantity="pop_poolosyn/148/poolosyncell/v"/> 
+            <OutputColumn id="v_149" quantity="pop_poolosyn/149/poolosyncell/v"/> 
+            <OutputColumn id="v_150" quantity="pop_poolosyn/150/poolosyncell/v"/> 
+            <OutputColumn id="v_151" quantity="pop_poolosyn/151/poolosyncell/v"/> 
+            <OutputColumn id="v_152" quantity="pop_poolosyn/152/poolosyncell/v"/> 
+            <OutputColumn id="v_153" quantity="pop_poolosyn/153/poolosyncell/v"/> 
+            <OutputColumn id="v_154" quantity="pop_poolosyn/154/poolosyncell/v"/> 
+            <OutputColumn id="v_155" quantity="pop_poolosyn/155/poolosyncell/v"/> 
+            <OutputColumn id="v_156" quantity="pop_poolosyn/156/poolosyncell/v"/> 
+            <OutputColumn id="v_157" quantity="pop_poolosyn/157/poolosyncell/v"/> 
+            <OutputColumn id="v_158" quantity="pop_poolosyn/158/poolosyncell/v"/> 
+            <OutputColumn id="v_159" quantity="pop_poolosyn/159/poolosyncell/v"/> 
+            <OutputColumn id="v_160" quantity="pop_poolosyn/160/poolosyncell/v"/> 
+            <OutputColumn id="v_161" quantity="pop_poolosyn/161/poolosyncell/v"/> 
+            <OutputColumn id="v_162" quantity="pop_poolosyn/162/poolosyncell/v"/> 
+            <OutputColumn id="v_163" quantity="pop_poolosyn/163/poolosyncell/v"/> 
+            <OutputColumn id="v_164" quantity="pop_poolosyn/164/poolosyncell/v"/> 
+            <OutputColumn id="v_165" quantity="pop_poolosyn/165/poolosyncell/v"/> 
+            <OutputColumn id="v_166" quantity="pop_poolosyn/166/poolosyncell/v"/> 
+            <OutputColumn id="v_167" quantity="pop_poolosyn/167/poolosyncell/v"/> 
+            <OutputColumn id="v_168" quantity="pop_poolosyn/168/poolosyncell/v"/> 
+            <OutputColumn id="v_169" quantity="pop_poolosyn/169/poolosyncell/v"/> 
+            <OutputColumn id="v_170" quantity="pop_poolosyn/170/poolosyncell/v"/> 
+            <OutputColumn id="v_171" quantity="pop_poolosyn/171/poolosyncell/v"/> 
+            <OutputColumn id="v_172" quantity="pop_poolosyn/172/poolosyncell/v"/> 
+            <OutputColumn id="v_173" quantity="pop_poolosyn/173/poolosyncell/v"/> 
+            <OutputColumn id="v_174" quantity="pop_poolosyn/174/poolosyncell/v"/> 
+            <OutputColumn id="v_175" quantity="pop_poolosyn/175/poolosyncell/v"/> 
+            <OutputColumn id="v_176" quantity="pop_poolosyn/176/poolosyncell/v"/> 
+            <OutputColumn id="v_177" quantity="pop_poolosyn/177/poolosyncell/v"/> 
+            <OutputColumn id="v_178" quantity="pop_poolosyn/178/poolosyncell/v"/> 
+            <OutputColumn id="v_179" quantity="pop_poolosyn/179/poolosyncell/v"/> 
+            <OutputColumn id="v_180" quantity="pop_poolosyn/180/poolosyncell/v"/> 
+            <OutputColumn id="v_181" quantity="pop_poolosyn/181/poolosyncell/v"/> 
+            <OutputColumn id="v_182" quantity="pop_poolosyn/182/poolosyncell/v"/> 
+            <OutputColumn id="v_183" quantity="pop_poolosyn/183/poolosyncell/v"/> 
+            <OutputColumn id="v_184" quantity="pop_poolosyn/184/poolosyncell/v"/> 
+            <OutputColumn id="v_185" quantity="pop_poolosyn/185/poolosyncell/v"/> 
+            <OutputColumn id="v_186" quantity="pop_poolosyn/186/poolosyncell/v"/> 
+            <OutputColumn id="v_187" quantity="pop_poolosyn/187/poolosyncell/v"/> 
+            <OutputColumn id="v_188" quantity="pop_poolosyn/188/poolosyncell/v"/> 
+            <OutputColumn id="v_189" quantity="pop_poolosyn/189/poolosyncell/v"/> 
+            <OutputColumn id="v_190" quantity="pop_poolosyn/190/poolosyncell/v"/> 
+            <OutputColumn id="v_191" quantity="pop_poolosyn/191/poolosyncell/v"/> 
+            <OutputColumn id="v_192" quantity="pop_poolosyn/192/poolosyncell/v"/> 
+            <OutputColumn id="v_193" quantity="pop_poolosyn/193/poolosyncell/v"/> 
+            <OutputColumn id="v_194" quantity="pop_poolosyn/194/poolosyncell/v"/> 
+            <OutputColumn id="v_195" quantity="pop_poolosyn/195/poolosyncell/v"/> 
+            <OutputColumn id="v_196" quantity="pop_poolosyn/196/poolosyncell/v"/> 
+            <OutputColumn id="v_197" quantity="pop_poolosyn/197/poolosyncell/v"/> 
+            <OutputColumn id="v_198" quantity="pop_poolosyn/198/poolosyncell/v"/> 
+            <OutputColumn id="v_199" quantity="pop_poolosyn/199/poolosyncell/v"/> 
+            <OutputColumn id="v_200" quantity="pop_poolosyn/200/poolosyncell/v"/> 
+            <OutputColumn id="v_201" quantity="pop_poolosyn/201/poolosyncell/v"/> 
+            <OutputColumn id="v_202" quantity="pop_poolosyn/202/poolosyncell/v"/> 
+            <OutputColumn id="v_203" quantity="pop_poolosyn/203/poolosyncell/v"/> 
+            <OutputColumn id="v_204" quantity="pop_poolosyn/204/poolosyncell/v"/> 
+            <OutputColumn id="v_205" quantity="pop_poolosyn/205/poolosyncell/v"/> 
+            <OutputColumn id="v_206" quantity="pop_poolosyn/206/poolosyncell/v"/> 
+            <OutputColumn id="v_207" quantity="pop_poolosyn/207/poolosyncell/v"/> 
+            <OutputColumn id="v_208" quantity="pop_poolosyn/208/poolosyncell/v"/> 
+            <OutputColumn id="v_209" quantity="pop_poolosyn/209/poolosyncell/v"/> 
+            <OutputColumn id="v_210" quantity="pop_poolosyn/210/poolosyncell/v"/> 
+            <OutputColumn id="v_211" quantity="pop_poolosyn/211/poolosyncell/v"/> 
+            <OutputColumn id="v_212" quantity="pop_poolosyn/212/poolosyncell/v"/> 
+            <OutputColumn id="v_213" quantity="pop_poolosyn/213/poolosyncell/v"/> 
+            <OutputColumn id="v_214" quantity="pop_poolosyn/214/poolosyncell/v"/> 
+            <OutputColumn id="v_215" quantity="pop_poolosyn/215/poolosyncell/v"/> 
+            <OutputColumn id="v_216" quantity="pop_poolosyn/216/poolosyncell/v"/> 
+            <OutputColumn id="v_217" quantity="pop_poolosyn/217/poolosyncell/v"/> 
+            <OutputColumn id="v_218" quantity="pop_poolosyn/218/poolosyncell/v"/> 
+            <OutputColumn id="v_219" quantity="pop_poolosyn/219/poolosyncell/v"/> 
+            <OutputColumn id="v_220" quantity="pop_poolosyn/220/poolosyncell/v"/> 
+            <OutputColumn id="v_221" quantity="pop_poolosyn/221/poolosyncell/v"/> 
+            <OutputColumn id="v_222" quantity="pop_poolosyn/222/poolosyncell/v"/> 
+            <OutputColumn id="v_223" quantity="pop_poolosyn/223/poolosyncell/v"/> 
+            <OutputColumn id="v_224" quantity="pop_poolosyn/224/poolosyncell/v"/> 
+            <OutputColumn id="v_225" quantity="pop_poolosyn/225/poolosyncell/v"/> 
+            <OutputColumn id="v_226" quantity="pop_poolosyn/226/poolosyncell/v"/> 
+            <OutputColumn id="v_227" quantity="pop_poolosyn/227/poolosyncell/v"/> 
+            <OutputColumn id="v_228" quantity="pop_poolosyn/228/poolosyncell/v"/> 
+            <OutputColumn id="v_229" quantity="pop_poolosyn/229/poolosyncell/v"/> 
+            <OutputColumn id="v_230" quantity="pop_poolosyn/230/poolosyncell/v"/> 
+            <OutputColumn id="v_231" quantity="pop_poolosyn/231/poolosyncell/v"/> 
+            <OutputColumn id="v_232" quantity="pop_poolosyn/232/poolosyncell/v"/> 
+            <OutputColumn id="v_233" quantity="pop_poolosyn/233/poolosyncell/v"/> 
+            <OutputColumn id="v_234" quantity="pop_poolosyn/234/poolosyncell/v"/> 
+            <OutputColumn id="v_235" quantity="pop_poolosyn/235/poolosyncell/v"/> 
+            <OutputColumn id="v_236" quantity="pop_poolosyn/236/poolosyncell/v"/> 
+            <OutputColumn id="v_237" quantity="pop_poolosyn/237/poolosyncell/v"/> 
+            <OutputColumn id="v_238" quantity="pop_poolosyn/238/poolosyncell/v"/> 
+            <OutputColumn id="v_239" quantity="pop_poolosyn/239/poolosyncell/v"/> 
+            <OutputColumn id="v_240" quantity="pop_poolosyn/240/poolosyncell/v"/> 
+            <OutputColumn id="v_241" quantity="pop_poolosyn/241/poolosyncell/v"/> 
+            <OutputColumn id="v_242" quantity="pop_poolosyn/242/poolosyncell/v"/> 
+            <OutputColumn id="v_243" quantity="pop_poolosyn/243/poolosyncell/v"/> 
+            <OutputColumn id="v_244" quantity="pop_poolosyn/244/poolosyncell/v"/> 
+            <OutputColumn id="v_245" quantity="pop_poolosyn/245/poolosyncell/v"/> 
+            <OutputColumn id="v_246" quantity="pop_poolosyn/246/poolosyncell/v"/> 
+            <OutputColumn id="v_247" quantity="pop_poolosyn/247/poolosyncell/v"/> 
+            <OutputColumn id="v_248" quantity="pop_poolosyn/248/poolosyncell/v"/> 
+            <OutputColumn id="v_249" quantity="pop_poolosyn/249/poolosyncell/v"/> 
+            <OutputColumn id="v_250" quantity="pop_poolosyn/250/poolosyncell/v"/> 
+            <OutputColumn id="v_251" quantity="pop_poolosyn/251/poolosyncell/v"/> 
+            <OutputColumn id="v_252" quantity="pop_poolosyn/252/poolosyncell/v"/> 
+            <OutputColumn id="v_253" quantity="pop_poolosyn/253/poolosyncell/v"/> 
+            <OutputColumn id="v_254" quantity="pop_poolosyn/254/poolosyncell/v"/> 
+            <OutputColumn id="v_255" quantity="pop_poolosyn/255/poolosyncell/v"/> 
+            <OutputColumn id="v_256" quantity="pop_poolosyn/256/poolosyncell/v"/> 
+            <OutputColumn id="v_257" quantity="pop_poolosyn/257/poolosyncell/v"/> 
+            <OutputColumn id="v_258" quantity="pop_poolosyn/258/poolosyncell/v"/> 
+            <OutputColumn id="v_259" quantity="pop_poolosyn/259/poolosyncell/v"/> 
+            <OutputColumn id="v_260" quantity="pop_poolosyn/260/poolosyncell/v"/> 
+            <OutputColumn id="v_261" quantity="pop_poolosyn/261/poolosyncell/v"/> 
+            <OutputColumn id="v_262" quantity="pop_poolosyn/262/poolosyncell/v"/> 
+            <OutputColumn id="v_263" quantity="pop_poolosyn/263/poolosyncell/v"/> 
+            <OutputColumn id="v_264" quantity="pop_poolosyn/264/poolosyncell/v"/> 
+            <OutputColumn id="v_265" quantity="pop_poolosyn/265/poolosyncell/v"/> 
+            <OutputColumn id="v_266" quantity="pop_poolosyn/266/poolosyncell/v"/> 
+            <OutputColumn id="v_267" quantity="pop_poolosyn/267/poolosyncell/v"/> 
+            <OutputColumn id="v_268" quantity="pop_poolosyn/268/poolosyncell/v"/> 
+            <OutputColumn id="v_269" quantity="pop_poolosyn/269/poolosyncell/v"/> 
+            <OutputColumn id="v_270" quantity="pop_poolosyn/270/poolosyncell/v"/> 
+            <OutputColumn id="v_271" quantity="pop_poolosyn/271/poolosyncell/v"/> 
+            <OutputColumn id="v_272" quantity="pop_poolosyn/272/poolosyncell/v"/> 
+            <OutputColumn id="v_273" quantity="pop_poolosyn/273/poolosyncell/v"/> 
+            <OutputColumn id="v_274" quantity="pop_poolosyn/274/poolosyncell/v"/> 
+            <OutputColumn id="v_275" quantity="pop_poolosyn/275/poolosyncell/v"/> 
+            <OutputColumn id="v_276" quantity="pop_poolosyn/276/poolosyncell/v"/> 
+            <OutputColumn id="v_277" quantity="pop_poolosyn/277/poolosyncell/v"/> 
+            <OutputColumn id="v_278" quantity="pop_poolosyn/278/poolosyncell/v"/> 
+            <OutputColumn id="v_279" quantity="pop_poolosyn/279/poolosyncell/v"/> 
+            <OutputColumn id="v_280" quantity="pop_poolosyn/280/poolosyncell/v"/> 
+            <OutputColumn id="v_281" quantity="pop_poolosyn/281/poolosyncell/v"/> 
+            <OutputColumn id="v_282" quantity="pop_poolosyn/282/poolosyncell/v"/> 
+            <OutputColumn id="v_283" quantity="pop_poolosyn/283/poolosyncell/v"/> 
+            <OutputColumn id="v_284" quantity="pop_poolosyn/284/poolosyncell/v"/> 
+            <OutputColumn id="v_285" quantity="pop_poolosyn/285/poolosyncell/v"/> 
+            <OutputColumn id="v_286" quantity="pop_poolosyn/286/poolosyncell/v"/> 
+            <OutputColumn id="v_287" quantity="pop_poolosyn/287/poolosyncell/v"/> 
+            <OutputColumn id="v_288" quantity="pop_poolosyn/288/poolosyncell/v"/> 
+            <OutputColumn id="v_289" quantity="pop_poolosyn/289/poolosyncell/v"/> 
+            <OutputColumn id="v_290" quantity="pop_poolosyn/290/poolosyncell/v"/> 
+            <OutputColumn id="v_291" quantity="pop_poolosyn/291/poolosyncell/v"/> 
+            <OutputColumn id="v_292" quantity="pop_poolosyn/292/poolosyncell/v"/> 
+            <OutputColumn id="v_293" quantity="pop_poolosyn/293/poolosyncell/v"/> 
+            <OutputColumn id="v_294" quantity="pop_poolosyn/294/poolosyncell/v"/> 
+            <OutputColumn id="v_295" quantity="pop_poolosyn/295/poolosyncell/v"/> 
+            <OutputColumn id="v_296" quantity="pop_poolosyn/296/poolosyncell/v"/> 
+            <OutputColumn id="v_297" quantity="pop_poolosyn/297/poolosyncell/v"/> 
+            <OutputColumn id="v_298" quantity="pop_poolosyn/298/poolosyncell/v"/> 
+            <OutputColumn id="v_299" quantity="pop_poolosyn/299/poolosyncell/v"/> 
+            <OutputColumn id="v_300" quantity="pop_poolosyn/300/poolosyncell/v"/> 
+            <OutputColumn id="v_301" quantity="pop_poolosyn/301/poolosyncell/v"/> 
+            <OutputColumn id="v_302" quantity="pop_poolosyn/302/poolosyncell/v"/> 
+            <OutputColumn id="v_303" quantity="pop_poolosyn/303/poolosyncell/v"/> 
+            <OutputColumn id="v_304" quantity="pop_poolosyn/304/poolosyncell/v"/> 
+            <OutputColumn id="v_305" quantity="pop_poolosyn/305/poolosyncell/v"/> 
+            <OutputColumn id="v_306" quantity="pop_poolosyn/306/poolosyncell/v"/> 
+            <OutputColumn id="v_307" quantity="pop_poolosyn/307/poolosyncell/v"/> 
+            <OutputColumn id="v_308" quantity="pop_poolosyn/308/poolosyncell/v"/> 
+            <OutputColumn id="v_309" quantity="pop_poolosyn/309/poolosyncell/v"/> 
+            <OutputColumn id="v_310" quantity="pop_poolosyn/310/poolosyncell/v"/> 
+            <OutputColumn id="v_311" quantity="pop_poolosyn/311/poolosyncell/v"/> 
+        </OutputFile>
+        
+        <EventOutputFile id="spikes_PC" fileName="PC.spikes.dat" format="ID_TIME">
+            <EventSelection id="0" select="pop_poolosyn/0/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="1" select="pop_poolosyn/1/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="2" select="pop_poolosyn/2/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="3" select="pop_poolosyn/3/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="4" select="pop_poolosyn/4/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="5" select="pop_poolosyn/5/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="6" select="pop_poolosyn/6/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="7" select="pop_poolosyn/7/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="8" select="pop_poolosyn/8/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="9" select="pop_poolosyn/9/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="10" select="pop_poolosyn/10/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="11" select="pop_poolosyn/11/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="12" select="pop_poolosyn/12/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="13" select="pop_poolosyn/13/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="14" select="pop_poolosyn/14/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="15" select="pop_poolosyn/15/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="16" select="pop_poolosyn/16/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="17" select="pop_poolosyn/17/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="18" select="pop_poolosyn/18/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="19" select="pop_poolosyn/19/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="20" select="pop_poolosyn/20/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="21" select="pop_poolosyn/21/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="22" select="pop_poolosyn/22/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="23" select="pop_poolosyn/23/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="24" select="pop_poolosyn/24/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="25" select="pop_poolosyn/25/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="26" select="pop_poolosyn/26/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="27" select="pop_poolosyn/27/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="28" select="pop_poolosyn/28/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="29" select="pop_poolosyn/29/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="30" select="pop_poolosyn/30/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="31" select="pop_poolosyn/31/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="32" select="pop_poolosyn/32/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="33" select="pop_poolosyn/33/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="34" select="pop_poolosyn/34/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="35" select="pop_poolosyn/35/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="36" select="pop_poolosyn/36/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="37" select="pop_poolosyn/37/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="38" select="pop_poolosyn/38/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="39" select="pop_poolosyn/39/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="40" select="pop_poolosyn/40/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="41" select="pop_poolosyn/41/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="42" select="pop_poolosyn/42/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="43" select="pop_poolosyn/43/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="44" select="pop_poolosyn/44/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="45" select="pop_poolosyn/45/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="46" select="pop_poolosyn/46/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="47" select="pop_poolosyn/47/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="48" select="pop_poolosyn/48/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="49" select="pop_poolosyn/49/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="50" select="pop_poolosyn/50/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="51" select="pop_poolosyn/51/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="52" select="pop_poolosyn/52/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="53" select="pop_poolosyn/53/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="54" select="pop_poolosyn/54/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="55" select="pop_poolosyn/55/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="56" select="pop_poolosyn/56/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="57" select="pop_poolosyn/57/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="58" select="pop_poolosyn/58/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="59" select="pop_poolosyn/59/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="60" select="pop_poolosyn/60/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="61" select="pop_poolosyn/61/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="62" select="pop_poolosyn/62/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="63" select="pop_poolosyn/63/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="64" select="pop_poolosyn/64/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="65" select="pop_poolosyn/65/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="66" select="pop_poolosyn/66/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="67" select="pop_poolosyn/67/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="68" select="pop_poolosyn/68/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="69" select="pop_poolosyn/69/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="70" select="pop_poolosyn/70/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="71" select="pop_poolosyn/71/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="72" select="pop_poolosyn/72/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="73" select="pop_poolosyn/73/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="74" select="pop_poolosyn/74/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="75" select="pop_poolosyn/75/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="76" select="pop_poolosyn/76/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="77" select="pop_poolosyn/77/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="78" select="pop_poolosyn/78/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="79" select="pop_poolosyn/79/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="80" select="pop_poolosyn/80/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="81" select="pop_poolosyn/81/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="82" select="pop_poolosyn/82/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="83" select="pop_poolosyn/83/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="84" select="pop_poolosyn/84/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="85" select="pop_poolosyn/85/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="86" select="pop_poolosyn/86/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="87" select="pop_poolosyn/87/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="88" select="pop_poolosyn/88/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="89" select="pop_poolosyn/89/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="90" select="pop_poolosyn/90/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="91" select="pop_poolosyn/91/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="92" select="pop_poolosyn/92/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="93" select="pop_poolosyn/93/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="94" select="pop_poolosyn/94/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="95" select="pop_poolosyn/95/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="96" select="pop_poolosyn/96/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="97" select="pop_poolosyn/97/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="98" select="pop_poolosyn/98/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="99" select="pop_poolosyn/99/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="100" select="pop_poolosyn/100/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="101" select="pop_poolosyn/101/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="102" select="pop_poolosyn/102/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="103" select="pop_poolosyn/103/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="104" select="pop_poolosyn/104/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="105" select="pop_poolosyn/105/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="106" select="pop_poolosyn/106/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="107" select="pop_poolosyn/107/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="108" select="pop_poolosyn/108/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="109" select="pop_poolosyn/109/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="110" select="pop_poolosyn/110/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="111" select="pop_poolosyn/111/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="112" select="pop_poolosyn/112/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="113" select="pop_poolosyn/113/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="114" select="pop_poolosyn/114/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="115" select="pop_poolosyn/115/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="116" select="pop_poolosyn/116/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="117" select="pop_poolosyn/117/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="118" select="pop_poolosyn/118/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="119" select="pop_poolosyn/119/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="120" select="pop_poolosyn/120/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="121" select="pop_poolosyn/121/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="122" select="pop_poolosyn/122/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="123" select="pop_poolosyn/123/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="124" select="pop_poolosyn/124/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="125" select="pop_poolosyn/125/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="126" select="pop_poolosyn/126/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="127" select="pop_poolosyn/127/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="128" select="pop_poolosyn/128/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="129" select="pop_poolosyn/129/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="130" select="pop_poolosyn/130/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="131" select="pop_poolosyn/131/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="132" select="pop_poolosyn/132/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="133" select="pop_poolosyn/133/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="134" select="pop_poolosyn/134/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="135" select="pop_poolosyn/135/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="136" select="pop_poolosyn/136/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="137" select="pop_poolosyn/137/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="138" select="pop_poolosyn/138/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="139" select="pop_poolosyn/139/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="140" select="pop_poolosyn/140/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="141" select="pop_poolosyn/141/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="142" select="pop_poolosyn/142/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="143" select="pop_poolosyn/143/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="144" select="pop_poolosyn/144/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="145" select="pop_poolosyn/145/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="146" select="pop_poolosyn/146/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="147" select="pop_poolosyn/147/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="148" select="pop_poolosyn/148/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="149" select="pop_poolosyn/149/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="150" select="pop_poolosyn/150/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="151" select="pop_poolosyn/151/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="152" select="pop_poolosyn/152/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="153" select="pop_poolosyn/153/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="154" select="pop_poolosyn/154/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="155" select="pop_poolosyn/155/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="156" select="pop_poolosyn/156/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="157" select="pop_poolosyn/157/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="158" select="pop_poolosyn/158/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="159" select="pop_poolosyn/159/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="160" select="pop_poolosyn/160/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="161" select="pop_poolosyn/161/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="162" select="pop_poolosyn/162/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="163" select="pop_poolosyn/163/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="164" select="pop_poolosyn/164/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="165" select="pop_poolosyn/165/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="166" select="pop_poolosyn/166/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="167" select="pop_poolosyn/167/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="168" select="pop_poolosyn/168/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="169" select="pop_poolosyn/169/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="170" select="pop_poolosyn/170/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="171" select="pop_poolosyn/171/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="172" select="pop_poolosyn/172/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="173" select="pop_poolosyn/173/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="174" select="pop_poolosyn/174/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="175" select="pop_poolosyn/175/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="176" select="pop_poolosyn/176/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="177" select="pop_poolosyn/177/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="178" select="pop_poolosyn/178/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="179" select="pop_poolosyn/179/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="180" select="pop_poolosyn/180/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="181" select="pop_poolosyn/181/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="182" select="pop_poolosyn/182/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="183" select="pop_poolosyn/183/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="184" select="pop_poolosyn/184/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="185" select="pop_poolosyn/185/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="186" select="pop_poolosyn/186/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="187" select="pop_poolosyn/187/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="188" select="pop_poolosyn/188/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="189" select="pop_poolosyn/189/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="190" select="pop_poolosyn/190/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="191" select="pop_poolosyn/191/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="192" select="pop_poolosyn/192/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="193" select="pop_poolosyn/193/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="194" select="pop_poolosyn/194/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="195" select="pop_poolosyn/195/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="196" select="pop_poolosyn/196/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="197" select="pop_poolosyn/197/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="198" select="pop_poolosyn/198/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="199" select="pop_poolosyn/199/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="200" select="pop_poolosyn/200/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="201" select="pop_poolosyn/201/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="202" select="pop_poolosyn/202/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="203" select="pop_poolosyn/203/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="204" select="pop_poolosyn/204/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="205" select="pop_poolosyn/205/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="206" select="pop_poolosyn/206/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="207" select="pop_poolosyn/207/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="208" select="pop_poolosyn/208/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="209" select="pop_poolosyn/209/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="210" select="pop_poolosyn/210/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="211" select="pop_poolosyn/211/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="212" select="pop_poolosyn/212/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="213" select="pop_poolosyn/213/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="214" select="pop_poolosyn/214/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="215" select="pop_poolosyn/215/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="216" select="pop_poolosyn/216/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="217" select="pop_poolosyn/217/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="218" select="pop_poolosyn/218/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="219" select="pop_poolosyn/219/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="220" select="pop_poolosyn/220/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="221" select="pop_poolosyn/221/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="222" select="pop_poolosyn/222/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="223" select="pop_poolosyn/223/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="224" select="pop_poolosyn/224/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="225" select="pop_poolosyn/225/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="226" select="pop_poolosyn/226/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="227" select="pop_poolosyn/227/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="228" select="pop_poolosyn/228/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="229" select="pop_poolosyn/229/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="230" select="pop_poolosyn/230/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="231" select="pop_poolosyn/231/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="232" select="pop_poolosyn/232/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="233" select="pop_poolosyn/233/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="234" select="pop_poolosyn/234/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="235" select="pop_poolosyn/235/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="236" select="pop_poolosyn/236/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="237" select="pop_poolosyn/237/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="238" select="pop_poolosyn/238/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="239" select="pop_poolosyn/239/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="240" select="pop_poolosyn/240/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="241" select="pop_poolosyn/241/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="242" select="pop_poolosyn/242/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="243" select="pop_poolosyn/243/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="244" select="pop_poolosyn/244/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="245" select="pop_poolosyn/245/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="246" select="pop_poolosyn/246/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="247" select="pop_poolosyn/247/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="248" select="pop_poolosyn/248/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="249" select="pop_poolosyn/249/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="250" select="pop_poolosyn/250/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="251" select="pop_poolosyn/251/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="252" select="pop_poolosyn/252/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="253" select="pop_poolosyn/253/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="254" select="pop_poolosyn/254/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="255" select="pop_poolosyn/255/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="256" select="pop_poolosyn/256/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="257" select="pop_poolosyn/257/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="258" select="pop_poolosyn/258/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="259" select="pop_poolosyn/259/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="260" select="pop_poolosyn/260/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="261" select="pop_poolosyn/261/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="262" select="pop_poolosyn/262/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="263" select="pop_poolosyn/263/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="264" select="pop_poolosyn/264/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="265" select="pop_poolosyn/265/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="266" select="pop_poolosyn/266/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="267" select="pop_poolosyn/267/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="268" select="pop_poolosyn/268/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="269" select="pop_poolosyn/269/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="270" select="pop_poolosyn/270/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="271" select="pop_poolosyn/271/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="272" select="pop_poolosyn/272/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="273" select="pop_poolosyn/273/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="274" select="pop_poolosyn/274/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="275" select="pop_poolosyn/275/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="276" select="pop_poolosyn/276/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="277" select="pop_poolosyn/277/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="278" select="pop_poolosyn/278/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="279" select="pop_poolosyn/279/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="280" select="pop_poolosyn/280/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="281" select="pop_poolosyn/281/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="282" select="pop_poolosyn/282/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="283" select="pop_poolosyn/283/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="284" select="pop_poolosyn/284/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="285" select="pop_poolosyn/285/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="286" select="pop_poolosyn/286/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="287" select="pop_poolosyn/287/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="288" select="pop_poolosyn/288/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="289" select="pop_poolosyn/289/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="290" select="pop_poolosyn/290/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="291" select="pop_poolosyn/291/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="292" select="pop_poolosyn/292/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="293" select="pop_poolosyn/293/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="294" select="pop_poolosyn/294/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="295" select="pop_poolosyn/295/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="296" select="pop_poolosyn/296/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="297" select="pop_poolosyn/297/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="298" select="pop_poolosyn/298/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="299" select="pop_poolosyn/299/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="300" select="pop_poolosyn/300/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="301" select="pop_poolosyn/301/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="302" select="pop_poolosyn/302/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="303" select="pop_poolosyn/303/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="304" select="pop_poolosyn/304/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="305" select="pop_poolosyn/305/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="306" select="pop_poolosyn/306/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="307" select="pop_poolosyn/307/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="308" select="pop_poolosyn/308/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="309" select="pop_poolosyn/309/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="310" select="pop_poolosyn/310/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="311" select="pop_poolosyn/311/poolosyncell" eventPort="spike"/> 
+        </EventOutputFile>
+        
+    </Simulation>
+
+</Lems>

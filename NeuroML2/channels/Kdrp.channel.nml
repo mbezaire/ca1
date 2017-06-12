@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<neuroml xmlns="http://www.neuroml.org/schema/neuroml2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.neuroml.org/schema/neuroml2 https://raw.github.com/NeuroML/NeuroML2/development/Schemas/NeuroML2/NeuroML_v2beta4.xsd" id="NeuroML_ionChannel">
+
+    <notes>NeuroML file containing a single ion channel</notes>
+
+    <ionChannel id="Kdrp" conductance="1pS" type="ionChannelHH" species="k">
+        
+        <notes>Delayed rectifier K+ channel description (from Klee, Ficker and Heinmann 1995, modified by Migliore 1997 to account Dax)</notes>
+        
+        <gateHHtauInf id="n" instances="1">
+            <q10Settings type="q10ExpTemp" q10Factor="1" experimentalTemp="24 degC"/>
+            <timeCourse type="Bezaire_Kdrp_tau"/>
+            <steadyState type="Bezaire_Kdrp_ss"/>
+        </gateHHtauInf>
+          
+    </ionChannel>
+    
+    
+    <ComponentType name="Bezaire_Kdrp_tau"
+                   extends="baseVoltageDepTime"
+                   description="Tau parameter to describe Kdrp">
+        
+        <Constant name="TIME_SCALE" dimension="time" value="1 ms"/>
+        <Constant name="VOLT_SCALE" dimension="voltage" value="1 mV"/>
+        <Constant name="TEMP_SCALE" dimension="temperature" value="1 K"/>
+        <Constant name="R" dimension="none" value="8.315"/>
+        <Constant name="F" dimension="none" value="96480"/>
+                
+        <Requirement name="rateScale" dimension="none"/>
+        <Requirement name="temperature" dimension="temperature"/>
+
+        <Dynamics>
+            <DerivedVariable name="V" dimension="none" value="v / VOLT_SCALE"/>
+            <DerivedVariable name="T" dimension="none" value="temperature / TEMP_SCALE"/>
+            
+            <DerivedVariable name="alpha" dimension="none" value="exp((1e-3*(-3)*(V-13)*F) / (R*(T+0.01)))"/> <!-- NEURON code: 273.16 + celsius-->
+            <DerivedVariable name="beta" dimension="none" value="exp((1e-3*(-3)*0.7*(V-13)*F) / (R*(T+0.01)))"/> <!-- NEURON code: 273.16 + celsius-->
+
+            <DerivedVariable name="tmp" value="beta / (0.02*(1 + alpha))" dimension="none"/>
+            <ConditionalDerivedVariable name="t" dimension="time" exposure="t" >
+                <Case condition="(tmp / rateScale) .lt. 2" value="2 * rateScale * TIME_SCALE"/>
+                <Case value="tmp * TIME_SCALE"/>                
+            </ConditionalDerivedVariable>
+
+        </Dynamics>
+
+    </ComponentType>
+    
+    <ComponentType name="Bezaire_Kdrp_ss"
+                   extends="baseVoltageDepVariable"
+                   description="steadyState parameter to describe Kdrp">
+        
+        <Constant name="VOLT_SCALE" dimension="voltage" value="1 mV"/>
+        <Constant name="TEMP_SCALE" dimension="temperature" value="1 K"/>
+        <Constant name="R" dimension="none" value="8.315"/>
+        <Constant name="F" dimension="none" value="96480"/>
+                
+        <Requirement name="temperature" dimension="temperature"/>
+
+        <Dynamics>
+            <DerivedVariable name="V" dimension="none" value="v / VOLT_SCALE"/>
+            <DerivedVariable name="T" dimension="none" value="temperature / TEMP_SCALE"/>
+            
+            <DerivedVariable name="alpha" dimension="none" value="exp((1e-3*(-3)*(V-13)*F) / (R*(T+0.01)))"/> <!-- NEURON code: 273.16 + celsius-->
+            
+            <DerivedVariable name="x" exposure="x" dimension="none" value="1 / (1 + alpha)"/>
+        </Dynamics>
+
+    </ComponentType>
+
+</neuroml>
