@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Lems>
+
+    <Target component="sim1"/>
+
+    <Include file="Cells.xml"/>
+    <Include file="Networks.xml"/>
+    <Include file="Simulation.xml"/>
+    
+    <Include file="Test_Ca.net.nml"/>
+
+    <Include file="../../Capool.nml"/>
+    <Include file="ica_clamp.channel.nml"/>
+    
+    <Include file="../../CavL.channel.nml"/>
+    <Include file="../../CavN.channel.nml"/>
+    <Include file="../../KvCaB.channel.nml"/>
+    
+
+ 
+    <!-- Simulation specifications -->
+    <Simulation id="sim1" length="200ms" step="0.001ms" target="net1">
+
+      <Display id="d1" title="V (mM)" timeScale="1ms" xmin="0" xmax="200" ymin="-90" ymax="-30">
+        <Line id="v" quantity="pop/0/cell1/v" scale="1mV"  color="#ff0000" timeScale="1ms"/>
+      </Display>
+      
+      <Display id="d2" title="cai (mM)" timeScale="1ms" xmin="0" xmax="200" ymin="-100" ymax="1800">
+        <Line id="cai" quantity="pop/0/cell1/caConc" scale="1e-6 mM"  color="#00ff00" timeScale="1ms"/>
+      </Display>
+      
+      <Display id="d3" title="iCa (nA)" timeScale="1ms" xmin="0" xmax="200" ymin="-5e-5" ymax="5e-4">
+        <Line id="iCa" quantity="pop/0/cell1/iCa" scale="1nA"  color="#ffff00" timeScale="1ms"/>
+      </Display>
+      
+      <Display id="d4" title="iCa_CavN (A/m2)" timeScale="1ms" xmin="0" xmax="200" ymin="-0.001" ymax="0.016">
+        <Line id="iCa_CavN" quantity="pop/0/cell1/biophysicalProperties/membraneProperties/CavN_all/iDensity" scale="1"  color="#ff0000" timeScale="1ms"/>
+      </Display>
+      
+      <Display id="d5" title="iCa_CavL (A/m2)" timeScale="1ms" xmin="0" xmax="200" ymin="-.1e-6" ymax="1.3e-6">
+        <Line id="iCa_CavL" quantity="pop/0/cell1/biophysicalProperties/membraneProperties/CavL_all/iDensity" scale="1"  color="#ff00ff" timeScale="1ms"/>
+      </Display>
+      
+      
+      <OutputFile id="of0" fileName="lems_ca.dat">
+        <OutputColumn id="v" quantity="pop/0/cell1/v"/>
+        <OutputColumn id="cai" quantity="pop/0/cell1/caConc"/>
+        <OutputColumn id="CavL" quantity="pop/0/cell1/biophysicalProperties/membraneProperties/CavL_all/iDensity"/>
+        <OutputColumn id="CavN" quantity="pop/0/cell1/biophysicalProperties/membraneProperties/CavN_all/iDensity"/>
+        <OutputColumn id="KvCaB" quantity="pop/0/cell1/biophysicalProperties/membraneProperties/KvCaB_all/iDensity"/>
+      </OutputFile>
+    
+    </Simulation>
+  
+</Lems>

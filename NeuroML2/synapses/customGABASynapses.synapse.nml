@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<neuroml xmlns="http://www.neuroml.org/schema/neuroml2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.neuroml.org/schema/neuroml2 https://raw.github.com/NeuroML/NeuroML2/development/Schemas/NeuroML2/NeuroML_v2beta4.xsd" id="NeuroML_synapse">
+
+    <notes>NeuroML file containing inhibitory double exponential synapses (see: ExpGABAab.mod: GABA_A and GABA_B modeld in the same file - from Marianne Bezaire) </notes>
+
+	<expTwoSynapse id="syn_ngf_to_axoaxonic_A" gbase="0.057nS" erev="-60mV" tauDecay="39ms" tauRise="8ms"/>
+	<expTwoSynapse id="syn_ngf_to_axoaxonic_B" gbase="0.0169139nS" erev="-90mV" tauDecay="200ms" tauRise="180ms"/>
+
+	<expTwoSynapse id="syn_ngf_to_bistratified_A" gbase="0.057nS" erev="-60mV" tauDecay="39ms" tauRise="8ms"/>
+	<expTwoSynapse id="syn_ngf_to_bistratified_B" gbase="0.0169139nS" erev="-90mV" tauDecay="200ms" tauRise="180ms"/>
+
+	<expTwoSynapse id="syn_ngf_to_cck_A" gbase="0.057nS" erev="-60mV" tauDecay="39ms" tauRise="8ms"/>
+	<expTwoSynapse id="syn_ngf_to_cck_B" gbase="0.0169139nS" erev="-90mV" tauDecay="200ms" tauRise="180ms"/>
+
+	<expTwoSynapse id="syn_ngf_to_ivy_A" gbase="0.09nS" erev="-60mV" tauDecay="39ms" tauRise="8ms"/>
+	<expTwoSynapse id="syn_ngf_to_ivy_B" gbase="0.0267062nS" erev="-90mV" tauDecay="200ms" tauRise="180ms"/>
+
+	<expTwoSynapse id="syn_ngf_to_ngf_A" gbase="0.16nS" erev="-60mV" tauDecay="42ms" tauRise="3.1ms"/>
+	<expTwoSynapse id="syn_ngf_to_ngf_B" gbase="0.0474777nS" erev="-90mV" tauDecay="200ms" tauRise="180ms"/>
+
+	<expTwoSynapse id="syn_ngf_to_poolosyn_A" gbase="0.065nS" erev="-60mV" tauDecay="39ms" tauRise="9ms"/>
+	<expTwoSynapse id="syn_ngf_to_poolosyn_B" gbase="0.0192878nS" erev="-90mV" tauDecay="200ms" tauRise="180ms"/>
+
+	<expTwoSynapse id="syn_ngf_to_pvbasket_A" gbase="0.7nS" erev="-60mV" tauDecay="39ms" tauRise="8ms"/>
+	<expTwoSynapse id="syn_ngf_to_pvbasket_B" gbase="0.207715nS" erev="-90mV" tauDecay="200ms" tauRise="180ms"/>
+
+	<expTwoSynapse id="syn_ngf_to_sca_A" gbase="0.057nS" erev="-60mV" tauDecay="39ms" tauRise="8ms"/>
+	<expTwoSynapse id="syn_ngf_to_sca_B" gbase="0.0169139nS" erev="-90mV" tauDecay="200ms" tauRise="180ms"/>
+
+</neuroml>

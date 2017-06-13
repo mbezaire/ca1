@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<neuroml xmlns="http://www.neuroml.org/schema/neuroml2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.neuroml.org/schema/neuroml2 https://raw.github.com/NeuroML/NeuroML2/development/Schemas/NeuroML2/NeuroML_v2beta4.xsd" id="NeuroML_synapse">
+
+    <notes>NeuroML file containing excitatory and inhibitory double exponential synapses </notes>
+
+	<expTwoSynapse id="syn_bistratified_to_axoaxonic" gbase="0.6nS" erev="-60mV" tauDecay="2.67ms" tauRise="0.287ms"/>
+
+	<expTwoSynapse id="syn_cck_to_axoaxonic" gbase="0.7nS" erev="-60mV" tauDecay="4.49ms" tauRise="0.432ms"/>
+
+	<expTwoSynapse id="syn_ivy_to_axoaxonic" gbase="0.057nS" erev="-60mV" tauDecay="3.1ms" tauRise="2.9ms"/>
+
+	<expTwoSynapse id="syn_olm_to_axoaxonic" gbase="0.12nS" erev="-60mV" tauDecay="10ms" tauRise="0.728ms"/>
+
+	<expTwoSynapse id="syn_poolosyn_to_axoaxonic" gbase="0.04nS" erev="0mV" tauDecay="0.6ms" tauRise="0.3ms"/>
+
+	<expTwoSynapse id="syn_pvbasket_to_axoaxonic" gbase="0.12nS" erev="-60mV" tauDecay="2.67ms" tauRise="0.287ms"/>
+
+	<expTwoSynapse id="syn_sca_to_axoaxonic" gbase="0.6nS" erev="-60mV" tauDecay="4.99ms" tauRise="0.419ms"/>
+
+	<expTwoSynapse id="syn_ca3_to_axoaxonic" gbase="0.12nS" erev="0mV" tauDecay="6.3ms" tauRise="2ms"/>
+
+	<expTwoSynapse id="syn_ec_to_axoaxonic" gbase="0.12nS" erev="0mV" tauDecay="6.3ms" tauRise="2ms"/>
+
+	<expTwoSynapse id="syn_bistratified_to_bistratified" gbase="0.51nS" erev="-60mV" tauDecay="2.67ms" tauRise="0.287ms"/>
+
+	<expTwoSynapse id="syn_cck_to_bistratified" gbase="0.7nS" erev="-60mV" tauDecay="4.49ms" tauRise="0.432ms"/>
+
+	<expTwoSynapse id="syn_ivy_to_bistratified" gbase="0.077nS" erev="-60mV" tauDecay="3.1ms" tauRise="2.9ms"/>
+
+	<expTwoSynapse id="syn_olm_to_bistratified" gbase="0.11nS" erev="-60mV" tauDecay="15ms" tauRise="0.6ms"/>
+
+	<expTwoSynapse id="syn_poolosyn_to_bistratified" gbase="1.9nS" erev="0mV" tauDecay="0.25ms" tauRise="0.11ms"/>
+
+	<expTwoSynapse id="syn_pvbasket_to_bistratified" gbase="2.9nS" erev="-60mV" tauDecay="0.45ms" tauRise="0.18ms"/>
+
+	<expTwoSynapse id="syn_sca_to_bistratified" gbase="0.6nS" erev="-60mV" tauDecay="4.99ms" tauRise="0.419ms"/>
+
+	<expTwoSynapse id="syn_ca3_to_bistratified" gbase="0.15nS" erev="0mV" tauDecay="6.3ms" tauRise="2ms"/>
+
+	<expTwoSynapse id="syn_ec_to_bistratified" gbase="0.15nS" erev="0mV" tauDecay="6.3ms" tauRise="2ms"/>
+
+	<expTwoSynapse id="syn_bistratified_to_cck" gbase="0.8nS" erev="-60mV" tauDecay="2.67ms" tauRise="0.287ms"/>
+
+	<expTwoSynapse id="syn_cck_to_cck" gbase="0.45nS" erev="-60mV" tauDecay="4.49ms" tauRise="0.432ms"/>
+
+	<expTwoSynapse id="syn_ivy_to_cck" gbase="0.037nS" erev="-60mV" tauDecay="3.1ms" tauRise="2.9ms"/>
+
+	<expTwoSynapse id="syn_olm_to_cck" gbase="1.2nS" erev="-60mV" tauDecay="20.2ms" tauRise="0.728ms"/>
+
+	<expTwoSynapse id="syn_pvbasket_to_cck" gbase="1.2nS" erev="-60mV" tauDecay="2.67ms" tauRise="0.287ms"/>
+
+	<expTwoSynapse id="syn_sca_to_cck" gbase="0.85nS" erev="-60mV" tauDecay="4.99ms" tauRise="0.419ms"/>
+
+	<expTwoSynapse id="syn_ca3_to_cck" gbase="0.65nS" erev="0mV" tauDecay="6.3ms" tauRise="2ms"/>
+
+	<expTwoSynapse id="syn_ec_to_cck" gbase="0.65nS" erev="0mV" tauDecay="6.3ms" tauRise="2ms"/>
+
+	<expTwoSynapse id="syn_bistratified_to_ivy" gbase="0.5nS" erev="-60mV" tauDecay="2.67ms" tauRise="0.287ms"/>
+
+	<expTwoSynapse id="syn_cck_to_ivy" gbase="0.3nS" erev="-60mV" tauDecay="4.49ms" tauRise="0.432ms"/>
+
+	<expTwoSynapse id="syn_ivy_to_ivy" gbase="0.057nS" erev="-60mV" tauDecay="3.1ms" tauRise="2.9ms"/>
+
+	<expTwoSynapse id="syn_poolosyn_to_ivy" gbase="0.405nS" erev="0mV" tauDecay="0.6ms" tauRise="0.3ms"/>
+
+	<expTwoSynapse id="syn_pvbasket_to_ivy" gbase="0.16nS" erev="-60mV" tauDecay="2.67ms" tauRise="0.287ms"/>
+
+	<expTwoSynapse id="syn_sca_to_ivy" gbase="0.85nS" erev="-60mV" tauDecay="4.99ms" tauRise="0.419ms"/>
+
+	<expTwoSynapse id="syn_ca3_to_ivy" gbase="0.3nS" erev="0mV" tauDecay="6.3ms" tauRise="2ms"/>
+
+	<expTwoSynapse id="syn_ivy_to_ngf" gbase="0.057nS" erev="-60mV" tauDecay="3.1ms" tauRise="2.9ms"/>
+
+	<expTwoSynapse id="syn_olm_to_ngf" gbase="0.098nS" erev="-60mV" tauDecay="10.2ms" tauRise="1.3ms"/>
+
+	<expTwoSynapse id="syn_sca_to_ngf" gbase="0.85nS" erev="-60mV" tauDecay="4.99ms" tauRise="0.419ms"/>
+
+	<expTwoSynapse id="syn_ec_to_ngf" gbase="3.5nS" erev="0mV" tauDecay="6.3ms" tauRise="2ms"/>
+
+	<expTwoSynapse id="syn_bistratified_to_olm" gbase="0.02nS" erev="-60mV" tauDecay="8ms" tauRise="1ms"/>
+
+	<expTwoSynapse id="syn_cck_to_olm" gbase="0.7nS" erev="-60mV" tauDecay="8ms" tauRise="1ms"/>
+
+	<expTwoSynapse id="syn_ivy_to_olm" gbase="0.057nS" erev="-60mV" tauDecay="3.1ms" tauRise="2.9ms"/>
+
+	<expTwoSynapse id="syn_olm_to_olm" gbase="1.2nS" erev="-60mV" tauDecay="7.5ms" tauRise="0.25ms"/>
+
+	<expTwoSynapse id="syn_poolosyn_to_olm" gbase="0.2nS" erev="0mV" tauDecay="0.6ms" tauRise="0.3ms"/>
+
+	<expTwoSynapse id="syn_sca_to_olm" gbase="0.85nS" erev="-60mV" tauDecay="8ms" tauRise="1ms"/>
+
+	<expTwoSynapse id="syn_axoaxonic_to_poolosyn" gbase="1.15nS" erev="-60mV" tauDecay="8.4ms" tauRise="0.28ms"/>
+
+	<expTwoSynapse id="syn_bistratified_to_poolosyn" gbase="0.51nS" erev="-60mV" tauDecay="9.7ms" tauRise="0.11ms"/>
+
+	<expTwoSynapse id="syn_cck_to_poolosyn" gbase="0.52nS" erev="-60mV" tauDecay="4.2ms" tauRise="0.2ms"/>
+
+	<expTwoSynapse id="syn_ivy_to_poolosyn" gbase="0.041nS" erev="-60mV" tauDecay="11ms" tauRise="1.1ms"/>
+
+	<expTwoSynapse id="syn_olm_to_poolosyn" gbase="0.3nS" erev="-60mV" tauDecay="11ms" tauRise="0.13ms"/>
+
+	<expTwoSynapse id="syn_poolosyn_to_poolosyn" gbase="70nS" erev="0mV" tauDecay="1.5ms" tauRise="0.1ms"/>
+
+	<expTwoSynapse id="syn_pvbasket_to_poolosyn" gbase="0.2nS" erev="-60mV" tauDecay="6.2ms" tauRise="0.3ms"/>
+
+	<expTwoSynapse id="syn_sca_to_poolosyn" gbase="0.76nS" erev="-60mV" tauDecay="3.9ms" tauRise="0.15ms"/>
+
+	<expTwoSynapse id="syn_ca3_to_poolosyn" gbase="0.2nS" erev="0mV" tauDecay="3ms" tauRise="0.5ms"/>
+
+	<expTwoSynapse id="syn_ec_to_poolosyn" gbase="0.2nS" erev="0mV" tauDecay="3ms" tauRise="0.5ms"/>
+
+	<expTwoSynapse id="syn_bistratified_to_pvbasket" gbase="9nS" erev="-60mV" tauDecay="2.67ms" tauRise="0.287ms"/>
+
+	<expTwoSynapse id="syn_cck_to_pvbasket" gbase="9nS" erev="-60mV" tauDecay="4.49ms" tauRise="0.432ms"/>
+
+	<expTwoSynapse id="syn_ivy_to_pvbasket" gbase="0.7nS" erev="-60mV" tauDecay="3.1ms" tauRise="2.9ms"/>
+
+	<expTwoSynapse id="syn_olm_to_pvbasket" gbase="1.1nS" erev="-60mV" tauDecay="7.5ms" tauRise="0.25ms"/>
+
+	<expTwoSynapse id="syn_poolosyn_to_pvbasket" gbase="0.7nS" erev="0mV" tauDecay="0.2ms" tauRise="0.07ms"/>
+
+	<expTwoSynapse id="syn_pvbasket_to_pvbasket" gbase="1.6nS" erev="-60mV" tauDecay="4.8ms" tauRise="0.08ms"/>
+
+	<expTwoSynapse id="syn_sca_to_pvbasket" gbase="1.3nS" erev="-60mV" tauDecay="4.99ms" tauRise="0.419ms"/>
+
+	<expTwoSynapse id="syn_ca3_to_pvbasket" gbase="0.22nS" erev="0mV" tauDecay="6.3ms" tauRise="2ms"/>
+
+	<expTwoSynapse id="syn_bistratified_to_sca" gbase="0.8nS" erev="-60mV" tauDecay="2.67ms" tauRise="0.287ms"/>
+
+	<expTwoSynapse id="syn_cck_to_sca" gbase="0.7nS" erev="-60mV" tauDecay="4.49ms" tauRise="0.432ms"/>
+
+	<expTwoSynapse id="syn_ivy_to_sca" gbase="0.037nS" erev="-60mV" tauDecay="3.1ms" tauRise="2.9ms"/>
+
+	<expTwoSynapse id="syn_olm_to_sca" gbase="0.15nS" erev="-60mV" tauDecay="29ms" tauRise="0.07ms"/>
+
+	<expTwoSynapse id="syn_poolosyn_to_sca" gbase="0.405nS" erev="0mV" tauDecay="0.6ms" tauRise="0.3ms"/>
+
+	<expTwoSynapse id="syn_pvbasket_to_sca" gbase="0.6nS" erev="-60mV" tauDecay="2.67ms" tauRise="0.287ms"/>
+
+	<expTwoSynapse id="syn_sca_to_sca" gbase="1nS" erev="-60mV" tauDecay="2ms" tauRise="0.2ms"/>
+
+	<expTwoSynapse id="syn_ca3_to_sca" gbase="0.3nS" erev="0mV" tauDecay="6.3ms" tauRise="2ms"/>
+
+	<expTwoSynapse id="syn_ec_to_sca" gbase="0.45nS" erev="0mV" tauDecay="6.3ms" tauRise="2ms"/>
+
+
+
+</neuroml>

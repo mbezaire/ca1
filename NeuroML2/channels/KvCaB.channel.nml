@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<neuroml xmlns="http://www.neuroml.org/schema/neuroml2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.neuroml.org/schema/neuroml2 https://raw.github.com/NeuroML/NeuroML2/development/Schemas/NeuroML2/NeuroML_v2beta4.xsd" id="NeuroML_ionChannel">
+
+    <notes>NeuroML file containing a single ion channel</notes>
+    
+    <ionChannel id="KvCaB" conductance="1pS" type="ionChannelHH" species="k">
+        
+        <notes>Ca++ activated mAHP K+ channel description (from Moczydlowski and Latorre 1983 - modeled by Poirazi 2003, Lawrence 2006 (same parameters))</notes>
+
+        <gateHHrates id="o" instances="1">
+            <forwardRate type="Bezaire_KvCaB_alpha"/>
+            <reverseRate type="Bezaire_KvCaB_beta"/>
+        </gateHHrates>
+        
+    </ionChannel>
+       
+       
+    <ComponentType name="Bezaire_KvCaB_alpha"
+            extends="baseVoltageConcDepRate"
+            description="forward rate to describe KvCaB">
+        
+        <Constant name="R" dimension="idealGasConstantDims" value="8.313424 J_per_K_per_mol"/>
+        <Constant name="zCa" dimension="none" value="2"/>
+        <Constant name="F" dimension="charge_per_mole" value="96485.3 C_per_mol"/> <!-- NEURON's built in Faraday -->
+        <Constant name="TIME_SCALE" dimension="time" value="1 ms"/>
+        <Constant name="CONC_SCALE" dimension="concentration" value="1 mM"/>
+        
+        <Requirement name="temperature" dimension="temperature"/>
+        
+        <Dynamics>
+            <DerivedVariable name="ca_conc_i" dimension="none" value="caConc / CONC_SCALE"/>
+            
+            <DerivedVariable name="K" dimension="per_voltage" value="(zCa * 0.84 * F) / (R * temperature)"/> 
+            <DerivedVariable name="volt_dep" dimension="none" value="4.8e-04 * exp(-K * v)"/>
+            
+            <DerivedVariable name="r" dimension="per_time" value="((0.28*ca_conc_i) / (ca_conc_i + volt_dep)) / TIME_SCALE"/>
+            
+        </Dynamics>
+          
+    </ComponentType>
+    
+    
+    <ComponentType name="Bezaire_KvCaB_beta"
+            extends="baseVoltageConcDepRate"
+            description="reverse rate to describe KvCaB">
+        
+        <Constant name="R" dimension="idealGasConstantDims" value="8.313424 J_per_K_per_mol"/>
+        <Constant name="zCa" dimension="none" value="2"/>
+        <Constant name="F" dimension="charge_per_mole" value="96485.3 C_per_mol"/> <!-- NEURON's built in Faraday --> 
+        <Constant name="TIME_SCALE" dimension="time" value="1 ms"/>
+        <Constant name="CONC_SCALE" dimension="concentration" value="1 mM"/>
+        
+        <Requirement name="temperature" dimension="temperature"/>
+        
+        <Dynamics>
+            <DerivedVariable name="ca_conc_i" dimension="none" value="caConc / CONC_SCALE"/>
+            
+            <DerivedVariable name="K" dimension="per_voltage" value="(zCa * F) / (R * temperature)"/> 
+            <DerivedVariable name="volt_dep" dimension="none" value="1.3e-07 * exp(-K * v)"/>
+            
+            <DerivedVariable name="r" dimension="per_time" value="(0.48 / (1.0 + (ca_conc_i/volt_dep))) / TIME_SCALE"/>
+            
+        </Dynamics>
+          
+    </ComponentType>
+                            
+    
+    
+</neuroml>

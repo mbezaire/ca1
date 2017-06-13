@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<neuroml xmlns="http://www.neuroml.org/schema/neuroml2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.neuroml.org/schema/neuroml2 https://raw.github.com/NeuroML/NeuroML2/development/Schemas/NeuroML2/NeuroML_v2beta4.xsd" id="NeuroML_ionChannel">
+
+    <notes>NeuroML file containing a single ion channel</notes>
+
+    <ionChannel id="KvGroup" conductance="1pS" type="ionChannelHH" species="k">
+        
+        <notes>Slow K+ channel description (from Yuen and Durand 1991 - modeled by Aradi and Holmes 2002)</notes>
+
+        <gateHHrates id="n" instances="1">
+            <q10Settings type="q10ExpTemp" q10Factor="3" experimentalTemp="34 degC"/>
+            <forwardRate type="HHExpLinearRate" rate="0.12166per_ms" midpoint="4.18371mV" scale="6.42606mV"/>  <!-- modified by Marianne Bezaire to fit Lien and Jonas 2003-->
+            <reverseRate type="HHExpRate" rate="0.015857per_ms" midpoint="0mV" scale="-25.4834mV"/>  <!-- modified by Marianne Bezaire to fit Lien and Jonas 2003-->
+        </gateHHrates>
+        
+    </ionChannel>
+    
+</neuroml>

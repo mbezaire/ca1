@@ -1,0 +1,33 @@
+system: Testing Bezaires hippocampal CA1 network
+
+experiments:
+  current clamp axoaxonic:
+    expected:
+      spike times: [57.119, 70.326, 83.81, 97.519, 111.384, 125.357, 139.408, 153.514, 167.661, 181.838, 196.038, 210.254, 224.483, 238.721]
+  current clamp bistratified:
+    expected:
+      spike times: [68.535, 93.813, 119.216, 144.735, 170.357, 196.069, 221.862, 247.726]
+  current clamp cck:
+    expected:
+      spike times: [123.247, 237.674]
+  current clamp cutsuridis:
+    expected:
+      spike times: [110.952, 134.83, 159.141, 183.453]
+  current clamp ivy:
+    expected:
+      spike times: [59.367, 68.205, 77.687, 87.544, 97.715, 108.158, 118.836, 129.718, 140.776, 151.986, 163.327, 174.781, 186.333, 197.971, 209.683, 221.46, 233.293, 245.177]
+  current clamp ngf:
+    expected:
+      spike times: [130.36, 182.605, 245.543]
+  current clamp olm:
+    expected:
+      spike times: [62.025, 78.021, 93.214, 107.983, 122.511, 136.9, 151.206, 165.463, 179.692, 193.905, 208.112, 222.316, 236.522, 250.829]
+  current clamp poolosyn:
+    expected:
+      spike times: [72.659, 111.071, 149.689, 188.294, 226.87]
+  current clamp pvbasket:
+    expected:
+      spike times: [63.023, 83.132, 103.653, 124.415, 145.326, 166.33, 187.396, 208.502, 229.635, 251.381]
+  current clamp sca:
+    expected:
+      spike times: [105.218, 186.931]

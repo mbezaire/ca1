@@ -1,0 +1,16 @@
+target: LEMS_ngf.xml
+engine: jNeuroML_NEURON
+mep: ../../.test.mep
+
+experiments:
+  current clamp ngf:
+    observables:
+      spike times:
+        file:
+          path: ngf.dat
+          columns: [0, 1]
+          scaling: [1000, 1000]
+        spike detection:
+          method: threshold
+          threshold: 0
+        tolerance: 0.031

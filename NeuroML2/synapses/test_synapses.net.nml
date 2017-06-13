@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<neuroml xmlns="http://www.neuroml.org/schema/neuroml2"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.neuroml.org/schema/neuroml2 https://raw.github.com/NeuroML/NeuroML2/development/Schemas/NeuroML2/NeuroML_v2beta4.xsd"
+    id = "NeuroML2_network">
+    
+    <!--
+    <include href="../cells/bistratified.cell.nml"/>
+    <include href="../cells/cck.cell.nml"/>
+    -->
+    <include href="../cells/ngf.cell.nml"/>
+    <include href="exp2Synapses.synapse.nml"/>
+    <include href="customGABASynapses.synapse.nml"/>
+
+    <!-- Point process: Current clamp -->    
+    <pulseGenerator id="IClamp" delay="100ms" duration="100ms" amplitude="0.2nA"/>    
+    
+    <!-- Create a 2 cell network -->
+
+    <network id="network" type="networkWithTemperature" temperature="34 degC">
+      
+        <!--
+        <population id="Pop_cckcell" component="cckcell" size="1" type="populationList">
+            <instance id="0">
+                <location x="0" y="0" z="0"/>
+            </instance>
+        </population>
+        
+        <population id="Pop_bistratifiedcell" component="bistratifiedcell" size="1" type="populationList">
+            <instance id="0">
+                <location x="0" y="0" z="0"/>
+            </instance>
+        </population>
+        -->
+        
+        <population id="pop_ngf" component="ngfcell" size="1" type="populationList">
+            <instance id="0">
+                <location x="0" y="0" z="0"/>
+            </instance>
+        </population>
+        
+        <projection id="proj_ngfpop_to_ngfpop_A" presynapticPopulation="pop_ngf" postsynapticPopulation="pop_ngf" synapse="syn_ngf_to_ngf_A">
+            <connectionWD id="0" preCellId="../pop_ngf/0/ngfcell" preSegmentId="2" preFractionAlong="0.0" postCellId="../pop_ngf/0/ngfcell" postSegmentId="10" postFractionAlong="9.21045047064e-06" weight="1." delay="3ms"/>
+            <!--<connectionWD id="1" preCellId="../pop_ngf/0/ngfcell" preSegmentId="2" preFractionAlong="0.0" postCellId="../pop_ngf/0/ngfcell" postSegmentId="22" postFractionAlong="5.68434342085e-16" weight="1." delay="3ms"/>-->
+        </projection>    
+            
+        <projection id="proj_ngfpop_to_ngfpop_B" presynapticPopulation="pop_ngf" postsynapticPopulation="pop_ngf" synapse="syn_ngf_to_ngf_B">
+            <connectionWD id="0" preCellId="../pop_ngf/0/ngfcell" preSegmentId="2" preFractionAlong="0.0" postCellId="../pop_ngf/0/ngfcell" postSegmentId="10" postFractionAlong="9.21045047064e-06" weight="1." delay="3ms"/>
+            <!--<connectionWD id="1" preCellId="../pop_ngf/0/ngfcell" preSegmentId="2" preFractionAlong="0.0" postCellId="../pop_ngf/0/ngfcell" postSegmentId="22" postFractionAlong="5.68434342085e-16" weight="1." delay="3ms"/>-->
+        </projection>
+
+        <inputList id="IClamp" component="IClamp" population="pop">
+            <input id="0" target="../pop_ngf/0/ngfcell" destination="synapses"/>
+        </inputList>   
+ 
+    </network>
+  
+</neuroml>

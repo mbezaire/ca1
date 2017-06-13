@@ -1,0 +1,16 @@
+target: LEMS_sca.xml
+engine: jNeuroML_NEURON
+mep: ../../.test.mep
+
+experiments:
+  current clamp sca:
+    observables:
+      spike times:
+        file:
+          path: sca.dat
+          columns: [0, 1]
+          scaling: [1000, 1000]
+        spike detection:
+          method: threshold
+          threshold: 0
+        tolerance: 0.05

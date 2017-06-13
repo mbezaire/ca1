@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<neuroml xmlns="http://www.neuroml.org/schema/neuroml2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.neuroml.org/schema/neuroml2 https://raw.github.com/NeuroML/NeuroML2/development/Schemas/NeuroML2/NeuroML_v2beta4.xsd" id="NeuroML_ionChannel">
+
+    <notes>NeuroML file containing a single ion channel</notes>
+
+    <ionChannel id="HCNp" conductance="1pS" type="ionChannelHH" species="non_specific">
+        
+        <notes>Hyperpolarization-activated, CN-gated channel descriptions (from Magee 1998 - modeled by Marianne Bezaire)</notes>
+    
+        <gateHHtauInf id="l" instances="1">
+            <q10Settings type="q10ExpTemp" q10Factor="4.5" experimentalTemp="33 degC"/>
+            <timeCourse type="Bezaire_HCNp_tau"/>
+            <steadyState type="Bezaire_HCNp_ss_vhalf_90"/>
+        </gateHHtauInf>
+    
+    </ionChannel>
+    
+    
+    <ionChannel id="HCNsomap" conductance="1pS" type="ionChannelHH" species="non_specific">
+        
+        <gateHHtauInf id="l" instances="1">
+            <q10Settings type="q10ExpTemp" q10Factor="4.5" experimentalTemp="33 degC"/>
+            <timeCourse type="Bezaire_HCNp_tau"/>
+            <steadyState type="Bezaire_HCNp_ss_vhalf_82"/>
+        </gateHHtauInf>
+    
+    </ionChannel>
+
+    
+    <ComponentType name="Bezaire_HCNp_tau"
+                   extends="baseVoltageDepTime"
+                   description="Tau parameter to describe HCNp">
+        
+        <Constant name="TIME_SCALE" dimension="time" value="1 ms"/>
+        <Constant name="VOLT_SCALE" dimension="voltage" value="1 mV"/>
+
+        <Dynamics>
+            <DerivedVariable name="V" dimension="none" value="v / VOLT_SCALE"/>
+            
+            <DerivedVariable name="alpha_T" dimension="none" value="exp(0.0378 * 2.2 * (V + 75))"/>
+            <DerivedVariable name="beta_T" dimension="none" value="exp(0.0378 * 2.2 * 0.4 * (V + 75))"/>
+            <DerivedVariable name="t" dimension="time" value="(beta_T / (0.011 * (1 + alpha_T))) * TIME_SCALE" exposure="t"/>
+        </Dynamics>
+
+    </ComponentType>
+    
+    <ComponentType name="Bezaire_HCNp_ss_vhalf_90"
+                   extends="baseVoltageDepVariable"
+                   description="steadyState parameter to describe HCNp">
+        
+        <Constant name="VOLT_SCALE" dimension="voltage" value="1 mV"/>
+
+        <Dynamics>
+            <DerivedVariable name="V" dimension="none" value="v / VOLT_SCALE"/>
+            
+            <DerivedVariable name="alpha_L" dimension="none" value="exp(0.0378 * 4 * (V + 90))"/>
+            <DerivedVariable name="x" dimension="none" value="1 / (1 + alpha_L)" exposure="x"/>
+        </Dynamics>
+
+    </ComponentType>
+    
+    <ComponentType name="Bezaire_HCNp_ss_vhalf_82"
+                   extends="baseVoltageDepVariable"
+                   description="steadyState parameter to describe HCNp">
+        
+        <Constant name="VOLT_SCALE" dimension="voltage" value="1 mV"/>
+
+        <Dynamics>
+            <DerivedVariable name="V" dimension="none" value="v / VOLT_SCALE"/>
+            
+            <DerivedVariable name="alpha_L" dimension="none" value="exp(0.0378 * 4 * (V + 82))"/>
+            <DerivedVariable name="x" dimension="none" value="1 / (1 + alpha_L)" exposure="x"/>
+        </Dynamics>
+
+    </ComponentType>
+
+</neuroml>

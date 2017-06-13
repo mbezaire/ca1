@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Lems>
+
+  <!-- synapse test -->
+
+    <Target component="sim1"/>
+
+    <Include file="Cells.xml"/>
+    <Include file="Networks.xml"/>
+    <Include file="Simulation.xml"/>
+    
+    <!--
+    <Include file="../cells/cck.cell.nml"/>
+    <Include file="../cells/bistratified.cell.nml"/>
+    -->
+    <Include file="../cells/ngf.cell.nml"/>
+    <Include file="test_synapses.net.nml"/>
+    
+    <Include file="exp2Synapses.synapse.nml"/>
+    <Include file="customGABASynapses.synapse.nml"/>
+    
+    <Include file="../channels/CavL.channel.nml"/>
+    <Include file="../channels/CavN.channel.nml"/> 
+    <Include file="../channels/KCaS.channel.nml"/> 
+    <Include file="../channels/Kdrfastngf.channel.nml"/> 
+    <Include file="../channels/KvAngf.channel.nml"/> 
+    <Include file="../channels/KvCaB.channel.nml"/> 
+    <Include file="../channels/Navngf.channel.nml"/>
+    <Include file="../channels/leak_chan.channel.nml"/>
+    <Include file="../channels/Capool.nml"/>
+
+ 
+<!-- Simulation specifications -->
+
+    <Simulation id="sim1" length="300ms" step="0.01ms" target="network">
+
+        <Display id="d1" title="cck cell with 0.5nA input" timeScale="1ms" xmin="-10" xmax="310" ymin="-85" ymax="55">
+            <!--
+            <Line id="cck V(mV)" quantity="Pop_cckcell/0/cckcell/v" scale="1mV" color="#0000FF" timeScale="1ms"/>
+            <Line id="bistratified V(mV)" quantity="Pop_bistratifiedcell/0/bistratifiedcell/v" scale="1mV" color="#00FF00" timeScale="1ms"/>
+            -->
+            <Line id="ngf V(mV)" quantity="pop_ngf/0/ngfcell/v" scale="1mV" color="#FF0000" timeScale="1ms"/>
+        </Display>
+    
+        <OutputFile id="of0" fileName="net.dat">
+            <!--
+            <OutputColumn id="cck" quantity="Pop_cckcell/0/cckcell/v"/>
+            <OutputColumn id="bis" quantity="Pop_bistratifiedcell/0/bistratifiedcell/v"/>
+            -->
+            <OutputColumn id="ngf" quantity="pop_ngf/0/ngfcell/v"/>
+        </OutputFile>
+      
+    </Simulation>
+  
+</Lems>

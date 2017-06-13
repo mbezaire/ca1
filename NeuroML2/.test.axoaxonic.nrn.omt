@@ -1,0 +1,16 @@
+target: axoaxonic.hoc
+engine: NEURON
+mep: .test.mep
+
+experiments:
+  current clamp axoaxonic:
+    observables:
+      spike times:
+        file:
+          path: axoaxonic.soma.dat
+          columns: [0, 1]
+          scaling: [1, 1]
+        spike detection:
+          method: threshold
+          threshold: 0
+        tolerance: 0.0

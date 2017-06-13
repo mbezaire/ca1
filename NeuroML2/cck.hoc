@@ -1,0 +1,123 @@
+show_plot = 1
+
+{load_file("nrngui.hoc")}
+
+
+{load_file("nCtools.hoc")}	
+{load_file("cellCheck.hoc")}	
+
+numCellTypes = 1
+objref cellType[1]
+objref CELL
+	
+print "##### cck started #####"
+
+{startsw()}
+
+{load_file("../cells/class_cckcell.hoc")}
+
+CELL = new cckcell(0,0,-1)
+
+objectvar stim
+CELL.soma {
+    stim = new IClamp(0.5)
+    stim.del = 50.0
+    stim.dur = 200.0
+    stim.amp = 0.08  // as in Marianne's site
+}
+
+access CELL.soma
+
+tstop = 300.0
+dt = 0.001
+steps_per_ms = 1000
+
+objref Test_v
+
+if (show_plot == 1) {
+
+    {load_file("nrngui.hoc")}				// Standard definitions - NEURON library file
+
+    Test_v = new Graph(0)
+    {Test_v.size(0, tstop,-90.0,50.0)}
+    {Test_v.view(0, -90.0, tstop, 140.0, 80, 330, 330, 250)}
+    {
+        Test_v.addexpr("CELL.soma.v", "CELL.soma.v(0.5)", 1, 1, 0.8, 0.9, 2)
+        graphList[0].append(Test_v)
+    }
+    {
+        Test_v.addexpr("CELL.dend[5].v", "CELL.dend[5].v(0.5)", 2, 1, 0.8, 0.9, 2)
+        graphList[0].append(Test_v)
+    }
+}
+
+
+objref v_time
+objref f_time
+v_time = new Vector()
+{ v_time.record(&t) }
+{ v_time.resize(12001) } // false
+f_time = new File()
+
+objref v_soma_v
+
+{ v_soma_v = new Vector() }
+{ v_soma_v.record(&CELL.soma.v(0.5))} 
+{ v_soma_v.resize(12001) }
+
+objref v_soma_cai
+
+{ v_soma_cai = new Vector() }
+{ v_soma_cai.record(&CELL.soma.cai(0.5))} 
+{ v_soma_v.resize(12001) }
+
+objref f_soma_v
+
+
+objref v_dend_v
+{ v_dend_v = new Vector() }
+{ v_dend_v.record(&CELL.dend[5].v(0.5))} 
+{ v_dend_v.resize(12001) }
+
+objref f_dend_v
+
+strdef date
+
+setuptime = stopsw()
+
+
+print "Starting simulation of duration ",tstop,"ms, dt: ",dt,"ms"
+
+{currenttime = startsw()}
+
+{run()}
+
+{realruntime = startsw() - currenttime}
+print "Finished simulation in ", realruntime ,"seconds"
+
+
+{ f_time.wopen("time.dat") }
+{ v_time.printf(f_time) }
+{ f_time.close() }
+
+
+
+{ f_soma_v = new File() }
+{ f_soma_v.wopen("cck.soma.dat") }
+for i = 0, v_soma_v.size()-1 {
+    { f_soma_v.printf("%f\t%f\t%f\n", v_time.x[i], v_soma_v.x[i], v_soma_cai.x[i]) }
+}
+{ f_soma_v.close() }
+
+
+{ f_dend_v = new File() }
+{ f_dend_v.wopen("cck.dend.dat") }
+for i = 0, v_dend_v.size()-1 {
+    { f_dend_v.printf("%f\t%f\n", v_time.x[i], v_dend_v.x[i]) }
+}
+{ f_dend_v.close() }
+
+if (show_plot == 0) {
+    print "\nNo plots shown. Change variable show_plot to view membrane potential traces\n"
+}
+
