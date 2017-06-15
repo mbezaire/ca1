@@ -17,7 +17,7 @@ Main features
 
 Documentation
 ============
-Full documentation is available `here <http://ca1.readthedocs.io/en/latest/>`.
+Full documentation is available `here <http://ca1.readthedocs.io/en/latest/>`_.
 
 
 Installation
@@ -224,15 +224,15 @@ Citation
 
 Please cite this code if you use it or derive a model from it, using the most appropriate citation below:
 
-* Our ModelDB entry: Cite `Bezaire et al (2016) <https://elifesciences.org/articles/18566>`, ModelDB (accession number 187604), and `McDougal et al (2017) <https://link.springer.com/article/10.1007/s10827-016-0623-7>`. See `these instructions <https://senselab.med.yale.edu/ModelDB/HowToCite.cshtml>` for further details. 
+* Our ModelDB entry: Cite `Bezaire et al (2016) <https://elifesciences.org/articles/18566>`_, ModelDB (accession number 187604), and `McDougal et al (2017) <https://link.springer.com/article/10.1007/s10827-016-0623-7>`_. See `these instructions <https://senselab.med.yale.edu/ModelDB/HowToCite.cshtml>`_ for further details. 
 
-* Our Open Source Brain entry: Cite `Bezaire et al (2016) <https://elifesciences.org/articles/18566>` and see `this link <http://www.opensourcebrain.org/docs#FAQ>` for more information.
+* Our Open Source Brain entry: Cite `Bezaire et al (2016) <https://elifesciences.org/articles/18566>`_ and see `this link <http://www.opensourcebrain.org/docs#FAQ>`_ for more information.
 
 License
 -------
 CC0 1.0 Universal (CC0 1.0): Public Domain Dedication
 
-For more information, see the `CC0 Description <https://creativecommons.org/publicdomain/zero/1.0/>`.
+For more information, see the `CC0 Description <https://creativecommons.org/publicdomain/zero/1.0/>`_.
 
 .. class:: no-web
 
