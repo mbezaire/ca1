@@ -212,16 +212,31 @@ ca1 can be used with:
 Alternatives
 ~~~~~~~~~~~~
 
-* `Check ModelDB <https://senselab.med.yale.edu/modeldb/>`_ — ModelDB contains many NEURON models and other neuroscience simulator models for various networks and cell types.
+* `ModelDB <https://senselab.med.yale.edu/modeldb/>`_ — ModelDB contains many NEURON models and other neuroscience simulator models for various networks and cell types.
 
 
+Citation
+-------
+
+Please cite this code if you use it or derive a model from it, using the most appropriate citation below:
+
+* Our ModelDB entry: Cite `Bezaire et al (2016) <https://elifesciences.org/articles/18566>`, ModelDB (accession number 187604), and `McDougal et al (2017) <https://link.springer.com/article/10.1007/s10827-016-0623-7>`. See `these instructions <https://senselab.med.yale.edu/ModelDB/HowToCite.cshtml>` for further details. 
+
+* Our Open Source Brain entry: Cite `Bezaire et al (2016) <https://elifesciences.org/articles/18566>` and see `this link <http://www.opensourcebrain.org/docs#FAQ>` for more information.
 
 License
 -------
+CC0 1.0 Universal (CC0 1.0): Public Domain Dedication
 
-.. |CC0| image:: https://i.creativecommons.org/p/zero/1.0/88x31.png
-    :target: https://creativecommons.org/publicdomain/zero/1.0/
-    :alt: CC0 1.0 Universal (CC0 1.0): Public Domain Dedication
+For more information, see the `CC0 Description <https://creativecommons.org/publicdomain/zero/1.0/>`.
+
+.. class:: no-web
+
+    .. image:: https://i.creativecommons.org/p/zero/1.0/88x31.png
+        :alt: CC0 License
+        :width: 10%
+        :align: left
+        
 
 
 Authors
