@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<neuroml xmlns="http://www.neuroml.org/schema/neuroml2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.neuroml.org/schema/neuroml2 https://raw.github.com/NeuroML/NeuroML2/development/Schemas/NeuroML2/NeuroML_v2beta4.xsd" id="NeuroML_ionChannel">
+
+    <notes>NeuroML file containing a single ion channel</notes>
+
+    <ionChannel id="KvAngf" conductance="1pS" type="ionChannelHH" species="k">
+        
+        <notes>A-type K+ channel description for neurogliaform family (unknown - modeled by Marianne Bezaire)</notes>
+        
+        <gateHHtauInf id="n" instances="1">  <!-- KvA shifted with 10mV-->
+            <q10Settings type="q10ExpTemp" q10Factor="3" experimentalTemp="30 degC"/>
+            <timeCourse type="Bezaire_KvAngf_taun"/>  
+            <steadyState type="Bezaire_KvAngf_ssn"/>
+        </gateHHtauInf>
+        
+        <gateHHtauInf id="l" instances="1">  <!-- KvA -->
+            <q10Settings type="q10ExpTemp" q10Factor="3" experimentalTemp="30 degC"/>
+            <timeCourse type="Bezaire_KvAngf_taul"/>
+            <steadyState type="Bezaire_KvAngf_ssl"/>
+        </gateHHtauInf>
+          
+    </ionChannel>
+    
+    
+    <ComponentType name="Bezaire_KvAngf_taun"
+                   extends="baseVoltageDepTime"
+                   description="Tau parameter to describe KvAngf">
+        
+        <Constant name="TIME_SCALE" dimension="time" value="1 ms"/>
+        <Constant name="VOLT_SCALE" dimension="voltage" value="1 mV"/>
+        <Constant name="TEMP_SCALE" dimension="temperature" value="1 K"/>
+        <Constant name="R" dimension="none" value="8.315"/>
+        <Constant name="F" dimension="none" value="96480"/>
+                
+        <Requirement name="temperature" dimension="temperature"/>
+
+        <Dynamics>
+            <DerivedVariable name="V" dimension="none" value="v / VOLT_SCALE"/>
+            <DerivedVariable name="T" dimension="none" value="temperature / TEMP_SCALE"/>
+            
+            <DerivedVariable name="alpha" dimension="none" value="exp((1e-3*(-3)*(V+23.6)*F) / (R*(T+0.01)))"/> <!-- NEURON code: 273.16 + celsius-->
+            <DerivedVariable name="beta" dimension="none" value="exp((1e-3*(-3)*0.6*(V+23.6)*F) / (R*(T+0.01)))"/> <!-- NEURON code: 273.16 + celsius-->
+
+            <DerivedVariable name="t" dimension="time" value="( beta / (0.02*(1 + alpha)) ) * TIME_SCALE" exposure="t"/>
+
+        </Dynamics>
+
+    </ComponentType>
+    
+    <ComponentType name="Bezaire_KvAngf_ssn"
+                   extends="baseVoltageDepVariable"
+                   description="steadyState parameter to describe KvAngf">
+        
+        <Constant name="VOLT_SCALE" dimension="voltage" value="1 mV"/>
+        <Constant name="TEMP_SCALE" dimension="temperature" value="1 K"/>
+        <Constant name="R" dimension="none" value="8.315"/>
+        <Constant name="F" dimension="none" value="96480"/>
+                
+        <Requirement name="temperature" dimension="temperature"/>
+
+        <Dynamics>
+            <DerivedVariable name="V" dimension="none" value="v / VOLT_SCALE"/>
+            <DerivedVariable name="T" dimension="none" value="temperature / TEMP_SCALE"/>
+            
+            <DerivedVariable name="alpha" dimension="none" value="exp((1e-3*(-3)*(V+23.6)*F) / (R*(T+0.01)))"/> <!-- NEURON code: 273.16 + celsius-->
+            
+            <DerivedVariable name="x" exposure="x" dimension="none" value="1 / (1 + alpha)"/>
+        </Dynamics>
+
+    </ComponentType>
+    
+    <ComponentType name="Bezaire_KvAngf_taul"
+                   extends="baseVoltageDepTime"
+                   description="Tau parameter to describe KvAngf">
+        
+        <Constant name="TIME_SCALE" dimension="time" value="1 ms"/>
+        <Constant name="VOLT_SCALE" dimension="voltage" value="1 mV"/>
+        <Constant name="TEMP_SCALE" dimension="temperature" value="1 K"/>
+        <Constant name="R" dimension="none" value="8.315"/>
+        <Constant name="F" dimension="none" value="96480"/>
+                
+        <Requirement name="temperature" dimension="temperature"/>
+
+        <Dynamics>
+            <DerivedVariable name="V" dimension="none" value="v / VOLT_SCALE"/>
+            <DerivedVariable name="T" dimension="none" value="temperature / TEMP_SCALE"/>
+            
+            <DerivedVariable name="alpha_beta" dimension="none" value="exp((1e-3*4*(V+83)*F) / (R*(T+0.01)))"/> <!-- NEURON code: 273.16 + celsius-->
+
+            <DerivedVariable name="t" dimension="time" value="( alpha_beta / (0.08*(1 + alpha_beta)) ) * TIME_SCALE" exposure="t"/>
+
+        </Dynamics>
+
+    </ComponentType>
+    
+    <ComponentType name="Bezaire_KvAngf_ssl"
+                   extends="baseVoltageDepVariable"
+                   description="steadyState parameter to describe KvAngf">
+        
+        <Constant name="VOLT_SCALE" dimension="voltage" value="1 mV"/>
+        <Constant name="TEMP_SCALE" dimension="temperature" value="1 K"/>
+        <Constant name="R" dimension="none" value="8.315"/>
+        <Constant name="F" dimension="none" value="96480"/>
+                
+        <Requirement name="temperature" dimension="temperature"/>
+
+        <Dynamics>
+            <DerivedVariable name="V" dimension="none" value="v / VOLT_SCALE"/>
+            <DerivedVariable name="T" dimension="none" value="temperature / TEMP_SCALE"/>
+            
+            <DerivedVariable name="alpha" dimension="none" value="exp((1e-3*4*(V+83)*F) / (R*(T+0.01)))"/> <!-- NEURON code: 273.16 + celsius-->
+            
+            <DerivedVariable name="x" exposure="x" dimension="none" value="1 / (1 + alpha)"/>
+        </Dynamics>
+
+    </ComponentType>
+    
+
+</neuroml>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<neuroml xmlns="http://www.neuroml.org/schema/neuroml2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.neuroml.org/schema/neuroml2 https://raw.github.com/NeuroML/NeuroML2/development/Schemas/NeuroML2/NeuroML_v2beta4.xsd" id="NeuroML_ionChannel">
+
+    <notes>NeuroML file containing a single ion channel</notes>
+
+    <ionChannel id="Navaxonp" conductance="1pS" type="ionChannelHH" species="na">
+
+        <notes>Na+ channel description for axon (from Migliore 1997, modified in 2002).
+        Navp without the slow inactivation (s - gating variable)</notes>
+    
+        <gate id="m" type="gateHHratesTau" instances="3">
+            <q10Settings type="q10ExpTemp" q10Factor="2" experimentalTemp="24 degC"/>
+            <forwardRate type="HHExpLinearRate" rate="2.88per_ms" midpoint="-15mV" scale="7.2mV"/>
+            <reverseRate type="HHExpLinearRate" rate="0.8928per_ms" midpoint="-15mV" scale="-7.2mV"/>
+            <timeCourse type="Bezaire_Navaxonp_taum"/>
+        </gate>
+        
+        <gate id="h" type="gateHHratesTauInf" instances="1">
+            <q10Settings type="q10ExpTemp" q10Factor="2" experimentalTemp="24 degC"/>
+            <forwardRate type="HHExpLinearRate" rate="0.045per_ms" midpoint="-30mV" scale="1.5mV"/>
+            <reverseRate type="HHExpLinearRate" rate="0.015per_ms" midpoint="-30mV" scale="-1.5mV"/>
+            <timeCourse type="Bezaire_Navaxonp_tauh"/>
+            <steadyState type="HHSigmoidVariable" rate="1" midpoint="-35mV" scale="-4mV"/>
+        </gate>
+        
+    </ionChannel>
+    
+    
+    <ComponentType name="Bezaire_Navaxonp_taum"
+                   extends="baseVoltageDepTime"
+                   description="Tau parameter to describe Navaxonp">
+        
+        <Constant name="TIME_SCALE" dimension="time" value="1 ms"/>
+        <Constant name="VOLT_SCALE" dimension="voltage" value="1 mV"/>
+             
+        <Requirement name="alpha" dimension="per_time"/>
+        <Requirement name="beta" dimension="per_time"/>
+        <Requirement name="rateScale" dimension="none"/>   
+
+        <Dynamics>
+            <DerivedVariable name="V" dimension="none" value="v / VOLT_SCALE"/>
+            <DerivedVariable name="ALPHA" dimension="none" value="alpha * TIME_SCALE"/>
+            <DerivedVariable name="BETA" dimension="none" value="beta * TIME_SCALE"/>
+
+            <ConditionalDerivedVariable name="t" dimension="time" exposure="t">
+                <Case condition="(ALPHA + BETA) .eq. 0" value="( 0 ) * TIME_SCALE"/>
+                <Case condition="1/( (ALPHA + BETA) * rateScale )  .lt. ( 0.02 )" value="( (0.02 * rateScale) ) * TIME_SCALE"/>
+                <Case value="( 1/(ALPHA + BETA) ) * TIME_SCALE"/>
+            </ConditionalDerivedVariable>
+
+        </Dynamics>
+
+    </ComponentType>
+    
+    <ComponentType name="Bezaire_Navaxonp_tauh"
+                   extends="baseVoltageDepTime"
+                   description="Tau parameter to describe Navaxonp">
+        
+        <Constant name="TIME_SCALE" dimension="time" value="1 ms"/>
+        <Constant name="VOLT_SCALE" dimension="voltage" value="1 mV"/>
+        
+        <Requirement name="alpha" dimension="per_time"/>
+        <Requirement name="beta" dimension="per_time"/>
+        <Requirement name="rateScale" dimension="none"/>   
+
+        <Dynamics>
+            <DerivedVariable name="V" dimension="none" value="v / VOLT_SCALE"/>
+            <DerivedVariable name="ALPHA" dimension="none" value="alpha * TIME_SCALE"/>
+            <DerivedVariable name="BETA" dimension="none" value="beta * TIME_SCALE"/>
+
+            <ConditionalDerivedVariable name="t" exposure="t" dimension="time">
+                <Case condition="(ALPHA + BETA) .eq. 0" value="( 0 ) * TIME_SCALE"/>
+                <Case condition="1/( (ALPHA + BETA) * rateScale )  .lt. ( 0.5 )" value="( (0.5 * rateScale) ) * TIME_SCALE"/>
+                <Case value="( 1/(ALPHA + BETA) ) * TIME_SCALE"/>
+            </ConditionalDerivedVariable>
+
+        </Dynamics>
+
+    </ComponentType>
+    
+</neuroml>

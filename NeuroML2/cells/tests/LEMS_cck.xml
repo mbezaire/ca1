@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Lems>
+
+  <!-- cck cell -->
+
+    <Target component="sim1"/>
+
+    <Include file="Cells.xml"/>
+    <Include file="Networks.xml"/>
+    <Include file="Simulation.xml"/>
+
+    <Include file="cck.net.nml"/>
+ 
+<!-- Simulation specifications -->
+
+    <Simulation id="sim1" length="300ms" step="0.001ms" target="network">
+
+        <Display id="d1" title="cck cell with 0.5nA input" timeScale="1ms" xmin="-10" xmax="310" ymin="-85" ymax="55">
+            <Line id="cck V(mV)" quantity="Pop_cckcell/0/cckcell/v" scale="1mV" color="#0000FF" timeScale="1ms"/>
+        </Display>
+    
+        <OutputFile id="of0" fileName="cck.dat">
+            <OutputColumn id="v" quantity="Pop_cckcell/0/cckcell/v"/>
+            <OutputColumn id="cai" quantity="Pop_cckcell/0/cckcell/caConc"/>
+        </OutputFile>
+      
+    </Simulation>
+  
+</Lems>
