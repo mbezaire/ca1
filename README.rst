@@ -17,7 +17,7 @@ Main features
 
 Documentation
 ============
-Full documentation is available `here <ca1.readthedocs.io>`.
+Full documentation is available `here <http://ca1.readthedocs.io/en/latest/>`.
 
 
 Installation
