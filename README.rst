@@ -15,6 +15,10 @@ Main features
 * Linux, Mac OS X and Windows support
 * Documentation
 
+Documentation
+============
+Full documentation is available `here <ca1.readthedocs.io>`.
+
 
 Installation
 ============
@@ -242,13 +246,13 @@ For more information, see the `CC0 Description <https://creativecommons.org/publ
 Authors
 -------
 
-`Marianne Bezaire`_  (`@mbezaire`_) created the ca1 model with help from:
+Marianne Bezaire created the ca1 model with help from:
 
 
-.. _Ivan Raikov
-.. _Padraig Gleeson
-.. _Andras Ecker
-.. _Kelly Burk
-.. _Michael Hines
-.. _Ted Carnevale
-.. _Ivan Soltesz
+* Ivan Raikov
+* Padraig Gleeson
+* Andras Ecker
+* Kelly Burk
+* Michael Hines
+* Ted Carnevale
+* Ivan Soltesz
