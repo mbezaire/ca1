@@ -228,6 +228,11 @@ static  double fastconn (void* vv) {
 		
 		double dist;
 		for(m=0; m<num_pre; m++) { // for each pre cell
+			// If the presynaptic cell == the postsynaptic cell, skip (no autapses here...)
+			if ((gmin+m*1.0)==z[n]) {
+				continue;
+			}
+			
 			// calculate the distance between the pre and post cells
 			distance_between = sqrt((1.0*prepos[m*3 +0] - postpos[n*3 +0])*(prepos[m*3 +0] - postpos[n*3 +0])+(prepos[m*3 +1] - postpos[n*3 +1])*(prepos[m*3 +1] - postpos[n*3 +1])+(prepos[m*3 +2] - postpos[n*3 +2])*(prepos[m*3 +2] - postpos[n*3 +2]));
 			for (step=0; step< steps; step++) {
@@ -316,7 +321,7 @@ static  double fastconn (void* vv) {
 					//r[i] =  sortedpos [i] [step]; // Fill the array with the available connections (in terms of the pre cell)
 				}
 
-				/* this random routine allows a pre-cell to make multiple connections on the post cell*/
+				/* this random routine allows a pre-cell to make up to one connection on the post cell*/
 				int tmp;
 				u_int32_t randi;
 				for (i=0; i<szr-1; i++) {
