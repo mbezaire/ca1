@@ -31,7 +31,7 @@ objref frec, strobj
 
 strobj = new StringFunctions()
 
-strdef cmd, dircmd, direx, comper, version, vercomment, vercomment2
+strdef cmd, gdircmd, gdirex, dircmd, direx, comper, version, vercomment, vercomment2
 strdef mypath, userstr, machname, machnick, outfile, edate, comver
 strdef verleft, verright
 strdef thisline, getval, result, paramstr, testline, valstr
@@ -73,7 +73,17 @@ proc typeout() {local i, myline, rn, rank, gid, srcid localobj tgt, f, cell, f2c
 		// Check the length of the output string (direx)
 		index = strobj.len(direx)
 
-		if (index<1) { 	// If  the output string contains nothing (length == 0),
+
+		// check for Git on the computer running this code
+		sprint(gdircmd, "git log -1 --pretty=format:\"%h: %s\"")
+		{system(gdircmd, gdirex)}
+		
+		// Check the length of the output string (direx)
+		gindex = strobj.len(gdirex)
+		
+		
+
+		if (index<1 && gindex<1) { 	// If  the output string contains nothing (length == 0),
 						//  then we can't access Mercurial commands from this
 						//  computer, and we must resort to using placeholder
 						//  files generated on the local computer that were copied
@@ -114,67 +124,136 @@ proc typeout() {local i, myline, rn, rank, gid, srcid localobj tgt, f, cell, f2c
 				f2c.scanstr(version)			
 				f2c.close	
 			}	
-		} else {	// If the original check returns something, then we can access Mercurial commands
+		} else {
+			
+			if (index<1) { // If we have Git but not Mercurial...
+			
+				// If the original check returns something, then we can access Mercurial commands
 					//  from this computer (which is ideal).
 					
-			sprint(dircmd, "hg status")
-			{system(dircmd, direx)}
-			if (strcmp(direx,"")>0) {	// Check to see if there are any changes to the code on this
-										//  computer to make it differ from the active version. If
-										//  so, then record those changes (via the 'hg status' and
-										//  'hg diff' commands) into files.
-				comver = "Yes"
-				sprint(dircmd, "hg status > ../results/%s/hg_status.out", RunName)
+				sprint(dircmd, "git diff")
 				{system(dircmd, direx)}
-				
-				sprint(dircmd, "hg diff > ../results/%s/hg_diff.out", RunName)
-				{system(dircmd, direx)}
-			} else {
-				comver = "No"
-			}
-			
-			sprint(dircmd, "hg parent --template '{rev}: {desc}\n'")
-			{system(dircmd, direx)}	// This will return the 'friendly' version number and
-									//  the comment associated with this commit of the code.
-									//  Beware that the friendly version number is not 
-									//  necessarily consistent between computers. It is safer
-									//  to only work in terms of the full version number, though
-									//  that number is hard to appreciate when you just want a
-									//  list of incrementing numbers corresponding to subsequent
-									//  code versions.
-			
-			if (strobj.len(direx)<2) {
-				vercomment="unknown"
-			} else {
-				strobj.left(direx, strobj.len(direx)-1) // hg parent rev/desc
-				vercomment=direx
-			}
-			
-			// Parse out the friendly version number and comment (this may not be necessary if we
-			//  just separately executed commands to return the version number and the comment).
-			i = strobj.substr(vercomment, "'")
-			while (i>0) {
-				verleft = vercomment
-				strobj.left(verleft, i)
-
-				verright = vercomment
-				strobj.right(verright, i+1)
-				
-				sprint(vercomment,"%s''%s", verleft, verright)
-				
-				i = strobj.substr(verright, "'")
-				if (i>0) {
-					i = i + strobj.len(verleft)+2
+				if (strcmp(direx,"")>0) {	// Check to see if there are any changes to the code on this
+											//  computer to make it differ from the active version. If
+											//  so, then record those changes (via the 'hg status' and
+											//  'hg diff' commands) into files.
+					comver = "Yes"
+					sprint(dircmd, "git status > ../results/%s/git_status.out", RunName)
+					{system(dircmd, direx)}
+					
+					sprint(dircmd, "git diff > ../results/%s/git_diff.out", RunName)
+					{system(dircmd, direx)}
+				} else {
+					comver = "No"
 				}
-			}
+				
+				sprint(dircmd, "git log -1 --pretty=format:\"%h: %s%n\"")
+				{system(dircmd, direx)}	// This will return the 'friendly' version number and
+										//  the comment associated with this commit of the code.
+										//  Beware that the friendly version number is not 
+										//  necessarily consistent between computers. It is safer
+										//  to only work in terms of the full version number, though
+										//  that number is hard to appreciate when you just want a
+										//  list of incrementing numbers corresponding to subsequent
+										//  code versions.
+				
+				if (strobj.len(direx)<2) {
+					vercomment="unknown"
+				} else {
+					strobj.left(direx, strobj.len(direx)-1) // hg parent rev/desc
+					vercomment=direx
+				}
+				
+				// Parse out the friendly version number and comment (this may not be necessary if we
+				//  just separately executed commands to return the version number and the comment).
+				i = strobj.substr(vercomment, "'")
+				while (i>0) {
+					verleft = vercomment
+					strobj.left(verleft, i)
 
-			sprint(dircmd, "hg parent --template '{node}\n'")
-			{system(dircmd, direx)}
-			if (strobj.len(direx)<2) {
-				version="unknown"
+					verright = vercomment
+					strobj.right(verright, i+1)
+					
+					sprint(vercomment,"%s''%s", verleft, verright)
+					
+					i = strobj.substr(verright, "'")
+					if (i>0) {
+						i = i + strobj.len(verleft)+2
+					}
+				}
+
+				sprint(dircmd, "git log -1 --pretty=format:\"%H%n\"")
+				{system(dircmd, direx)}
+				if (strobj.len(direx)<2) {
+					version="unknown"
+				} else {
+					strobj.left(direx, strobj.len(direx)-1)
+					version=direx
+				}
+				// end of git part				
 			} else {
-				strobj.left(direx, strobj.len(direx)-1)
-				version=direx
+			
+				// If Mercurial is used...
+					
+				sprint(dircmd, "hg status")
+				{system(dircmd, direx)}
+				if (strcmp(direx,"")>0) {	// Check to see if there are any changes to the code on this
+											//  computer to make it differ from the active version. If
+											//  so, then record those changes (via the 'hg status' and
+											//  'hg diff' commands) into files.
+					comver = "Yes"
+					sprint(dircmd, "hg status > ../results/%s/hg_status.out", RunName)
+					{system(dircmd, direx)}
+					
+					sprint(dircmd, "hg diff > ../results/%s/hg_diff.out", RunName)
+					{system(dircmd, direx)}
+				} else {
+					comver = "No"
+				}
+				
+				sprint(dircmd, "hg parent --template '{rev}: {desc}\n'")
+				{system(dircmd, direx)}	// This will return the 'friendly' version number and
+										//  the comment associated with this commit of the code.
+										//  Beware that the friendly version number is not 
+										//  necessarily consistent between computers. It is safer
+										//  to only work in terms of the full version number, though
+										//  that number is hard to appreciate when you just want a
+										//  list of incrementing numbers corresponding to subsequent
+										//  code versions.
+				
+				if (strobj.len(direx)<2) {
+					vercomment="unknown"
+				} else {
+					strobj.left(direx, strobj.len(direx)-1) // hg parent rev/desc
+					vercomment=direx
+				}
+				
+				// Parse out the friendly version number and comment (this may not be necessary if we
+				//  just separately executed commands to return the version number and the comment).
+				i = strobj.substr(vercomment, "'")
+				while (i>0) {
+					verleft = vercomment
+					strobj.left(verleft, i)
+
+					verright = vercomment
+					strobj.right(verright, i+1)
+					
+					sprint(vercomment,"%s''%s", verleft, verright)
+					
+					i = strobj.substr(verright, "'")
+					if (i>0) {
+						i = i + strobj.len(verleft)+2
+					}
+				}
+
+				sprint(dircmd, "hg parent --template '{node}\n'")
+				{system(dircmd, direx)}
+				if (strobj.len(direx)<2) {
+					version="unknown"
+				} else {
+					strobj.left(direx, strobj.len(direx)-1)
+					version=direx
+				}
 			}
 		}
 

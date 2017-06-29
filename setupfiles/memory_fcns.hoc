@@ -34,7 +34,10 @@ output to a separate file. Beware that either strategy may fail:
   machine that does not have the system function 'top' available.
 ************************************************************/
 
-strdef direx1, TopCommand
+strdef direx1, TopCommand, setPIDStr, pidnum
+
+objref strobjMem
+strobjMem = new StringFunctions()
 
 func mallinfo() {local m 			// Arguments to this function:
 									//  $1 is the previous memory usage (from previous call to mallinfo)
@@ -59,7 +62,7 @@ func mallinfo() {local m 			// Arguments to this function:
 							//  http://man7.org/linux/man-pages/man3/mallinfo.3.html
 							
         if (pc.id == 0) {
-			if (PrintTerminal>1) {printf("Memory (host 0) - %s: %ld.  Since last call: %ld\n", $s2, m, m - $1)}
+			if (PrintTerminal>2) {printf("Memory (host 0) - %s: %ld.  Since last call: %ld\n", $s2, m, m - $1)}
 			
 			memfile.printf("%s\t%f\t%ld\t%ld\n", $s2, startsw()-loadstart, m, m - $1)	// Print the code stage,
 																						//  current memory usage,
@@ -69,7 +72,18 @@ func mallinfo() {local m 			// Arguments to this function:
 			
 			if (OK2executeSysCmds==1) {
 				// Create a system command that calls the top command and extracts the NEURON process's memory info from the process list
-				sprint(TopCommand,"top -p `pgrep %s | head -n20 | tr \"\\n\" \",\" | sed 's/,$//'` -n1 -b | tail -n2 | head -n1", TopProc)
+				if (unix_mac_pc()==2 || unix_mac_pc()==4) {
+					if (strobjMem.len(pidnum)==0) {
+						sprint(setPIDStr,"top -n100 -l1 | grep %s | awk '{print $1}'", TopProc)
+						system(setPIDStr, direx1)						
+						pidnum = direx1
+						if (strobjMem.len(pidnum)==0) {pidnum="nrniv"}
+						strobjMem.left(pidnum,strobjMem.len(pidnum)-1)
+					}
+					sprint(TopCommand,"top -pid %s -l1 | tail -n1", pidnum)
+				} else {
+					sprint(TopCommand,"sh topcmd.sh %s 1 1", TopProc)
+				}
 
 				if (strcmp(TopProc,"")!=0) { system(TopCommand, direx1)}	// As long as the NEURON 
 																			//  process name parameter 
