@@ -79,19 +79,30 @@ Usage
 =====
 
 
-Hello World:
+Scaled-down model:
 
 
 .. code-block:: bash
 
-    $ nrngui -nopython
+    $ nrngui main.hoc # Runs a network at scale 1:10000 for 100 ms to ensure all works
+    
+    # OR
+    
+    $ nrngui -c "SimDuration=600" main.hoc -c "quit()" # Runs a network at scale 1:10000 for 600 ms, long enough to see theta emerge
+    
+    # OR
 
+    $ nrngui -nopython ... # if there is no python installed
+    
+    # OR
+
+    $ nrniv ... # if using without a GUI popup (depends on your NEURON installation; sometimes nrngui must be invoked to ensure all necessary libraries are loaded when NEURON launches)
 
 Synopsis:
 
 .. code-block:: bash
 
-    $ nrngui [-c parameters] [main.hoc file]  -c "quit()"
+    $ nrngui [-c parameters] [main.hoc file]  -c "quit()"  # adding the quit() command after ensures the code stops immediately after an error
 
 
 See also ``nrngui help``.
@@ -100,13 +111,37 @@ See also ``nrngui help``.
 Examples
 --------
 
-Custom `HTTP method`_, `HTTP headers`_ and `JSON`_ data:
+Scaled down model to run directly on a personal computer:
 
 .. code-block:: bash
 
-    $ http PUT example.org X-API-Token:123 name=John
+    $ nrngui main.hoc # Runs a network at scale 1:10000 for 100 ms to ensure all works
+    
+    # OR
+    
+    $ nrngui -c "Scale=1000" -c "SimDuration=600" main.hoc -c "quit()" # Runs a network at scale 1:1000 (will take a long time) for 600 ms, long enough to see theta emerge
+    
+    # OR
+
+    $ nrngui -nopython -c "SimDuration=1000"  -c "ConnData=446" main.hoc -c "quit()" # try a different connectivity configuration and a longer simulation with the default Scale of 1:10000, use the nopython flag if NEURON has errors due to not finding the site module, etc.
+    
+    # OR
+    
+    $ nrngui -c "Scale=1" main.hoc -c "quit()" # run a full scale network - this is not feasible for the ca1 network on a personal computer, but could be used for tiny networks such as ringdemo.
+    
+
+On a supercomputer, after creating a submission jobscript and moving to the model repository directory, enter:
 
 
+.. code-block:: bash
+
+    $ sbatch ./jobscripts/MyTestRun.sh
+    
+    # OR
+
+    $ qsub ./jobscripts/MyTestRun.sh
+    
+According to the batch queueing software used by the computer. Or, use SimTracker to create the jobscript, export the script, code, and parameter sets to the supercomputer, and submit the job request to the queue.
 
 Environment variables
 =======
@@ -145,7 +180,7 @@ To run this code with different parameters:
 
     #!/bin/bash
 
-    nrngui ...
+    nrngui [-c "Parameter=Value"]  [-c "strdef StringParam" "StringParam=\"StringValue\""]   ...
 
 To run a network clamp simulation:
 

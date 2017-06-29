@@ -73,7 +73,7 @@ INITIAL {
 BREAKPOINT {
 	SOLVE state METHOD cnexp
 	g = B - A
-	i = g*(v - e)
+	i = g*(v - e) : g in microS and v in milliV, so i in nanoA
 }
 
 DERIVATIVE state {
