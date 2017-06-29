@@ -38,6 +38,15 @@ strdef thisline, getval, result, paramstr, testline, valstr
 
 proc typeout() {local i, myline, rn, rank, gid, srcid localobj tgt, f, cell, f2c
 	if (pc.id == 0) {	// Only one processor needs to write the receipt file
+		//First, check if results directory and create it.
+		{system("[ -d ../results ]&&echo 1||echo 0", direx)}
+		strobj.left(direx,strobj.len(direx)-1)
+		if (strcmp(direx,"0")==0) {
+			print "creating a results directory for this repository"
+			{system("mkdir ../results", direx)}
+		}
+		
+	
 	
 		// First, check to make sure RunName has not already been used.
 		rn = -1	// rn will tell us what number to append to the RunName to make it unique
@@ -65,22 +74,21 @@ proc typeout() {local i, myline, rn, rank, gid, srcid localobj tgt, f, cell, f2c
 		//  run will be stored in this directory.
 		sprint(dircmd, "mkdir ../results/%s", RunName)
 		{system(dircmd, direx)}
-
-		// check for Mercurial on the computer running this code
-		sprint(dircmd, "hg parent --template '{rev}: {desc}\n'")
-		{system(dircmd, direx)}
 		
-		// Check the length of the output string (direx)
-		index = strobj.len(direx)
-
-
-		// check for Git on the computer running this code
-		sprint(gdircmd, "git log -1 --pretty=format:\"%h: %s\"")
-		{system(gdircmd, gdirex)}
+		index=1
+		gindex=1
 		
-		// Check the length of the output string (direx)
-		gindex = strobj.len(gdirex)
+		{system("[ -d ../.hg ]&&echo 1||echo 0", direx)}
+		strobj.left(direx,strobj.len(direx)-1)
+		if (strcmp(direx,"0")==0) {
+			index=0
+		}
 		
+		{system("[ -d ../.git ]&&echo 1||echo 0", direx)}
+		strobj.left(direx,strobj.len(direx)-1)
+		if (strcmp(direx,"0")==0) {
+			gindex=0
+		}
 		
 
 		if (index<1 && gindex<1) { 	// If  the output string contains nothing (length == 0),
@@ -147,7 +155,7 @@ proc typeout() {local i, myline, rn, rank, gid, srcid localobj tgt, f, cell, f2c
 					comver = "No"
 				}
 				
-				sprint(dircmd, "git log -1 --pretty=format:\"%h: %s%n\"")
+				sprint(dircmd, "git log -1 --pretty=format:\"%%h: %%s%%n\"")
 				{system(dircmd, direx)}	// This will return the 'friendly' version number and
 										//  the comment associated with this commit of the code.
 										//  Beware that the friendly version number is not 
@@ -182,7 +190,7 @@ proc typeout() {local i, myline, rn, rank, gid, srcid localobj tgt, f, cell, f2c
 					}
 				}
 
-				sprint(dircmd, "git log -1 --pretty=format:\"%H%n\"")
+				sprint(dircmd, "git log -1 --pretty=format:\"%%H%%n\"")
 				{system(dircmd, direx)}
 				if (strobj.len(direx)<2) {
 					version="unknown"
