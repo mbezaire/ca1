@@ -1,16 +1,16 @@
-target: LEMS_bistratified.xml
+target: LEMS_ivy.xml
 engine: jNeuroML_NetPyNE
 mep: ../../.test.mep
 
 experiments:
-  current clamp bistratified:
+  current clamp ivy:
     observables:
       spike times:
         file:
-          path: bistratified.dat
+          path: ivy.dat
           columns: [0, 1]
           scaling: [1000, 1000]
         spike detection:
           method: threshold
           threshold: 0
-        tolerance: 0.006022
+        tolerance:  0.0120966227131
