@@ -344,7 +344,7 @@
         </morphology>
         <biophysicalProperties id="biophys">
             <membraneProperties>
-                <channelDensity id="HCN_all" ionChannel="HCN" condDensity="0.07mS_per_cm2" erev="0mV" ion="non_speific"/>
+                <channelDensity id="HCN_all" ionChannel="HCN" condDensity="0.07mS_per_cm2" erev="0mV" ion="non_specific"/>
                 <channelDensity id="KCaS_all" ionChannel="KCaS" condDensity="0.001mS_per_cm2" erev="-90mV" ion="k"/>
                 <channelDensity id="Kdrfast_soma" ionChannel="Kdrfast" condDensity="0.006mS_per_cm2" erev="-90mV" segmentGroup="soma_group" ion="k"/>
                 <channelDensity id="KvA_all" ionChannel="KvA" condDensity="0.1mS_per_cm2" erev="-90mV" ion="k"/>
@@ -352,7 +352,8 @@
                 <channelDensity id="KvGroup_soma" ionChannel="KvGroup" condDensity="1.1mS_per_cm2" erev="-90mV" segmentGroup="soma_group" ion="k"/>
                 <channelDensity id="Navcck_soma" ionChannel="Navcck" condDensity="40mS_per_cm2" erev="55mV" segmentGroup="soma_group" ion="na"/>
                 <channelDensity id="leak_all" ionChannel="leak_chan" condDensity="0.0285714mS_per_cm2" erev="-72mV" ion="non_specific"/>
-                <channelDensityNernst id="CavN_all" ionChannel="CavN" condDensity="0.02mS_per_cm2" ion="ca"/>
+                <channelDensity id="CavN_all" ionChannel="CavN" condDensity="0.02mS_per_cm2" erev="170.69mV" ion="ca"/> <!-- hard coded for caconc and temperature-->
+                <channelDensityGHK2 id="CavL_all" ionChannel="CavL" condDensity="1mS_per_cm2" ion="ca"/>
                 <channelDensityNonUniform id="Kdrfast_dendrite" ionChannel="Kdrfast" erev="-90mV" ion="k">
                     <variableParameter parameter="condDensity" segmentGroup="dendrite_group">
                         <inhomogeneousValue inhomogeneousParameter="PathLengthOverDendrites" value="H(100 - p) * 0.6"/>
