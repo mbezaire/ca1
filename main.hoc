@@ -34,6 +34,8 @@ III. SET UP PARALLEL CAPABILITY AND MEMORY USAGE RECORDER, AND WRITE OUT RUN REC
 IV. CREATE, UNIQUELY ID, AND POSITION CELLS
 V.	CONNECT THE MODEL CELLS AND CONNECT THE STIMULATION CELLS TO SOME MODEL CELLS
 VI.	INITIALIZE AND RUN NETWORK, OUTPUT RESULT FILES
+* 
+* testing, testing 123
 ************************************************************/
 
 loadstart = startsw()					// record the start time of the set up

@@ -216,7 +216,11 @@ static double repeatconn (void* vv) {
 		
 		double dist;
 		for(m=0; m<num_pre; m++) { // for each pre cell
-			// calculate the distance between the pre and post cells
+			// If the presynaptic cell == the postsynaptic cell, skip (no autapses here...)
+			if ((gmin+m)==myx) {
+				continue;
+			}
+						// calculate the distance between the pre and post cells
 			//3d distance 
 			//distance_between = sqrt((1.0*prepos[m][0] - postpos[n][0])*(prepos[m][0] - postpos[n][0])+(prepos[m][1] - postpos[n][1])*(prepos[m][1] - postpos[n][1])+(prepos[m][2] - postpos[n][2])*(prepos[m][2] - postpos[n][2]));
 			//2d distance
