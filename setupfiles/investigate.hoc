@@ -1,0 +1,64 @@
+strdef cmdstr, cellstr, outfile, recref
+objref cell, paramlist, f
+
+proc beforeSim() {
+	// make section list of all ones to record from
+	// access each one in a section list
+	
+	sprint(recref, "%s.soma",$o2)
+	
+	sprint(cmdstr, "access %s",recref)
+	execute1(cmdstr)
+
+	mm=nrnpython("execfile('./setupfiles/investigate.py')")
+	nn=nrnpython("listMechParams(1)")
+
+	for i=0,paramlist.count()-1 {
+		sprint(cmdstr, "{objref %s_%s}", $s1, paramlist.o(i).s)
+		execute1(cmdstr)
+		sprint(cmdstr, "{%s_%s = new Vector(%g)}", $s1, paramlist.o(i).s, (tstop-tstart)/dt)
+		execute1(cmdstr)
+		sprint(cmdstr, "{%s_%s.record(&%s.%s(0.5))}", $s1, paramlist.o(i).s, recref, paramlist.o(i).s)
+		execute1(cmdstr)
+	}
+	sprint(cmdstr, "{objref %s_v}", $s1)
+	execute1(cmdstr)
+	sprint(cmdstr, "{%s_v = new Vector(%g)}", $s1, (tstop-tstart)/dt)
+	execute1(cmdstr)
+	sprint(cmdstr, "{%s_v.record(&%s.v(0.5))}", $s1, recref)
+	execute1(cmdstr)
+}
+
+proc afterSim() {
+	sprint(recref, "%s.soma",$o2)
+	
+	sprint(cmdstr, "access %s",recref)
+	execute1(cmdstr)
+
+	mm=nrnpython("execfile('./setupfiles/writefiles.py')")
+	mm=nrnpython("execfile('./setupfiles/investigate.py')")
+	nn=nrnpython("listMechParams(1)")
+	
+	sprint(cmdstr, "nrnVecs2pyList('%s')",$s1)
+	nn=nrnpython(cmdstr)
+	
+/*	sprint(outfile,"./results/%s/AllTraces_cell.%s(0.5).dat", RunName, $s1)
+	f = new File(outfile)
+	f.wopen()
+	f.printf("t\tv")
+	for i=0,paramlist.count()-1 {
+		f.printf("\t%s", paramlist.o(i).s)
+	}
+	{f.printf("\n")}
+
+	for j=0, (tstop-tstart)/dt-1 {
+		sprint(cmdstr, "{f.printf(\"%%g\\t%%g\", j*dt, %s_v.x[j])}", $s1)
+		execute1(cmdstr)
+		for i=0,paramlist.count()-1 {
+			sprint(cmdstr, "{f.printf(\"\\t%%g\", %s_%s.x[j])}", $s1, paramlist.o(i).s)
+			execute1(cmdstr)
+		}						
+		{f.printf("\n")}
+	}
+	f.close()*/
+}

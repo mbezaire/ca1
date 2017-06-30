@@ -95,8 +95,12 @@ func nc_appendstim() { localobj  nc
 	nc = pc.gid_connect($1, $o2)
 		
 	// Set other properties of the connection
-	nc.weight = $3	// Synaptic connection weight
-	nc.delay = $4	// Delay time (axonal delay)
+	if ($4<nc.wcnt()) {
+		nc.weight[$4] = $5	// Synaptic connection weight
+	} else {
+		nc.weight = $5	// Synaptic connection weight
+	}
+	nc.delay = $6	// Delay time (axonal delay)
 	
 	// Add the synapse to the list of synaptic connections
 	nclist.append(nc)

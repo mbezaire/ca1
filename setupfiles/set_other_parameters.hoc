@@ -46,7 +46,7 @@ proc SetOtherParameters() {local ind, i, layernum, tempheight
 	//  of the layers of the network (ie, we leave the Z or height dimension untouched).
 	scTransverseLength = TransverseLength / sqrt(Scale)
 	scLongitudinalLength = LongitudinalLength / sqrt(Scale)
-		
+	
 	distres = 5		// The resolution of the axonal bouton distribution function
 					//  for all cells in the network, in terms of steps. Ex: if
 					//  this is set to 5, the Gaussian distribution is solved at

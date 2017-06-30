@@ -70,8 +70,15 @@ tracetypelist = new Vector(numtrace)
 
 tr = 0
 objref cell
+strdef recflag
 for i=0,numCellTypes-1 {
 	if (cellType[i].is_art==0) {					// For each cell type, 
+		if (cellType[i].is_pp==1) {
+			recflag="izh.V"
+		} else {
+			recflag="soma.v(0.5)"
+		}		
+													// For each cell type, 
 		for k = 0, tracevector.x[i]-1 {				//  for the desired number of traces,
 													//  create and set up the vector for
 													//  recording the membrane potential.
@@ -105,20 +112,29 @@ for i=0,numCellTypes-1 {
 // Define proc for writing out voltage traces, to be called after the simulation is run.
 objref f
 proc voltageout() {local tr, rank, gid, srcid localobj tgt
-	for tr = 0, numtrace-1 {						// Write out voltage traces for all traced cells.
-		if (pc.gid_exists(traceidxlist.x[tr])) {	// If cell exists on this machine,
-													//  generate a results file for it.
-			sprint(outfile, "results/%s/trace_%s%g.dat", RunName, tracenamelist[tr].s, traceidxlist.x[tr])
-			f = new File(outfile)
-			f.wopen()
-			f.printf("t\tv\n")
-			for i=0, (tstop-tstart)/dt-1 {			// Write out the somatic membrane potential
-													//  at each time step of the simulation, as
-													//  it was recorded into the vector.
-				sprint(cmdstr, "f.printf(\"%%g\\t%%g\\n\", i*dt, v%s%g.x[i])", tracenamelist[tr].s, tracepclist.x[tr], i)
-				execute(cmdstr)
+	if (usepython==1) {
+		mm=nrnpython("execfile('./setupfiles/writefiles.py')")
+
+		for tr = 0, numtrace-1 {
+			sprint(cmdstr, "genericWriteTraceResults('v%s%d','%s','trace_' + '%s%d' + '.dat')", tracenamelist[tr].s, tracepclist.x[tr], "v", tracenamelist[tr].s, traceidxlist.x[tr]) // myvec,myvecname,filename
+			nn=nrnpython(cmdstr)
+		}
+	} else {
+		for tr = 0, numtrace-1 {						// Write out voltage traces for all traced cells.
+			if (pc.gid_exists(traceidxlist.x[tr])) {	// If cell exists on this machine,
+														//  generate a results file for it.
+				sprint(outfile, "results/%s/trace_%s%g.dat", RunName, tracenamelist[tr].s, traceidxlist.x[tr])
+				f = new File(outfile)
+				f.wopen()
+				f.printf("t\tv\n")
+				for i=0, (tstop-tstart)/dt-1 {			// Write out the somatic membrane potential
+														//  at each time step of the simulation, as
+														//  it was recorded into the vector.
+					sprint(cmdstr, "f.printf(\"%%g\\t%%g\\n\", i*dt, v%s%g.x[i])", tracenamelist[tr].s, tracepclist.x[tr], i)
+					execute(cmdstr)
+				}
+				f.close()
 			}
-			f.close()
 		}
 	}
 }

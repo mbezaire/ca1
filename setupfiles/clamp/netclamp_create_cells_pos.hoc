@@ -58,7 +58,7 @@ createCells()
 objref newcellType[numCellTypes]
 for i=0, numCellTypes-1 {
 	newcellType[i] = new CellCategoryInfo(i)	// Make one object for each cell type to store cell type info
-	newcellType[i].setCellTypeParams(cellType[i].cellType_string, cellType[i].technicalType, cellType[i].cellStartGid, cellType[i].numCells, cellType[i].layerflag, cellType[i].is_art)	// Set parameters
+	newcellType[i].setCellTypeParams(cellType[i].cellType_string, cellType[i].technicalType, cellType[i].cellStartGid, cellType[i].numCells, cellType[i].layerflag, cellType[i].is_art, cellType[i].is_pp)	// Set parameters
 }
 
 pc.barrier()

@@ -68,6 +68,7 @@ V?	SINGLE CHANNEL RECORDINGS
 	{default_var("cellnum",100)}		// ?
 	{default_var("cellmechs",0)}		// ?
 	{default_var("numeapair",1)}		// for paired recording, run this number of pairs and average them
+	{default_var("onecellsweep",1)}		// for paired recording, run this number of pairs and average them
 
 objref cl, f, f2, myvec, mygvec
 strdef myfile, channel, chan, conductstr, revpotstr, cmdstr
@@ -75,6 +76,8 @@ strdef myfile, channel, chan, conductstr, revpotstr, cmdstr
 strdef pathstr, clamppath
 //{clamppath =  "tools/clamp/"}
 {sprint(clamppath,"%s%s%s%sclamp%s", relpath, sl, resultspath, sl, sl)}
+
+voltageclampbase=-70
 
 
 {f2 = new File()}
@@ -175,6 +178,35 @@ if (mech==1) {
 			{f.close}
 		}
 
+		for i = 0, stepto_numsteps-1 { // 16 for p
+			cl.dur1 = stepto_duration2
+			cl.amp1 = stepto_amplitude2 + i*stepto_stepsize  // up to 10 for act/inact, up to 50 for IV curve, -110 for p
+			cl.amp2 = stepto_amplitude1 // mV
+			cl.dur2 = stepto_duration2
+
+			tstop = stepto_duration2 + stepto_duration2
+			dt = mydt 
+
+			myvec = new Vector(tstop/dt)
+			mygvec = new Vector(tstop/dt)
+			{sprint(cmdstr,"{myvec.record(&soma.myi_%s(0.5))}", channel)}
+			{execute1(cmdstr)}
+			{sprint(cmdstr,"{mygvec.record(&soma.g_%s(0.5))}", channel)}
+			{execute1(cmdstr)}
+			//finitialize(v_init)
+			stdinit()
+			run()
+			// print
+			f = new File()
+			sprint(myfile,"%s%s%sdeact_%g.dat", clamppath, chan, sl, cl.amp1)
+			f.wopen(myfile)
+			f.printf("t\ti\tg\n")
+			for j=0, tstop/dt - 1 {
+				{f.printf("%g\t%f\t%f\n", j*dt, myvec.x[j], mygvec.x[j])}
+			}
+			{f.close}
+		}
+
 		for i = 0, hold_numsteps-1 { // 13 for p-type
 			{cl.amp1 = hold_amplitude1 + i*hold_stepsize} // mV, P-type: -80 + i*10
 			{cl.dur1 = hold_duration1}
@@ -198,6 +230,39 @@ if (mech==1) {
 		//{system(dircmd, direx)}		
 			{f = new File()}
 			{sprint(myfile,"%s%s%shold_%g.dat", clamppath, chan, sl, cl.amp1)}
+			{f.wopen(myfile)}
+			{f.printf("t\ti\tg\n")}
+			for j=0, tstop/dt - 1 {
+				{f.printf("%g\t%f\t%f\n", j*dt, myvec.x[j], mygvec.x[j])}
+			}
+			{f.close}
+		}
+
+		for i = 0, hold_numsteps-1 { // 13 for p-type
+			{cl.amp1 = hold_amplitude1 + i*hold_stepsize} // mV, P-type: -80 + i*10
+			{cl.dur1 = hold_duration1}
+			{cl.dur2 = stepto_duration1}
+			{cl.amp2 = stepto_amplitude1} // up to 10 for act/inact, up to 50 for IV curve
+			{cl.dur3 = hold_duration2}
+			{cl.amp3 = hold_amplitude2} // up to 10 for act/inact, up to 50 for IV curve
+
+			{tstop = hold_duration1 + hold_duration2}
+			{dt = mydt}
+
+			{myvec = new Vector(tstop/dt)}
+			{mygvec = new Vector(tstop/dt)}
+			{sprint(cmdstr,"{myvec.record(&soma.myi_%s(0.5))}", channel)}
+			{execute1(cmdstr)}
+			{sprint(cmdstr,"{mygvec.record(&soma.g_%s(0.5))}", channel)}
+			{execute1(cmdstr)}
+			{stdinit()}
+			{run()}
+
+		// print	
+		//sprint(dircmd, "mkdir %s%s", , clamppath, chan)
+		//{system(dircmd, direx)}		
+			{f = new File()}
+			{sprint(myfile,"%s%s%sdein_%g.dat", clamppath, chan, sl, cl.amp1)}
 			{f.wopen(myfile)}
 			{f.printf("t\ti\tg\n")}
 			for j=0, tstop/dt - 1 {
@@ -343,14 +408,7 @@ if (pair>0) {
 	{sprint(pathstr,"%s%ssetupfiles%sclamp%spairtypes.txt", relpath, sl, sl, sl)}								
 	f2.ropen(pathstr)
 	numpairs = f2.scanvar
-	if (numCellidxes>0) {
-		sprint(cmdstr,"objref cellPost[numpairs]")
-	} else {
-		sprint(cmdstr,"objref cellPost[1]")
-	}
-	execute(cmdstr)
-
-
+	
 	if (numpairs>0) {
 		objref cellPost[numpairs]
 		for r = 0, numpairs - 1 {
@@ -358,6 +416,13 @@ if (pair>0) {
 			cellPost[r] = new String()
 			f2.scanstr(cellPost[r].s)
 		}
+	} else {
+		if (numCellidxes>0) {
+			sprint(cmdstr,"objref cellPost[numCellidxes]")
+		} else {
+			sprint(cmdstr,"objref cellPost[1]")
+		}
+		execute(cmdstr)
 	}
 	f2.close()
 }
@@ -534,6 +599,7 @@ proc print_mechs(){local i, k localobj mt, cell	// this code courtesy of Jose Am
 mechlength = new Vector(1)
 strobj = new StringFunctions()
 	cell = pc.gid2cell($1)
+	//print "really should not do this for Izh"
 	access cell.soma {
 		mt = new MechanismType(0)
 		objref mechstring[mt.count()]
@@ -542,7 +608,7 @@ strobj = new StringFunctions()
 			mt.select( i )
 			mt.selected(mname)
 			if( ismembrane(mname)) {
-				if (strcmp(mname,"capacitance")!=0 && strcmp(mname,"morphology")!=0 && strcmp(mname,"iconc_CaZ")!=0 && strcmp(mname,"iconc_Ca")!=0  && strcmp(mname,"iconcCa")!=0 && strcmp(mname,"ccanl")!=0 && strcmp(mname,"cad")!=0 && strcmp(mname,"pas")!=0 && strcmp(mname,"vmax")!=0 ) { //
+				if (strcmp(mname,"capacitance")!=0 && strcmp(mname,"morphology")!=0 && strcmp(mname,"iconc_CaZ")!=0 && strcmp(mname,"iconc_Ca")!=0  && strcmp(mname,"iconcCa")!=0 && strcmp(mname,"ccanl")!=0 && strcmp(mname,"cad")!=0 && strcmp(mname,"spines")!=0 && strcmp(mname,"pas")!=0 && strcmp(mname,"vmax")!=0 ) { //
 					if (strobj.substr(mname,"_ion")==-1) {
 						//printf("myi_%s \n", mname) 
 						sprint(tmpstr, "myi_%s", mname) // "cell.soma.%s(0.5)", tmpstr
@@ -604,10 +670,10 @@ proc rrun(){												// Run the network simulation
 	}
 
 
-objref  f2, f, stimAMPvector, cell, strobj //, mechstring[5]
+objref  f2, f, fe, stimAMPvector, cell, strobj //, mechstring[5]
 strobj = new StringFunctions()
 //local i, sec, duration
-strdef mname, headstr, outfile, cmdstr
+strdef mname, headstr, headEstr, outfile, Eoutfile, cmdstr, cmd
 objref mt, cell, strobj
 strobj = new StringFunctions()
 
@@ -621,65 +687,74 @@ if (cellmechs==1) {
 			if (cell.is_art==0) {	
 				sprint(outfile, "%s%s%s%scelldata_%s.dat", relpath, sl, resultspath, sl, cellType[cellind].cellType_string)
 				f = new File(outfile)
+				sprint(Eoutfile, "%s%s%s%scellEdata_%s.dat", relpath, sl, resultspath, sl, cellType[cellind].cellType_string)
+				fe = new File(Eoutfile)
+				print "writing out to: ", outfile
 				f.wopen()
+				fe.wopen()
 
 				access cell.soma // access cell.soma[0]
 				distance() // set the origin for measuring the distance
 				sprint(headstr,"secname\tpos\tx\ty\tz\tdist\tdiam\tcm\tRa")								
+				sprint(headEstr,"secname")								
 				mt = new MechanismType(0)
 				for i=0, mt.count()-1 {
 					mt.select( i )
 					mt.selected(mname)
 					if (strobj.substr(mname,"ch_")>-1) {
 						sprint(headstr,"%s\tgmax_%s", headstr, mname)	
+						sprint(headEstr,"%s\t%s", headEstr, mname)	
 					}							
 				}
 				sprint(headstr,"%s\n", headstr)	
 				f.printf(headstr)
+				sprint(headEstr,"%s\n", headEstr)	
+				fe.printf(headEstr)
 				
 				forsec cell.all { // forsec cell.all // forall
 					for (x) {
 						xdist = distance(x)
 						sprint(headstr,"%s\t%g\t%g\t%g\t%g\t%g\t%g\t%g\t%g", secname(), x, x3d(0), y3d(0), z3d(0), xdist, diam, cm, Ra)								
+						sprint(headEstr,"%s", secname())								
 
 						for i=0, mt.count()-1 {
 							mt.select( i )
 							mt.selected(mname)
 							if (strobj.substr(mname,"ch_")>-1) {
 								g=0
-								e=0
+								mye=0
 								if ( ismembrane(mname)) {
 									sprint(cmdstr, "g = gmax_%s", mname)
 									execute1(cmdstr)
+									sprint(cmdstr, "mye = mye_%s", mname)
+									execute1(cmdstr)
 								}
 								sprint(headstr,"%s\t%g", headstr, g)	
+								sprint(headEstr,"%s\t%g", headEstr, mye)	
 							}						
 						}
 						sprint(headstr,"%s\n", headstr)	
 						f.printf(headstr)
+						sprint(headEstr,"%s\n", headEstr)	
+						fe.printf(headEstr)
 					}
 				}
 				f.close()
+				fe.close()
 			}
 		}
 	}
 }
 
-objref zz, fcell, fs2
+objref zz, fcell, f3
+objref myIVec, tvec
+
 tmp1unused=0
 tmp2unused=1
 
 strdef cmdstr
-objref trace_s
-trace_s = new Vector(44000)
-objref trace_sinf
-trace_sinf = new Vector(44000)
-objref trace_sexp
-trace_sexp = new Vector(44000)
-objref trace_taus
-trace_taus = new Vector(44000)
 
-if (onecell==1) {
+if (onecell>0) { // onecell==1 -> current clamp.  onecell==2 --> voltage clamp
 	// single cell props
 	sprint(cmdstr,"%s%s%s%scellproperties.dat", relpath, sl, resultspath, sl)
 	fcell = new File(cmdstr)
@@ -699,12 +774,14 @@ if (onecell==1) {
 				sprint(cmdstr,"%s zz.loc(0.5) ", cell.myroot)
 				execute(cmdstr)
 				zz.compute(0)  // DC input R
+
 				sprint(cmdstr,"%s { rn = zz.input(0.5) }", cell.myroot) // Input resistance in MegaOhms
 				execute(cmdstr)
 				fcell.printf("%s\t%f\n",cellType[cellind].cellType_string, rn)
 			}
 		}
 	}
+
 	// what else would we like to see? area of cell (and possibly cell parts)
 	// somatic conductance
 	// somatic capacitance: print out the specific cap (cm) at the soma, as well as its area, then compute cap
@@ -724,138 +801,470 @@ if (onecell==1) {
 	fcell.close()
 
 
+	if (onecellsweep==1) {
 
-	// iClamp stuff
-	strdef tempString
-	f2 = new File()
-	sprint(pathstr,"%s%s%s%s%s", relpath, sl, "setupfiles", sl, "iclamp.dat")								
-	f2.ropen(pathstr)
-	numiclamps = f2.scanvar
-	stimAMPvector = new Vector(numiclamps)
-	for i = 0, numiclamps-1 {
-		stimAMPvector.x(i) = f2.scanvar
-	}
-	f2.close()
-	for i = 0, numiclamps-1 {
-		for idxes=0, numCellidxes-1 {
-			cellind = mycellvecs.x[idxes]
-			gid=cellType[cellind].cellStartGid
-			if (pc.gid_exists(gid)) {
-				// add recording locations to cell:
-				strdef sname, cmdstr, outfile
-				cell = pc.gid2cell(gid)
-				if (cell.is_art==0) {
-					 cell.soma { //forsec cell.all { // add recording location to middle of each section
-						sname = secname()
-						
-						{index = strobj.substr(sname, ".")+1}
-						{strobj.right(sname, index)}
-						{index = strobj.substr(sname, "[")}
-						if (index>0) {strobj.left(sname, index)}
+		// iClamp stuff
+		strdef tempString, recflag
+		f2 = new File()
+		sprint(pathstr,"%s%s%s%s%s", relpath, sl, "setupfiles", sl, "iclamp.dat")								
+		f2.ropen(pathstr)
+		numiclamps = f2.scanvar
+		stimAMPvector = new Vector(numiclamps)
+		for i = 0, numiclamps-1 {
+			stimAMPvector.x(i) = f2.scanvar
+		}
+		f2.close()
+		for i = 0, numiclamps-1 {
+			for idxes=0, numCellidxes-1 {
+				cellind = mycellvecs.x[idxes]
+				if (cellType[cellind].is_pp==1) {
+					recflag="izh.V"
+				} else {
+					recflag="soma.v(0.5)"
+				}		
+				gid=cellType[cellind].cellStartGid
+				if (pc.gid_exists(gid)) {
+					// add recording locations to cell:
+					strdef sname, cmdstr, outfile
+					cell = pc.gid2cell(gid)
+					if (cell.is_art==0) {
+						if (cellType[cellind].is_pp==0) {
+							 cell.soma { //forsec cell.all { // add recording location to middle of each section
+								sname = secname()
+								
+								{index = strobj.substr(sname, ".")+1}
+								{strobj.right(sname, index)}
+								{index = strobj.substr(sname, "[")}
+								if (index>0) {strobj.left(sname, index)}
+							}
+						}
 						sprint(cmdstr, "{objref trace_%s}", cellType[cellind].cellType_string)
 						execute1(cmdstr)
 						sprint(cmdstr, "{trace_%s = new Vector(%g)}", cellType[cellind].cellType_string, (tstop-tstart)/dt)
 						execute1(cmdstr)
-						sprint(cmdstr, "{trace_%s.record(&cell.%s.v(0.5))}", cellType[cellind].cellType_string, sname)
-						execute1(cmdstr)
-
-/*						trace_s.record(&cell.soma.s_ch_Navcck)
-						trace_sexp.record(&cell.soma.sexp_ch_Navcck)
-						trace_sinf.record(&cell.soma.sinf_ch_Navcck)
-						trace_taus.record(&cell.soma.g_ch_Navcck)*/
-											
-						if (myi_flag==1) {
-							print_mechs(gid)
-							for rt = 0, mechlength.x[0]-1 {
-								sprint(cmdstr, "{objref %s_%s}", cellType[cellind].cellType_string, mechstring[rt].s)
-								execute1(cmdstr)
-								sprint(cmdstr, "{%s_%s = new Vector(%g)}", cellType[cellind].cellType_string, mechstring[rt].s, (tstop-tstart)/dt)
-								execute1(cmdstr)
-								sprint(cmdstr, "{%s_%s.record(&cell.%s.%s(0.5))}", cellType[cellind].cellType_string, mechstring[rt].s, sname, mechstring[rt].s)
-								execute1(cmdstr)
-							}		
-						}	
-					} 
-
-					// add an iClamp (to be activated at various time points first)
-					sprint(cmdstr, "objref stim%g", cellind)
-					execute1(cmdstr)
-					sprint(cmdstr, "cell.soma stim%g = new IClamp(0.5)", cellind)
-					execute1(cmdstr)
-					sprint(cmdstr, "stim%g.dur = duration", cellind) //4000
-					execute1(cmdstr)
-					sprint(cmdstr, "stim%g.del = starttime", cellind) //0.01
-					execute1(cmdstr)
-					sprint(cmdstr, "stim%g.amp = stimAMPvector.x(i)", cellind) // can't be over 36.7 and must be greater than -22.85
-					execute1(cmdstr)
-				}		
-			}
-		}
-						
-		// run model
-		rrun()	// Run the network simulation
-		
-			
-		//for cellind=0, numCellTypes-1 {
-		for idxes=0, numCellidxes-1 {
-			cellind = mycellvecs.x[idxes]
-			gid=cellType[cellind].cellStartGid
-			if (pc.gid_exists(gid)) {
-				// add recording locations to cell:
-				strdef sname, cmdstr, outfile, outfile2
-				cell = pc.gid2cell(gid)
-				if (cell.is_art==0) {
-					// write out recordings	
-					cell.soma { //forsec cell.all  {
-						sname = secname()
-						index = strobj.substr(sname, ".")+1
-						strobj.right(sname, index)
-						index = strobj.substr(sname, "[")
-						if (index>0) {strobj.left(sname, index)}
-						sprint(outfile, "%s%s%s%strace_%s.%s(0.5).%g.dat", relpath, sl, resultspath, sl, cellType[cellind].cellType_string, sname, i)
-						sprint(outfile2, "%s%s%s%sstrace.dat", relpath, sl, resultspath, sl)
-						
-						//trace_s, trace_sexp, trace_sinf, trace_taus
-print "outfile2 = ", outfile2
-							fs2 = new File(outfile2)
-							fs2.wopen()
-							fs2.printf("t\ts\tsexp\tsinf\tg\n")
-
-							f = new File(outfile)
-							f.wopen()
-
-							print_mechs(gid) // mechstring = 
-							f.printf("t\tv")
-						if (myi_flag==1) {
-							for rt = 0, mechlength.x[0]-1 {
-								f.printf("\t%s", mechstring[rt].s)
-							}
-						}
-							f.printf("\n")
-							for j=0, (tstop-tstart)/dt-1 {
-								sprint(cmdstr, "{f.printf(\"%%g\\t%%g\", j*dt, trace_%s.x[j])}", cellType[cellind].cellType_string)
-								execute1(cmdstr)
-						if (myi_flag==1) {
+						if (onecell>1) { // voltage clamp
+							sprint(cmdstr, "{trace_%s.record(&cell.%s)}", cellType[cellind].cellType_string, recflag)
+							//sprint(cmdstr, "{trace_%s.record(&cell.%s.v(0.5))}", cellType[cellind].cellType_string, sname)
+							execute1(cmdstr)
+							
+							if (myi_flag==1 && cellType[cellind].is_pp==0) {
+								print_mechs(gid)
 								for rt = 0, mechlength.x[0]-1 {
-									sprint(cmdstr, "{f.printf(\"\\t%%g\", %s_%s.x[j])}", cellType[cellind].cellType_string, mechstring[rt].s)
+									sprint(cmdstr, "{objref %s_%s}", cellType[cellind].cellType_string, mechstring[rt].s)
 									execute1(cmdstr)
-								}
-							}						
-								{f.printf("\n")}
+									sprint(cmdstr, "{%s_%s = new Vector(%g)}", cellType[cellind].cellType_string, mechstring[rt].s, (tstop-tstart)/dt)
+									execute1(cmdstr)
+									sprint(cmdstr, "{%s_%s.record(&cell.%s.%s(0.5))}", cellType[cellind].cellType_string, mechstring[rt].s, sname, mechstring[rt].s)
+									execute1(cmdstr)
+								}		
+							} 
+
+							// add an iClamp (to be activated at various time points first)
+							if (cellType[cellind].is_pp==0) {
+								sprint(cmdstr, "objref stim%g", cellind)
+								execute1(cmdstr)
+								sprint(cmdstr, "cell.soma stim%g = new SEClamp(0.5)", cellind)
+								execute1(cmdstr)
+								sprint(cmdstr, "{stim%g.dur1 = %g}", cellind, starttime)
+								execute1(cmdstr)
+								sprint(cmdstr, "{stim%g.amp1 = %g}", cellind, voltageclampbase)
+								execute1(cmdstr)								
+								sprint(cmdstr, "{stim%g.dur2 = %g}", cellind, duration)
+								execute1(cmdstr)
+								sprint(cmdstr, "{stim%g.amp2 = %g}", cellind, stimAMPvector.x(i))
+								execute1(cmdstr)								
+								sprint(cmdstr, "{stim%g.dur3 = %g}", cellind, tstop-duration-starttime)
+								execute1(cmdstr)
+								sprint(cmdstr, "{stim%g.amp3 = %g}", cellind, voltageclampbase)
+								execute1(cmdstr)								
+								sprint(cmdstr, "{trace_%s.record(&stim%g.i)}", cellType[cellind].cellType_string, cellind)
+								execute1(cmdstr)
+								
+							} else {
+								//sprint(cmdstr, "cell.izh.Iin = stimAMPvector.x(i)")
+								//execute1(cmdstr)
+								print "cvode.active() = ", cvode.active()
+								print "can't voltage clamp an Izh cell!"
+								cvode.active(1)
+								dt=.001
+								cell.izh.Iin = 0 // 1000 pA/1 nA (CellClamp in nA, Izh mod in pA for Iin)
+								print "Must add code to interface with izh.Iin here, dt = ", dt
 							}
-							f.close()
-							for j=0, (tstop-tstart)/dt-1 {
-								fs2.printf("%.4f\t%.2f\t%.6f\t%.2f\t%.10f\n", j*dt, trace_s.x[j], trace_sexp.x[j], trace_sinf.x[j], trace_taus.x[j])
+						} else {
+							sprint(cmdstr, "{trace_%s.record(&cell.%s)}", cellType[cellind].cellType_string, recflag)
+							//sprint(cmdstr, "{trace_%s.record(&cell.%s.v(0.5))}", cellType[cellind].cellType_string, sname)
+							execute1(cmdstr)
+							
+							if (myi_flag==1 && cellType[cellind].is_pp==0) {
+								print_mechs(gid)
+								for rt = 0, mechlength.x[0]-1 {
+									sprint(cmdstr, "{objref %s_%s}", cellType[cellind].cellType_string, mechstring[rt].s)
+									execute1(cmdstr)
+									sprint(cmdstr, "{%s_%s = new Vector(%g)}", cellType[cellind].cellType_string, mechstring[rt].s, (tstop-tstart)/dt)
+									execute1(cmdstr)
+									sprint(cmdstr, "{%s_%s.record(&cell.%s.%s(0.5))}", cellType[cellind].cellType_string, mechstring[rt].s, sname, mechstring[rt].s)
+									execute1(cmdstr)
+								}		
+							} 
+
+							// add an iClamp (to be activated at various time points first)
+							if (cellType[cellind].is_pp==0) {
+								sprint(cmdstr, "objref stim%g", cellind)
+								execute1(cmdstr)
+								sprint(cmdstr, "cell.soma stim%g = new IClamp(0.5)", cellind)
+								execute1(cmdstr)
+								sprint(cmdstr, "stim%g.dur = duration", cellind) //4000
+								execute1(cmdstr)
+								sprint(cmdstr, "stim%g.del = starttime", cellind) //0.01
+								execute1(cmdstr)
+								sprint(cmdstr, "stim%g.amp = stimAMPvector.x(i)", cellind) // can't be over 36.7 and must be greater than -22.85
+								execute1(cmdstr)
+							} else {
+								//sprint(cmdstr, "cell.izh.Iin = stimAMPvector.x(i)")
+								//execute1(cmdstr)
+								print "cvode.active() = ", cvode.active()
+								cvode.active(1)
+								dt=.001
+								cell.izh.Iin = stimAMPvector.x(i)*1000 // 1000 pA/1 nA (CellClamp in nA, Izh mod in pA for Iin)
+								print "Must add code to interface with izh.Iin here, dt = ", dt
 							}
-							fs2.close()
-						
-					}
-					sprint(cmdstr, "{objref stim%g}", cellind)
-					execute1(cmdstr)
-				}	
+						} // is onecell>1 (voltage or current clamp)
+					} // is_art==0		
+				}
 			}
+							
+		N = 1			// Specifies step resolution (see NEURON reference for steps_per_ms),
+						// 	sometimes 1, sometimes 4
+
+		steps_per_ms = 1*N/(dt)		// Controls the intervals at which points are plotted
+
+			// run model
+			rrun()	// Run the network simulation
+			print "dt = ", dt
+				
+			//for cellind=0, numCellTypes-1 {
+			for idxes=0, numCellidxes-1 {
+				cellind = mycellvecs.x[idxes]
+				gid=cellType[cellind].cellStartGid
+				if (pc.gid_exists(gid)) {
+					// add recording locations to cell:
+					strdef sname, cmdstr, outfile
+					cell = pc.gid2cell(gid)
+					if (cell.is_art==0) {
+						// write out recordings	
+						if (1==1) { //forsec cell.all  {
+						// cell.soma { //forsec cell.all  {
+							if (cellType[cellind].is_pp==0) {
+								cell.soma {
+									sname = secname()
+									index = strobj.substr(sname, ".")+1
+									strobj.right(sname, index)
+									index = strobj.substr(sname, "[")
+									if (index>0) {strobj.left(sname, index)}
+								}
+						} else {
+							sname = "soma"
+						}
+							sprint(outfile, "%s%s%s%strace_%s.%s(0.5).%g.dat", relpath, sl, resultspath, sl, cellType[cellind].cellType_string, sname, i)
+
+								if (cellType[cellind].is_pp==0) {print_mechs(gid)} // mechstring = 
+
+								f = new File(outfile)
+								f.wopen()
+								f.printf("t\tv")
+							if (myi_flag==1) {
+								for rt = 0, mechlength.x[0]-1 {
+									f.printf("\t%s", mechstring[rt].s)
+								}
+							}
+								f.printf("\n")
+								for j=0, (tstop-tstart)/dt-1 {
+									sprint(cmdstr, "{f.printf(\"%%g\\t%%g\", j*dt, trace_%s.x[j])}", cellType[cellind].cellType_string)
+									execute1(cmdstr)
+							if (myi_flag==1) {
+									for rt = 0, mechlength.x[0]-1 {
+										sprint(cmdstr, "{f.printf(\"\\t%%g\", %s_%s.x[j])}", cellType[cellind].cellType_string, mechstring[rt].s)
+										execute1(cmdstr)
+									}
+								}						
+									{f.printf("\n")}
+								}
+								f.close()
+							
+						}
+						sprint(cmdstr, "{objref stim%g}", cellind)
+						execute1(cmdstr)
+					}	
+				}
+			}
+		} // end of iclamp		
+	} else {
+		if (onecellsweep==2) {
+			f2 = new File()
+			sprint(pathstr,"%s%s%s%s%s", relpath, sl, "setupfiles", sl, "iclamp.dat")								
+			f2.ropen(pathstr)
+				numpoints = f2.scanvar
+				tmp = f2.scanvar //don't need
+				tvec = new Vector(numpoints)
+				print "now here"
+				myIVec = new Vector(numpoints)
+				for i=0, numpoints-1 {
+					tvec.x[i] = f2.scanvar // spike time in ms
+					myIVec.x[i] = f2.scanvar // gid of NetStim to make fire
+				}
+				f2.close()
+				print "and now even here: ", tvec.size()
+				tstop=tvec.x[numpoints-1]
+				print "sore ugh"
+
+				for idxes=0, numCellidxes-1 {
+					cellind = mycellvecs.x[idxes]
+					if (cellType[cellind].is_pp==1) {
+						recflag="izh.V"
+					} else {
+						recflag="soma.v(0.5)"
+					}		
+					gid=cellType[cellind].cellStartGid
+					if (pc.gid_exists(gid)) {
+						// add recording locations to cell:
+						strdef sname, cmdstr, outfile
+						cell = pc.gid2cell(gid)
+						if (cell.is_art==0) {
+							 cell.soma { //forsec cell.all { // add recording location to middle of each section
+								sname = secname()
+								
+								{index = strobj.substr(sname, ".")+1}
+								{strobj.right(sname, index)}
+								{index = strobj.substr(sname, "[")}
+								if (index>0) {strobj.left(sname, index)}
+								sprint(cmdstr, "{objref trace_%s}", cellType[cellind].cellType_string)
+								execute1(cmdstr)
+								sprint(cmdstr, "{trace_%s = new Vector(%g)}", cellType[cellind].cellType_string, (tstop-tstart)/dt)
+								execute1(cmdstr)
+								sprint(cmdstr, "{trace_%s.record(&cell.%s)}", cellType[cellind].cellType_string, recflag)
+								execute1(cmdstr)
+								
+								if (myi_flag==1) {
+									print_mechs(gid)
+									for rt = 0, mechlength.x[0]-1 {
+										sprint(cmdstr, "{objref %s_%s}", cellType[cellind].cellType_string, mechstring[rt].s)
+										execute1(cmdstr)
+										sprint(cmdstr, "{%s_%s = new Vector(%g)}", cellType[cellind].cellType_string, mechstring[rt].s, (tstop-tstart)/dt)
+										execute1(cmdstr)
+										sprint(cmdstr, "{%s_%s.record(&cell.%s.%s(0.5))}", cellType[cellind].cellType_string, mechstring[rt].s, sname, mechstring[rt].s)
+										execute1(cmdstr)
+									}		
+								}	
+							} 
+
+							// add an iClamp (to be activated at various time points first)
+							sprint(cmdstr, "objref stim%g", cellind)
+							execute1(cmdstr)
+							sprint(cmdstr, "cell.soma stim%g = new IClamp(0.5)", cellind)
+							execute1(cmdstr)
+							sprint(cmdstr, "stim%g.dur = 1e9", cellind) //4000
+							execute1(cmdstr)
+							sprint(cmdstr, "stim%g.del = 0", cellind) //0.01
+							execute1(cmdstr)
+							sprint(cmdstr, "myIVec.play(&stim%g.amp, tvec)", cellind) // can't be over 36.7 and must be greater than -22.85
+							execute1(cmdstr)
+						}		
+					}
+				}
+					print "gonna run"			
+				// run model
+				rrun()	// Run the network simulation
+				print "just ran"
+					
+				//for cellind=0, numCellTypes-1 {
+				for idxes=0, numCellidxes-1 {
+					cellind = mycellvecs.x[idxes]
+					gid=cellType[cellind].cellStartGid
+					if (pc.gid_exists(gid)) {
+						// add recording locations to cell:
+						strdef sname, cmdstr, outfile
+						cell = pc.gid2cell(gid)
+						if (cell.is_art==0) {
+							// write out recordings	
+							cell.soma { //forsec cell.all  {
+								sname = secname()
+								index = strobj.substr(sname, ".")+1
+								strobj.right(sname, index)
+								index = strobj.substr(sname, "[")
+								if (index>0) {strobj.left(sname, index)}
+								sprint(outfile, "%s%s%s%strace_%s.%s(0.5).%g.dat", relpath, sl, resultspath, sl, cellType[cellind].cellType_string, sname, n)
+
+									f = new File(outfile)
+									f.wopen()
+
+									print_mechs(gid) // mechstring = 
+									f.printf("t\tv")
+								if (myi_flag==1) {
+									for rt = 0, mechlength.x[0]-1 {
+										f.printf("\t%s", mechstring[rt].s)
+									}
+								}
+									f.printf("\n")
+									for j=0, (tstop-tstart)/dt-1 {
+										sprint(cmdstr, "{f.printf(\"%%g\\t%%g\", j*dt, trace_%s.x[j])}", cellType[cellind].cellType_string)
+										execute1(cmdstr)
+								if (myi_flag==1) {
+										for rt = 0, mechlength.x[0]-1 {
+											sprint(cmdstr, "{f.printf(\"\\t%%g\", %s_%s.x[j])}", cellType[cellind].cellType_string, mechstring[rt].s)
+											execute1(cmdstr)
+										}
+									}						
+										{f.printf("\n")}
+									}
+									f.close()
+								
+							}
+							sprint(cmdstr, "{objref stim%g}", cellind)
+							execute1(cmdstr)
+						}	
+					}
+				}
+			} else {
+			// load in custom stimulation protocol onecellsweep==0
+
+			// iClamp stuff
+			strdef tempString
+			f2 = new File()
+			f3 = new File()
+			sprint(pathstr,"%s%s%s%s%s", relpath, sl, "setupfiles", sl, "iclamp.dat")								
+			f3.ropen(pathstr)
+			numcurrents=f3.scanvar
+			for n=0,numcurrents-1 {
+				sprint(pathstr,"%s%s%s%s%s%g%s", relpath, sl, "setupfiles", sl, "iclamp", n+1,  ".dat")								
+				f2.ropen(pathstr)
+			
+				numpoints = f2.scanvar
+				tmp = f2.scanvar //don't need
+				tvec = new Vector(numpoints)
+				print "now here"
+				myIVec = new Vector(numpoints)
+				for i=0, numpoints-1 {
+					tvec.x[i] = f2.scanvar // spike time in ms
+					myIVec.x[i] = f2.scanvar // gid of NetStim to make fire
+				}
+				f2.close()
+				print "and now even here: ", tvec.size()
+				tstop=tvec.x[numpoints-1]
+				print "sore ugh"
+
+				for idxes=0, numCellidxes-1 {
+					cellind = mycellvecs.x[idxes]
+					if (cellType[cellind].is_pp==1) {
+						recflag="izh.V"
+					} else {
+						recflag="soma.v(0.5)"
+					}		
+					gid=cellType[cellind].cellStartGid
+					if (pc.gid_exists(gid)) {
+						// add recording locations to cell:
+						strdef sname, cmdstr, outfile
+						cell = pc.gid2cell(gid)
+						if (cell.is_art==0) {
+							 cell.soma { //forsec cell.all { // add recording location to middle of each section
+								sname = secname()
+								
+								{index = strobj.substr(sname, ".")+1}
+								{strobj.right(sname, index)}
+								{index = strobj.substr(sname, "[")}
+								if (index>0) {strobj.left(sname, index)}
+								sprint(cmdstr, "{objref trace_%s}", cellType[cellind].cellType_string)
+								execute1(cmdstr)
+								sprint(cmdstr, "{trace_%s = new Vector(%g)}", cellType[cellind].cellType_string, (tstop-tstart)/dt)
+								execute1(cmdstr)
+								sprint(cmdstr, "{trace_%s.record(&cell.%s)}", cellType[cellind].cellType_string, recflag)
+								execute1(cmdstr)
+								
+								if (myi_flag==1) {
+									print_mechs(gid)
+									for rt = 0, mechlength.x[0]-1 {
+										sprint(cmdstr, "{objref %s_%s}", cellType[cellind].cellType_string, mechstring[rt].s)
+										execute1(cmdstr)
+										sprint(cmdstr, "{%s_%s = new Vector(%g)}", cellType[cellind].cellType_string, mechstring[rt].s, (tstop-tstart)/dt)
+										execute1(cmdstr)
+										sprint(cmdstr, "{%s_%s.record(&cell.%s.%s(0.5))}", cellType[cellind].cellType_string, mechstring[rt].s, sname, mechstring[rt].s)
+										execute1(cmdstr)
+									}		
+								}	
+							} 
+	print "work now?"
+							// add an iClamp (to be activated at various time points first)
+							sprint(cmdstr, "objref stim%g", cellind)
+							execute1(cmdstr)
+							sprint(cmdstr, "cell.soma stim%g = new IClamp(0.5)", cellind)
+							execute1(cmdstr)
+							sprint(cmdstr, "stim%g.dur = 1e9", cellind) //4000
+							execute1(cmdstr)
+							sprint(cmdstr, "stim%g.del = 0", cellind) //0.01
+							execute1(cmdstr)
+							sprint(cmdstr, "myIVec.play(&stim%g.amp, tvec)", cellind) // can't be over 36.7 and must be greater than -22.85
+							execute1(cmdstr)
+						}		
+					}
+				}
+					print "gonna run"			
+				// run model
+				rrun()	// Run the network simulation
+				print "just ran"
+					
+				//for cellind=0, numCellTypes-1 {
+				for idxes=0, numCellidxes-1 {
+					cellind = mycellvecs.x[idxes]
+					gid=cellType[cellind].cellStartGid
+					if (pc.gid_exists(gid)) {
+						// add recording locations to cell:
+						strdef sname, cmdstr, outfile
+						cell = pc.gid2cell(gid)
+						if (cell.is_art==0) {
+							// write out recordings	
+							cell.soma { //forsec cell.all  {
+								sname = secname()
+								index = strobj.substr(sname, ".")+1
+								strobj.right(sname, index)
+								index = strobj.substr(sname, "[")
+								if (index>0) {strobj.left(sname, index)}
+								sprint(outfile, "%s%s%s%strace_%s.%s(0.5).%g.dat", relpath, sl, resultspath, sl, cellType[cellind].cellType_string, sname, n)
+
+									f = new File(outfile)
+									f.wopen()
+
+									print_mechs(gid) // mechstring = 
+									f.printf("t\tv")
+								if (myi_flag==1) {
+									for rt = 0, mechlength.x[0]-1 {
+										f.printf("\t%s", mechstring[rt].s)
+									}
+								}
+									f.printf("\n")
+									for j=0, (tstop-tstart)/dt-1 {
+										sprint(cmdstr, "{f.printf(\"%%g\\t%%g\", j*dt, trace_%s.x[j])}", cellType[cellind].cellType_string)
+										execute1(cmdstr)
+								if (myi_flag==1) {
+										for rt = 0, mechlength.x[0]-1 {
+											sprint(cmdstr, "{f.printf(\"\\t%%g\", %s_%s.x[j])}", cellType[cellind].cellType_string, mechstring[rt].s)
+											execute1(cmdstr)
+										}
+									}						
+										{f.printf("\n")}
+									}
+									f.close()
+								
+							}
+							sprint(cmdstr, "{objref stim%g}", cellind)
+							execute1(cmdstr)
+						}	
+					}
+				}	
+				
+			} //end of each current column (separate injection)	
+			f3.close()
+			print "almost done, closed file"
 		}
-	} // end of iclamp		
+	}
 }
 
 /***********************************************************************************************
@@ -917,42 +1326,58 @@ if ((pair==2) || (pair==4)) {
 			print "post: ", poststr, " ", cellType[postcellType].technicalType, " jgid: ", jgid
 
 
+			if (cellType[postcellType].is_pp==1) {
+				recflag="izh.V"
+			} else {
+				recflag="soma.v(0.5)"
+			}		
 			// add a voltage clamp and watch to the postcell at the soma
 			cell = pc.gid2cell(jgid)
 			sprint(sname,"o%s_%s", prestr, poststr)
 			sprint(cmdstr, "{objref vcl%s}", sname)
 			execute1(cmdstr)
 			
-			if (pair==2) {
-				sprint(cmdstr, "{cell.soma vcl%s = new SEClamp(0.5)}", sname)
-				execute1(cmdstr)
-				sprint(cmdstr, "{vcl%s.dur1 = %g}", sname, tstop)
-				execute1(cmdstr)
-				sprint(cmdstr, "{vcl%s.amp1 = %g}", sname, holding)
-				execute1(cmdstr)
+			if (cellType[postcellType].is_pp==1) {
+				if (pair==2) {
+					print "not yet interfacing with Iin for izh cells, so sname is ", sname
+				} else {
+					cell.izh.Iin = current
+				}
 			} else {
-				sprint(cmdstr, "{cell.soma vcl%s = new IClamp(0.5)}", sname)
-				execute1(cmdstr)
-				sprint(cmdstr, "{vcl%s.del = %g}", sname, 0)
-				execute1(cmdstr)
-				sprint(cmdstr, "{vcl%s.dur = %g}", sname, tstop)
-				execute1(cmdstr)
-				sprint(cmdstr, "{vcl%s.amp = %g}", sname, current)
-				execute1(cmdstr)
+				if (pair==2) {
+					sprint(cmdstr, "{cell.soma vcl%s = new SEClamp(0.5)}", sname)
+					execute1(cmdstr)
+					sprint(cmdstr, "{vcl%s.dur1 = %g}", sname, tstop)
+					execute1(cmdstr)
+					sprint(cmdstr, "{vcl%s.amp1 = %g}", sname, holding)
+					execute1(cmdstr)
+				} else {
+					sprint(cmdstr, "{cell.soma vcl%s = new IClamp(0.5)}", sname)
+					execute1(cmdstr)
+					sprint(cmdstr, "{vcl%s.del = %g}", sname, 0)
+					execute1(cmdstr)
+					sprint(cmdstr, "{vcl%s.dur = %g}", sname, tstop)
+					execute1(cmdstr)
+					sprint(cmdstr, "{vcl%s.amp = %g}", sname, current)
+					execute1(cmdstr)
+				}
 			}
 
 			sprint(cmdstr, "{objref %s}", sname)
 			execute1(cmdstr)
 			sprint(cmdstr, "{%s = new Vector(%g)}", sname, (tstop-tstart)/dt)
 			execute1(cmdstr)
+			
 					
 			if (pair==2) {
 				sprint(cmdstr, "{%s.record(&vcl%s.i)}", sname, sname)
 				execute1(cmdstr)
 			} else {
-				sprint(cmdstr, "{%s.record(&cell.soma.v(0.5))}", sname)
+				sprint(cmdstr, "{%s.record(&cell.%s)}", sname, recflag)
+				//sprint(cmdstr, "{%s.record(&cell.soma.v(0.5))}", sname)
 				execute1(cmdstr)
 			}
+			
 
 			synWeight = cellType[precellType].wgtConns.x[postcellType]
 			numSyns = cellType[precellType].numSyns.x[postcellType]
@@ -972,9 +1397,10 @@ if ((pair==2) || (pair==4)) {
 				for p = 0, numeapair-1 {
 					objref nc[numSyns]
 					ransynlist.object(cell.randi).r.discunif(0,numSynTypes-1)		// Create a uniform random INTEGER variable over the range specified (0 to # synapse types-1),
+
 					for q = 0, numSyns-1 {
 						synvec.x[q] =  ransynlist.object(cell.randi).repick
-						
+
 						if (pairrevflag==1) {  //(strcmp(prestr,"ivycell")==0 || strcmp(prestr,"ngfcell")==0) {
 							if (strcmp(prestr,"ngfcell")==0) {
 								cell.pre_list.o(precellType).o(synvec.x[q]).ea = pairrevpot
@@ -1064,9 +1490,23 @@ if ((pair==1) || (pair==3)) {
 				fpair.printf("%g\n2\n", numeapair)
 
 
+				if (cellType[postcellType].is_pp==1) {
+					recflag="izh.V"
+				} else {
+					recflag="soma.v(0.5)"
+				}		
+
 				// add a voltage clamp and watch to the postcell at the soma
 				cell = pc.gid2cell(jgid)
 				
+				if (cellType[postcellType].is_pp==1) {
+				if (pair==1) {
+					print "not yet Iin for izh" 
+				} else {
+					cell.izh.Iin = current
+				}
+
+				} else {
 				sprint(sname,"o%s_%s", prestr, poststr) 
 				sprint(cmdstr, "{objref vcl%s}", sname)
 				execute1(cmdstr)
@@ -1087,6 +1527,7 @@ if ((pair==1) || (pair==3)) {
 					sprint(cmdstr, "{vcl%s.amp = %g}", sname, current)
 					execute1(cmdstr)
 				}
+				}
 
 				for p = 0, numeapair-1 {
 					sprint(cmdstr, "{objref %s}", sname)
@@ -1098,7 +1539,9 @@ if ((pair==1) || (pair==3)) {
 						sprint(cmdstr, "{%s.record(&vcl%s.i)}", sname, sname)
 						execute1(cmdstr)
 					} else {
-						sprint(cmdstr, "{%s.record(&cell.soma.v(0.5))}", sname)
+					
+						sprint(cmdstr, "{%s.record(&cell.%s)}", sname, recflag)
+						//sprint(cmdstr, "{%s.record(&cell.soma.v(0.5))}", sname)
 						execute1(cmdstr)
 					}
 

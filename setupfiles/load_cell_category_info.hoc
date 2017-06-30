@@ -27,9 +27,10 @@ objref f2												// Define object reference for the cellnumbers file
 objref celltypestring[1], techstring[1], cellType[1]	// Define placeholder objects with a size of one, then
 														//  redefine them with the correct size in the proc
 
-double cellnumvar[1], cellLayerflag[1], cellArtflag[1], numCellTypes[1]	// Define placeholder doubles with a size
-																		//  of one, then redefine them with the
-																		//  correct size in the proc
+double cellnumvar[1], cellLayerflag[1], cellArtflag[1], numCellTypes[1], cellPPflag[1]
+														// Define placeholder doubles with a size
+														//  of one, then redefine them with the
+														//  correct size in the proc
 objref pnmtmp, pctmp, nil
 proc loadCellCategoryInfo() {local i, startpos			// This function will load celltype info into a CellCategoryInfo
 														//  object (one object per cell type)
@@ -44,7 +45,7 @@ proc loadCellCategoryInfo() {local i, startpos			// This function will load cell
 
 	// Define variables to temporarily hold data scanned from file
 	objref celltypestring[numCellTypes], techstring[numCellTypes], cellType[numCellTypes]
-	double cellnumvar[numCellTypes], cellLayerflag[numCellTypes], cellArtflag[numCellTypes]
+	double cellnumvar[numCellTypes], cellLayerflag[numCellTypes], cellArtflag[numCellTypes], cellPPflag[numCellTypes]
 
 	for i=0, numCellTypes-1 {				// For each cell type in the model
 		celltypestring[i]= new String()
@@ -56,7 +57,14 @@ proc loadCellCategoryInfo() {local i, startpos			// This function will load cell
 		cellLayerflag[i]=f2.scanvar					// Scan the layer index (layers are defined by the user in the 
 													//  LayerHeights parameter)
 													
-		cellArtflag[i]=f2.scanvar					// Scan in artificial flag, 1 = artificial cell, 0 = real cell
+		cellArtflag[i]=f2.scanvar					// Scan in artificial flag, 2=point process cell, 1 = artificial cell, 0 = real cell
+		
+		if (cellArtflag[i]==2) {
+			cellArtflag[i]=0
+			cellPPflag[i]=1
+		} else {
+			cellPPflag[i]=0
+		}
 		
 		cellnumvar[i]=int(cellnumvar[i]/Scale + .5)	// Scale down the number of cells in the model based on the Scale parameter
 		
@@ -83,7 +91,7 @@ proc loadCellCategoryInfo() {local i, startpos			// This function will load cell
 		cellType[i] = new CellCategoryInfo(i)	// Make one object for each cell type to store the info for that cell type
 		
 		// Set the properties of that cell type (the properties that were read in from the cellnumbers dataset file)
-		cellType[i].setCellTypeParams(celltypestring[i].s, techstring[i].s, startpos, cellnumvar[i], cellLayerflag[i], cellArtflag[i])	
+		cellType[i].setCellTypeParams(celltypestring[i].s, techstring[i].s, startpos, cellnumvar[i], cellLayerflag[i], cellArtflag[i], cellPPflag[i])	
 		
 		// Initialize a placeholder vector that will store information about connectivity from other cell types to this cell type 
 		cellType[i].numCons = new Vector(numCellTypes,0)

@@ -292,8 +292,15 @@ proc typeout() {local i, myline, rn, rank, gid, srcid localobj tgt, f, cell, f2c
 				strobj.left(machnick, i)
 			}
 		}
+		
+		if (name_declared("cygpath")<2) {
+			{system("date \"+%d-%b-%Y %H:%M:%S\"", edate)}	// Current date-time, will be considered
+		} else {
+			execute("sprint(dircmd,\"%s/date \\\"+%%d-%%b-%%Y %%H:%%M:%%S\\\"\", cygpath)")
+			print "dircmd = ", dircmd
+			{system(dircmd, edate)}	// Current date-time, will be considered
+		}
 
-		{system("date \"+%d-%b-%Y %H:%M:%S\"", edate)}	// Current date-time, will be considered
 		if (strobj.len(edate)<2) {						//  the execution date-time.
 		edate="unknown"
 		} else {

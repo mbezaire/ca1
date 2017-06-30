@@ -40,7 +40,7 @@ begintemplate CellCategoryInfo			// Define a template that describes
 	public updateGidRange, addPosVec, layerflag, LastHighIndex		//  object
 	public dist, numCells, CellList, addCell, numCons, numConns, numSyns, wgtConns, numThisHost
 	public setBins, dentateYBins, dentateXBins, dentateZBins
-	public dentateYBinSize, dentateXBinSize, dentateZBinSize, is_art
+	public dentateYBinSize, dentateXBinSize, dentateZBinSize, is_art, is_pp
 
 	objref dist, cellpos, f1, CellList, numCons, numConns	// Define objects, including
 	objref numSyns, wgtConns, ctype, SynList, this			//  'this', which is this
@@ -95,6 +95,10 @@ begintemplate CellCategoryInfo			// Define a template that describes
 		is_art=$6					// A flag to tell if the cell type is artificial (1=artificial,
 									//  0=realistic). An artificial cell is generally a point process
 									//  just used for stimulating the cells of the network.
+									
+		is_pp=$7					// A flag to tell if the cell type contains a point_process (1=pointprocess,
+									//  0=realistic). A point-process cell contains a compartment and a point process
+									//  and is used for simpler cell models, such as Izhikevich neurons.
 		
 		objref CellList[numCells]	// Create a new CellList for this celltype, the length of which
 									//  equals the number of cells of this type in the model

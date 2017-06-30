@@ -23,7 +23,8 @@ proc ripcellStims() { local i, wgt, reli, typei, jgid, celltype, counter, jstart
             
             cell = pc.gid2cell(jgid) // ca3ripcell
             
-            nc_appendstim(cellType[oncell_idx].cellStartGid, cell, 1.0, 3.0) // 3ms delay
+            nc_appendstim(cellType[oncell_idx].cellStartGid, cell,0,0 1.0, 2.0) // 3ms delay
+
 	    cellType[oncell_idx].numCons.x[ca3rip_idx] +=1
 	}
         

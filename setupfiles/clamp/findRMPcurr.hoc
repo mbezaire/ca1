@@ -1,0 +1,714 @@
+/************************************************************
+Current version:
+electrophys-1.0
+	separate stim protocols      MC 2010-10-19
+
+************************************************************/
+loadstart = startsw()					// record the start time of the set up
+/***********************************************************************************************
+I.  LOAD LIBRARIES
+***********************************************************************************************/
+
+{load_file("nrngui.hoc")}		// Standard definitions - NEURON library file
+
+
+{load_file("stdlib.hoc")}	// Standard library, used by the default_var procedure
+{load_file("setupfiles/defaultvar.hoc")}	// Contains the proc definition for default_var proc
+
+default_var("relpath","/Users/mariannebezaire/Documents/repos/entocort")
+default_var("toolpath","/home/casem/matlab/work/RunOrganizer/tools")
+default_var("resultspath","cellclamp_results")
+default_var("sl","/ ")
+
+objref strobj, fAll, fSyn
+strobj = new StringFunctions()
+sllength = strobj.len(sl)
+strobj.left(sl,sllength-1)
+
+strdef pathstr
+{load_file("netparmpi.hoc")}	// Contains the template that defines the properties of the
+								// 	ParallelNetManager class
+{sprint(pathstr,"%s%s%s%s%s", relpath, sl, "setupfiles", sl, "ranstream.hoc")}
+{load_file(pathstr)}	// Defines a RandomStream class used to produce random numbers
+											// 	for the cell noise
+
+{sprint(pathstr,"%s%s%s%s%s", relpath, sl, "setupfiles", sl, "CellCategoryInfo.hoc")}								
+{load_file(pathstr)}// Defines a CellCategoryInfo class used to store
+												// 	celltype-specific parameters
+												
+{sprint(pathstr,"%s%s%s%s%s", relpath, sl, "setupfiles", sl, "SynStore.hoc")}								
+{load_file(pathstr)}	// Contains the template that defines a holder of
+											//  synapse type info
+
+{sprint(pathstr,"%s%s%s%s%s", relpath, sl, "setupfiles", sl, "parameters.hoc")}								
+{load_file(pathstr)}	// Loads in operational and model parameters
+
+//sprint(pathstr,"%s%s", relpath, "setupfiles/loadbal.hoc")								
+//{load_file(pathstr)}		// Loads in a LoadBalance class
+
+{sprint(pathstr,"%s%s%s%s%s", relpath, sl, "setupfiles", sl, "set_other_parameters.hoc")}								
+{load_file(pathstr)}// Loads in operational and model parameters
+													//  that can't be changed at command line
+													
+{sprint(pathstr,"%s%s%s%s%s%s%s", relpath, sl, "setupfiles", sl, "clamp", sl, "class_pptype.hoc")}																					
+{load_file(pathstr)}
+
+strdef mversion
+{mversion = "electrophys"}
+
+/***********************************************************************************************
+V?	SINGLE CHANNEL RECORDINGS
+***********************************************************************************************/
+	{default_var("onecell",1)}		// controls whether to perform single cell recordings
+	{default_var("cellmorph",0)}		// controls whether to plot cell shape
+	{default_var("pair",0)}		// controls whether to perform paired cell recordings
+	{default_var("mech",0)}		// controls whether to perform ion channel recordings
+	{default_var("conn",115)}		// for paired recording, use these synapse weights
+	{default_var("mysyn",105)}		// for paired recording, use these synapse weights
+	{default_var("cellnum",111)}		// ?
+	{default_var("cellmechs",0)}		// ?
+	{default_var("numeapair",1)}		// for paired recording, run this number of pairs and average them
+	{default_var("onecellsweep",0)}		// for paired recording, run this number of pairs and average them
+	{default_var("quitnow",1)}		// for paired recording, run this number of pairs and average them
+	{default_var("matchRMP",-64)}		// for paired recording, run this number of pairs and average them
+	{default_var("chkRMP",1)}		// controls whether to perform single cell recordings
+	{default_var("chkAmp",1)}		// controls whether to perform single cell recordings
+	{default_var("chkMean",1)}		// controls whether to perform single cell recordings
+	{default_var("Stimulation","shayreboundphase")}		// controls whether to perform single cell recordings
+NumData=cellnum
+ConnData=conn
+SynData=mysyn
+print "Stimulation = ", Stimulation
+Stimulation = "shayreboundphase"
+strdef setVar, setVarMean
+MakeArtConns=0
+setVar="DegreeStim"
+setVarMean="RipStim"
+setDef=.1
+byDef=.02
+matchAmp=8
+setDefMean=-.22
+byDefMean=.02
+matchMean=-64
+freq=5.5
+ThetaAmp=.05
+actMean=0
+wiRMP=1
+wiMean=1
+wiAmp=.7
+hblock=0
+
+objref cl, f, f2, myvec, mygvec, thetavec, ampIClamp, meanIClamp
+strdef myfile, channel, chan, conductstr, revpotstr, cmdstr
+
+strdef pathstr, clamppath
+//{clamppath =  "tools/clamp/"}
+{sprint(clamppath,"%s%s%s%sclamp%s", relpath, sl, resultspath, sl, sl)}
+
+voltageclampbase=-70
+
+
+/***********************************************************************************************
+II. SET MODEL SIZE, CELL DEFINITIONS
+***********************************************************************************************/
+
+objref dentateZLength
+{tstart = 0}		// Start time of simulation
+{tstop = mytstop} //1000+2*50 //
+{dt = mydt}		// Integration interval for fadvance (see NEURON reference)
+{myi_flag=1}
+//if (cellType[cellind].is_pp==1) {myi_flag==0}
+
+strdef newstr
+objref f2, f2c								// Define object reference for the cells2include file
+
+{sprint(pathstr,"%s%s%s%s%s", relpath, sl, "setupfiles", sl, "load_cell_category_info.hoc")}								
+{load_file(pathstr)}
+//loadCellCategoryInfo()
+
+strdef outfile
+
+ConnData = conn
+sprint(outfile, "%s%ssetupfiles%sload_cell_conns.hoc", relpath, sl, sl)
+{load_file(outfile)}	// Load in the cell connectivity info (weight)
+
+SynData = mysyn
+sprint(outfile, "%s%ssetupfiles%sload_cell_syns.hoc", relpath, sl, sl)
+{load_file(outfile)}	// Load in the cell connectivity info (weight)
+
+strdef cmdstr
+f2 = new File()
+sprint(pathstr,"%s%ssetupfiles%sclamp%sicell.dat", relpath, sl, sl, sl)
+f2.ropen(pathstr)
+numCellidxes = f2.scanvar			// # cell types, including 1 for pp cells
+if (numCellidxes>0) {
+	sprint(cmdstr,"objref cellRectypestring[numCellidxes]")
+} else {
+	sprint(cmdstr,"objref cellRectypestring[1]")
+}
+execute(cmdstr)
+
+if (numCellidxes>0) {
+	for i=0, numCellidxes-1 {
+		cellRectypestring[i]= new String()
+		f2.scanstr(cellRectypestring[i].s)	// Scan in the cell name
+	}
+}
+f2.close()
+
+
+startpos = 1 // 0 is reserved for the pptype which excites all the pairs
+numcellea = 2
+objref mycellvecs
+mycellvecs = new Vector(numCellidxes)
+idxes=0
+for i=0, numCellTypes-1 {
+	// cellType[i].numCells = numcellea
+	// cellType[i].updateGidRange(startpos)
+	// startpos = startpos + cellType[i].numCells // just make one of each cell
+	myfl=0
+	for j=0, numCellidxes-1 {
+		if (strcmp(cellType[i].cellType_string,cellRectypestring[j].s)==0) {
+			mycellvecs.x[idxes] = i
+			idxes = idxes+1
+			myfl=1
+		}
+	}
+	if (myfl==1) {
+		cellType[i].numCells = numcellea
+	} else {
+		cellType[i].numCells = 0
+	}
+	cellType[i].updateGidRange(startpos)
+	startpos = startpos + cellType[i].numCells // just make one of each cell	
+}
+
+
+strdef tempFileStr						// Define string reference for the names of the cell template files
+proc loadCellTemplates(){local i		// Define one template for each cell type in cells2include, plus perforant path cell(s)
+	ncell = 1
+	totalCells = 0
+	for i=0, numCellTypes-1 {
+		sprint(tempFileStr,"%s%scells%sclass_%s.hoc", relpath, sl, sl, cellType[i].technicalType)	
+		load_file(tempFileStr)			// Load the cell type's class template
+		
+		print "we'll make ", cellType[i].numCells, " ", cellType[i].cellType_string, "s"
+		totalCells = numCellTypes + cellType[i].numCells 
+		ncell = ncell + cellType[i].numCells 
+	}
+	for i=0, numCellTypes-1 {
+		cellType[i].layerflag=cellType[i].cellStartGid+1
+	}
+	random_stream_offset_= (totalCells*2+2)
+}	
+loadCellTemplates()
+
+/***********************************************************************************************
+III.SET UP PARALLEL CAPABILITY
+***********************************************************************************************/
+loadstart = startsw()
+strdef iteratorflag
+objref pnm, pc, nil, nc
+print "ncell: ", ncell
+proc parallelizer() {
+	pnm = new ParallelNetManager(ncell)	// Set up a parallel net manager for all the cells
+	pc = pnm.pc
+	pnm.round_robin()				// Incorporate all processors - cells 0 through ncell-1
+}
+parallelizer()
+
+iterator pcitr() {local i2, startgid, startgididx, endgididx	// Create iterator for use as a standard 'for' loop throughout given # cells
+// usage:
+// for pcitr(&i, &reli, &gid, it_start, it_end) {do stuff}	// i = index of this cell in entire cell list on this host
+															// reli = relative index: index of this cell in celltype-specific list on this host
+															// gid = gid of this cell
+															// it_start and it_end let you define range over which to iterate
+	i1 = 0
+	// eventually switch this pcitr to a vector as well so that it is the same as above.
+	numcycles = int($4/pc.nhost)
+	extra = $4%pc.nhost
+	addcycle=0
+	if (extra>pc.id) {addcycle=1}
+	startgid=(numcycles+addcycle)*pc.nhost+pc.id
+	if (startgid<=$5) {
+		for (i2=startgid; i2 <= $5; i2 += pc.nhost) {	// Just iterate through the cells on this host
+														//	(this works because of the roundrobin call made earlier)
+				$&1 = numcycles+addcycle+i1
+				$&2 = i1
+				$&3 = i2
+				iterator_statement
+				i1 += 1
+		}
+	}	
+}
+loadtime = startsw() - loadstart		// Calculate the set up time (now - recorded start time) in seconds
+if (pc.id == 0) {printf("\nTIME HOST 0: %g seconds (set up)\n************\n", loadtime)}
+createstart = startsw()					// Record the start time of the cell creation
+/***********************************************************************************************
+IV. CREATE, UNIQUELY ID, AND POSITION CELLS
+***********************************************************************************************/
+strdef cmd
+objref cells, ranconlist, ransynlist
+cells = new List()						
+ranconlist = new List()
+ransynlist = new List()
+
+ransynlist.append(new RandomStream(1, 0)) // placeholder randomstream for the pptype cell, which doesn't need it
+objref precell
+{precell = new pptype(0,0)}
+cells.append(precell)
+{precell.connect_pre(nil, nc)}	// Create an empty connection for use by the spike detector
+{pc.cell(0, nc)}									// Associate the cell with its gid and its spike generation location
+chdir("cells/")
+//print "current dir: ", getcwd()
+proc createCells(){ local i, ij, gotil, startat, reli, si, pci, cellind, cnum, runresult, gid	// Create cells and assign a GID to each cell
+	for cellind=0, numCellTypes-1 {
+		if ($1==1) {
+			startat = cellType[cellind].cellStartGid
+			gotil = cellType[cellind].cellStartGid
+		} else { 
+			startat = cellType[cellind].cellStartGid //+1
+			gotil = cellType[cellind].cellEndGid
+		}
+
+		for pcitr(&i, &ij, &gid, startat, gotil) {// use the pciter over all cells of this type
+			print "type: ", cellType[cellind].technicalType, " ", startat, " ", gotil
+			if (pc.gid_exists(gid)) {
+				sprint(cmd, "cellType[%g].CellList[%g]=new %s(%g,%g,%g)", cellind, ij, cellType[cellind].technicalType, gid, i, cellind) //+cellType[cellind].cellStartGid) // why add the startgid to the gid? 
+				//print cmd
+				{runresult=execute1(cmd)} 		// This command was written as a string so
+												//	the cell object doesn't have to be hard coded
+												
+				cells.append(cellType[cellind].CellList[ij])	// Append each cell to cells list
+
+				ransynlist.append(new RandomStream(1, gid)) // Create a new random number generator for each cell,
+
+				{cellType[cellind].CellList[ij].connect_pre(nil, nc)}	// Create an empty connection for use by the spike detector
+				{pc.cell(gid, nc)}									// Associate the cell with its gid and its spike generation location
+				if (cellind>-1 && cellType[cellind].CellList[ij].is_art==0) {									// For non ppstim cells, assign position, initialize synapse cid and sid
+					for si=0, cellType[cellind].CellList[ij].pre_list.count-1 {	// Iterate over each pre cell type's synapse list
+						for j=0, cellType[cellind].CellList[ij].pre_list.o(si).count-1 {		// Iterate through each synapse in the list
+							{cellType[cellind].CellList[ij].pre_list.o(si).o(j).cid=gid}			// Set the cell id for each synapse
+																								//  Note: Parameters added to Syn2Gid mechanism
+						}
+					}
+					if ((cnum%int(cellType[cellind].numCells/10+1) == 0) && (PrintTerminal>1)) {print cellType[cellind].cellType_string, ": ", reli}
+					cellType[cellind].CellList[ij].position(gid*5, 0, 0)
+				}
+			}
+		}
+	}
+	nc = nil // Then clear the reference to the netcon object, which should destroy the netcon (because all refs would have been removed)
+	if  (PrintTerminal>0) {print "Host ", pc.id, " created cells."}
+}
+createCells(2)
+chdir("../")
+
+objref cell
+if (pc.gid_exists(1)) {
+cell = pc.gid2cell(1)}
+
+strdef mname, tmpstr
+objref strobj
+objref mechstring[9], mechlength
+
+proc print_mechs(){local i, k localobj mt, cell	// this code courtesy of Jose Ambros-Ingerson via the NEURON forum
+mechlength = new Vector(1)
+strobj = new StringFunctions()
+	cell = pc.gid2cell($1)
+	//print "really should not do this for Izh"
+	access cell.soma {
+		mt = new MechanismType(0)
+		objref mechstring[mt.count()]
+		k = 0
+		for i=0, mt.count()-1 {
+			mt.select( i )
+			mt.selected(mname)
+			if( ismembrane(mname)) {
+				if (strcmp(mname,"capacitance")!=0 && strcmp(mname,"morphology")!=0 && strcmp(mname,"iconc_CaZ")!=0 && strcmp(mname,"iconc_Ca")!=0  && strcmp(mname,"iconcCa")!=0 && strcmp(mname,"ccanl")!=0 && strcmp(mname,"cad")!=0 && strcmp(mname,"spines")!=0 && strcmp(mname,"pas")!=0 && strcmp(mname,"vmax")!=0 ) { //
+					if (strobj.substr(mname,"_ion")==-1) {
+						//printf("myi_%s \n", mname) 
+						sprint(tmpstr, "myi_%s", mname) // "cell.soma.%s(0.5)", tmpstr
+						mechstring[k] = new String()
+						mechstring[k].s = tmpstr
+						{k = k+1}
+					} 
+				} 
+			}
+		}
+	}
+	//{printf("mt count = %g, mechlength0 = %g mechstring = %s\n", mt.count(), k-1, mechstring[k-1].s)}
+	{mechlength.x[0] = k}
+	//{printf("'bout to leave. mechstring count = %g \n",  mechstring.count)}
+	//return mechstring
+}
+
+createtime = startsw() - createstart	// Calculate time taken to create the cells
+if (pc.id == 0) {printf("\nTIME HOST 0: %g seconds (created cells)\n************\n", createtime)}
+connectstart = startsw()				// Grab start time of cell connection
+/***********************************************************************************************
+V?	SINGLE CELL DATA
+***********************************************************************************************/
+proc init() { local dtsav, temp, secsav, secondordersav	// initialize the simulation
+	dtsav = dt						// Save desired dt value to reset after temporarily changing dt
+	secondordersav = secondorder	// Save desired secondorder value to reset after temporarily changing secondorder
+
+	finitialize(-62.59)	// Call finitialize (since we are replacing the default init proc that calls this)
+						// finitialize will Call the INITIAL block for all mechanisms and point processes inserted in the sections
+						//	and set the initial voltage to v_init for all sections
+
+	t = -500			// Set the start time for (pre) simulation; -500 to prepare network in advance of start at 0
+	dt= 10				// Set dt to large value
+	secondorder = 0		// Set secondorder to 0 to set the default fully implicit backward euler for numerical integration (see NEURON ref)
+		
+	temp= cvode.active()
+	if (temp!=0) {cvode.active(0)}	// If cvode is on, turn off temporarily to do large fixed step
+	// Now, do a large pre run from t = -500 to t = -100 to set the network 'settle' and all components to reach steady state
+	while(t<-100) { fadvance() if (PrintTerminal>1) {print t}}	// Integrate all section equations over the interval dt. increment t by dt
+															//	and repeat till t at -100
+	if (temp!=0) {cvode.active(1)}	// If cvode was on and then turned off, turn it back on now
+	
+	t = tstart 						// Start time of the simulation
+	dt = dtsav						// Reset dt to specified value
+	secondorder = secondordersav	// Reset secondorder to specified value
+	if (cvode.active()){
+		cvode.re_init()				// If cvode is active, initialize the integrator
+	} else {
+		fcurrent()					// If cvode is not active, make all assigned variables (currents, conductances, etc)
+									//	consistent with the values of the states
+	}
+	frecord_init() // see email from ted - fadvance() increments the recorder, so we need to fix the index it ends up at
+}
+proc rrun(){												// Run the network simulation
+	//pnm.want_all_spikes()
+	pc.set_maxstep(10)							// Set every machine's max step size to minimum delay of all netcons created on pc using pc.gid_connect, but not larger than 10
+	stdinit()									// Call the init fcn (which is redefined in this code) and then make other standard calls (to stop watch, etc)
+	pc.psolve(tstop)							// Equivalent to calling cvode.solve(tstop), for parallel NEURON, where solve will be broken into steps determined by the result of set_maxstep
+	}
+
+
+objref  f2, f, fe, stimAMPvector, cell, strobj //, mechstring[5]
+strobj = new StringFunctions()
+//local i, sec, duration
+strdef mname, headstr, headEstr, outfile, Eoutfile, cmdstr, cmd
+objref mt, cell, strobj
+strobj = new StringFunctions()
+
+if (cellmechs==1) {
+	for idxes=0, numCellidxes-1 {
+		cellind = mycellvecs.x[idxes]
+		gid=cellType[cellind].cellStartGid
+		if (pc.gid_exists(gid)) {
+			// add recording locations to cell:
+			cell = pc.gid2cell(gid)
+			if (cell.is_art==0) {	
+				sprint(outfile, "%s%s%s%scelldata_%s.dat", relpath, sl, resultspath, sl, cellType[cellind].cellType_string)
+				f = new File(outfile)
+				sprint(Eoutfile, "%s%s%s%scellEdata_%s.dat", relpath, sl, resultspath, sl, cellType[cellind].cellType_string)
+				fe = new File(Eoutfile)
+				print "writing out to: ", outfile
+				f.wopen()
+				fe.wopen()
+
+				access cell.soma // access cell.soma[0]
+				distance() // set the origin for measuring the distance
+				sprint(headstr,"secname\tpos\tx\ty\tz\tdist\tdiam\tcm\tRa")								
+				sprint(headEstr,"secname")								
+				mt = new MechanismType(0)
+				for i=0, mt.count()-1 {
+					mt.select( i )
+					mt.selected(mname)
+					if (strobj.substr(mname,"ch_")>-1) {
+						sprint(headstr,"%s\tgmax_%s", headstr, mname)	
+						sprint(headEstr,"%s\t%s", headEstr, mname)	
+					}							
+				}
+				sprint(headstr,"%s\n", headstr)	
+				f.printf(headstr)
+				sprint(headEstr,"%s\n", headEstr)	
+				fe.printf(headEstr)
+				
+				forsec cell.all { // forsec cell.all // forall
+					for (x) {
+						xdist = distance(x)
+						sprint(headstr,"%s\t%g\t%g\t%g\t%g\t%g\t%g\t%g\t%g", secname(), x, x3d(0), y3d(0), z3d(0), xdist, diam, cm, Ra)								
+						sprint(headEstr,"%s", secname())								
+
+						for i=0, mt.count()-1 {
+							mt.select( i )
+							mt.selected(mname)
+							if (strobj.substr(mname,"ch_")>-1) {
+								g=0
+								mye=0
+								if ( ismembrane(mname)) {
+									sprint(cmdstr, "g = gmax_%s", mname)
+									execute1(cmdstr)
+									sprint(cmdstr, "mye = mye_%s", mname)
+									execute1(cmdstr)
+								}
+								sprint(headstr,"%s\t%g", headstr, g)	
+								sprint(headEstr,"%s\t%g", headEstr, mye)	
+							}						
+						}
+						sprint(headstr,"%s\n", headstr)	
+						f.printf(headstr)
+						sprint(headEstr,"%s\n", headEstr)	
+						fe.printf(headEstr)
+					}
+				}
+				f.close()
+				fe.close()
+			}
+		}
+	}
+}
+
+objref zz, fcell, fid
+objref myIVec, tvec
+
+tmp1unused=0
+tmp2unused=1
+
+strdef cmdstr,recflag, tempString
+objref myVClamp, myIClamp,RMPvec,Ampvec,Meanvec
+
+RMPvec=new Vector(numCellidxes)
+Ampvec=new Vector(numCellidxes)
+Meanvec=new Vector(numCellidxes)
+
+objref myresult, fid, prevones
+prevones = new Vector(2)
+myresult = new Vector((tstop-tstart)/dt)
+tmptstop=tstop
+if (onecell>0) { 
+	fid = new File()
+
+		{sprint(pathstr,"%s%scells%sRMPcompcurr.dat", relpath, sl, sl)}						
+		{fid.wopen(pathstr)}
+		for idxes=0, numCellidxes-1 {
+			cellind = mycellvecs.x[idxes]
+			if (cellType[cellind].is_pp==1) {
+				recflag="izh.V"
+			} else {
+				recflag="soma.v(0.5)"
+			}		
+			gid=cellType[cellind].cellStartGid
+			if (pc.gid_exists(gid)) {
+				// add recording locations to cell:
+				strdef sname, cmdstr, outfile
+				cell = pc.gid2cell(gid)
+				if (cell.is_art==0) {
+					 cell.soma { //forsec cell.all { // add recording location to middle of each section
+					 
+					if (chkRMP==1) {
+						actRMP = cell.soma.v(0.5)
+						tstop=50						  
+						 cell.soma myVClamp = new SEClamp(0.5)
+						 myVClamp.amp1 = matchRMP
+						 myVClamp.dur1=tstop+5
+						 //print "about to run for ", idxes
+						 startsw()
+						 rrun()
+						 //print "finished running: ", stopsw()
+						 projCurr = 0
+						 newprojCurr = myVClamp.i
+						 myVClamp.dur1=0
+						 
+						 objref myIClamp
+						 cell.soma myIClamp = new IClamp(0.5)
+						 while (abs(actRMP-matchRMP)>wiRMP) {
+							 print "actRMP = ", actRMP, ", so gonna try	", newprojCurr					 
+							 projCurr = newprojCurr
+							 myIClamp.amp = projCurr
+							 myIClamp.dur=tstop+5
+							 myIClamp.del=0
+							 rrun()
+							 actRMP = cell.soma.v(0.5)
+							 if ((actRMP-matchRMP)<0) {newprojCurr = projCurr+.001}
+							 if ((actRMP-matchRMP)>0) {newprojCurr = projCurr-.001}
+						 }
+						 RMPvec.x[idxes]=projCurr
+						 fid.printf("%s\t%f\t%f\n", cellType[cellind].cellType_string, projCurr,actRMP)
+						 print "Current for ", 	cellType[cellind].cellType_string, " of ", 	projCurr, " gives RMP = ", actRMP
+						 
+						} 
+						tstop=tmptstop
+						if (chkMean==1) {
+						 newprojCurr = setDefMean
+						 objref meanIClamp, thetavec
+						 thetavec = new Vector((tstop-tstart)/dt)
+						 cell.soma meanIClamp = new IClamp(0.5)
+						 while (abs(actMean-matchMean)>wiMean) {
+							thetavec.sin(freq,0,dt)
+							thetavec.mul(ThetaAmp)
+							thetavec.add(setDefMean)  // .1 works for some
+							 fid.printf("setDefMean = %g", setDefMean)
+							 thetavec.play(&meanIClamp.amp,dt)
+							 meanIClamp.dur=1e9
+							 meanIClamp.del=0
+							 myresult.record(&cell.soma.v(0.5))
+							 rrun()
+							 myresult.medfltr(1)
+							 actMean = myresult.mean()
+							 actAmp = myresult.max() - myresult.min()
+							 if ((actMean-matchMean)<0) {
+								 //fid.printf("newprojCurr = %s+%g", setVarMean,byDefMean)
+									print "setDefMean = ", setDefMean, " + ", byDefMean, " = ", byDefMean+setDefMean, " because actMean=", actMean, " and matchMean=", matchMean
+								 setDefMean = setDefMean + byDefMean}
+							 if ((actMean-matchMean)>0) {
+								 //fid.printf("newprojCurr = %s-%g", setVarMean,byDefMean)
+									print "setDefMean = ", setDefMean, " - ", byDefMean, " = ", setDefMean-byDefMean, " because actMean=", actMean, " and matchMean=", matchMean
+								 setDefMean = setDefMean - byDefMean}
+							}
+						
+						 Meanvec.x[idxes]=newprojCurr
+						 print "Mean for ", 	cellType[cellind].cellType_string, " of setDefMean = ", setDefMean  , " gives Mean = ", actMean
+						}
+						if (chkAmp==1) {
+						 newprojCurr = setDef
+						 objref ampIClamp, thetavec, myresult
+						 thetavec = new Vector((tstop-tstart)/dt)
+						 myresult = new Vector((tstop-tstart)/dt)
+						 cell.soma ampIClamp = new IClamp(0.5)
+							thetavec.sin(freq,0,dt)
+							thetavec.mul(newprojCurr)
+							thetavec.add(Meanvec.x[idxes])  // .1 works for some
+							 //fid.printf("newprojCurr = %g", newprojCurr)
+							 //print "newprojCurr = ", newprojCurr
+							 thetavec.play(&ampIClamp.amp,dt)
+							 ampIClamp.dur=1e9
+							 ampIClamp.del=0
+							 myresult.record(&cell.soma.v(0.5))
+							 rrun()
+							 //myresult.medfltr(3)
+							 myresult.remove(0, 50/dt)
+							 actAmp = myresult.max() - myresult.min()
+							 evenodd=1
+						 while (abs(actAmp-matchAmp)>wiAmp) {
+							 if (evenodd==1) {
+								 evenodd = 0
+							 } else {
+								 evenodd=1
+							 }
+							 if ((actAmp-matchAmp)<0) {
+									print "newprojCurr = ", newprojCurr, " + ", byDef, " = ", newprojCurr+byDef, " because actAmp=", actAmp, " and matchAmp=", matchAmp
+								 newprojCurr = newprojCurr + byDef
+								 //sprint(cmd,"newprojCurr = %s+%g", newprojCurr,byDef)
+								//execute(cmd)
+									//print cmd, ", because actAmp=", actAmp, " and matchAmp=", matchAmp
+								 }
+							 if ((actAmp-matchAmp)>0) {
+									print "newprojCurr = ", newprojCurr, " - ", byDef, " = ", newprojCurr-byDef, " because actAmp=", actAmp, " and matchAmp=", matchAmp
+								 newprojCurr = newprojCurr - byDef
+								 //sprint(cmd,"newprojCurr = %s-byDef", setVar,byDef)
+								//execute(cmd)
+									//print cmd, ", because actAmp=", actAmp, " and matchAmp=", matchAmp
+							}	
+							if (prevones.x[evenodd]==newprojCurr) {
+								newprojCurr = prevones.mean()
+							}
+							thetavec.sin(freq,0,dt)
+							thetavec.mul(newprojCurr)
+							thetavec.add(Meanvec.x[idxes])  // .1 works for some
+							 //fid.printf("newprojCurr = %g", newprojCurr)
+							 //print "newprojCurr = ", newprojCurr
+							 thetavec.play(&ampIClamp.amp,dt)
+							 ampIClamp.dur=1e9
+							 ampIClamp.del=0
+							 myresult.record(&cell.soma.v(0.5))
+							 rrun()
+							 //myresult.medfltr(3)
+							 myresult.remove(0, 50/dt)
+							 actAmp = myresult.max() - myresult.min()
+							 //print "newprojCurr = ", newprojCurr, ", byDef = ", byDef
+							//print "newprojCurr=", newprojCurr
+							prevones.x[evenodd] = newprojCurr
+						}								 
+						 Ampvec.x[idxes]=newprojCurr
+						 print "Amplitude for ", 	cellType[cellind].cellType_string, " of newprojCurr = ", newprojCurr  , " gives Amplitude = ", actAmp	
+				 }
+				}
+			}
+		}
+	}
+		{fid.close()}
+		
+		for x=0,numCellidxes-1 {
+			print cellType[mycellvecs.x[x]].cellType_string, " | ", RMPvec.x[x], " | ", Meanvec.x[x], " | ", Ampvec.x[x]
+		}
+}
+
+
+
+/***********************************************************************************************
+V?	MORPHOLOGY
+***********************************************************************************************/
+create xScale, yScale, zScale
+proc anatscale() {
+        if ($4>0) {  // if length arg is <= 0 then do nothing
+                xScale {
+                        pt3dclear()
+                        pt3dadd($1, $2, $3, 2)
+                        pt3dadd($1+$4, $2, $3, 2)
+                }
+                yScale {
+                        pt3dclear()
+                        pt3dadd($1, $2, $3, 2)
+                        pt3dadd($1, $2+$4, $3, 2)
+                }
+                zScale {
+                        pt3dclear()
+                        pt3dadd($1, $2, $3, 2)
+                        pt3dadd($1, $2, $3+$4, 2)
+                }
+        }
+}
+
+objref showthese, ss, nobj
+strdef pathstr
+double vec[4]
+showthese = new SectionList()
+xScale {showthese.append()}
+yScale {showthese.append()}
+zScale {showthese.append()}
+if (cellmorph==1) {
+	print "in morph!"
+	for idxes=0, numCellidxes-1 {
+		cellind = mycellvecs.x[idxes]
+		gid=cellType[cellind].cellStartGid
+		if (pc.gid_exists(gid)) {
+			// add recording locations to cell:
+			cell = pc.gid2cell(gid)
+			if (cell.is_art==0) {
+				showthese.append(cell.all)
+				ss = new Shape(showthese)
+
+				ss.color_list(showthese, 1)
+				ss.show(0)
+				ss.exec_menu("View = plot")
+				ss.size(&vec[0])
+				
+				xpt = (vec[1]-vec[0])*.1+vec[0]
+				ypt = (vec[3]-vec[2])*.1+vec[2]
+				print "xpt: ", xpt, ", ypt: ", ypt
+				print "x: ", vec[0], " to ", vec[1], "; y: ", vec[2], " to ", vec[3]
+
+				anatscale(0,0,0,100)  // xyz coords of origin, and length
+				//anatscale(vec[0]-10,vec[2]-10,0,100)  // xyz coords of origin, and length
+				//ss.label(0.10,0.10,"100 um")
+				
+				sprint(pathstr,"%s%s%s%s%s_morph.eps", relpath, sl, resultspath, sl, cellType[cellind].cellType_string)				
+				ss.printfile(pathstr)
+				//ss = nobj
+			}
+		}
+	}
+}
+
+if (quitnow==1) {
+{pc.runworker()} 	// Everything after this line is executed only by the host node
+					// "The master host returns immediately. Worker hosts start an infinite loop of requesting tasks for execution." 
+{pc.done()}			// Sends the quit message to the worker processors, which then quit neuron
+quit()	// Sends the quit message to the host processor, which then quits neuron
+}
+

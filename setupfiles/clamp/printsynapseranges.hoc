@@ -2,8 +2,8 @@
 
 chdir("setupfiles")
 {load_file("../setupfiles/defaultvar.hoc")}	// Contains the proc definition for default_var proc
-{default_var("NumData",100)}		// for paired recording, use these synapse weights
-{default_var("SynData",100)}		// for paired recording, use these synapse weights
+{load_file("../setupfiles/parameters.hoc")}	// Contains the proc definition for default_var proc
+{load_file("../setupfiles/set_other_parameters.hoc")}	// Contains the proc definition for default_var proc
 {default_var("path2ConnData","../datasets/conndata_%g.dat")}		// for paired recording, use these synapse weights
 {default_var("path2SynData","../datasets/syndata_%g.dat")}		// for paired recording, use these synapse weights
 {default_var("filesavepath","../cells")}		// for paired recording, use these synapse weights

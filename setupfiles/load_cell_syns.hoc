@@ -84,7 +84,7 @@ proc syn_cells() {localobj mySynStore
 			tau2 = f2c.scanvar
 			efirst = f2c.scanvar
 		}
-	
+		// print pre_type, " to ", post_type, " as ", SynType, " within ", SecRefStr, " between ", CheckCond1, " and ", CheckCond2, ": ", tau1, " to ", tau2, " with e=", efirst
 		sprint(cmdstr, "%s_idx", pre_type)
 		sprint(cmdstr1, "%s_idx", post_type)
 		if ((name_declared(cmdstr) > 0) && (name_declared(cmdstr1) > 0)) {	// Create the synapse object that
@@ -107,7 +107,7 @@ proc syn_cells() {localobj mySynStore
 																	//  synapse objects for this combination of
 																	//  presynaptic and postsynaptic cell types
 		} else {
-			print "!!CANNOT make ", pre_type, " to ", post_type, " because ", name_declared(cmdstr), " or ", name_declared(cmdstr1)
+			print "!!CANNOT make ", pre_type, " to ", post_type, " because ", name_declared(cmdstr), " for ", cmdstr, " or ", name_declared(cmdstr1), " for ", cmdstr1
 		}
 	}
 	f2c.close()

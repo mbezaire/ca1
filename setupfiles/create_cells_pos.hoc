@@ -14,6 +14,7 @@ some identifying parameters associated with their list if potential
 synaptic inputs, and set aside some random number generators (random
 streams) for each cell.
 ************************************************************/
+strdef cmd
 
 proc createCells(){ local i, ij, si, pci, cellind, runresult, gid localobj tmpr	// Create cells and assign a GID to each cell
 	for cellind=0, numCellTypes-1 {									//	number stream have already been used
@@ -24,7 +25,7 @@ proc createCells(){ local i, ij, si, pci, cellind, runresult, gid localobj tmpr	
 																//	the cell object doesn't have to be hard coded
 																
 				cells.append(cellType[cellind].CellList[ij])	// Append each cell to cells list
-				
+
 				cellType[cellind].numThisHost = ij+1 // set number of cells of this type on this host (but add 1 b/c ij is zero based)
 
 				// Random streams: for more info, see the comments in ranstream.hoc

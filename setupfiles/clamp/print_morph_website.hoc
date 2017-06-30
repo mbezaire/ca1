@@ -32,7 +32,11 @@ I.  LOAD LIBRARIES
 
 {load_file("./setupfiles/check_for_files.hoc")}	// Checks that the necessary chosen files exist
 												//  (datasets, connectivity, and stimulation)
-												
+default_var("reposdir","/cygdrive/c/Users/M/Desktop/repos/ca1") // Run Comments  // -c 'strdef RunName ' 'RunName = "Woo"'
+
+// SynData=120
+// ConnData=330
+// NumData=106
 /***********************************************************************************************
 II. SET MODEL SIZE, CELL DEFINITIONS
 ***********************************************************************************************/
@@ -78,8 +82,12 @@ proc calcNetSize(){local i				// Calculate the final network size (after any cel
 		
 		cellType[i].numCells = 1
 			
+		if (i==0) {
+			cellType[i].updateGidRange(0)	// Update the gid range for each
+		} else {
 		cellType[i].updateGidRange(cellType[i-1].cellEndGid+1)	// Update the gid range for each
 																//  cell type
+															}
 		
 		totalCells = totalCells + cellType[i].numCells			// Update the total number of cells
 																//   after sclerosis, not including
@@ -165,7 +173,7 @@ createstart = startsw()					// Record the start time of the cell creation
 IV. CREATE, UNIQUELY ID, AND POSITION CELLS
 ***********************************************************************************************/
 
-strdef direx1, direx2, TopProc, TopCommand
+strdef direx1, direx2, TopProc, TopCommand, cmd
 
 objref cells, ransynlist, ranwgtlist, ranlfplist, ranstimlist, raninitlist
 cells = new List()						
@@ -174,6 +182,8 @@ ranstimlist = new List()
 raninitlist = new List()
 ranwgtlist = new List()
 ranlfplist = new List()
+
+cmd=""
 
 {load_file("./setupfiles/create_cells_pos.hoc")}	// Creates each cell on its assigned host
 													//  and sets its position using the algorithm
@@ -185,10 +195,8 @@ V. WRITE OUT MORPH DATA AND IMAGES
 ***********************************************************************************************/
 
 strdef websitepath, websitepathchan
-sprint(websitepath,"%s/cells",reposdir)
-sprint(websitepathchan,"%s/channels",reposdir)
-// websitepath="/cygdrive/c/Users/maria_000/Documents/Websites/modelgraphic/cells"
-// websitepathchan="/cygdrive/c/Users/maria_000/Documents/Websites/modelgraphic/channels"
+sprint(websitepath,"%s/cells", reposdir)
+sprint(websitepathchan,"%s/channels", reposdir)
 
 numlists=6
 objref mysecs[numlists]
@@ -398,7 +406,7 @@ for celltype=0, numCellTypes-1 {
 				objref f
 				strdef myfile
 				f = new File()
-				sprint(myfile,"%s/%s/morphtable.txt",websitepath ,cellType[celltype].cellType_string)
+				sprint(myfile,"%s/%s/morphtable.txt",websitepath ,cellType[celltype].cellType_string)//technicalType)//cellType_string)
 				f.wopen(myfile)
 
 				// All
@@ -461,7 +469,7 @@ for celltype=0, numCellTypes-1 {
 					}
 					ss.rotate()
 					ss.show(0) //show diameters
-					sprint(cmdstr, "ss.printfile(\"%s/%s/%s.ps\")", websitepath, cellType[celltype].cellType_string, mypart) // later converted to mypart.png
+					sprint(cmdstr, "ss.printfile(\"%s/%s/%s.ps\")", websitepath, cellType[celltype].cellType_string, mypart)//technicalType, mypart)//cellType_string, mypart) // later converted to mypart.png
 					execute(cmdstr)
 				}
 				
@@ -474,7 +482,7 @@ for celltype=0, numCellTypes-1 {
 				// Ion Channel Plot and Table //
 				////////////////////////////////
 				f = new File()
-				sprint(myfile,"%s/%s/channeltable.txt",websitepath ,cellType[celltype].cellType_string)
+				sprint(myfile,"%s/%s/channeltable.txt",websitepath ,cellType[celltype].cellType_string)//technicalType)//cellType_string)
 				f.wopen(myfile)
 				
 				poshorz = 2000
@@ -499,7 +507,7 @@ for celltype=0, numCellTypes-1 {
 							sprint(myfile,"%s/%s/celltable.txt",websitepathchan , channame)
 							f2.aopen(myfile)
 						}
-// print "ion channel = ", mname, ", or = ", channame
+
 						sprint(tmpstr, "gmax_%s", mname) // "cell.soma.%s(0.5)", tmpstr
 												
 						peakvalue = 0
@@ -533,6 +541,8 @@ for celltype=0, numCellTypes-1 {
 									if (testvalue>peakvalue) {
 										peakvalue = testvalue
 										sprint(location,"%s", myname)
+										sprint(cmdstr, "erev = mye_%s", mname) // sprint(cmdstr, "erev = e%s", headstr)
+										{execute(cmdstr)}
 									} else {
 										if ((testvalue==peakvalue) && (sf.substr(location,myname)==-1)) {
 											sprint(location,"%s; %s", location, myname)
@@ -560,6 +570,7 @@ for celltype=0, numCellTypes-1 {
 							}
 							
 							strdef tailstr, headstr
+
 							sprint(cmdstr, "grep \"USEION\" ./%s.mod", mname)
 							{system(cmdstr, mystr)}
 							if (sf.len(mystr)>0) {
@@ -569,8 +580,6 @@ for celltype=0, numCellTypes-1 {
 								sprint(headstr, "_%s", mname)
 							}
 							if (sf.len(headstr)>0) {
-								sprint(cmdstr, "erev = e%s", headstr)
-								{execute(cmdstr)}
 								f.printf("%s,%.0f,%s,%f,%s\n", channame, erev, description, peakvalue, location) // Channel Gmax Erev Location Description
 								f2.printf("%s,%.0f,%s,%f,%s\n", cellType[celltype].cellType_string, erev, description, peakvalue, location) // Cell Gmax Erev Location Description
 							} else {
@@ -627,8 +636,7 @@ for celltype=0, numCellTypes-1 {
 							g.size(mleft, mleft+mwidth, mbottom, mbottom+mheight)
 							g.view(mleft, mbottom, mwidth, mheight, sleft, top, swidth, sheight)
 							
-							sprint(cmdstr, "g.printfile(\"%s/%s/%s.ps\")", websitepath, cellType[celltype].cellType_string, channame) // later converted to channame.png
-							// print cmdstr
+							sprint(cmdstr, "g.printfile(\"%s/%s/%s.ps\")", websitepath, cellType[celltype].cellType_string, channame)//technicalType, channame)//cellType_string, channame) // later converted to channame.png
 							execute(cmdstr)
 							objref g
 						}

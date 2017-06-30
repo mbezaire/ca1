@@ -1,7 +1,6 @@
 {load_file("nrngui.hoc")}				// Standard definitions - NEURON library file
 {load_file("setupfiles/defaultvar.hoc")}	// Contains the proc definition for default_var proc
 
-strdef repodir // studycell
 strdef pathstr
 {sprint(pathstr,"%s/%s", "setupfiles", "parameters.hoc")}								
 {load_file(pathstr)}	// Loads in operational and model parameters
@@ -10,19 +9,25 @@ strdef pathstr
 {load_file(pathstr)}// Loads in operational and model parameters
 
 default_var("studycell","axoaxoniccell") // Run Comments  // -c 'strdef RunName ' 'RunName = "Woo"'
+default_var("repodir","/cygdrive/c/Users/M/Desktop/repos/ca1") // Run Comments  // -c 'strdef RunName ' 'RunName = "Woo"'
+default_var("myresultsfolder","000") // Run Comments  // -c 'strdef RunName ' 'RunName = "Woo"'
 
-repodir="/cygdrive/c/Users/M/Desktop/repos/ca1"
+//repodir="/cygdrive/c/Users/M/Desktop/repos/ca1"
+
 gid=0
-numCellTypes=1
-objref cellType
+numCellTypes=0
+objref cellType[1]
 
 strdef mypath, cmdstr, pathstr
-sprint(mypath, "%s/cellframes/class_%s.hoc", repodir, studycell)
+sprint(mypath, "%s/cells/class_%s.hoc", repodir, studycell)
+print "repodir=", repodir
+print "mypath=", mypath
 {load_file(mypath)}
 
 objref cell, ncrec
-sprint(cmdstr,"cell = new %s(gid, gid)", studycell)
+sprint(cmdstr,"cell = new %s(gid, gid, 0)", studycell)
 execute1(cmdstr)
+numCellTypes=1
 
 numlists=5
 objref mysecs[numlists]
@@ -65,41 +70,59 @@ forsec cell.dendrite_list {
 }
 dendrite_list_diam=dendrite_list_totdiam/dendrite_list_totsec
 
-prox_list_area=0
-prox_list_length=0
-prox_list_totdiam=0
-prox_list_totsec=0
+apical_list_area=0
+apical_list_length=0
+apical_list_totdiam=0
+apical_list_totsec=0
 access cell.soma
 distance()
 forsec cell.apical_list { // prox_list {
 	flag=0
 	for (x,0) {
 		if (distance(x)<50) {
-			prox_list_area += area(x)
+			apical_list_area += area(x)
 			flag=1
 		}
 	}
 	
 	if (flag==1) {
-		prox_list_length += L
-		prox_list_totdiam += diam
-		prox_list_totsec +=1
+		apical_list_length += L
+		apical_list_totdiam += diam
+		apical_list_totsec +=1
 	}
 }
-prox_list_diam=prox_list_totdiam/prox_list_totsec
+apical_list_diam=apical_list_totdiam/apical_list_totsec
 
 
 axon_list_area=0
 axon_list_length=0
 axon_list_totdiam=0
 axon_list_totsec=0
-forsec cell.basal_list { // axon_list {
+axon_list_diam=0
+forsec cell.axon_list { // axon_list {
 	for (x,0) axon_list_area += area(x)
 	axon_list_length += L
 	axon_list_totdiam += diam
 	axon_list_totsec +=1
 }
-axon_list_diam=axon_list_totdiam/axon_list_totsec
+if (axon_list_totsec>0) {
+	axon_list_diam=axon_list_totdiam/axon_list_totsec
+}
+
+basal_list_area=0
+basal_list_length=0
+basal_list_totdiam=0
+basal_list_totsec=0
+basal_list_diam=0
+forsec cell.basal_list { // axon_list {
+	for (x,0) basal_list_area += area(x)
+	basal_list_length += L
+	basal_list_totdiam += diam
+	basal_list_totsec +=1
+}
+if (basal_list_totsec>0) {
+	basal_list_diam=basal_list_totdiam/basal_list_totsec
+}
 
 all_area=0
 all_length=0
@@ -118,7 +141,7 @@ strdef mystr, cmdstr
 objref f
 strdef myfile
 f = new File()
-sprint(myfile,"getcelldata.m")
+sprint(myfile,"%s/cellclamp_results/%s/getcelldata.m", repodir,myresultsfolder)
 f.wopen(myfile)
 
 for k=0,numlists-1 {
@@ -137,7 +160,7 @@ forsec cell.all { for(x,0) { if (diam(x) <=0.01) print secname(), diam(x) } }
 print studycell, " length checks:"
 forsec cell.all { if (L<=0.001) print secname(), L }
 
-print "done"
+print "done with checks"
 
 sublists=9
 objref mylists[sublists] //[17]
@@ -205,7 +228,7 @@ for k=0,4 { //sublists-1 {
 	execute(cmdstr)
 	ss.rotate()
 	ss.show(0) //show diameters
-	sprint(cmdstr, "ss.printfile(\"mycellview_%s.ps\")", mylists[k].s)
+	sprint(cmdstr, "ss.printfile(\"%s/cellclamp_results/%s/mycellview_%s.ps\")", repodir, myresultsfolder, mylists[k].s)
 	print cmdstr
 	execute(cmdstr)
 }
