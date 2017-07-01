@@ -7,7 +7,7 @@ default_var("UID","0")		// Unique ID for this simulation run
 default_var("Stimulation","spontaneous")		// Filename of the stimulation protocol used to stimulate the network
 default_var("Connectivity","try_all_randfaststim")		// Filename of the connection protocol used to connect the cells of the network
 default_var("Scale",10000)		// Network scale (1:Scale)
-default_var("SimDuration",100)		// Duration of time simulated, in milliseconds
+default_var("SimDuration",20)		// Duration of time simulated, in milliseconds
 default_var("RandomSeeds",0)		// Method used to assign seeds to random processors
 default_var("Positioning","")		// Algorithm used to position the cells
 default_var("PrintVoltage",1)		// Flag for recording and printing intracellular voltage traces for select cells

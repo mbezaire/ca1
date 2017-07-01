@@ -55,6 +55,8 @@ proc SetOtherParameters() {local ind, i, layernum, tempheight
 					//  of the cell.
 					
 	axconvel = 250	// Axonal conduction velocity in microns/ms (Bartos et al. 2002)
+	
+	usepython = 0   // whether to use python (mostly used to write out some recording results)
 
 	tstart = 0		// Start time of simulation
 	
