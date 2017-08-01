@@ -7,7 +7,7 @@
     <include href="../ngf.cell.nml"/>
 
     <!-- Point process: Current clamp -->    
-    <pulseGenerator id="IClamp" delay="50ms" duration="200ms" amplitude="0.19nA" />
+    <pulseGenerator id="IClamp0" delay="50ms" duration="200ms" amplitude="0.19nA" />
     
     
     <!-- Create a single-cell network -->
@@ -20,7 +20,7 @@
         </instance>
     </population>
 
-        <inputList id="IClamp" component="IClamp" population="Pop_ngfcell">
+        <inputList id="IClamp0" component="IClamp0" population="Pop_ngfcell">
             <input id="0" target="../Pop_ngfcell/0/ngfcell" destination="synapses"/>
         </inputList>   
  

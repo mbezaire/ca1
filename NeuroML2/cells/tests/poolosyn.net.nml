@@ -7,7 +7,7 @@
     <include href="../poolosyn.cell.nml"/>
 
     <!-- Point process: Current clamp -->    
-    <pulseGenerator id="IClamp" delay="50ms" duration="200ms" amplitude="0.3nA" />
+    <pulseGenerator id="IClamp0" delay="50ms" duration="200ms" amplitude="0.3nA" />
     
     
     <!-- Create a single-cell network -->
@@ -20,7 +20,7 @@
         </instance>
     </population>
 
-        <inputList id="IClamp" component="IClamp" population="Pop_poolosyncell">
+        <inputList id="IClamp0" component="IClamp0" population="Pop_poolosyncell">
             <input id="0" target="../Pop_poolosyncell/0/poolosyncell" destination="synapses"/>
         </inputList>   
  

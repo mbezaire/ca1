@@ -2,9 +2,6 @@
 <neuroml xmlns="http://www.neuroml.org/schema/neuroml2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.neuroml.org/schema/neuroml2 https://raw.github.com/NeuroML/NeuroML2/development/Schemas/NeuroML2/NeuroML_v2beta4.xsd" id="NeuroML_ionChannel">
 
     <notes>NeuroML file containing different Ca++ dynamics </notes>
-
-    <!-- just initialize caConc and caConcExt and holds them there -->
-    <FixedCaConcentrationModel id="fixedCapool" ion="ca"/>
     
     <!-- Intracellular Calcium dynamics, used in: cck, sca -->
     <BezaireCaConcentrationModel id="Capool" ion="ca" decayConstant="9ms" restingConc="5e-5mM" shellThickness="0.2um"/>
@@ -49,27 +46,5 @@
 
     </ComponentType>
     
-    
-    <ComponentType name="FixedCaConcentrationModel"
-                       extends="concentrationModel"
-                       description="Model of fixed Capool (initialize the ca concentrations and holds them there)">
-            
-        <Dynamics>
-
-            <StateVariable name="concentration" exposure="concentration" dimension="concentration"/>
-            <StateVariable name="extConcentration" exposure="extConcentration" dimension="concentration"/>
-            
-            <OnStart>
-                <StateAssignment variable="concentration" value="initialConcentration"/>
-                <StateAssignment variable="extConcentration" value="initialExtConcentration"/>
-            </OnStart>          
-
-            <OnCondition test="concentration .lt. 0">
-                <StateAssignment variable="concentration" value="0"/>
-            </OnCondition>
-            
-        </Dynamics>
-
-    </ComponentType>
  
 </neuroml>

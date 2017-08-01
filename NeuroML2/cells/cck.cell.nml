@@ -352,7 +352,8 @@
                 <channelDensity id="KvGroup_soma" ionChannel="KvGroup" condDensity="1.3mS_per_cm2" erev="-90mV" segmentGroup="soma_group" ion="k"/>
                 <channelDensity id="Navcck_soma" ionChannel="Navcck" condDensity="18mS_per_cm2" erev="55mV" segmentGroup="soma_group" ion="na"/>
                 <channelDensity id="leak_all" ionChannel="leak_chan" condDensity="0.037037037037037035mS_per_cm2" erev="-72mV" ion="non_specific"/>
-                <channelDensityNernst id="CavN_all" ionChannel="CavN" condDensity="0.02mS_per_cm2" ion="ca"/>
+                <channelDensity id="CavN_all" ionChannel="CavN" condDensity="0.02mS_per_cm2" erev="170.69mV" ion="ca"/> <!-- hard coded for caconc and temperature-->
+                <channelDensityGHK2 id="CavL_all" ionChannel="CavL" condDensity="2.7mS_per_cm2" ion="ca"/>
                 <channelDensityNonUniform id="Kdrfast_dendrite" ionChannel="Kdrfast" erev="-90mV" ion="k">
                     <variableParameter parameter="condDensity" segmentGroup="dendrite_group">
                         <inhomogeneousValue inhomogeneousParameter="PathLengthOverDendrites" value="H(100 - p) * 0.8"/>

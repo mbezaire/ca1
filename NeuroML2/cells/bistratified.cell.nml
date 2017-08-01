@@ -7,7 +7,6 @@
     <include href="../channels/KvCaB.channel.nml"></include>
     <include href="../channels/Navbis.channel.nml"></include>
     <include href="../channels/leak_chan.channel.nml"></include>
-    <include href="../channels/Capool.nml"></include>
     <cell id="bistratifiedcell">
         <notes>Cell: bistratifiedcell exported from NEURON ModelView</notes>
         <morphology id="morphology">
@@ -324,13 +323,12 @@
                 <channelDensity id="KvCaB_all" ionChannel="KvCaB" condDensity="7e-05mS_per_cm2" erev="-90mV" ion="k"/>
                 <channelDensity id="Navbis_all" ionChannel="Navbis" condDensity="70mS_per_cm2" erev="55mV" ion="na"/>
                 <channelDensity id="leak_all" ionChannel="leak_chan" condDensity="0.090009mS_per_cm2" erev="-67mV" ion="non_specific"/>
-                <channelDensityNernst id="CavN_all" ionChannel="CavN" condDensity="0.4mS_per_cm2" ion="ca"/>
+                <channelDensity id="CavN_all" ionChannel="CavN" condDensity="0.4mS_per_cm2" erev="170.69mV" ion="ca"/> <!-- hard coded for caconc and temperature-->
                 <spikeThresh value="0 mV"/>
                 <specificCapacitance value="1.4uF_per_cm2"/>
                 <initMembPotential value="-67.0mV"/>
             </membraneProperties>
             <intracellularProperties>
-                <species id="ca" concentrationModel="fixedCapool" ion="ca" initialConcentration="5e-6 mM" initialExtConcentration="2 mM"/>
                 <resistivity value="0.1 kohm_cm"/>
             </intracellularProperties>
         </biophysicalProperties>

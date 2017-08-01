@@ -1,5 +1,5 @@
 target: LEMS_cck.xml
-engine: jNeuroML_NEURON
+engine: jNeuroML_NetPyNE
 mep: ../../.test.mep
 
 experiments:

@@ -33,7 +33,7 @@
             <DerivedVariable name="K" dimension="per_voltage" value="(zCa * 0.84 * F) / (R * temperature)"/> 
             <DerivedVariable name="volt_dep" dimension="none" value="4.8e-04 * exp(-K * v)"/>
             
-            <DerivedVariable name="r" dimension="per_time" value="((0.28*ca_conc_i) / (ca_conc_i + volt_dep)) / TIME_SCALE"/>
+            <DerivedVariable name="r" dimension="per_time" exposure="r" value="((0.28*ca_conc_i) / (ca_conc_i + volt_dep)) / TIME_SCALE"/>
             
         </Dynamics>
           
@@ -58,7 +58,7 @@
             <DerivedVariable name="K" dimension="per_voltage" value="(zCa * F) / (R * temperature)"/> 
             <DerivedVariable name="volt_dep" dimension="none" value="1.3e-07 * exp(-K * v)"/>
             
-            <DerivedVariable name="r" dimension="per_time" value="(0.48 / (1.0 + (ca_conc_i/volt_dep))) / TIME_SCALE"/>
+            <DerivedVariable name="r" dimension="per_time" exposure="r" value="(0.48 / (1.0 + (ca_conc_i/volt_dep))) / TIME_SCALE"/>
             
         </Dynamics>
           
