@@ -7,6 +7,7 @@
     <include href="../channels/KvCaB.channel.nml"></include>
     <include href="../channels/Nav.channel.nml"></include>
     <include href="../channels/leak_chan.channel.nml"></include>
+    <include href="../channels/Capool.nml"></include>
     <cell id="axoaxoniccell">
         <notes>Cell: axoaxoniccell exported from NEURON ModelView</notes>
         <morphology id="morphology">
@@ -314,6 +315,123 @@
                 <include segmentGroup="dend_9"/>
                 <include segmentGroup="dend_4"/>
             </segmentGroup>
+            <segmentGroup id="soma_group">
+                <include segmentGroup="soma_0"/>
+            </segmentGroup>
+            <segmentGroup id="apical_group">
+                <notes>segmentGroup added by A.Ecker to exactly match NEURON version (not added to segGroup id="all")</notes>
+                <include segmentGroup="dend_0"/>
+                <include segmentGroup="dend_1"/>
+                <include segmentGroup="dend_2"/>
+                <include segmentGroup="dend_3"/>
+                <include segmentGroup="dend_4"/>
+                <include segmentGroup="dend_5"/>
+                <include segmentGroup="dend_6"/>
+                <include segmentGroup="dend_7"/>
+                <include segmentGroup="dend_8"/>
+                <include segmentGroup="dend_9"/>
+            </segmentGroup>
+            <segmentGroup id="basal_group">
+                <notes>segmentGroup added by A.Ecker to exactly match NEURON version (not added to segGroup id="all")</notes>
+                <include segmentGroup="dend_10"/>
+                <include segmentGroup="dend_11"/>
+                <include segmentGroup="dend_12"/>
+                <include segmentGroup="dend_13"/>
+                <include segmentGroup="dend_14"/>
+                <include segmentGroup="dend_15"/>
+            </segmentGroup>
+            <segmentGroup id="dendrite_list_0_to_50">
+                <notes>segmentGroup added by A.Ecker to specify connection targets for opencortex (not added to segGroup id="all")</notes>
+                <member segment="29"/>
+            </segmentGroup>
+            <segmentGroup id="dendrite_list_50_to_200">
+                <notes>segmentGroup added by A.Ecker to specify connection targets for opencortex (not added to segGroup id="all")</notes>
+                <member segment="31"/>
+                <member segment="32"/>
+                <member segment="30"/>
+                <member segment="23"/>
+                <member segment="24"/>
+                <member segment="25"/>
+                <member segment="26"/>
+                <member segment="13"/>
+                <member segment="14"/>
+                <member segment="15"/>
+                <member segment="3"/>
+                <member segment="4"/>
+                <member segment="5"/>
+            </segmentGroup>
+            <segmentGroup id="dendrite_list_200_to_1000">
+                <notes>segmentGroup added by A.Ecker to specify connection targets for opencortex (not added to segGroup id="all")</notes>
+                <member segment="33"/>
+                <member segment="34"/>
+                <member segment="27"/>
+                <member segment="28"/>
+                <member segment="19"/>
+                <member segment="20"/>
+                <member segment="21"/>
+                <member segment="22"/>
+                <member segment="11"/>
+                <member segment="12"/>
+                <member segment="16"/>
+                <member segment="17"/>
+                <member segment="18"/>
+                <member segment="6"/>
+                <member segment="7"/>
+                <member segment="8"/>
+                <member segment="9"/>
+                <member segment="10"/>
+            </segmentGroup>
+            <segmentGroup id="apical_list_100_to_1000">
+                <notes>segmentGroup added by A.Ecker to specify connection targets for opencortex (not added to segGroup id="all")</notes>
+                <member segment="31"/>
+                <member segment="32"/>
+                <member segment="33"/>
+                <member segment="34"/>
+                <member segment="27"/>
+                <member segment="28"/>
+                <member segment="30"/>
+                <member segment="25"/>
+                <member segment="26"/>
+                <member segment="19"/>
+                <member segment="20"/>
+                <member segment="21"/>
+                <member segment="22"/>
+                <member segment="11"/>
+                <member segment="12"/>
+                <member segment="14"/>
+                <member segment="15"/>
+                <member segment="16"/>
+                <member segment="17"/>
+                <member segment="18"/>
+                <member segment="4"/>
+                <member segment="5"/>
+                <member segment="6"/>
+                <member segment="7"/>
+                <member segment="8"/>
+                <member segment="9"/>
+                <member segment="10"/>
+            </segmentGroup>
+            <segmentGroup id="apical_list_200_to_1000">
+                <notes>segmentGroup added by A.Ecker to specify connection targets for opencortex (not added to segGroup id="all")</notes>
+                <member segment="33"/>
+                <member segment="34"/>
+                <member segment="27"/>
+                <member segment="28"/>
+                <member segment="19"/>
+                <member segment="20"/>
+                <member segment="21"/>
+                <member segment="22"/>
+                <member segment="11"/>
+                <member segment="12"/>
+                <member segment="16"/>
+                <member segment="17"/>
+                <member segment="18"/>
+                <member segment="6"/>
+                <member segment="7"/>
+                <member segment="8"/>
+                <member segment="9"/>
+                <member segment="10"/>
+            </segmentGroup>
         </morphology>
         <biophysicalProperties id="biophys">
             <membraneProperties>
@@ -323,12 +441,14 @@
                 <channelDensity id="KvCaB_all" ionChannel="KvCaB" condDensity="0.0002mS_per_cm2" erev="-90mV" ion="k"/>
                 <channelDensity id="Nav_all" ionChannel="Nav" condDensity="150mS_per_cm2" erev="55mV" ion="na"/>
                 <channelDensity id="leak_all" ionChannel="leak_chan" condDensity="0.180018mS_per_cm2" erev="-65mV" ion="non_specific"/>
-                <channelDensity id="CavN_all" ionChannel="CavN" condDensity="0.8 mS_per_cm2" erev="170.69mV" ion="ca"/> <!-- hard coded for caconc and temperature-->
+                <channelDensityNernst id="CavN_all" ionChannel="CavN" condDensity="0.8mS_per_cm2" ion="ca"/>
+                <channelDensityGHK2 id="CavL_all" ionChannel="CavL" condDensity="5mS_per_cm2" ion="ca"/>
                 <spikeThresh value="0 mV"/>
                 <specificCapacitance value="1.4uF_per_cm2"/>
                 <initMembPotential value="-65.0mV"/>
             </membraneProperties>
             <intracellularProperties>
+                <species id="ca" concentrationModel="fixedCapool" ion="ca" initialConcentration="5e-6 mM" initialExtConcentration="2 mM"/>
                 <resistivity value="0.1kohm_cm"/>
             </intracellularProperties>
         </biophysicalProperties>
