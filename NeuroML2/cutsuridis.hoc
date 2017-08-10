@@ -17,6 +17,7 @@ print "##### cutsuridis started #####"
 {load_file("../cells/class_cutsuridiscell.hoc")}
 
 CELL = new cutsuridiscell(0,0,-1)
+v_init = -65  // set to eleakval
 
 objectvar stim
 CELL.soma {

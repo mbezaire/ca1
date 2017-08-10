@@ -17,6 +17,7 @@ print "##### bistratified started #####"
 {load_file("../cells/class_bistratifiedcell.hoc")}
 
 CELL = new bistratifiedcell(0,0,-1)
+v_init = -67  // set to eleakval
 
 objectvar stim
 CELL.soma {

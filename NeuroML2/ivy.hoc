@@ -17,6 +17,7 @@ print "##### ivy started #####"
 {load_file("../cells/class_ivycell.hoc")}
 
 CELL = new ivycell(0,0,-1)
+v_init = -60  // set to eleakval
 
 objectvar stim
 CELL.soma {

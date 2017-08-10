@@ -17,6 +17,7 @@ print "##### poolosyn started #####"
 {load_file("../cells/class_poolosyncell.hoc")}
 
 CELL = new poolosyncell(0,0,-1)
+v_init = -66  // set to eleakval
 
 objectvar stim
 CELL.soma {

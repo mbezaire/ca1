@@ -17,6 +17,7 @@ print "##### pvbasket started #####"
 {load_file("../cells/class_pvbasketcell.hoc")}
 
 CELL = new pvbasketcell(0,0,-1)
+v_init = -65  // set to eleakval
 
 objectvar stim
 CELL.soma {

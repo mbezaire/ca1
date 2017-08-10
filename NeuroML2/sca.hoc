@@ -17,6 +17,7 @@ print "##### sca started #####"
 {load_file("../cells/class_scacell.hoc")}
 
 CELL = new scacell(0,0,-1)
+v_init = -72  // set to eleakval
 
 objectvar stim
 CELL.soma {

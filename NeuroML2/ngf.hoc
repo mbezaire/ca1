@@ -17,6 +17,7 @@ print "##### ngf started #####"
 {load_file("../cells/class_ngfcell.hoc")}
 
 CELL = new ngfcell(0,0,-1)
+v_init = -60  // set to eleakval
 
 objectvar stim
 CELL.soma {

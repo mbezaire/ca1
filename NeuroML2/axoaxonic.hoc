@@ -17,6 +17,7 @@ print "##### axoaxonic started #####"
 {load_file("../cells/class_axoaxoniccell.hoc")}
 
 CELL = new axoaxoniccell(0,0,-1)
+v_init = -65  // set to eleakval
 
 objectvar stim
 CELL.soma {

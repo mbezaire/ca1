@@ -17,6 +17,7 @@ print "##### cck started #####"
 {load_file("../cells/class_cckcell.hoc")}
 
 CELL = new cckcell(0,0,-1)
+v_init = -72  // set to eleakval
 
 objectvar stim
 CELL.soma {
