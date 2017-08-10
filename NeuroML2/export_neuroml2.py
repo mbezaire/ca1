@@ -1,3 +1,7 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+"""Helper script to export cells from .hoc template to NeuroML2. Mostly used to export morphology, the bioph. props. (usually) have to be updated manually"""
+
 from pyneuroml.neuron import export_to_neuroml2
 
 cells = ['axoaxonic', 'bistratified', 'cck', 'cutsuridis', 'ivy', 'ngf', 'olm', 'poolosyn', 'pvbasket', 'sca']
