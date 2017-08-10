@@ -1,9 +1,10 @@
-import matplotlib.pyplot as pylab
-import os.path
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+"""Compares channel dynamics in .mod files and in .nml files (run ./analyse_chans.sh first)"""
+
 import sys
-
-
-chans = ['KvCaB']
+import os.path
+import matplotlib.pyplot as plt
          
 chans = ['Kdrfast', 'Kdrslow', 'Kdrp', 'Kdrfastngf',
          'KvA','KvAolm', 'KvAproxp', 'KvAdistp', 
@@ -12,15 +13,11 @@ chans = ['Kdrfast', 'Kdrslow', 'Kdrp', 'Kdrfastngf',
          'HCN','HCNolm', 'HCNp',  
          'Nav','Navbis', 'Navcck','Navaxonp',
          'Navp','Navapicalp', 'Navngf',
-         'CavL', 'CavN']
+         'CavN']
          
-         
-#chans = ['Nav','Navbis', 'Navcck', 'Navngf', 'Navp']
-#chans = ['KvCaB']
-
 gates = ['m', 'h', 'c', 'd', 'r', 'q', 'n', 'l', 'a', 'b', 'o', 's']
 
-temperatures = [24]
+temperatures = [24, 34]
 
 comparison_readme = open('compare/README.md','w')
 
@@ -44,12 +41,12 @@ for temperature in temperatures:
             ts.append(float(line.split()[0])*1000)
             volts.append(float(line.split()[1])*1000)
 
-        fig = pylab.figure()
+        fig = plt.figure()
         fig.canvas.set_window_title("Time Course(s) of activation variables of %s at %sdegC"%(channel_id, temperature))
 
-        pylab.xlabel('Membrane potential (mV)')
-        pylab.ylabel('Time Course - tau (ms)')
-        pylab.grid('on')
+        plt.xlabel('Membrane potential (mV)')
+        plt.ylabel('Time Course - tau (ms)')
+        plt.grid('on')
 
         for gate in gates:
 
@@ -61,7 +58,7 @@ for temperature in temperatures:
                     ts.append(float(line.split()[0])*1000)
                     taus.append(float(line.split()[1])*1000)
 
-                pylab.plot(volts, taus, linestyle='-', linewidth=2, label="LEMS %s %s tau"%(channel_id, gate))
+                plt.plot(volts, taus, linestyle='-', linewidth=2, label="LEMS %s %s tau"%(channel_id, gate))
 
                 tau_mod_file  = '../../ch_%s.%s.tau.dat'%(channel_id, gate)
 
@@ -72,22 +69,22 @@ for temperature in temperatures:
                         vs.append(float(line.split()[0]))
                         taus.append(float(line.split()[1]))
 
-                    pylab.plot(vs, taus, '--x', label="Mod %s %s tau"%(channel_id, gate))
+                    plt.plot(vs, taus, '--x', label="Mod %s %s tau"%(channel_id, gate))
                     
-                    pylab.legend()
+                    plt.legend()
                     fig_name = '%s_%s_tau.png'%(channel_id, gate)
-                    pylab.savefig('compare/%s'%fig_name,bbox_inches='tight')
+                    plt.savefig('compare/%s'%fig_name,bbox_inches='tight')
                     comparison_readme.write(image_str%(fig_name,fig_name))
 
 
 
 
-        fig = pylab.figure()
+        fig = plt.figure()
         fig.canvas.set_window_title("Steady state(s) of activation variables of %s at %sdegC"%(channel_id, temperature))
 
-        pylab.xlabel('Membrane potential (mV)')
-        pylab.ylabel('Steady state (inf)')
-        pylab.grid('on')
+        plt.xlabel('Membrane potential (mV)')
+        plt.ylabel('Steady state (inf)')
+        plt.grid('on')
         
         # comparison_readme.write('</tr><tr>\n')
 
@@ -100,7 +97,7 @@ for temperature in temperatures:
                 for line in open(inf_lems_file):
                     infs.append(float(line.split()[1]))
 
-                pylab.plot(volts, infs, linestyle='-', linewidth=2, label="LEMS %s %s inf"%(channel_id, gate))
+                plt.plot(volts, infs, linestyle='-', linewidth=2, label="LEMS %s %s inf"%(channel_id, gate))
 
                 inf_mod_file  = '../../ch_%s.%s.inf.dat'%(channel_id, gate)
 
@@ -111,17 +108,17 @@ for temperature in temperatures:
                         vs.append(float(line.split()[0]))
                         infs.append(float(line.split()[1]))
 
-                    pylab.plot(vs, infs, '--x', label="Mod %s %s inf"%(channel_id, gate))
-                    pylab.legend()
+                    plt.plot(vs, infs, '--x', label="Mod %s %s inf"%(channel_id, gate))
+                    plt.legend()
                     
                     fig_name = '%s_%s_inf.png'%(channel_id, gate)
-                    pylab.savefig('compare/%s'%fig_name,bbox_inches='tight')
+                    plt.savefig('compare/%s'%fig_name,bbox_inches='tight')
                     comparison_readme.write(image_str%(fig_name,fig_name))
-
-        
+       
         comparison_readme.write('</tr></table>\n')
 
 comparison_readme.close()
 
+
 if not nogui:
-    pylab.show()
+    plt.show()
