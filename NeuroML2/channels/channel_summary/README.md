@@ -10,7 +10,7 @@ Channel information
             <a href="../Nav.channel.nml">Nav.channel.nml</a><br/>
             <b>Ion: na</b><br/>
             <i>g = gmax * m<sup>3</sup> * h </i><br/>
-            Na+ channel description (modeled by Marianne Bezaire)</sup>
+            Na+ channel description (modeled by Yuen and Durand 1991, modified by Aradi and Holmes 1999)</sup>
 </td>
 <td>
 <a href="Nav.inf.png"><img alt="Nav steady state" src="Nav.inf.png" height="220"/></a>
@@ -25,8 +25,7 @@ Channel information
             <a href="../Navbis.channel.nml">Navbis.channel.nml</a><br/>
             <b>Ion: na</b><br/>
             <i>g = gmax * m<sup>3</sup> * h </i><br/>
-            Na+ channel description (modeled by Marianne Bezaire).
-        Modified from Nav to have a slightly higher threshold, suitable for bistratified cells</sup>
+            Na+ channel description; modified from Nav to have a slightly higher threshold, suitable for bistratified cells</sup>
 </td>
 <td>
 <a href="Navbis.inf.png"><img alt="Navbis steady state" src="Navbis.inf.png" height="220"/></a>
@@ -41,7 +40,7 @@ Channel information
             <a href="../Navcck.channel.nml">Navcck.channel.nml</a><br/>
             <b>Ion: na</b><br/>
             <i>g = gmax * m<sup>3</sup> * h </i><br/>
-            Na+ channel description (modeled by Marianne Bezaire)</sup>
+            Na+ channel description; modified from Nav to have higher threshold and slow inactivation, suitable for cck cells)</sup>
 </td>
 <td>
 <a href="Navcck.inf.png"><img alt="Navcck steady state" src="Navcck.inf.png" height="220"/></a>
@@ -72,7 +71,7 @@ Channel information
             <a href="../Navngf.channel.nml">Navngf.channel.nml</a><br/>
             <b>Ion: na</b><br/>
             <i>g = gmax * m<sup>3</sup> * h </i><br/>
-            Na+ channel description for neurogliaform family (modeled by Marianne Bezaire)</sup>
+            Na+ channel description; modified from Nav to have a much higher threshold, suitable for neurogliaform and ivy cells)</sup>
 </td>
 <td>
 <a href="Navngf.inf.png"><img alt="Navngf steady state" src="Navngf.inf.png" height="220"/></a>
@@ -87,7 +86,7 @@ Channel information
             <a href="../Navp.channel.nml">Navp.channel.nml</a><br/>
             <b>Ion: na</b><br/>
             <i>g = gmax * m<sup>3</sup> * h * s </i><br/>
-            Na+ channel description (from Migliore 1997, modified in 2002)</sup>
+            Na+ channel description (from Migliore 1997, modified in 1999, Poolos 2002)</sup>
 </td>
 <td>
 <a href="Navp.inf.png"><img alt="Navp steady state" src="Navp.inf.png" height="220"/></a>
@@ -132,7 +131,7 @@ Channel information
             <a href="../Kdrfast.channel.nml">Kdrfast.channel.nml</a><br/>
             <b>Ion: k</b><br/>
             <i>g = gmax * n<sup>4</sup> </i><br/>
-            Fast delayed rectifier K+ channel description (from Yuen and Durand 1991, modeled by Marianne Bezaire)</sup>
+            Fast delayed rectifier K+ channel description (from Yuen and Durand 1991, modeled by Aradi and Holmes 1999, modified by Marianne Bezaire)</sup>
 </td>
 <td>
 <a href="Kdrfast.inf.png"><img alt="Kdrfast steady state" src="Kdrfast.inf.png" height="220"/></a>
@@ -147,7 +146,7 @@ Channel information
             <a href="../Kdrp.channel.nml">Kdrp.channel.nml</a><br/>
             <b>Ion: k</b><br/>
             <i>g = gmax * n </i><br/>
-            Delayed rectifier K+ channel description (from Migliore 1997 - modified by Marianne Bezaire)</sup>
+            Delayed rectifier K+ channel description (from Klee, Ficker and Heinmann 1995, modified by Migliore 1997 to account Dax)</sup>
 </td>
 <td>
 <a href="Kdrp.inf.png"><img alt="Kdrp steady state" src="Kdrp.inf.png" height="220"/></a>
@@ -162,7 +161,7 @@ Channel information
             <a href="../Kdrfastngf.channel.nml">Kdrfastngf.channel.nml</a><br/>
             <b>Ion: k</b><br/>
             <i>g = gmax * n<sup>4</sup> </i><br/>
-            Fast delayed rectifier K+ channel description for neurogliaform family (from Yuen and Durand 1991, modeled by Marianne Bezaire)</sup>
+            Fast delayed rectifier K+ channel description for neurogliaform family (shifted from Kdrfast)</sup>
 </td>
 <td>
 <a href="Kdrfastngf.inf.png"><img alt="Kdrfastngf steady state" src="Kdrfastngf.inf.png" height="220"/></a>
@@ -177,7 +176,7 @@ Channel information
             <a href="../KvAolm.channel.nml">KvAolm.channel.nml</a><br/>
             <b>Ion: k</b><br/>
             <i>g = gmax * a * b </i><br/>
-            A-type K+ channel description (from Zhang and McBain 1995, Martina 1998, Warman 1994 - modeled by Marianne Bezaire)</sup>
+            A-type K+ channel description (from Zhang and McBain 1995, Martina 1998, Warman 1994 - modeled by Saraga 2003, Cutsuridis 2010)</sup>
 </td>
 <td>
 <a href="KvAolm.inf.png"><img alt="KvAolm steady state" src="KvAolm.inf.png" height="220"/></a>
@@ -192,7 +191,7 @@ Channel information
             <a href="../KvA.channel.nml">KvA.channel.nml</a><br/>
             <b>Ion: k</b><br/>
             <i>g = gmax * n * l </i><br/>
-            A-type K+ channel description (from Migliore 1995 - modified by Marianne Bezaire)</sup>
+            A-type K+ channel description (from Migliore 1995 (based on Borg-Garaham 19991, modified according to Ficker and Heinmann 1992)- modified by Marianne Bezaire)</sup>
 </td>
 <td>
 <a href="KvA.inf.png"><img alt="KvA steady state" src="KvA.inf.png" height="220"/></a>
@@ -222,7 +221,7 @@ Channel information
             <a href="../KvAdistp.channel.nml">KvAdistp.channel.nml</a><br/>
             <b>Ion: k</b><br/>
             <i>g = gmax * n * l </i><br/>
-            A-type K+ channel description (from Klee, Ficker and Heinmann 1995, modeled by Migliore 1997 - modified by Poirazi 2003, Marianne Bezaire)</sup>
+            A-type K+ channel description (from Klee, Ficker and Heinmann 1995, modeled by Migliore 1997 - modified by Poolos 2002, Poirazi 2003 and Marianne Bezaire)</sup>
 </td>
 <td>
 <a href="KvAdistp.inf.png"><img alt="KvAdistp steady state" src="KvAdistp.inf.png" height="220"/></a>
@@ -252,7 +251,7 @@ Channel information
             <a href="../KvGroup.channel.nml">KvGroup.channel.nml</a><br/>
             <b>Ion: k</b><br/>
             <i>g = gmax * n </i><br/>
-            Slow K+ channel description (from Yuen and Durand 1991 - modeled by Aradi and Holmes 2002)</sup>
+            Slow K+ channel description (from Yuen and Durand 1991 - modeled by Aradi and Holmes 2002, modified by Marianne Bezaire (based on Lien and Jonas 2003))</sup>
 </td>
 <td>
 <a href="KvGroup.inf.png"><img alt="KvGroup steady state" src="KvGroup.inf.png" height="220"/></a>
@@ -267,7 +266,7 @@ Channel information
             <a href="../KvCaB.channel.nml">KvCaB.channel.nml</a><br/>
             <b>Ion: k</b><br/>
             <i>g = gmax * o </i><br/>
-            Ca++ activated mAHP K+ channel description (from Moczydlowski and Latorre 1983 - modeled by Poirazi 2003, Lawrence 2006 (same parameters))</sup>
+            Ca++ activated mAHP K+ channel (AKA big/'BK' channel) description (modeled by Moczydlowski and Latorre 1983 modidied by Migliore 1995, Poirazi 2003)</sup>
 </td>
 <td>
 <a href="KvCaB.inf.png"><img alt="KvCaB steady state" src="KvCaB.inf.png" height="220"/></a>
@@ -282,7 +281,7 @@ Channel information
             <a href="../CavN.channel.nml">CavN.channel.nml</a><br/>
             <b>Ion: ca</b><br/>
             <i>g = gmax * c<sup>2</sup> * d </i><br/>
-            N-type Ca++ channel description (from Aradi and Holmes 1999)</sup>
+            N-type Ca++ channel description (from Jaffe 1994 modified by Aradi and Holmes 1999, GHK replaced by Santakhumar 2005)</sup>
 </td>
 <td>
 <a href="CavN.inf.png"><img alt="CavN steady state" src="CavN.inf.png" height="220"/></a>
@@ -297,7 +296,7 @@ Channel information
             <a href="../HCNolm.channel.nml">HCNolm.channel.nml</a><br/>
             <b>Ion: h</b><br/>
             <i>g = gmax * r </i><br/>
-            Hyperpolarization-activated, CN-gated h channel description (from Lawrence 2006)</sup>
+            Hyperpolarization-activated, CN-gated h channel description (from Saraga 2003, Lawrence 2006 and Cutsuridis 2010)</sup>
 </td>
 <td>
 <a href="HCNolm.inf.png"><img alt="HCNolm steady state" src="HCNolm.inf.png" height="220"/></a>
@@ -327,7 +326,7 @@ Channel information
             <a href="../HCNp.channel.nml">HCNp.channel.nml</a><br/>
             <b>Ion: non_specific</b><br/>
             <i>g = gmax * l </i><br/>
-            Hyperpolarization-activated, CN-gated channel descriptions (from Magee 1998 - modeled by Marianne Bezaire)</sup>
+            Hyperpolarization-activated, CN-gated channel descriptions (from Magee 1998 - modeled by Cutsuridis 2010)</sup>
 </td>
 <td>
 <a href="HCNp.inf.png"><img alt="HCNp steady state" src="HCNp.inf.png" height="220"/></a>
