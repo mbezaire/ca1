@@ -1,3 +1,5 @@
+####Compare Ca++ dynamics of .mod files and .nml version:
+
 
     cd NeuroML2/channels/test_Cadynamics/NEURON
     nrnivmodl ../../../../
