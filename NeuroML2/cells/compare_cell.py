@@ -1,3 +1,7 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+"""compare saved data from NEURON and the NeuroML version"""
+
 import sys
 from pyneuroml import pynml
 
@@ -24,7 +28,5 @@ labels.append('jNeuroML_NEURON')
 xs.append(orig_results['t'])
 ys.append(orig_results[0])
 labels.append('NEURON')
-
-
 
 pynml.generate_plot(xs,ys,'Plot of %s'%cell,labels=labels)
