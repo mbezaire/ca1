@@ -1,0 +1,78 @@
+Prior to creating cells	0.280000	18121104	18121104
+After creating cells	0.720000	30637552	12516448
+After creating cells	0.720000	30637552	0
+Defined bistratifiedcell to axoaxoniccell conns	0.720000	30696880	59328
+Defined cckcell to axoaxoniccell conns	0.720000	30700112	3232
+Defined ivycell to axoaxoniccell conns	0.720000	30703856	3744
+Defined olmcell to axoaxoniccell conns	0.720000	30705632	1776
+Defined pyramidalcell to axoaxoniccell conns	0.720000	30724176	18544
+Defined pvbasketcell to axoaxoniccell conns	0.720000	30712368	-11808
+Defined scacell to axoaxoniccell conns	0.720000	30709072	-3296
+Defined ca3cell to axoaxoniccell conns	0.720000	31112384	403312
+Defined eccell to axoaxoniccell conns	0.720000	30759088	-353296
+Defined bistratifiedcell to bistratifiedcell conns	0.720000	30716144	-42944
+Defined cckcell to bistratifiedcell conns	0.720000	30719648	3504
+Defined ivycell to bistratifiedcell conns	0.720000	30723296	3648
+Defined olmcell to bistratifiedcell conns	0.720000	30725280	1984
+Defined pyramidalcell to bistratifiedcell conns	0.720000	30763328	38048
+Defined pvbasketcell to bistratifiedcell conns	0.720000	30731936	-31392
+Defined scacell to bistratifiedcell conns	0.720000	30728656	-3280
+Defined ca3cell to bistratifiedcell conns	0.720000	31287552	558896
+Defined eccell to bistratifiedcell conns	0.720000	30773376	-514176
+Defined bistratifiedcell to cckcell conns	0.720000	30735504	-37872
+Defined cckcell to cckcell conns	0.720000	30740544	5040
+Defined ivycell to cckcell conns	0.720000	30749936	9392
+Defined olmcell to cckcell conns	0.720000	30748096	-1840
+Defined pvbasketcell to cckcell conns	0.720000	30751296	3200
+Defined scacell to cckcell conns	0.720000	30748592	-2704
+Defined ca3cell to cckcell conns	0.720000	30942352	193760
+Defined eccell to cckcell conns	0.720000	30805488	-136864
+Defined bistratifiedcell to ivycell conns	0.720000	30754192	-51296
+Defined cckcell to ivycell conns	0.720000	30758304	4112
+Defined ivycell to ivycell conns	0.720000	30762464	4160
+Defined pyramidalcell to ivycell conns	0.720000	30764992	2528
+Defined pvbasketcell to ivycell conns	0.720000	30764896	-96
+Defined scacell to ivycell conns	0.720000	30764688	-208
+Defined ca3cell to ivycell conns	0.720000	30951328	186640
+Defined ivycell to ngfcell conns	0.720000	30770864	-180464
+Defined ngfcell to ngfcell conns	0.720000	30773184	2320
+Defined olmcell to ngfcell conns	0.720000	30776112	2928
+Defined eccell to ngfcell conns	0.720000	30828576	52464
+Defined bistratifiedcell to olmcell conns	0.720000	30784528	-44048
+Defined cckcell to olmcell conns	0.720000	30785488	960
+Defined ivycell to olmcell conns	0.720000	30800672	15184
+Defined olmcell to olmcell conns	0.720000	30791008	-9664
+Defined pyramidalcell to olmcell conns	0.720000	31021408	230400
+Defined scacell to olmcell conns	0.720000	30793216	-228192
+Defined axoaxoniccell to pyramidalcell conns	0.720000	30796064	2848
+Defined bistratifiedcell to pyramidalcell conns	0.720000	30796832	768
+Defined cckcell to pyramidalcell conns	0.720000	30797392	560
+Defined ivycell to pyramidalcell conns	0.720000	30802960	5568
+Defined ngfcell to pyramidalcell conns	0.720000	30797584	-5376
+Defined olmcell to pyramidalcell conns	0.720000	30796432	-1152
+Defined pyramidalcell to pyramidalcell conns	0.720000	30832736	36304
+Defined pvbasketcell to pyramidalcell conns	0.720000	30799968	-32768
+Defined scacell to pyramidalcell conns	0.720000	30797072	-2896
+Defined ca3cell to pyramidalcell conns	0.720000	31947504	1150432
+Defined eccell to pyramidalcell conns	0.720000	31050512	-896992
+Defined bistratifiedcell to pvbasketcell conns	0.720000	30809184	-241328
+Defined cckcell to pvbasketcell conns	0.720000	30812176	2992
+Defined ivycell to pvbasketcell conns	0.720000	30815696	3520
+Defined olmcell to pvbasketcell conns	0.720000	30818224	2528
+Defined pyramidalcell to pvbasketcell conns	0.720000	30861712	43488
+Defined pvbasketcell to pvbasketcell conns	0.720000	30824752	-36960
+Defined scacell to pvbasketcell conns	0.720000	30821472	-3280
+Defined ca3cell to pvbasketcell conns	0.720000	31404080	582608
+Defined bistratifiedcell to scacell conns	0.720000	30826944	-577136
+Defined cckcell to scacell conns	0.720000	30831792	4848
+Defined ivycell to scacell conns	0.720000	30841648	9856
+Defined olmcell to scacell conns	0.720000	30839088	-2560
+Defined pyramidalcell to scacell conns	0.720000	30849248	10160
+Defined pvbasketcell to scacell conns	0.720000	30841472	-7776
+Defined scacell to scacell conns	0.720000	30840128	-1344
+Defined ca3cell to scacell conns	0.720000	31028000	187872
+Defined eccell to scacell conns	0.720000	30898256	-129744
+After connecting cells	0.720000	30840736	-57520
+After defining stimulation	0.720000	30848160	7424
+Before running simulation	0.750000	31093360	245200
+After running simulation	9.250000	30607360	-486000
