@@ -3,6 +3,9 @@
 
     <notes>NeuroML file containing different Ca++ dynamics </notes>
     
+    <!-- just initialize caConc and caConcExt and holds them there, used in: axoaxonic, bistratified, pvbasket -->
+    <FixedCaConcentrationModel id="fixedCapool" ion="ca"/>
+    
     <!-- Intracellular Calcium dynamics, used in: cck, sca -->
     <BezaireCaConcentrationModel id="Capool" ion="ca" decayConstant="9ms" restingConc="5e-5mM" shellThickness="0.2um"/>
     
@@ -46,5 +49,27 @@
 
     </ComponentType>
     
- 
+    
+    <ComponentType name="FixedCaConcentrationModel"
+                   extends="concentrationModel"
+                   description="Model of fixed Capool (initialize the ca concentrations and holds them there)">
+            
+        <Dynamics>
+
+            <StateVariable name="concentration" exposure="concentration" dimension="concentration"/>
+            <StateVariable name="extConcentration" exposure="extConcentration" dimension="concentration"/>
+            
+            <OnStart>
+                <StateAssignment variable="concentration" value="initialConcentration"/>
+                <StateAssignment variable="extConcentration" value="initialExtConcentration"/>
+            </OnStart>          
+
+            <OnCondition test="concentration .lt. 0">
+                <StateAssignment variable="concentration" value="0"/>
+            </OnCondition>
+            
+        </Dynamics>
+
+    </ComponentType>
+    
 </neuroml>
