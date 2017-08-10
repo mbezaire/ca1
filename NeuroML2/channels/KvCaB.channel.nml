@@ -5,7 +5,7 @@
     
     <ionChannel id="KvCaB" conductance="1pS" type="ionChannelHH" species="k">
         
-        <notes>Ca++ activated mAHP K+ channel description (from Moczydlowski and Latorre 1983 - modeled by Poirazi 2003, Lawrence 2006 (same parameters))</notes>
+        <notes>Ca++ activated mAHP K+ channel (AKA big/'BK' channel) description (modeled by Moczydlowski and Latorre 1983 modidied by Migliore 1995, Poirazi 2003)</notes>
 
         <gateHHrates id="o" instances="1">
             <forwardRate type="Bezaire_KvCaB_alpha"/>

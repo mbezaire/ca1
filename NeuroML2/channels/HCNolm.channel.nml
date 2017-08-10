@@ -5,7 +5,7 @@
 
     <ionChannel id="HCNolm" conductance="1pS" type="ionChannelHH" species="h">
         
-        <notes>Hyperpolarization-activated, CN-gated h channel description (from Lawrence 2006)</notes>
+        <notes>Hyperpolarization-activated, CN-gated h channel description (from Saraga 2003, Lawrence 2006 and Cutsuridis 2010)</notes>
         
         <gateHHtauInf id="r" instances="1">
             <timeCourse type="Bezaire_HCNolm_tau"/>

@@ -5,7 +5,7 @@
 
     <ionChannel id="HCNp" conductance="1pS" type="ionChannelHH" species="non_specific">
         
-        <notes>Hyperpolarization-activated, CN-gated channel descriptions (from Magee 1998 - modeled by Marianne Bezaire)</notes>
+        <notes>Hyperpolarization-activated, CN-gated channel descriptions (from Magee 1998 - modeled by Cutsuridis 2010)</notes>
     
         <gateHHtauInf id="l" instances="1">
             <q10Settings type="q10ExpTemp" q10Factor="4.5" experimentalTemp="33 degC"/>

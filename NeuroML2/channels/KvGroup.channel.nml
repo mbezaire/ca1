@@ -5,7 +5,7 @@
 
     <ionChannel id="KvGroup" conductance="1pS" type="ionChannelHH" species="k">
         
-        <notes>Slow K+ channel description (from Yuen and Durand 1991 - modeled by Aradi and Holmes 2002)</notes>
+        <notes>Slow K+ channel description (from Yuen and Durand 1991 - modeled by Aradi and Holmes 2002, modified by Marianne Bezaire (based on Lien and Jonas 2003))</notes>
 
         <gateHHrates id="n" instances="1">
             <q10Settings type="q10ExpTemp" q10Factor="3" experimentalTemp="34 degC"/>

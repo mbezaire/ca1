@@ -5,7 +5,7 @@
 
     <ionChannel id="Navp" conductance="1pS" type="ionChannelHH" species="na">
 
-        <notes>Na+ channel description (from Migliore 1997, modified in 2002)</notes>
+        <notes>Na+ channel description (from Migliore 1997, modified in 1999, Poolos 2002)</notes>
         
         <gate id="m" type="gateHHratesTau" instances="3">
             <q10Settings type="q10ExpTemp" q10Factor="2" experimentalTemp="24 degC"/>

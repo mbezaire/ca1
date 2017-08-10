@@ -6,7 +6,7 @@
     <ionChannel id="Kdrfastngf" conductance="1pS" type="ionChannelHH" species="k">
     <!-- not the same as ch_Kdrfastngf.mod, because those parameters are changed from hoc level ... - András -->
         
-        <notes>Fast delayed rectifier K+ channel description for neurogliaform family (from Yuen and Durand 1991, modeled by Marianne Bezaire)</notes> 
+        <notes>Fast delayed rectifier K+ channel description for neurogliaform family (shifted from Kdrfast)</notes> 
         <!-- also suitable for Ivy cells-->
         <gateHHrates id="n" instances="4">
             <q10Settings type="q10ExpTemp" q10Factor="3" experimentalTemp="34 degC"/> 

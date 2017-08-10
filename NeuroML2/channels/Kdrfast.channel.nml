@@ -5,7 +5,7 @@
 
     <ionChannel id="Kdrfast" conductance="1pS" type="ionChannelHH" species="k">
         
-        <notes>Fast delayed rectifier K+ channel description (from Yuen and Durand 1991, modeled by Marianne Bezaire)</notes>
+        <notes>Fast delayed rectifier K+ channel description (from Yuen and Durand 1991, modeled by Aradi and Holmes 1999, modified by Marianne Bezaire)</notes>
         
         <gateHHrates id="n" instances="4">
             <q10Settings type="q10ExpTemp" q10Factor="3" experimentalTemp="34 degC"/> <!-- without q10: Cutsuridis model-->

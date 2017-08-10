@@ -5,7 +5,7 @@
 
     <ionChannel id="Navcck" conductance="1pS" type="ionChannelHH" species="na">
         
-        <notes>Na+ channel description (modeled by Marianne Bezaire)</notes>
+        <notes>Na+ channel description; modified from Nav to have higher threshold and slow inactivation, suitable for cck cells)</notes>
     
         <gateHHrates id="m" instances="3">
             <q10Settings type="q10ExpTemp" q10Factor="3" experimentalTemp="34 degC"/>

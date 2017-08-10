@@ -5,7 +5,7 @@
     
     <ionChannel id="KvAdistp" conductance="1pS" type="ionChannelHH" species="k">
         
-        <notes>A-type K+ channel description (from Klee, Ficker and Heinmann 1995, modeled by Migliore 1997 - modified by Poirazi 2003, Marianne Bezaire)</notes>
+        <notes>A-type K+ channel description (from Klee, Ficker and Heinmann 1995, modeled by Migliore 1997 - modified by Poolos 2002, Poirazi 2003 and Marianne Bezaire)</notes>
 
         <gateHHtauInf id="n" instances="1">
             <q10Settings type="q10ExpTemp" q10Factor="5" experimentalTemp="24 degC"/>

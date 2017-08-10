@@ -5,7 +5,7 @@
 
     <ionChannel id="KvAolm" conductance="1pS" type="ionChannelHH" species="k">
         
-        <notes>A-type K+ channel description (from Zhang and McBain 1995, Martina 1998, Warman 1994 - modeled by Marianne Bezaire)</notes>
+        <notes>A-type K+ channel description (from Zhang and McBain 1995, Martina 1998, Warman 1994 - modeled by Saraga 2003, Cutsuridis 2010)</notes>
         
         <gateHHtauInf id="a" instances="1">
             <timeCourse type="fixedTimeCourse" tau="5ms"/>

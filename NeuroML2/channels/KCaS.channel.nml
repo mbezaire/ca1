@@ -5,7 +5,7 @@
 
     <ionChannel id="KCaS" conductance="1pS" type="ionChannelHH" species="k">
         
-        <notes>Ca++ activated K+ channel description (modeled by Marianne Bezaire)</notes>
+        <notes>Ca++ activated K+ channel (AKA small/'SK' channel) description (Yuen and Durand 1991, modified by Aradi and Holmes 1999 (based on data from Beck 1997, Lattore 1989, Sah 1991 and Lancaster 1991))</notes>
         
         <gateHHrates id="q" instances="2">
             <q10Settings type="q10ExpTemp" q10Factor="3" experimentalTemp="34 degC"/>

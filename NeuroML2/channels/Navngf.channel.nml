@@ -5,8 +5,7 @@
 
     <ionChannel id="Navngf" conductance="1pS" type="ionChannelHH" species="na">
 
-        <notes>Na+ channel description for neurogliaform family (modeled by Marianne Bezaire)</notes>
-        <!-- also suitable for Ivy cells-->
+        <notes>Na+ channel description; modified from Nav to have a much higher threshold, suitable for neurogliaform and ivy cells)</notes>
     
         <gateHHrates id="m" instances="3">
             <q10Settings type="q10ExpTemp" q10Factor="3" experimentalTemp="34 degC"/>
