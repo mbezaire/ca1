@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-"""Compares channel dynamics in .mod files and in .nml files (run ./analyse_chans.sh first)"""
+"""Compares channel dynamics in .mod files and in .nml files (run ../../analyse_modchans.sh and ./analyse_chans.sh first to create the .dat files!)"""
 
 import sys
 import os.path
