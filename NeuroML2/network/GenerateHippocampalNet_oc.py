@@ -8,6 +8,7 @@ Authors: András Ecker, Padraig Gleeson, last update: 08.2017
 
 import os
 import re
+import sys
 import warnings
 import numpy as np
 import random as rnd
@@ -363,12 +364,18 @@ def generate_hippocampal_net(networkID, scale=1000, numData=101, connData=430, s
 
 
 if __name__ == "__main__":
-   
+
+    try:
+        scale = float(sys.argv[0])
+        run_simulation = sys.argv[1]
+    except:
+        scale = 100000   
+        run_simulation = False
+    
     lems_fName = generate_hippocampal_net("HippocampalNet_oc",
-                                          scale=5000,
+                                          scale=scale,
                                           generate_LEMS=True)
     
-    run_simulation = False  
     if lems_fName and run_simulation:
         import multiprocessing as mp
         oc.simulate_network(lems_fName, simulator="jNeuroML_NetPyNE",
