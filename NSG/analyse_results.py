@@ -42,6 +42,18 @@ def helper_getcores(runName):
         tmp = f.readlines()[0]  # get only the first line
         ncores = int(re.findall(r'\d+', tmp)[0])
     return ncores
+
+
+def helper_simduration(runName):  
+    """get specified duration of the simulation (only for figure xlims)"""
+    
+    import re
+    with open(os.path.join(basePath, runName, "runreceipt.txt")) as f:
+        for line in f:
+            if "SimDuration" in line:
+                simduration = int(re.findall(r'\d+', line)[0])
+    return simduration
+  
     
 def analyse_lfp(runName):
     """PSD analysis of the saved LFP data"""
@@ -53,7 +65,9 @@ def analyse_lfp(runName):
         for line in f:
             t.append(float(line.split()[0]))
             LFP.append(float(line.split()[1]))
-    runTime = t[-1]
+    runTime = t[-1]  # from saved LFP
+    simduration = helper_simduration(runName)  # from runreceipt (run specific metadata)
+    assert runTime == float(simduration)
     
     # bandpass (5-10Hz) filter LFP
     fs = 1000./t[-1]*(len(t)-1)  # sampling frequency
@@ -130,7 +144,7 @@ if __name__ == "__main__":
 
     tarName = "output.tar.gz"
     zipName = "CA1"
-    runName = "repeatconn"
+    runName = "fastconn"
        
     extract_tar(tarName, zipName, runName)
     numCores = helper_getcores(runName)
