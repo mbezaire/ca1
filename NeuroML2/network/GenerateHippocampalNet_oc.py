@@ -238,7 +238,10 @@ def add_proj(nml_doc, network, projID,
     return proj
 
 
-def add_stim(nml_doc, network, projID, prepop_name, postpop, ncons, post_seg_group):
+def add_stim(nml_doc, network, projID,
+             prepop_name, postpop,
+             tau_rise, tau_decay, e_rev,
+             weight, ncons, nsyns, post_seg_group):
     """adds input population with poisson firing rate using opencortex functions"""
     
     assert prepop_name in ["ca3", "ec"], "prepop name has to be 'ca3' or 'ec' for the synapse to work"
@@ -246,11 +249,18 @@ def add_stim(nml_doc, network, projID, prepop_name, postpop, ncons, post_seg_gro
     projID_loc = "proj_%spop_to_%spop"%(prepop_name, postcell_type) 
     # sanity check for redundant names...
     assert projID == projID_loc
+
+    syn = oc.add_exp_two_syn(nml_doc,
+                             id="syn_%s_to_%s"%(prepop_name, postcell_type),
+                             gbase="%fnS"%(weight*nsyns),  # multiplied by nsyns here, instead of scaling afterwards
+                             erev="%fmV"%e_rev[0],
+                             tau_rise="%fms"%tau_rise[0],
+                             tau_decay="%fms"%tau_decay[0])
     
     pf_syn = oc.add_poisson_firing_synapse(nml_doc,          
                                            id="pop_%s_to_%spop"%(prepop_name, postcell_type),
                                            average_rate="0.65 Hz",
-                                           synapse_id="syn_%s_to_%s_oc"%(prepop_name, postcell_type))
+                                           synapse_id="syn_%s_to_%s"%(prepop_name, postcell_type))
     
     # Note: Opencortex extends the id of the given projection                                
     pf_proj = oc.add_targeted_inputs_to_population(network,
@@ -258,7 +268,7 @@ def add_stim(nml_doc, network, projID, prepop_name, postpop, ncons, post_seg_gro
                                                    population=postpop,
                                                    input_comp_id=pf_syn.id,
                                                    segment_group=post_seg_group,
-                                                   number_per_cell=ncons,
+                                                   number_per_cell=ncons,  
                                                    all_cells=True)
                                                    
     return pf_proj
@@ -323,7 +333,8 @@ def generate_hippocampal_net(networkID, scale=1000, numData=101, connData=430, s
             postpop = dPops[postcell_type]
             proj = add_stim(nml_doc, network,
                             projID, prepop_name=precell_type, postpop=postpop,
-                            ncons=props["ncons"],
+                            tau_rise=[props["tau_rise"]], tau_decay=[props["tau_decay"]], e_rev=[props["e_rev"]],
+                            weight=props["weight"], ncons=props["ncons"], nsyns=props["nsyns"],
                             post_seg_group=props["post_seg_group"])
                                     
     print("Cells connected; #connections:%i (without stimulating connections)"%num_cons)
