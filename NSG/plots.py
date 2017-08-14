@@ -9,6 +9,10 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
+import seaborn as sns
+
+#sns.set_context("paper")
+sns.set_style("white")
 
 basePath = os.path.sep.join(os.path.abspath(__file__).split(os.path.sep)[:-1])
 figFolder = os.path.join(basePath, "figures")
@@ -146,10 +150,10 @@ def plot_raster(spikingNeurons, spikeTimes, simduration, startID, endID, runName
     fig.savefig(figName)
     
     
-def plot_rasters(dSpikeTimes, dSpikingNeurons, simduration, runName):
+def plot_rasters(dSpikeTimes, dSpikingNeurons, dIDx, simduration, runName):
     """raster plots (used to reproduce Fig3 C,)"""
     
-    fig = plt.figure(figsize=(10, 6))
+    fig = plt.figure(figsize=(10, 7))
     
     gs = gridspec.GridSpec(9, 1, height_ratios=[4, 1, 1, 1, 1, 1, 1, 1, 1], hspace=0.1)
     ax0 = fig.add_subplot(gs[0]); ax1 = fig.add_subplot(gs[1]); ax2 = fig.add_subplot(gs[2])
@@ -162,17 +166,55 @@ def plot_rasters(dSpikeTimes, dSpikingNeurons, simduration, runName):
                  "ngf":[ax8, "#DA70D6", "NGF."]}  # dummy dict to reproduce the same figure layout ...   
     
     for cell_type, spikeTimes in dSpikeTimes.iteritems():
-        spikingNeurons = dSpikingNeurons[cell_type]; ax, col, ylab = dSubplots[cell_type]
-        ax.scatter(spikeTimes, spikingNeurons, color=col, marker='.', s=0.75)
-        ax.set_ylabel(ylab, rotation=0, labelpad=25, color=col)
-        ax.set_xlim([0, simduration])
-        if cell_type != "ngf":
-            ax.set_xticks([]); ax.set_yticks([])
-            
-    ax8.set_yticks([]); ax8.set_xlabel("Time (ms)")
+        spikingNeurons = dSpikingNeurons[cell_type]; ax, col, ylab = dSubplots[cell_type]; idx = dIDx[cell_type]        
+        ax.scatter(spikeTimes, spikingNeurons, color=col, marker='.', s=0.8)
+        ax.set_ylabel(ylab, rotation=0, labelpad=25, color=col); ax.set_ylim([idx[0], idx[-1]])
+        if simduration > 1000:
+            ax.set_xlim([simduration/2-500, simduration/2+500])
+        else:
+            ax.set_xlim([0, simduration])
+        ax.set_xticks([]); ax.set_yticks([])
     
     figName = os.path.join(figFolder, "rasters_%s.png"%runName)
     fig.savefig(figName)
+    
+
+def plot_traces(dTraces, t, runName):
+    """plot (randomly selected) traces from each cell type"""
+
+    fig = plt.figure(figsize=(10, 7))
+    
+    gs = gridspec.GridSpec(9, 1, hspace=0.1)
+    ax0 = fig.add_subplot(gs[0]); ax1 = fig.add_subplot(gs[1]); ax2 = fig.add_subplot(gs[2])
+    ax3 = fig.add_subplot(gs[3]); ax4 = fig.add_subplot(gs[4]); ax5 = fig.add_subplot(gs[5])
+    ax6 = fig.add_subplot(gs[6]); ax7 = fig.add_subplot(gs[7]); ax8 = fig.add_subplot(gs[8])
+    sns.despine(bottom=True, left=True)
+    dSubplots = {"poolosyn":[ax0, "#4169E1", "Pyr."], "pvbasket":[ax1, "#20B2AA", "PV+B."],
+                 "cck":[ax2, "#DAA520", "CCK+B."], "sca":[ax3, "#FFA07A", "S.C.-A."], 
+                 "axoaxonic":[ax4, "#FF0000", "Axo"], "bistratified":[ax5, "#A0522D", "Bis."],
+                 "olm":[ax6, "#663399", "O-LM"], "ivy":[ax7, "#A9A9A9", "Ivy"],
+                 "ngf":[ax8, "#DA70D6", "NGF."]}  # dummy dict to reproduce the same figure layout ...
+                 
+    for cell_type, trace in dTraces.iteritems():
+        ax, col, ylab = dSubplots[cell_type]
+        ax.plot(t, trace, color=col)
+        ax.set_ylabel(ylab, rotation=0, labelpad=25, color=col)
+        simduration = t[-1]  # could be a sanity check against the one loaded from file...
+        if simduration > 1000:
+            ylim_ = simduration/2+500
+            ax.set_xlim([simduration/2-500, ylim_])
+        else:
+            ylim_ = simduration
+            ax.set_xlim([0, ylim_])
+        ax.set_xticks([]); ax.set_yticks([])
+    # draw scale bar
+    ax8.plot([ylim_-102, ylim_-2], [-70, -70], "k-", lw=3)
+    ax8.plot([ylim_-2, ylim_-2], [-70, -20], "k-", lw=3)
+        
+    figName = os.path.join(figFolder, "traces_%s.png"%runName)
+    fig.savefig(figName)
+
+
         
         
         
