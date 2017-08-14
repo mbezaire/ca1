@@ -366,16 +366,16 @@ def generate_hippocampal_net(networkID, scale=1000, numData=101, connData=430, s
 if __name__ == "__main__":
 
     try:
-        scale = float(sys.argv[0])
-        run_simulation = sys.argv[1]
+        scale = float(sys.argv[1])
+        run_simulation = sys.argv[2]
     except:
-        scale = 100000   
+        scale = 100000  
         run_simulation = False
     
     lems_fName = generate_hippocampal_net("HippocampalNet_oc",
                                           scale=scale,
                                           generate_LEMS=True)
-    
+    print lems_fName, run_simulation
     if lems_fName and run_simulation:
         import multiprocessing as mp
         oc.simulate_network(lems_fName, simulator="jNeuroML_NetPyNE",
