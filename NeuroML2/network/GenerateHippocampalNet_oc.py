@@ -11,15 +11,33 @@ import re
 import sys
 import warnings
 import numpy as np
-import random as rnd
 # NeuroML specific libraries
 import neuroml
 from pyneuroml import pynml
 import opencortex.core as oc
 import opencortex.build as oc_build
+# helper functions from other scripts
+from oc_helper import add_targeted_corr_input
 
 basePath = os.path.sep.join(os.path.abspath(__file__).split(os.path.sep)[:-3])
 
+
+def helper_getcolor(cell_type):  # just to be callable from other scripts... 
+    """consistent coloring with Bezaire et al. 2016"""    
+    dCols = {"axoaxonic":"1 0 0", "bistratified":"0.62745098 0.32156863 0.17647059",
+             "cck":"0.85490196 0.64705882 0.1254902", "ivy":"0.6627451 0.6627451 0.6627451",
+             "ngf":"0.85490196 0.43921569 0.83921569", "olm":"0.4 0.2 0.6",
+             "poolosyn":"0.25490196 0.41176471 0.88235294", "pvbasket":"0.1254902 0.69803922 0.66666667",
+             "sca":"1 0.62745098 0.47843137", "ca3":"0.9 0.9 0.9", "ec":"0.75 0.75 0.75"}       
+    return dCols[cell_type]
+
+
+def helper_getcelltype(cell_name):
+    """helper function to process config files"""
+    if cell_name == "pyramidalcell":
+        return "poolosyn"
+    else:
+        return cell_name[:-4]
 
 def get_popdata(numData):
     """reads in cell numbers from config file"""
@@ -84,20 +102,6 @@ def get_projdata(connData, synData):
     return dSyns
 
 
-def helper_getnextcolor(randomSeed):
-    """generates random color (used to visualize diff. pops on OSB)"""       
-    rnd.seed(randomSeed)   
-    return "%g %g %g"%(rnd.random(), rnd.random(), rnd.random())
-
-
-def helper_getcelltype(cell_name):
-    """helper function to process config files"""
-    if cell_name == "pyramidalcell":
-        return "poolosyn"
-    else:
-        return cell_name[:-4]
-
-
 def helper_layer(layer):
     """sets boundaries in z direction, based on layer"""
     # slice size: 4000*1000*450 (see distr. of layers (450um) below)
@@ -151,7 +155,7 @@ def helper_popsize(pop_size, scale):
 # network specific methods, using opencortex functions       
        
        
-def add_pop(network, scale, cell_type, pop_size, layer, color):
+def add_pop(nml_doc, network, scale, cell_type, pop_size, layer):
     """adds population using opencortex function and helper functions above"""
 
     pop_size = helper_popsize(pop_size, scale)
@@ -163,14 +167,19 @@ def add_pop(network, scale, cell_type, pop_size, layer, color):
                                                        size=pop_size,
                                                        x_min=0, y_min=0, z_min=z_min,
                                                        x_size=4000/np.sqrt(scale), y_size=1000/np.sqrt(scale), z_size=z_size,
-                                                       color=color)
+                                                       color=helper_getcolor(cell_type))
     else:
+        #TODO: open oc issue!
+        spike_gen = neuroml.SpikeGeneratorPoisson(id="stim_%s"%cell_type,
+                                                  average_rate="0.65Hz")
+        nml_doc.spike_generator_poissons.append(spike_gen)
+        
         return oc.add_population_in_rectangular_region(network,
-                                                       pop_id="pop_%s"%cell_type, cell_id="spikeGenPoisson065",
+                                                       pop_id="pop_%s"%cell_type, cell_id=spike_gen.id,
                                                        size=pop_size,
                                                        x_min=0, y_min=0, z_min=z_min,
                                                        x_size=4000/np.sqrt(scale), y_size=1000/np.sqrt(scale), z_size=z_size,
-                                                       color=color)
+                                                       color=helper_getcolor(cell_type))
 
 
 def add_proj(nml_doc, network, projID,
@@ -193,10 +202,9 @@ def add_proj(nml_doc, network, projID,
                                  erev="%fmV"%e_rev[0],
                                  tau_rise="%fms"%tau_rise[0],
                                  tau_decay="%fms"%tau_decay[0])
-        
-        # Note: Opencortex extends the id of the given projection        
+                
         proj = oc.add_targeted_projection(nml_doc, network,
-                                          prefix=projID,
+                                          prefix="proj",
                                           presynaptic_population=prepop,
                                           postsynaptic_population=postpop,
                                           targeting_mode="convergent",
@@ -222,9 +230,8 @@ def add_proj(nml_doc, network, projID,
                                    tau_rise="%fms"%tau_rise[1],
                                    tau_decay="%fms"%tau_decay[1])
         
-        # Note: Opencortex extends the id of the given projection
         proj = oc.add_targeted_projection(nml_doc, network,
-                                          prefix=projID,
+                                          prefix="proj",
                                           presynaptic_population=prepop,
                                           postsynaptic_population=postpop,
                                           targeting_mode="convergent",
@@ -239,39 +246,37 @@ def add_proj(nml_doc, network, projID,
 
 
 def add_stim(nml_doc, network, projID,
-             prepop_name, postpop,
+             prepop, postpop,
              tau_rise, tau_decay, e_rev,
              weight, ncons, nsyns, post_seg_group):
-    """adds input population with poisson firing rate using opencortex functions"""
+    """adds targeted input using updated opencortex function (see oc_helper.py)"""
     
-    assert prepop_name in ["ca3", "ec"], "prepop name has to be 'ca3' or 'ec' for the synapse to work"
+    precell_type = re.split(r'\_', prepop.id)[1]
+    assert precell_type in ["ca3", "ec"], "precell type has to be 'ca3' or 'ec'"
     postcell_type = re.split(r'\_', postpop.id)[1]
-    projID_loc = "proj_%spop_to_%spop"%(prepop_name, postcell_type) 
+    projID_loc = "proj_%spop_to_%spop"%(precell_type, postcell_type) 
     # sanity check for redundant names...
     assert projID == projID_loc
 
     syn = oc.add_exp_two_syn(nml_doc,
-                             id="syn_%s_to_%s"%(prepop_name, postcell_type),
-                             gbase="%fnS"%(weight*nsyns),  # multiplied by nsyns here, instead of scaling afterwards
+                             id="syn_%s_to_%s"%(precell_type, postcell_type),
+                             gbase="%fnS"%weight,
                              erev="%fmV"%e_rev[0],
                              tau_rise="%fms"%tau_rise[0],
                              tau_decay="%fms"%tau_decay[0])
     
-    pf_syn = oc.add_poisson_firing_synapse(nml_doc,          
-                                           id="pop_%s_to_%spop"%(prepop_name, postcell_type),
-                                           average_rate="0.65 Hz",
-                                           synapse_id="syn_%s_to_%s"%(prepop_name, postcell_type))
-    
-    # Note: Opencortex extends the id of the given projection                                
-    pf_proj = oc.add_targeted_inputs_to_population(network,
-                                                   id=projID,
-                                                   population=postpop,
-                                                   input_comp_id=pf_syn.id,
-                                                   segment_group=post_seg_group,
-                                                   number_per_cell=ncons,  
-                                                   all_cells=True)
-                                                   
-    return pf_proj
+    proj = add_targeted_corr_input(nml_doc,
+                                   network,
+                                   prefix="proj",
+                                   presynaptic_population=prepop,
+                                   postsynaptic_population=postpop,
+                                   synapse_list=[syn.id],
+                                   number_conns_per_cell=ncons,
+                                   post_segment_group=post_seg_group,
+                                   delays_dict={syn.id:3},
+                                   weights_dict={syn.id:nsyns})  # multiple synapses per single connection are replaced by scaled up synaptic weight (for 1 connection)
+                                                                                      
+    return proj
                                     
                                       
 def generate_hippocampal_net(networkID, scale=1000, numData=101, connData=430, synData=120,
@@ -295,13 +300,14 @@ def generate_hippocampal_net(networkID, scale=1000, numData=101, connData=430, s
     
     # create populations
     dCells = get_popdata(numData)
+    print dCells
     dPops = {}  # dict for storing populations (used for creating projections)
     num_cells = 0
     for cell_type, props in dCells.iteritems():
+        pop = add_pop(nml_doc, network, scale,
+                      cell_type, pop_size=props["ncells"], layer=props["layer"])
+        dPops[cell_type] = pop
         if cell_type in cell_types:
-            pop = add_pop(network, scale, cell_type, pop_size=props["ncells"], layer=props["layer"],
-                          color=helper_getnextcolor(num_cells))
-            dPops[cell_type] = pop
             num_cells += pop.get_size()       
         
     print("Populations created; #cells:%i (without stimulating 'cells')"%num_cells)
@@ -311,9 +317,9 @@ def generate_hippocampal_net(networkID, scale=1000, numData=101, connData=430, s
     dSyns = get_projdata(connData, synData)
     num_cons = 0
     for projID, props in dSyns.iteritems():
-        precell_type = props["precell_type"]; postcell_type = props["postcell_type"]  # just to get populations from pop dictionary        
-        if precell_type in cell_types:
-            prepop = dPops[precell_type]; postpop = dPops[postcell_type]
+        precell_type = props["precell_type"]; postcell_type = props["postcell_type"]  # just to get populations from pop dictionary 
+        prepop = dPops[precell_type]; postpop = dPops[postcell_type]      
+        if precell_type in cell_types:           
             if "tau_rise_A" not in props:  # single synapse
                 proj = add_proj(nml_doc, network,
                                 projID, prepop, postpop,
@@ -327,18 +333,18 @@ def generate_hippocampal_net(networkID, scale=1000, numData=101, connData=430, s
                                 tau_decay=[props["tau_decay_A"], props["tau_decay_B"]],
                                 e_rev=[props["e_rev_A"], props["e_rev_B"]],
                                 weight=props["weight"], ncons=props["ncons"], nsyns=props["nsyns"],
-                                post_seg_group=props["post_seg_group"])
-            num_cons += len(proj[0].connection_wds)
+                                post_seg_group=props["post_seg_group"])            
         else:  # outer stimulation
-            postpop = dPops[postcell_type]
             proj = add_stim(nml_doc, network,
-                            projID, prepop_name=precell_type, postpop=postpop,
+                            projID, prepop, postpop,
                             tau_rise=[props["tau_rise"]], tau_decay=[props["tau_decay"]], e_rev=[props["e_rev"]],
                             weight=props["weight"], ncons=props["ncons"], nsyns=props["nsyns"],
                             post_seg_group=props["post_seg_group"])
+
+        num_cons += len(proj[0].connection_wds)
                                     
-    print("Cells connected; #connections:%i (without stimulating connections)"%num_cons)
-    
+    print("Cells connected; #connections:%i "%num_cons)
+        
     
     # save to file
     nml_fName = "%s.net.nml"%network.id
@@ -367,7 +373,7 @@ def generate_hippocampal_net(networkID, scale=1000, numData=101, connData=430, s
                                                  gen_spike_saves_for_all_somas=True,
                                                  lems_file_name="LEMS_%s.xml"%network.id,
                                                  simulation_seed=12345)
-                                                 
+                                          
     else:
         lems_fName = None
         
