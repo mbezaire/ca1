@@ -169,10 +169,12 @@ def add_pop(nml_doc, network, scale, cell_type, pop_size, layer):
                                                        x_size=4000/np.sqrt(scale), y_size=1000/np.sqrt(scale), z_size=z_size,
                                                        color=helper_getcolor(cell_type))
     else:
-        #TODO: open oc issue!
-        spike_gen = neuroml.SpikeGeneratorPoisson(id="stim_%s"%cell_type,
-                                                  average_rate="0.65Hz")
-        nml_doc.spike_generator_poissons.append(spike_gen)
+        #TODO: check which one to use!
+        #spike_gen = neuroml.SpikeGeneratorPoisson(id="stim_%s"%cell_type,
+                                                  #average_rate="0.65Hz")
+        #nml_doc.spike_generator_poissons.append(spike_gen)
+        spike_gen = oc.add_spike_source_poisson(nml_doc, id="stim_%s"%cell_type,
+                                                start="0ms", duration="100ms", rate="0.65Hz")
         
         return oc.add_population_in_rectangular_region(network,
                                                        pop_id="pop_%s"%cell_type, cell_id=spike_gen.id,
