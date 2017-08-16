@@ -18,6 +18,54 @@
    
     <Simulation id="Sim_HippocampalNet_oc" length="100ms" step="0.01ms" target="HippocampalNet_oc" seed="12345">  <!-- Note seed: ensures same random numbers used every run -->
         
+        <Display id="DispPop__pop_ngf" title="Membrane potentials of cells in pop_ngf" timeScale="1ms" xmin="-10.0" xmax="110.0" ymin="-90" ymax="50">
+            <Line id="pop_ngf[0]: v" quantity="pop_ngf/0/ngfcell/v" scale="1mV" color="#6aa799" timeScale="1ms"/>
+        </Display>
+        
+        <Display id="DispPop__pop_bistratified" title="Membrane potentials of cells in pop_bistratified" timeScale="1ms" xmin="-10.0" xmax="110.0" ymin="-90" ymax="50">
+            <Line id="pop_bistratified[0]: v" quantity="pop_bistratified/0/bistratifiedcell/v" scale="1mV" color="#029a72" timeScale="1ms"/>
+        </Display>
+        
+        <Display id="DispPop__pop_sca" title="Membrane potentials of cells in pop_sca" timeScale="1ms" xmin="-10.0" xmax="110.0" ymin="-90" ymax="50">
+            <Line id="pop_sca[0]: v" quantity="pop_sca/0/scacell/v" scale="1mV" color="#d340bb" timeScale="1ms"/>
+        </Display>
+        
+        <Display id="DispPop__pop_olm" title="Membrane potentials of cells in pop_olm" timeScale="1ms" xmin="-10.0" xmax="110.0" ymin="-90" ymax="50">
+            <Line id="pop_olm[0]: v" quantity="pop_olm/0/olmcell/v" scale="1mV" color="#4c73a9" timeScale="1ms"/>
+        </Display>
+        
+        <Display id="DispPop__pop_ec" title="Membrane potentials of cells in pop_ec" timeScale="1ms" xmin="-10.0" xmax="110.0" ymin="-90" ymax="50">
+            <Line id="pop_ec[0]: v" quantity="pop_ec/0/stim_ec/v" scale="1mV" color="#5e503a" timeScale="1ms"/>
+            <Line id="pop_ec[1]: v" quantity="pop_ec/1/stim_ec/v" scale="1mV" color="#3193ca" timeScale="1ms"/>
+        </Display>
+        
+        <Display id="DispPop__pop_poolosyn" title="Membrane potentials of cells in pop_poolosyn" timeScale="1ms" xmin="-10.0" xmax="110.0" ymin="-90" ymax="50">
+            <Line id="pop_poolosyn[0]: v" quantity="pop_poolosyn/0/poolosyncell/v" scale="1mV" color="#90e5e9" timeScale="1ms"/>
+            <Line id="pop_poolosyn[1]: v" quantity="pop_poolosyn/1/poolosyncell/v" scale="1mV" color="#29645f" timeScale="1ms"/>
+            <Line id="pop_poolosyn[2]: v" quantity="pop_poolosyn/2/poolosyncell/v" scale="1mV" color="#1fcff4" timeScale="1ms"/>
+        </Display>
+        
+        <Display id="DispPop__pop_pvbasket" title="Membrane potentials of cells in pop_pvbasket" timeScale="1ms" xmin="-10.0" xmax="110.0" ymin="-90" ymax="50">
+            <Line id="pop_pvbasket[0]: v" quantity="pop_pvbasket/0/pvbasketcell/v" scale="1mV" color="#6ed4e9" timeScale="1ms"/>
+        </Display>
+        
+        <Display id="DispPop__pop_ca3" title="Membrane potentials of cells in pop_ca3" timeScale="1ms" xmin="-10.0" xmax="110.0" ymin="-90" ymax="50">
+            <Line id="pop_ca3[0]: v" quantity="pop_ca3/0/stim_ca3/v" scale="1mV" color="#8fe460" timeScale="1ms"/>
+            <Line id="pop_ca3[1]: v" quantity="pop_ca3/1/stim_ca3/v" scale="1mV" color="#2ca1c7" timeScale="1ms"/>
+        </Display>
+        
+        <Display id="DispPop__pop_cck" title="Membrane potentials of cells in pop_cck" timeScale="1ms" xmin="-10.0" xmax="110.0" ymin="-90" ymax="50">
+            <Line id="pop_cck[0]: v" quantity="pop_cck/0/cckcell/v" scale="1mV" color="#8d9fe5" timeScale="1ms"/>
+        </Display>
+        
+        <Display id="DispPop__pop_axoaxonic" title="Membrane potentials of cells in pop_axoaxonic" timeScale="1ms" xmin="-10.0" xmax="110.0" ymin="-90" ymax="50">
+            <Line id="pop_axoaxonic[0]: v" quantity="pop_axoaxonic/0/axoaxoniccell/v" scale="1mV" color="#5adad1" timeScale="1ms"/>
+        </Display>
+        
+        <Display id="DispPop__pop_ivy" title="Membrane potentials of cells in pop_ivy" timeScale="1ms" xmin="-10.0" xmax="110.0" ymin="-90" ymax="50">
+            <Line id="pop_ivy[0]: v" quantity="pop_ivy/0/ivycell/v" scale="1mV" color="#f543bb" timeScale="1ms"/>
+        </Display>
+        
         <OutputFile id="Volts_file__pop_ngf" fileName="Sim_HippocampalNet_oc.pop_ngf.v.dat">
             <OutputColumn id="v_pop_ngf_0_ngfcell_v" quantity="pop_ngf/0/ngfcell/v"/> 
         </OutputFile>
@@ -64,50 +112,6 @@
         
         <OutputFile id="Volts_file__pop_ivy" fileName="Sim_HippocampalNet_oc.pop_ivy.v.dat">
             <OutputColumn id="v_pop_ivy_0_ivycell_v" quantity="pop_ivy/0/ivycell/v"/> 
-        </OutputFile>
-        
-        <OutputFile id="Sim_HippocampalNet_oc_cckcell_v_dat" fileName="Sim_HippocampalNet_oc.cckcell.v.dat">
-            <OutputColumn id="pop_cck_0_cckcell_v" quantity="pop_cck/0/cckcell/v"/> 
-        </OutputFile>
-        
-        <OutputFile id="Sim_HippocampalNet_oc_ivycell_v_dat" fileName="Sim_HippocampalNet_oc.ivycell.v.dat">
-            <OutputColumn id="pop_ivy_0_ivycell_v" quantity="pop_ivy/0/ivycell/v"/> 
-        </OutputFile>
-        
-        <OutputFile id="Sim_HippocampalNet_oc_ngfcell_v_dat" fileName="Sim_HippocampalNet_oc.ngfcell.v.dat">
-            <OutputColumn id="pop_ngf_0_ngfcell_v" quantity="pop_ngf/0/ngfcell/v"/> 
-        </OutputFile>
-        
-        <OutputFile id="Sim_HippocampalNet_oc_poolosyncell_v_dat" fileName="Sim_HippocampalNet_oc.poolosyncell.v.dat">
-            <OutputColumn id="pop_poolosyn_0_poolosyncell_v" quantity="pop_poolosyn/0/poolosyncell/v"/> 
-        </OutputFile>
-        
-        <OutputFile id="Sim_HippocampalNet_oc_scacell_v_dat" fileName="Sim_HippocampalNet_oc.scacell.v.dat">
-            <OutputColumn id="pop_sca_0_scacell_v" quantity="pop_sca/0/scacell/v"/> 
-        </OutputFile>
-        
-        <OutputFile id="Sim_HippocampalNet_oc_stim_ca3_v_dat" fileName="Sim_HippocampalNet_oc.stim_ca3.v.dat">
-            <OutputColumn id="pop_ca3_0_stim_ca3_v" quantity="pop_ca3/0/stim_ca3/v"/> 
-        </OutputFile>
-        
-        <OutputFile id="Sim_HippocampalNet_oc_bistratifiedcell_v_dat" fileName="Sim_HippocampalNet_oc.bistratifiedcell.v.dat">
-            <OutputColumn id="pop_bistratified_0_bistratifiedcell_v" quantity="pop_bistratified/0/bistratifiedcell/v"/> 
-        </OutputFile>
-        
-        <OutputFile id="Sim_HippocampalNet_oc_axoaxoniccell_v_dat" fileName="Sim_HippocampalNet_oc.axoaxoniccell.v.dat">
-            <OutputColumn id="pop_axoaxonic_0_axoaxoniccell_v" quantity="pop_axoaxonic/0/axoaxoniccell/v"/> 
-        </OutputFile>
-        
-        <OutputFile id="Sim_HippocampalNet_oc_pvbasketcell_v_dat" fileName="Sim_HippocampalNet_oc.pvbasketcell.v.dat">
-            <OutputColumn id="pop_pvbasket_0_pvbasketcell_v" quantity="pop_pvbasket/0/pvbasketcell/v"/> 
-        </OutputFile>
-        
-        <OutputFile id="Sim_HippocampalNet_oc_stim_ec_v_dat" fileName="Sim_HippocampalNet_oc.stim_ec.v.dat">
-            <OutputColumn id="pop_ec_0_stim_ec_v" quantity="pop_ec/0/stim_ec/v"/> 
-        </OutputFile>
-        
-        <OutputFile id="Sim_HippocampalNet_oc_olmcell_v_dat" fileName="Sim_HippocampalNet_oc.olmcell.v.dat">
-            <OutputColumn id="pop_olm_0_olmcell_v" quantity="pop_olm/0/olmcell/v"/> 
         </OutputFile>
         
         <EventOutputFile id="Spikes_file__pop_ngf" fileName="Sim_HippocampalNet_oc.pop_ngf.spikes" format="ID_TIME">

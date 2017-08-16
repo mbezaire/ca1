@@ -192,7 +192,12 @@ def add_proj(nml_doc, network, projID,
     postcell_type = re.split(r'\_', postpop.id)[1]
     projID_loc = "proj_%spop_to_%spop"%(precell_type, postcell_type)     
     # sanity check for redundant names...
-    assert projID == projID_loc 
+    assert projID == projID_loc
+    
+    if precell_type not in ["ca3", "ec"]:
+        pre_seg_group = "soma_group"
+    else:
+        pre_seg_group = None  # will leave preSegmentId and preFractionAlong in the generated file (which is the way how 'artificial cells' connect to 'real cells')
     
     if len(tau_rise) == 1:  # ngf cells have custom GABA_A,B synapses (defined as 2 diff synapse per one connection) and are handeled differently
         
@@ -203,14 +208,14 @@ def add_proj(nml_doc, network, projID,
                                  tau_rise="%fms"%tau_rise[0],
                                  tau_decay="%fms"%tau_decay[0])
                 
-        proj = oc.add_targeted_projection(nml_doc, network,
+        proj = oc.add_targeted_projection(network,
                                           prefix="proj",
                                           presynaptic_population=prepop,
                                           postsynaptic_population=postpop,
                                           targeting_mode="convergent",
                                           synapse_list=[syn.id],
                                           number_conns_per_cell=ncons,
-                                          pre_segment_group="soma_group",
+                                          pre_segment_group=pre_seg_group,
                                           post_segment_group=post_seg_group,
                                           delays_dict={syn.id:3},
                                           weights_dict={syn.id:nsyns})  # multiple synapses per single connection are replaced by scaled up synaptic weight (for 1 connection)
@@ -230,7 +235,7 @@ def add_proj(nml_doc, network, projID,
                                    tau_rise="%fms"%tau_rise[1],
                                    tau_decay="%fms"%tau_decay[1])
         
-        proj = oc.add_targeted_projection(nml_doc, network,
+        proj = oc.add_targeted_projection(network,
                                           prefix="proj",
                                           presynaptic_population=prepop,
                                           postsynaptic_population=postpop,
@@ -242,40 +247,6 @@ def add_proj(nml_doc, network, projID,
                                           delays_dict={syn_A.id:3, syn_B.id:3},
                                           weights_dict={syn_A.id:nsyns, syn_B.id:nsyns})  # multiple synapses per single connection are replaced by scaled up synaptic weight (for 1 connection)
                                           
-    return proj
-
-
-def add_stim(nml_doc, network, projID,
-             prepop, postpop,
-             tau_rise, tau_decay, e_rev,
-             weight, ncons, nsyns, post_seg_group):
-    """adds targeted input using updated opencortex function (see oc_helper.py)"""
-    
-    precell_type = re.split(r'\_', prepop.id)[1]
-    assert precell_type in ["ca3", "ec"], "precell type has to be 'ca3' or 'ec'"
-    postcell_type = re.split(r'\_', postpop.id)[1]
-    projID_loc = "proj_%spop_to_%spop"%(precell_type, postcell_type) 
-    # sanity check for redundant names...
-    assert projID == projID_loc
-
-    syn = oc.add_exp_two_syn(nml_doc,
-                             id="syn_%s_to_%s"%(precell_type, postcell_type),
-                             gbase="%fnS"%weight,
-                             erev="%fmV"%e_rev[0],
-                             tau_rise="%fms"%tau_rise[0],
-                             tau_decay="%fms"%tau_decay[0])
-    
-    proj = add_targeted_corr_input(nml_doc,
-                                   network,
-                                   prefix="proj",
-                                   presynaptic_population=prepop,
-                                   postsynaptic_population=postpop,
-                                   synapse_list=[syn.id],
-                                   number_conns_per_cell=ncons,
-                                   post_segment_group=post_seg_group,
-                                   delays_dict={syn.id:3},
-                                   weights_dict={syn.id:nsyns})  # multiple synapses per single connection are replaced by scaled up synaptic weight (for 1 connection)
-                                                                                      
     return proj
                                     
                                       
@@ -318,29 +289,21 @@ def generate_hippocampal_net(networkID, scale=1000, numData=101, connData=430, s
     num_cons = 0
     for projID, props in dSyns.iteritems():
         precell_type = props["precell_type"]; postcell_type = props["postcell_type"]  # just to get populations from pop dictionary 
-        prepop = dPops[precell_type]; postpop = dPops[postcell_type]      
-        if precell_type in cell_types:           
-            if "tau_rise_A" not in props:  # single synapse
-                proj = add_proj(nml_doc, network,
-                                projID, prepop, postpop,
-                                tau_rise=[props["tau_rise"]], tau_decay=[props["tau_decay"]], e_rev=[props["e_rev"]],
-                                weight=props["weight"], ncons=props["ncons"], nsyns=props["nsyns"],
-                                post_seg_group=props["post_seg_group"])
-            else:  # boundled synapse
-                proj = add_proj(nml_doc, network,
-                                projID, prepop, postpop,
-                                tau_rise=[props["tau_rise_A"], props["tau_rise_B"]],
-                                tau_decay=[props["tau_decay_A"], props["tau_decay_B"]],
-                                e_rev=[props["e_rev_A"], props["e_rev_B"]],
-                                weight=props["weight"], ncons=props["ncons"], nsyns=props["nsyns"],
-                                post_seg_group=props["post_seg_group"])            
-        else:  # outer stimulation
-            proj = add_stim(nml_doc, network,
+        prepop = dPops[precell_type]; postpop = dPops[postcell_type]               
+        if "tau_rise_A" not in props:  # single synapse
+            proj = add_proj(nml_doc, network,
                             projID, prepop, postpop,
                             tau_rise=[props["tau_rise"]], tau_decay=[props["tau_decay"]], e_rev=[props["e_rev"]],
                             weight=props["weight"], ncons=props["ncons"], nsyns=props["nsyns"],
                             post_seg_group=props["post_seg_group"])
-
+        else:  # boundled synapse
+            proj = add_proj(nml_doc, network,
+                            projID, prepop, postpop,
+                            tau_rise=[props["tau_rise_A"], props["tau_rise_B"]],
+                            tau_decay=[props["tau_decay_A"], props["tau_decay_B"]],
+                            e_rev=[props["e_rev_A"], props["e_rev_B"]],
+                            weight=props["weight"], ncons=props["ncons"], nsyns=props["nsyns"],
+                            post_seg_group=props["post_seg_group"])            
         num_cons += len(proj[0].connection_wds)
                                     
     print("Cells connected; #connections:%i "%num_cons)
