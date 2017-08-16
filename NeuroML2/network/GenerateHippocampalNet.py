@@ -16,7 +16,7 @@ from pyneuroml import pynml
 from pyneuroml.lems.LEMSSimulation import LEMSSimulation
 # helper functions from other scripts
 from morphology_helper import helper_morphology, calc_seg_fracalong
-from GenerateHippocampalNet_oc import helper_getnextcolor, helper_getcelltype, get_projdata
+from GenerateHippocampalNet_oc import helper_getcolor, helper_getcelltype, get_projdata
 
 basePath = os.path.sep.join(os.path.abspath(__file__).split(os.path.sep)[:-3])
 
@@ -110,7 +110,6 @@ def create_populations(net, cell_types, nrn_runname, randomSeed):
     
     dNumCells = {}  # for creating displays and output files (see later in the code)
     
-    j = 0  # for increasing random seed in random colour generation
     for cell_type, pop_list in dCellPops.iteritems():
         
         if cell_type in cell_types:
@@ -122,9 +121,8 @@ def create_populations(net, cell_types, nrn_runname, randomSeed):
     
         popID = "pop_%s"%cell_type
         pop = neuroml.Population(id=popID, component=component, type="populationList", size=len(pop_list))
-        pop.properties.append(neuroml.Property("color", helper_getnextcolor(randomSeed+j)))
+        pop.properties.append(neuroml.Property("color", helper_getcolor(cell_type)))
         net.populations.append(pop)      
-        j += 1
         
         for i, sublist in enumerate(pop_list):    
             x_pos = sublist[0]; y_pos = sublist[1]; z_pos = sublist[2]            
@@ -287,8 +285,6 @@ def generate_hippocampal_net(network_id,
                              temperature="34.0 degC"):
     """creates NeuroML2 network file (.net.nml) based on data saved from NEURON, using the methods above"""
     
-    rnd.seed(randomSeed)
-    
     cell_types = ["axoaxonic", "bistratified", "cck", "ivy", "ngf", "olm", "poolosyn", "pvbasket", "sca"]
     synapse_types = ["exp2Synapses", "customGABASynapses"]
 
@@ -296,6 +292,8 @@ def generate_hippocampal_net(network_id,
     ###### Create network doc #####
     
     nml_doc = neuroml.NeuroMLDocument(id=network_id)
+    rnd.seed(randomSeed)  
+    nml_doc.properties.append(neuroml.Property("Network seed", randomSeed))
     
     for cell in cell_types:
         nml_doc.includes.append(neuroml.IncludeType(href="../cells/%s.cell.nml"%cell))
@@ -306,8 +304,8 @@ def generate_hippocampal_net(network_id,
     # Create network
     net = neuroml.Network(id=network_id, type="networkWithTemperature", temperature=temperature)
     net.notes = "Network generated using libNeuroML v%s"%neuroml.__version__
-    nml_doc.networks.append(net)    
-    
+    nml_doc.networks.append(net)
+   
     # Create populations 
     print("Creating populations...")
     dCellIDs, dNumCells = create_populations(net, cell_types, nrn_runname, randomSeed)    
@@ -324,7 +322,7 @@ def generate_hippocampal_net(network_id,
     print("Network saved to: %s"%nml_file)
         
     if validate:
-        ###### Validate the NeuroML file ######    
+        # Validate the NeuroML file
         neuroml.utils.validate_neuroml2(nml_file)       
         
     if generate_LEMS_simulation:

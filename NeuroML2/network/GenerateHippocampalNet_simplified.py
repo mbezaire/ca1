@@ -13,7 +13,7 @@ import neuroml
 import neuroml.writers as writers
 from pyneuroml import pynml
 # helper functions from other scripts
-from GenerateHippocampalNet_oc import helper_getnextcolor, helper_getcelltype
+from GenerateHippocampalNet_oc import helper_getcolor, helper_getcelltype
 from GenerateHippocampalNet import add_synapses
 
 basePath = os.path.sep.join(os.path.abspath(__file__).split(os.path.sep)[:-3])
@@ -67,7 +67,6 @@ def create_populations_simplified(net, cell_types, nrn_runname, randomSeed):
     
     ##### add populations to nml file #####  
     
-    j = 0  # for increasing random seed in random colour generation
     for cell_type, pop_list in dCellPops.iteritems():
         
         if cell_type in cell_types:
@@ -77,9 +76,8 @@ def create_populations_simplified(net, cell_types, nrn_runname, randomSeed):
     
         popID = "pop_%s"%cell_type
         pop = neuroml.Population(id=popID, component=component, type="populationList", size=len(pop_list))
-        pop.properties.append(neuroml.Property("color", helper_getnextcolor(randomSeed+j)))
+        pop.properties.append(neuroml.Property("color", helper_getcolor(cell_type)))
         net.populations.append(pop)      
-        j += 1
         
         for i, sublist in enumerate(pop_list):    
             x_pos = sublist[0]; y_pos = sublist[1]; z_pos = sublist[2]            
@@ -99,15 +97,14 @@ def generate_hippocampal_net(network_id,
                              temperature="34.0 degC"):
     """creates simplified NeuroML2 network file (.net.nml) based on data saved from NEURON, using the methods above"""
     
-    rnd.seed(randomSeed)
-    
     cell_types = ["axoaxonic", "bistratified", "cck", "ivy", "ngf", "olm", "poolosyn", "pvbasket", "sca"]
     synapse_types = ["exp2Synapses", "customGABASynapses"]
-
   
     ###### Create network doc #####
     
     nml_doc = neuroml.NeuroMLDocument(id=network_id)
+    rnd.seed(randomSeed)  
+    nml_doc.properties.append(neuroml.Property("Network seed", randomSeed))
     
     nml_doc.includes.append(neuroml.IncludeType(href="dummycell.cell.nml"))
     for synapse in synapse_types:
@@ -135,7 +132,7 @@ def generate_hippocampal_net(network_id,
     print("Network saved to: %s"%nml_file)
         
     if validate:
-        ###### Validate the NeuroML file ######    
+        # Validate the NeuroML file   
         neuroml.utils.validate_neuroml2(nml_file)       
 
 

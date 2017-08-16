@@ -354,6 +354,7 @@ def generate_hippocampal_net(networkID, scale=1000, numData=101, connData=430, s
 
     if generate_LEMS:
     
+        """ comment this back if the laset NetPyNE is on NSG and spikes get saved
         # dictionary to specify saving (voltage traces)
         max_traces = 5
         save_traces= {}        
@@ -365,12 +366,13 @@ def generate_hippocampal_net(networkID, scale=1000, numData=101, connData=430, s
             for i in range(0, max_traces):
                 quantity = "%s/%i/%s/v"%(pop.id, i, pop.component)
                 save_traces[f_].append(quantity)
+        """
         
         lems_fName = oc.generate_lems_simulation(nml_doc, network, nml_fName,
-                                                 duration=duration, dt=dt,
-                                                 gen_plots_for_all_v=False,
-                                                 gen_saves_for_quantities=save_traces,
-                                                 gen_spike_saves_for_all_somas=True,
+                                                 duration=duration, dt=dt,                                                 
+                                                 gen_saves_for_all_v=True,  # needed if using current (on NSG) NetPyNE to get spikes
+                                                 #gen_saves_for_quantities=save_traces,
+                                                 gen_spike_saves_for_all_somas=True,  # will work only with the latest jNeuroML_NetPyNE (not on NSG to date: 16.08.2017)
                                                  lems_file_name="LEMS_%s.xml"%network.id,
                                                  simulation_seed=12345)
                                           

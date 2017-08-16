@@ -162,7 +162,7 @@ def generate_PING_net(networkID, nPC=100, nBC=10,
                                                  gen_plots_for_all_v=False,
                                                  gen_plots_for_quantities=plots,
                                                  gen_saves_for_all_v=True,  # needed if using current NetPyNE to get spikes
-                                                 gen_spike_saves_for_all_somas=True,  # will work only with jNeuroML_NEURON
+                                                 gen_spike_saves_for_all_somas=True,  # will work only with the latest jNeuroML_NetPyNE (not on NSG to date: 16.08.2017)
                                                  lems_file_name="LEMS_%s.xml"%network.id,
                                                  simulation_seed=12345)
                                                  

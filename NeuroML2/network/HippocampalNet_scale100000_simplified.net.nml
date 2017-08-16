@@ -1,4 +1,5 @@
 <neuroml xmlns="http://www.neuroml.org/schema/neuroml2"  xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.neuroml.org/schema/neuroml2 https://raw.github.com/NeuroML/NeuroML2/development/Schemas/NeuroML2/NeuroML_v2beta5.xsd" id="HippocampalNet_simplified">
+    <property tag="Network seed" value="12345"/>
     <include href="dummycell.cell.nml"></include>
     <include href="../synapses/exp2Synapses.synapse.nml"></include>
     <include href="../synapses/customGABASynapses.synapse.nml"></include>
@@ -6,31 +7,31 @@
     <network id="HippocampalNet_simplified" type="networkWithTemperature" temperature="34.0 degC">
         <notes>Network generated using libNeuroML v0.2.33</notes>
         <population id="pop_ngf" component="dummycell" size="1" type="populationList">
-            <property tag="color" value="0.41662 0.0101692 0.825207"/>
+            <property tag="color" value="0.85490196 0.43921569 0.83921569"/>
             <instance id="0">
                 <location x="2000." y="500." z="400."/>
             </instance>
         </population>
         <population id="pop_bistratified" component="dummycell" size="1" type="populationList">
-            <property tag="color" value="0.463184 0.739601 0.387787"/>
+            <property tag="color" value="0.62745098 0.32156863 0.17647059"/>
             <instance id="0">
                 <location x="2000." y="500." z="125."/>
             </instance>
         </population>
         <population id="pop_sca" component="dummycell" size="1" type="populationList">
-            <property tag="color" value="0.353757 0.827835 0.488673"/>
+            <property tag="color" value="1 0.62745098 0.47843137"/>
             <instance id="0">
                 <location x="2000." y="500." z="250."/>
             </instance>
         </population>
         <population id="pop_olm" component="dummycell" size="1" type="populationList">
-            <property tag="color" value="0.0487916 0.7648 0.481499"/>
+            <property tag="color" value="0.4 0.2 0.6"/>
             <instance id="0">
                 <location x="2000." y="500." z="50."/>
             </instance>
         </population>
         <population id="pop_ec" component="spikeGenPoisson065" size="3" type="populationList">
-            <property tag="color" value="0.0622698 0.652904 0.338035"/>
+            <property tag="color" value="0.75 0.75 0.75"/>
             <instance id="0">
                 <location x="666.5" y="500." z="400."/>
             </instance>
@@ -42,7 +43,7 @@
             </instance>
         </population>
         <population id="pop_poolosyn" component="dummycell" size="3" type="populationList">
-            <property tag="color" value="0.191506 0.635525 0.617324"/>
+            <property tag="color" value="0.25490196 0.41176471 0.88235294"/>
             <instance id="0">
                 <location x="1000." y="250." z="125."/>
             </instance>
@@ -54,13 +55,13 @@
             </instance>
         </population>
         <population id="pop_pvbasket" component="dummycell" size="1" type="populationList">
-            <property tag="color" value="0.373316 0.576753 0.562314"/>
+            <property tag="color" value="0.1254902 0.69803922 0.66666667"/>
             <instance id="0">
                 <location x="2000." y="500." z="125."/>
             </instance>
         </population>
         <population id="pop_ca3" component="spikeGenPoisson065" size="2" type="populationList">
-            <property tag="color" value="0.355388 0.114595 0.585387"/>
+            <property tag="color" value="0.9 0.9 0.9"/>
             <instance id="0">
                 <location x="1000." y="500." z="250."/>
             </instance>
@@ -69,19 +70,19 @@
             </instance>
         </population>
         <population id="pop_cck" component="dummycell" size="1" type="populationList">
-            <property tag="color" value="0.359649 0.212488 0.61494"/>
+            <property tag="color" value="0.85490196 0.64705882 0.1254902"/>
             <instance id="0">
                 <location x="2000." y="500." z="125."/>
             </instance>
         </population>
         <population id="pop_axoaxonic" component="dummycell" size="1" type="populationList">
-            <property tag="color" value="0.133949 0.230825 0.5684"/>
+            <property tag="color" value="1 0 0"/>
             <instance id="0">
                 <location x="2000." y="500." z="125."/>
             </instance>
         </population>
         <population id="pop_ivy" component="dummycell" size="1" type="populationList">
-            <property tag="color" value="0.673908 0.414248 0.184299"/>
+            <property tag="color" value="0.6627451 0.6627451 0.6627451"/>
             <instance id="0">
                 <location x="2000." y="500." z="125."/>
             </instance>
