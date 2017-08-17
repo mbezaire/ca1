@@ -8,6 +8,7 @@ Authors: András Ecker, Padraig Gleeson, last update: 08.2017
 
 import os
 import re
+import sys
 import random as rnd
 # NeuroML specific libraries
 import neuroml
@@ -388,11 +389,18 @@ def generate_hippocampal_net(network_id,
 
 
 if __name__ == "__main__":
+    
+    try:
+        runName = sys.argv[1]
+        run_simulation = sys.argv[2]
+    except:
+        runName = "MiniScale_TestRun"
+        run_simulation = False
         
     ls, lems_file_name = generate_hippocampal_net(network_id="HippocampalNet",
-                                                  nrn_runname=os.path.join("results", "MiniScale_TestRun"),
+                                                  nrn_runname=os.path.join("results", runName),
                                                   generate_LEMS_simulation=True)
-    run_simulation = False
+                                                  
     if ls and run_simulation:
         # run with jNeuroML_NEURON
         print("*** Loading LEMS file: %s and running with jNeuroML_NEURON ***"%(lems_file_name))
