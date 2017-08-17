@@ -3,26 +3,18 @@
 
 To be able to rebuild the networks from scratch install [OpenCortex](https://github.com/OpenSourceBrain/OpenCortex) and run:
 
-    ```
     cd ca1/NeuroML2/netwok
     python GenerateHippocampalNet_oc.py 100000  # builds a scaled down (to 100000) network
-    ```
 
 you can also build a network based on the saved .dat files by NEURON (see more in [results/](https://github.com/mbezaire/ca1/tree/development/results/MiniScale_TestRun)) by running:
 
-    ```
     python GenerateHippocampalNet.py "MiniScale_TestRun"
-    ```
     
 or just skip the steps above and use the provided example (also scaled down to 100000) and run:
 
-    ```
     jnml LEMS_HippocampalNetwork_scale100000_oc.xml -neuron -run  # run with NERUON (you will need NEURON installed) 
-    ```
     
 Want to run paralell? NetPyNE is a NeuroML friendly NEURON parallelization package which does the work under the hood.
 You just have to install [NetPyNE](https://github.com/Neurosim-lab/netpyne) and run:
 
-    ```
     jnml LEMS_HippocampalNetwork_scale100000_oc.xml -netpyne -np -4  # will run on 4 cores
-    ```
