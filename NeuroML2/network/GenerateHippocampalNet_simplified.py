@@ -7,6 +7,7 @@ Authors: András Ecker, Padraig Gleeson, last update: 08.2017
 """
 
 import os
+import sys
 import random as rnd
 # NeuroML specific libraries
 import neuroml
@@ -14,7 +15,7 @@ import neuroml.writers as writers
 from pyneuroml import pynml
 # helper functions from other scripts
 from GenerateHippocampalNet_oc import helper_getcolor, helper_getcelltype
-from GenerateHippocampalNet import add_synapses
+from GenerateHippocampalNet import helper_getscale, add_synapses
 
 basePath = os.path.sep.join(os.path.abspath(__file__).split(os.path.sep)[:-3])
 
@@ -88,7 +89,7 @@ def create_populations_simplified(net, cell_types, nrn_runname, randomSeed):
     return dCellIDs
 
 
-def generate_hippocampal_net(network_id,
+def generate_hippocampal_net(networkID,
                              nrn_runname,
                              conndata="430",
                              numCores=1,
@@ -102,7 +103,7 @@ def generate_hippocampal_net(network_id,
   
     ###### Create network doc #####
     
-    nml_doc = neuroml.NeuroMLDocument(id=network_id)
+    nml_doc = neuroml.NeuroMLDocument(id=networkID)
     rnd.seed(randomSeed)  
     nml_doc.properties.append(neuroml.Property("Network seed", randomSeed))
     
@@ -112,7 +113,7 @@ def generate_hippocampal_net(network_id,
     nml_doc.includes.append(neuroml.IncludeType(href="stimulations.nml"))
         
     # Create network
-    net = neuroml.Network(id=network_id, type="networkWithTemperature", temperature=temperature)
+    net = neuroml.Network(id=networkID, type="networkWithTemperature", temperature=temperature)
     net.notes = "Network generated using libNeuroML v%s"%neuroml.__version__
     nml_doc.networks.append(net)    
     
@@ -127,7 +128,7 @@ def generate_hippocampal_net(network_id,
     #######   Write to file  ######    
 
     print("Saving to file...")
-    nml_file = network_id+'.net.nml'
+    nml_file = networkID+'.net.nml'
     writers.NeuroMLWriter.write(nml_doc, nml_file)
     print("Network saved to: %s"%nml_file)
         
@@ -137,9 +138,19 @@ def generate_hippocampal_net(network_id,
 
 
 if __name__ == "__main__":
-    generate_hippocampal_net(network_id="HippocampalNet_simplified",
-                             nrn_runname=os.path.join("results", "MiniScale_TestRun"),
+
+    try:
+        runName = sys.argv[1]
+    except:
+        runName = "MiniScale_TestRun"
+
+    scale = helper_getscale(runName)
+    networkID = "HippocampalNet_scale%i_simplified"%scale
+    generate_hippocampal_net(networkID=networkID,
+                             nrn_runname=os.path.join("results", runName),
                              numCores=24*5)
+                             
+    # don't try to run this! (it's only for OSB visualization)
 
         
 

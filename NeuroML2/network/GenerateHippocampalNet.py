@@ -22,6 +22,16 @@ from GenerateHippocampalNet_oc import helper_getcolor, helper_getcelltype, get_p
 basePath = os.path.sep.join(os.path.abspath(__file__).split(os.path.sep)[:-3])
 
 
+def helper_getscale(runName):
+    """get scale from saved parameters"""
+   
+    with open(os.path.join(basePath, runName, "runreceipt.txt")) as f:
+        for line in f:
+            if "Scale" in line:
+                scale = int(re.findall(r'\d+', tmp)[0])
+    return scale
+
+
 def helper_writesynapse_txt(dSyns):
     """helper function to create NeuroML synapses (has to be copied to an nml file...) TODO: automate that"""
     
@@ -276,7 +286,7 @@ def add_synapses(net, cell_types, nrn_runname, dCellIDs, write_synapse_file=Fals
 # ***************************************************************************************************************************************************
 
                 
-def generate_hippocampal_net(network_id,
+def generate_hippocampal_net(networkID,
                              nrn_runname,
                              validate=True,
                              randomSeed=12345,
@@ -292,7 +302,7 @@ def generate_hippocampal_net(network_id,
   
     ###### Create network doc #####
     
-    nml_doc = neuroml.NeuroMLDocument(id=network_id)
+    nml_doc = neuroml.NeuroMLDocument(id=networkID)
     rnd.seed(randomSeed)  
     nml_doc.properties.append(neuroml.Property("Network seed", randomSeed))
     
@@ -303,7 +313,7 @@ def generate_hippocampal_net(network_id,
     nml_doc.includes.append(neuroml.IncludeType(href="stimulations.nml"))
         
     # Create network
-    net = neuroml.Network(id=network_id, type="networkWithTemperature", temperature=temperature)
+    net = neuroml.Network(id=networkID, type="networkWithTemperature", temperature=temperature)
     net.notes = "Network generated using libNeuroML v%s"%neuroml.__version__
     nml_doc.networks.append(net)
    
@@ -318,7 +328,7 @@ def generate_hippocampal_net(network_id,
     #######   Write to file  ######    
 
     print("Saving to file...")
-    nml_file = network_id+'.net.nml'
+    nml_file = networkID+'.net.nml'
     writers.NeuroMLWriter.write(nml_doc, nml_file)
     print("Network saved to: %s"%nml_file)
         
@@ -329,7 +339,7 @@ def generate_hippocampal_net(network_id,
     if generate_LEMS_simulation:
         
         # Create a LEMSSimulation to manage creation of LEMS file
-        ls = LEMSSimulation('Sim_'+network_id, duration, dt)
+        ls = LEMSSimulation('Sim_'+networkID, duration, dt)
         
         # Point to network as target of simulation
         ls.assign_simulation_target(net.id)
@@ -396,9 +406,11 @@ if __name__ == "__main__":
     except:
         runName = "MiniScale_TestRun"
         run_simulation = False
-        
-    ls, lems_file_name = generate_hippocampal_net(network_id="HippocampalNet",
-                                                  nrn_runname=os.path.join("results", runName),
+    
+    scale = helper_getscale(runName)
+    networkID = "HippocampalNet_scale%i"%scale
+    ls, lems_file_name = generate_hippocampal_net(networkID=networkID,
+                                                  nrn_runname=os.path.join("results", runName),  # could be changed to NSG folder too
                                                   generate_LEMS_simulation=True)
                                                   
     if ls and run_simulation:

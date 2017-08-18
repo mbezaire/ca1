@@ -155,7 +155,7 @@ def helper_popsize(pop_size, scale):
 # network specific methods, using opencortex functions       
        
        
-def add_pop(nml_doc, network, scale, cell_type, pop_size, layer):
+def add_pop(nml_doc, network, scale, cell_type, pop_size, layer, duration=None):
     """adds population using opencortex function and helper functions above"""
 
     pop_size = helper_popsize(pop_size, scale)
@@ -169,12 +169,8 @@ def add_pop(nml_doc, network, scale, cell_type, pop_size, layer):
                                                        x_size=4000/np.sqrt(scale), y_size=1000/np.sqrt(scale), z_size=z_size,
                                                        color=helper_getcolor(cell_type))
     else:
-        #TODO: check which one to use!
-        #spike_gen = neuroml.SpikeGeneratorPoisson(id="stim_%s"%cell_type,
-                                                  #average_rate="0.65Hz")
-        #nml_doc.spike_generator_poissons.append(spike_gen)
         spike_gen = oc.add_spike_source_poisson(nml_doc, id="stim_%s"%cell_type,
-                                                start="0ms", duration="100ms", rate="0.65Hz")
+                                                start="0ms", duration="%fms"%duration, rate="0.65Hz")  # duration used only here
         
         return oc.add_population_in_rectangular_region(network,
                                                        pop_id="pop_%s"%cell_type, cell_id=spike_gen.id,
@@ -278,7 +274,7 @@ def generate_hippocampal_net(networkID, scale=1000, numData=101, connData=430, s
     num_cells = 0
     for cell_type, props in dCells.iteritems():
         pop = add_pop(nml_doc, network, scale,
-                      cell_type, pop_size=props["ncells"], layer=props["layer"])
+                      cell_type, pop_size=props["ncells"], layer=props["layer"], duration=duration)
         dPops[cell_type] = pop
         if cell_type in cell_types:
             num_cells += pop.get_size()       
@@ -339,6 +335,7 @@ def generate_hippocampal_net(networkID, scale=1000, numData=101, connData=430, s
                                                  #gen_saves_for_quantities=save_traces,
                                                  gen_spike_saves_for_all_somas=True,  # will work only with the latest jNeuroML_NetPyNE (not on NSG to date: 16.08.2017)
                                                  lems_file_name="LEMS_%s.xml"%network.id,
+                                                 include_extra_lems_files=["PyNN.xml"],  # to include SpikeSourcePoisson
                                                  simulation_seed=12345)
                                           
     else:
@@ -352,16 +349,26 @@ if __name__ == "__main__":
     try:
         scale = float(sys.argv[1])
         run_simulation = sys.argv[2]
+        simulator = sys.argv[3]
     except:
         scale = 100000  
         run_simulation = False
+        simulator = "jNeuroML_NEURON"
     
-    lems_fName = generate_hippocampal_net("HippocampalNet_oc",
+    networkID = "HippocampalNet_scale%i_oc"%scale
+    lems_fName = generate_hippocampal_net(networkID=networkID,
                                           scale=scale,
                                           generate_LEMS=True)
-    print lems_fName, run_simulation
     if lems_fName and run_simulation:
-        import multiprocessing as mp
-        oc.simulate_network(lems_fName, simulator="jNeuroML_NetPyNE",
-                            max_memory="5G", num_processors=mp.cpu_count())
+        if simulator == "jNeuroML_NEURON":
+            oc.simulate_network(lems_fName, simulator=simulator,
+                                max_memory="5G")
+        elif simulator == "jNeuroML_NetPyNE":
+            import multiprocessing as mp
+            oc.simulate_network(lems_fName, simulator=simulator,
+                                max_memory="5G", num_processors=mp.cpu_count())
+        else:
+            raise Exception("simulator:%s is not yet implemented"%simulator)
+
+
 
