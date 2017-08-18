@@ -201,15 +201,15 @@ def plot_traces(dTraces, t, runName):
         ax.set_ylabel(ylab, rotation=0, labelpad=25, color=col)
         simduration = t[-1]  # could be a sanity check against the one loaded from file...
         if simduration > 1000:
-            ylim_ = simduration/2+500
-            ax.set_xlim([simduration/2-500, ylim_])
+            xlim_ = simduration/2+500
+            ax.set_xlim([simduration/2-500, xlim_])
         else:
-            ylim_ = simduration
-            ax.set_xlim([0, ylim_])
+            xlim_ = simduration
+            ax.set_xlim([0, xlim_])
         ax.set_xticks([]); ax.set_yticks([])
     # draw scale bar
-    ax8.plot([ylim_-102, ylim_-2], [-70, -70], "k-", lw=3)
-    ax8.plot([ylim_-2, ylim_-2], [-70, -20], "k-", lw=3)
+    ax8.plot([xlim_-102, xlim_-2], [-70, -70], "k-", lw=3)
+    ax8.plot([xlim_-2, xlim_-2], [-70, -20], "k-", lw=3)
         
     figName = os.path.join(figFolder, "traces_%s.png"%runName)
     fig.savefig(figName)
