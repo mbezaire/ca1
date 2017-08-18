@@ -51,6 +51,7 @@ NeuroML2/notebooks/*.net.nml
 NeuroML2/notebooks/Test_*.html
 NeuroML2/notebooks/Test_*.py
 NeuroML2/notebooks/*.png
+NeuroML2/notebooks/figures
 
 NeuroML2/network/*.mod
 NeuroML2/network/*.hoc
