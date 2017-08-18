@@ -41,7 +41,7 @@ def input_currents(cell_file, custom_amps_nA, analysis_duration, pre_zero_pulse,
                                                 plot_iv=False,
                                                 temperature="34degC",
                                                 title_above_plot=True,
-                                                save_voltage_traces_to=cell_id+"_traces.png")
+                                                save_voltage_traces_to="figures/%s_traces.png"%cell_id)
     
 def fI_curve(cell_file):
     """
@@ -62,14 +62,14 @@ def fI_curve(cell_file):
                                                 pre_zero_pulse=0,
                                                 post_zero_pulse=0,
                                                 analysis_delay=100,
-                                                dt=0.01,
+                                                dt=0.005,
                                                 simulator="jNeuroML_NEURON",
                                                 plot_voltage_traces=False,
                                                 plot_if=True,
                                                 plot_iv=False,
                                                 temperature="34degC",
                                                 title_above_plot=True,
-                                                save_if_figure_to=cell_id+"_fI.png")
+                                                save_if_figure_to="figures/%s_fI.png"%cell_id)
 
 
 def get_data_from_datfile(fName):
