@@ -27,6 +27,7 @@ NeuroML2/channels/LEMS_Test_*.xml
 NeuroML2/channels/test_Cadynamics/NeuroML2/*.hoc
 NeuroML2/channels/test_Cadynamics/NeuroML2/*nrn.py
 NeuroML2/channels/test_Cadynamics/NeuroML2/*.mod
+NeuroML2/channels/figures/
 
 NeuroML2/cells/*.cell.png
 NeuroML2/cells/tests/*.mod
