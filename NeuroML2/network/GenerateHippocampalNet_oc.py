@@ -166,7 +166,8 @@ def add_pop(nml_doc, network, scale, cell_type, pop_size, layer, duration=None):
                                                        pop_id="pop_%s"%cell_type, cell_id="%scell"%cell_type,
                                                        size=pop_size,
                                                        x_min=0, y_min=0, z_min=z_min,
-                                                       x_size=4000/np.sqrt(scale), y_size=1000/np.sqrt(scale), z_size=z_size,
+                                                       #x_size=4000/np.sqrt(scale), y_size=1000/np.sqrt(scale), z_size=z_size,
+                                                       x_size=4000, y_size=1000, z_size=z_size,  # don't scale volume to get better visualization
                                                        color=helper_getcolor(cell_type))
     else:
         spike_gen = oc.add_spike_source_poisson(nml_doc, id="stim_%s"%cell_type,
@@ -176,7 +177,8 @@ def add_pop(nml_doc, network, scale, cell_type, pop_size, layer, duration=None):
                                                        pop_id="pop_%s"%cell_type, cell_id=spike_gen.id,
                                                        size=pop_size,
                                                        x_min=0, y_min=0, z_min=z_min,
-                                                       x_size=4000/np.sqrt(scale), y_size=1000/np.sqrt(scale), z_size=z_size,
+                                                       #x_size=4000/np.sqrt(scale), y_size=1000/np.sqrt(scale), z_size=z_size,
+                                                       x_size=4000, y_size=1000, z_size=z_size,  # don't scale volume to get better visualization
                                                        color=helper_getcolor(cell_type))
 
 
@@ -308,8 +310,13 @@ def generate_hippocampal_net(networkID, scale=1000, numData=101, connData=430, s
     
     # save to file
     nml_fName = "%s.net.nml"%network.id
-    oc.save_network(nml_doc, nml_fName,
-                    validate=True, format="xml", use_subfolder=False)
+    if scale > 1000:
+        oc.save_network(nml_doc, nml_fName,
+                        validate=True, format="xml", use_subfolder=False)
+    else:
+        oc.save_network(nml_doc, nml_fName,
+                        validate=False, format="xml", use_subfolder=False)
+        
 
 
     if generate_LEMS:
