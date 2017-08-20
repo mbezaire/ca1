@@ -252,7 +252,7 @@ def generate_hippocampal_net(networkID, scale=1000, numData=101, connData=430, s
                              generate_LEMS=True, duration=100, dt=0.01):
     """generates hippocampal network, by reproducing the placement, connectivity and scaling of the Bezaire network""" 
   
-    if scale >= 1000:
+    if scale > 1000:
         warnings.warn("\n***** Scaling down more then 1000x alters population size, slice volume and the connectivity seriously! *****\n")
     
     cell_types = ["axoaxonic", "bistratified", "cck", "ivy", "ngf", "olm", "poolosyn", "pvbasket", "sca"]
@@ -269,7 +269,6 @@ def generate_hippocampal_net(networkID, scale=1000, numData=101, connData=430, s
     
     # create populations
     dCells = get_popdata(numData)
-    print dCells
     dPops = {}  # dict for storing populations (used for creating projections)
     num_cells = 0
     for cell_type, props in dCells.iteritems():
@@ -347,18 +346,23 @@ def generate_hippocampal_net(networkID, scale=1000, numData=101, connData=430, s
 if __name__ == "__main__":
 
     try:
-        scale = float(sys.argv[1])
-        run_simulation = sys.argv[2]
+        scale = int(sys.argv[1])       
+    except:
+        scale = 100000     
+    try:
+        run_simulation = sys.argv[2]    
+    except:
+        run_simulation = False
+    try:
         simulator = sys.argv[3]
     except:
-        scale = 100000  
-        run_simulation = False
         simulator = "jNeuroML_NEURON"
     
     networkID = "HippocampalNet_scale%i_oc"%scale
     lems_fName = generate_hippocampal_net(networkID=networkID,
                                           scale=scale,
-                                          generate_LEMS=True)
+                                          generate_LEMS=False)
+    
     if lems_fName and run_simulation:
         if simulator == "jNeuroML_NEURON":
             oc.simulate_network(lems_fName, simulator=simulator,
@@ -369,6 +373,5 @@ if __name__ == "__main__":
                                 max_memory="5G", num_processors=mp.cpu_count())
         else:
             raise Exception("simulator:%s is not yet implemented"%simulator)
-
 
 

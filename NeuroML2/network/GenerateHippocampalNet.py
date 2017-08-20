@@ -401,10 +401,12 @@ def generate_hippocampal_net(networkID,
 if __name__ == "__main__":
     
     try:
-        runName = sys.argv[1]
+        runName = sys.argv[1]        
+    except:
+        runName = "MiniScale_TestRun"        
+    try:
         run_simulation = sys.argv[2]
     except:
-        runName = "MiniScale_TestRun"
         run_simulation = False
     
     scale = helper_getscale(runName)
