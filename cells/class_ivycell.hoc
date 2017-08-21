@@ -45,6 +45,7 @@ proc init() {
 	if ($3 >= 0) {        // using the cell alone/outside of the network (eg. test with omv call with (0,0,-1)), András
 	    pre_list = new List() // define a list for the presynaptic connections	
 	    define_synapses($3)	// local fcn: define all possible synaptic connections received by this cell
+	}
 }
 
 proc connect_sections() { local i
