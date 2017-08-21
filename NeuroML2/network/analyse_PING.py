@@ -16,7 +16,7 @@ sns.set_style("white")
 
 basePath = os.path.sep.join(os.path.abspath(__file__).split(os.path.sep)[:-1])
 figFolder = os.path.join(basePath, "figures")
-    
+
 
 def get_traces(fName, simduration, dt, popsize):
     """reads in single cell traces"""
@@ -56,7 +56,7 @@ def plot_rasters(dSpikeTimes, dSpikingNeurons, simduration, saveName):
     
     fig = plt.figure(figsize=(10, 5))
     
-    gs = gridspec.GridSpec(2, 1, height_ratios=[1, 1], hspace=0.1)
+    gs = gridspec.GridSpec(2, 1, height_ratios=[1.5, 1], hspace=0.1)
     ax0 = fig.add_subplot(gs[0]); ax1 = fig.add_subplot(gs[1])
     dSubplots = {"poolosyn":[ax0, "#4169E1", "Pyr."], "pvbasket":[ax1, "#20B2AA", "PV+B."]}  # dummy dict to reproduce the same figure layout ...   
     
@@ -70,7 +70,7 @@ def plot_rasters(dSpikeTimes, dSpikingNeurons, simduration, saveName):
             ax.set_xlim([0, simduration])
         ax.set_xticks([]); ax.set_yticks([])
     
-    figName = os.path.join(figFolder, "rasters_%s.png"%saveName)
+    figName = os.path.join(figFolder, "%s_rasters.png"%saveName)
     fig.savefig(figName)
     
 
@@ -90,17 +90,17 @@ def plot_traces(t, dTraces, saveName):
         ax.set_ylabel(ylab, rotation=0, labelpad=25, color=col)
         simduration = t[-1]  # could be a sanity check against the one loaded from file...
         if simduration > 1000:
-            ylim_ = simduration/2+500
-            ax.set_xlim([simduration/2-500, ylim_])
+            xlim_ = simduration/2+500
+            ax.set_xlim([simduration/2-500, xlim_])
         else:
-            ylim_ = simduration
-            ax.set_xlim([0, ylim_])
+            xlim_ = simduration
+            ax.set_xlim([0, xlim_])
         ax.set_xticks([]); ax.set_yticks([])
     # draw scale bar
-    #ax1.plot([ylim_-102, ylim_-2], [-70, -70], "k-", lw=3)
-    #ax1.plot([ylim_-2, ylim_-2], [-70, -20], "k-", lw=3)
+    ax1.plot([xlim_-102, xlim_-2], [-70, -70], "k-", lw=3)
+    ax1.plot([xlim_-2, xlim_-2], [-70, -20], "k-", lw=3)
         
-    figName = os.path.join(figFolder, "traces_%s.png"%saveName)
+    figName = os.path.join(figFolder, "%s_traces.png"%saveName)
     fig.savefig(figName)
 
           
@@ -108,7 +108,7 @@ if __name__ == "__main__":
     
     dTraces = {}; dSpikeTimes = {}; dSpikingNeurons = {}
     for cell_type in ["poolosyn", "pvbasket"]:
-        t, traces = get_traces("Sim_PINGNet.pop_%s.v.dat"%cell_type, 100, 0.01, 16)
+        t, traces = get_traces("Sim_PINGNet.pop_%s.v.dat"%cell_type, 100, 0.01, 20)
         spikeTimes, spikingNeurons = get_spikes(t, traces)
         dSpikeTimes[cell_type] = spikeTimes; dSpikingNeurons[cell_type] = spikingNeurons
         dTraces[cell_type] = traces[0, :]
