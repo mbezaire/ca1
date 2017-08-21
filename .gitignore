@@ -52,16 +52,18 @@ NeuroML2/notebooks/*.net.nml
 NeuroML2/notebooks/Test_*.html
 NeuroML2/notebooks/Test_*.py
 NeuroML2/notebooks/*.png
-NeuroML2/notebooks/figures
+NeuroML2/notebooks/figures/
 
 NeuroML2/network/*.mod
 NeuroML2/network/*.hoc
+NeuroML2/network/*_netpyne.py
+NeuroML2/network/*.json
+NeuroML2/network/LEMS_*_nrn.py
 NeuroML2/network/test/LEMS_Stim_*.xml
 NeuroML2/network/test/*.hoc
 NeuroML2/network/test/LEMS_Stim_*_nrn.py
 NeuroML2/network/test/Stim_*.net.nml
-NeuroML2/network/*_netpyne.py
-NeuroML2/network/*_main.json
+NeuroML2/network/figures/
 
 NSG/*.zip
 NSG/*.tar.gz
