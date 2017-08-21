@@ -18,73 +18,55 @@ from GenerateHippocampalNet_oc import helper_getcolor
 from analyse_PING import *
 
 
-def add_pop(network, cell_type, pop_size):
+def add_pop(nml_doc, network, cell_type, pop_size, duration=None, rate=None):
     """adds population using opencortex function"""
     
-    return oc.add_population_in_rectangular_region(network,
-                                                   pop_id="pop_%s"%cell_type, cell_id="%scell"%cell_type,
-                                                   size=pop_size,
-                                                   x_min=0, y_min=0, z_min=0,
-                                                   x_size=200, y_size=200, z_size=200,
-                                                   color=helper_getcolor(cell_type))
+    if cell_type not in ["ca3", "ec"]:  # "real" cells have template
+        return oc.add_population_in_rectangular_region(network,
+                                                       pop_id="pop_%s"%cell_type, cell_id="%scell"%cell_type,
+                                                       size=pop_size,
+                                                       x_min=0, y_min=0, z_min=0,
+                                                       x_size=1000, y_size=1000, z_size=200,
+                                                       color=helper_getcolor(cell_type))
+                                                   
+    else:
+        spike_gen = oc.add_spike_source_poisson(nml_doc, id="stim_%s"%cell_type,
+                                                start="0ms", duration="%fms"%duration, rate="%fHz"%rate)  # duration and rate used only here
+        
+        return oc.add_population_in_rectangular_region(network,
+                                                       pop_id="pop_%s"%cell_type, cell_id=spike_gen.id,
+                                                       size=pop_size,
+                                                       x_min=0, y_min=0, z_min=0,
+                                                       x_size=1000, y_size=1000, z_size=200,
+                                                       color=helper_getcolor(cell_type))
                                                  
                                                   
-def add_proj(nml_doc, network, prepop, postpop, ncons, post_seg_group, weight_mult=1):
+def add_proj(network, prepop, postpop, ncons, post_seg_group, weight_mult=1):
     """adds targeted projection using opencortex function"""
     
     import re
-    precell = re.split(r'\_', prepop.id)[1]
-    postcell = re.split(r'\_', postpop.id)[1]
+    precell_type = re.split(r'\_', prepop.id)[1]
+    postcell_type = re.split(r'\_', postpop.id)[1]
     
-    return oc.add_targeted_projection(nml_doc, network,
+    if precell_type not in ["ca3", "ec"]:
+        pre_seg_group = "soma_group"
+    else:
+        pre_seg_group = None  # will leave preSegmentId and preFractionAlong in the generated file (which is the way how 'artificial cells' connect to 'real cells')
+    
+    return oc.add_targeted_projection(network,
                                       prefix="proj",
                                       presynaptic_population=prepop,
                                       postsynaptic_population=postpop,
                                       targeting_mode="convergent",
-                                      synapse_list=["syn_%s_to_%s"%(precell, postcell)],
+                                      synapse_list=["syn_%s_to_%s"%(precell_type, postcell_type)],
                                       number_conns_per_cell=ncons,
-                                      pre_segment_group="soma_group",
+                                      pre_segment_group=pre_seg_group,
                                       post_segment_group=post_seg_group,
-                                      delays_dict={"syn_%s_to_%s"%(precell, postcell):3},
-                                      weights_dict={"syn_%s_to_%s"%(precell, postcell):weight_mult})
+                                      delays_dict={"syn_%s_to_%s"%(precell_type, postcell_type):3},
+                                      weights_dict={"syn_%s_to_%s"%(precell_type, postcell_type):weight_mult})
 
 
-def add_stim(nml_doc, network, prepop_name, postpop, avg_rate, ncons, post_seg_group):
-    """adds input population with poisson firing rate using opencortex functions"""
-    
-    assert prepop_name in ["ca3", "ec"], "prepop name has to be 'ca3' or 'ec' for the synapse to work"
-    
-    import re
-    postcell_type = re.split(r'\_', postpop.id)[1]
-    
-    if postcell_type == "poolosyn":
-        # same as in "../synapses/exp2Synapses.synapse.nml", but stronger weight!
-        syn = oc.add_exp_two_syn(nml_doc, id="syn_%s_to_%s_strong"%(prepop_name, postcell_type), 
-                                 gbase="10.0nS", erev="0.0mV",  # stronger then the original 0.2nS
-                                 tau_rise="0.5ms", tau_decay="3.0ms")  # ec and ca3 synapses have the same kinetics
-    elif postcell_type == "pvbasket":
-        # same as in "../synapses/exp2Synapses.synapse.nml", but stronger weight!
-        syn = oc.add_exp_two_syn(nml_doc, id="syn_%s_to_%s_strong"%(prepop_name, postcell_type), 
-                                 gbase="5.0nS", erev="0.0mV",  # stronger then the original 0.22nS
-                                 tau_rise="2.0ms", tau_decay="6.3ms")
-    
-    pf_syn = oc.add_poisson_firing_synapse(nml_doc,
-                                           id="pop_%s_to_%s"%(prepop_name, postcell_type),
-                                           average_rate="%.2f Hz"%avg_rate,
-                                           synapse_id="syn_%s_to_%s_strong"%(prepop_name, postcell_type))
-                                
-    pf_proj = oc.add_targeted_inputs_to_population(network,
-                                                   id="proj",
-                                                   population=postpop,
-                                                   input_comp_id=pf_syn.id,
-                                                   segment_group=post_seg_group,
-                                                   number_per_cell=ncons,
-                                                   all_cells=True)
-                                                   
-    return pf_proj
-
-
-def generate_PING_net(networkID, nPC=100, nBC=10,
+def generate_PING_net(networkID, dPopsize, dNconns, dWeightMults, rate=5,
                       generate_LEMS=True, duration=100, dt=0.01):
     """generates PC-BC network using methods above"""
     
@@ -95,47 +77,55 @@ def generate_PING_net(networkID, nPC=100, nBC=10,
     
     # include necessary files
     nml_doc.includes.append(neuroml.IncludeType(href="../cells/poolosyn.cell.nml"))
-    # workaround to handle opencortex's way of including cell templates
-    oc_build.cell_ids_vs_nml_docs["poolosyncell"] = pynml.read_neuroml2_file("../cells/poolosyn.cell.nml", include_includes=False)
     nml_doc.includes.append(neuroml.IncludeType(href="../cells/pvbasket.cell.nml"))
+    # workaround to handle opencortex's way of including cell templates
+    oc_build.cell_ids_vs_nml_docs["poolosyncell"] = pynml.read_neuroml2_file("../cells/poolosyn.cell.nml", include_includes=False)    
     oc_build.cell_ids_vs_nml_docs["pvbasketcell"] = pynml.read_neuroml2_file("../cells/pvbasket.cell.nml", include_includes=False)
     nml_doc.includes.append(neuroml.IncludeType(href="../synapses/exp2Synapses.synapse.nml"))
     
     # create populations
-    pop_poolosyn = add_pop(network, "poolosyn", nPC)
-    pop_pvbasket = add_pop(network, "pvbasket", nBC)
+    pop_poolosyn = add_pop(nml_doc, network, "poolosyn", dPopsize["poolosyn"])
+    pop_pvbasket = add_pop(nml_doc, network, "pvbasket", dPopsize["pvbasket"])
+    pop_ca3 = add_pop(nml_doc, network, "ca3", dPopsize["stim"], duration=duration, rate=rate)  # int(0.75*dPopsize["poolosyn"])
+    pop_ec = add_pop(nml_doc, network, "ec", dPopsize["stim"], duration=duration, rate=rate)
                                                        
-    # add connections (hard coded for conndata_430.dat and syndata_120.dat)
+    # add connections (synapses as in conndata_430.dat and syndata_120.dat)
     total_cons = 0
-    # same all to all connectivity as in Traub et al. 1997
-    proj_poolosynpop_to_pvbasketpop = add_proj(nml_doc, network,
-                                               prepop=pop_poolosyn, postpop=pop_pvbasket,
-                                               ncons=16, post_seg_group="apical_list_100_to_1000",
-                                               weight_mult=20)
-    total_cons += len(proj_poolosynpop_to_pvbasketpop[0].connection_wds)                                           
-    proj_pvbasketpop_to_poolosynpop = add_proj(nml_doc, network,
-                                               prepop=pop_pvbasket, postpop=pop_poolosyn,
-                                               ncons=16, post_seg_group="soma_group",
-                                               weight_mult=15)
-    total_cons += len(proj_pvbasketpop_to_poolosynpop[0].connection_wds)                                           
-    proj_pvbasketpop_to_pvbasketpop = add_proj(nml_doc, network,
-                                               prepop=pop_pvbasket, postpop=pop_pvbasket,
-                                               ncons=16, post_seg_group="soma_group",
-                                               weight_mult=15)
-    total_cons += len(proj_pvbasketpop_to_pvbasketpop[0].connection_wds)
-    print("number of connections: %i (outer stimulation not included)"%total_cons)                                
+    proj_poolosyn_to_pvbasket = add_proj(network,
+                                         prepop=pop_poolosyn, postpop=pop_pvbasket,
+                                         ncons=dNconns["proj_poolosyn_to_pvbasket"],
+                                         post_seg_group="apical_list_100_to_1000",
+                                         weight_mult=dWeightMults["proj_poolosyn_to_pvbasket"])
+    total_cons += len(proj_poolosyn_to_pvbasket[0].connection_wds)                                           
+    proj_pvbasket_to_poolosyn = add_proj(network,
+                                         prepop=pop_pvbasket, postpop=pop_poolosyn,
+                                         ncons=dNconns["proj_pvbasket_to_poolosyn"],
+                                         post_seg_group="soma_group",
+                                         weight_mult=dWeightMults["proj_pvbasket_to_poolosyn"])
+    total_cons += len(proj_pvbasket_to_poolosyn[0].connection_wds)                                           
+    proj_pvbasket_to_pvbasket = add_proj(network,
+                                         prepop=pop_pvbasket, postpop=pop_pvbasket,
+                                         ncons=dNconns["proj_pvbasket_to_pvbasket"],
+                                         post_seg_group="soma_group",
+                                         weight_mult=dWeightMults["proj_pvbasket_to_pvbasket"])
+    total_cons += len(proj_pvbasket_to_pvbasket[0].connection_wds)
+    print("number of connections: %i (outer stimulation not included)"%total_cons)
     
-    # add outer stimulation (# same rates as in Traub et al. 1997)
-
-    proj_ca3_to_poolosyn = add_stim(nml_doc, network,
-                                    prepop_name="ca3", postpop=pop_poolosyn,
-                                    avg_rate=5, ncons=50, post_seg_group="dendrite_list_50_to_200")
-    proj_ec_to_poolosyn = add_stim(nml_doc, network,
-                                   prepop_name="ec", postpop=pop_poolosyn,
-                                   avg_rate=5, ncons=50, post_seg_group="dendrite_list_200_to_1000")
-    proj_ca3_to_pvbasekt = add_stim(nml_doc, network,
-                                    prepop_name="ca3", postpop=pop_pvbasket,
-                                    avg_rate=1, ncons=10, post_seg_group="dendrite_list_50_to_200")
+    proj_ca3_to_poolosyn = add_proj(network,
+                                    prepop=pop_ca3, postpop=pop_poolosyn,
+                                    ncons=dNconns["proj_ca3_to_poolosyn"],
+                                    post_seg_group="dendrite_list_50_to_200",
+                                    weight_mult=dWeightMults["proj_ca3_to_poolosyn"])
+    proj_ec_to_poolosyn = add_proj(network,
+                                   prepop=pop_ec, postpop=pop_poolosyn,
+                                   ncons=dNconns["proj_ec_to_poolosyn"],
+                                   post_seg_group="dendrite_list_200_to_1000",
+                                   weight_mult=dWeightMults["proj_ec_to_poolosyn"])
+    proj_ca3_to_pvbasket = add_proj(network,
+                                    prepop=pop_ca3, postpop=pop_pvbasket,
+                                    ncons=dNconns["proj_ca3_to_pvbasket"],
+                                    post_seg_group="dendrite_list_50_to_200",
+                                    weight_mult=dWeightMults["proj_ca3_to_pvbasket"])                       
                                             
     # save to file
     nml_fName = "%s.net.nml"%network.id
@@ -164,6 +154,7 @@ def generate_PING_net(networkID, nPC=100, nBC=10,
                                                  gen_saves_for_all_v=True,  # needed if using current NetPyNE to get spikes
                                                  gen_spike_saves_for_all_somas=True,  # will work only with the latest jNeuroML_NetPyNE (not on NSG to date: 16.08.2017)
                                                  lems_file_name="LEMS_%s.xml"%network.id,
+                                                 include_extra_lems_files=["PyNN.xml"],  # to include SpikeSourcePoisson
                                                  simulation_seed=12345)
                                                  
     else:
@@ -174,34 +165,69 @@ def generate_PING_net(networkID, nPC=100, nBC=10,
 
 if __name__ == "__main__":
 
-    popsize = {"poolosyn":16, "pvbasket":16}
-    simduration = 100  # ms
+    dPopsize = {"poolosyn":50, "pvbasket":20, "stim":40}
+    # 18, 35, 50, 25
+    
+    lNconns = [{"proj_poolosyn_to_pvbasket":30, "proj_pvbasket_to_poolosyn":18, "proj_pvbasket_to_pvbasket":18,
+               "proj_ca3_to_poolosyn":50, "proj_ec_to_poolosyn":30, "proj_ca3_to_pvbasket":40}]
+               
+    lWeightMults = [{"proj_poolosyn_to_pvbasket":20, "proj_pvbasket_to_poolosyn":20, "proj_pvbasket_to_pvbasket":50,
+                    "proj_ca3_to_poolosyn":50, "proj_ec_to_poolosyn":15, "proj_ca3_to_pvbasket":15},
+                    {"proj_poolosyn_to_pvbasket":20, "proj_pvbasket_to_poolosyn":20, "proj_pvbasket_to_pvbasket":50,
+                    "proj_ca3_to_poolosyn":50, "proj_ec_to_poolosyn":20, "proj_ca3_to_pvbasket":15},
+                    {"proj_poolosyn_to_pvbasket":20, "proj_pvbasket_to_poolosyn":20, "proj_pvbasket_to_pvbasket":50,
+                    "proj_ca3_to_poolosyn":60, "proj_ec_to_poolosyn":15, "proj_ca3_to_pvbasket":15},
+                    {"proj_poolosyn_to_pvbasket":20, "proj_pvbasket_to_poolosyn":20, "proj_pvbasket_to_pvbasket":50,
+                    "proj_ca3_to_poolosyn":60, "proj_ec_to_poolosyn":20, "proj_ca3_to_pvbasket":15}]
+    rates = [10]
+    simduration = 300  # ms
     dt = 0.01  # ms
-    lems_fName = generate_PING_net("PINGNet", nPC=popsize["poolosyn"], nBC=popsize["pvbasket"],
-                                   generate_LEMS=True, duration=simduration, dt=dt)
-    
-    try:
-        run_simulation = sys.argv[1]
-    except:
-        run_simulation = False
-    
-    if lems_fName and run_simulation:
-        simulator = "jNeuroML_NetPyNE"  # "jNeuroML_NEURON",
-        oc.simulate_network(lems_fName, simulator=simulator,
-                            max_memory="4G", nogui=True, num_processors=3)  #nogui=False
         
-        # analyse saved results                  
-        if simulator == "jNeuroML_NetPyNE":
-            dTraces = {}; dSpikeTimes = {}; dSpikingNeurons = {}
-            for cell_type in ["poolosyn", "pvbasket"]:
-                t, traces = get_traces("Sim_PINGNet.pop_%s.v.dat"%cell_type, simduration, dt, popsize[cell_type])
-                spikeTimes, spikingNeurons = get_spikes(t, traces)
-                dSpikeTimes[cell_type] = spikeTimes; dSpikingNeurons[cell_type] = spikingNeurons
-                dTraces[cell_type] = traces[0, :]
+    i = 0
+    for dNconns in lNconns:
+        for dWeightMults in lWeightMults:
+            for rate in rates:
+                print("\n\n it:%s \n\n"%i)
     
-            plot_rasters(dSpikeTimes, dSpikingNeurons, simduration=t[-1], saveName="test")
-            plot_traces(t, dTraces, saveName="test")
-                            
+                lems_fName = generate_PING_net("PINGNet", dPopsize, dNconns, dWeightMults, rate,
+                                               generate_LEMS=True, duration=simduration, dt=dt)    
+                #try:
+                #    run_simulation = sys.argv[1]
+                #except:
+                #    run_simulation = False
+                
+                run_simulation = True           
+                if lems_fName and run_simulation:
+                    simulator =  "jNeuroML_NetPyNE"  # "jNeuroML_NEURON"
+                    oc.simulate_network(lems_fName, simulator=simulator,
+                                        max_memory="4G", nogui=True, num_processors=4)  #nogui=False
+                    
+                    # analyse saved results                  
+                    if simulator == "jNeuroML_NetPyNE":
+                        dTraces = {}; dSpikeTimes = {}; dSpikingNeurons = {}
+                        for cell_type in ["poolosyn", "pvbasket"]:
+                            t, traces = get_traces("Sim_PINGNet.pop_%s.v.dat"%cell_type, simduration, dt, dPopsize[cell_type])
+                            spikeTimes, spikingNeurons = get_spikes(t, traces)
+                            dSpikeTimes[cell_type] = spikeTimes; dSpikingNeurons[cell_type] = spikingNeurons
+                            dTraces[cell_type] = traces[0, :]
+                
+                        saveName = "%s_%s_%s_%s_%s_%s_%s_%snS_%snS_%snS_%snS_%snS_%snS_%sHz"%(i,
+                                                           dNconns["proj_poolosyn_to_pvbasket"],
+                                                           dNconns["proj_pvbasket_to_poolosyn"],
+                                                           dNconns["proj_pvbasket_to_pvbasket"],  #
+                                                           dNconns["proj_ca3_to_poolosyn"],
+                                                           dNconns["proj_ec_to_poolosyn"],
+                                                           dNconns["proj_ca3_to_pvbasket"], #
+                                                           dWeightMults["proj_poolosyn_to_pvbasket"],
+                                                           dWeightMults["proj_pvbasket_to_poolosyn"],
+                                                           dWeightMults["proj_pvbasket_to_pvbasket"], #
+                                                           dWeightMults["proj_ca3_to_poolosyn"],
+                                                           dWeightMults["proj_ec_to_poolosyn"],
+                                                           dWeightMults["proj_ca3_to_pvbasket"], #
+                                                           rate)
+                        plot_rasters(dSpikeTimes, dSpikingNeurons, simduration=t[-1], saveName=saveName)
+                        plot_traces(t, dTraces, saveName=saveName)
+                        i += 1
         
 
 
