@@ -363,7 +363,7 @@ if __name__ == "__main__":
     try:
         simulator = sys.argv[3]
     except:
-        simulator = "jNeuroML_NEURON"
+        simulator = "NEURON"
     
     networkID = "HippocampalNet_scale%i_oc"%scale
     lems_fName = generate_hippocampal_net(networkID=networkID,
@@ -371,12 +371,12 @@ if __name__ == "__main__":
                                           generate_LEMS=False)
     
     if lems_fName and run_simulation:
-        if simulator == "jNeuroML_NEURON":
-            oc.simulate_network(lems_fName, simulator=simulator,
+        if simulator == "NEURON":
+            oc.simulate_network(lems_fName, simulator="jNeuroML_"%simulator,
                                 max_memory="5G")
-        elif simulator == "jNeuroML_NetPyNE":
+        elif simulator == "NetPyNE":
             import multiprocessing as mp
-            oc.simulate_network(lems_fName, simulator=simulator,
+            oc.simulate_network(lems_fName, simulator="jNeuroML_"%simulator,
                                 max_memory="5G", num_processors=mp.cpu_count())
         else:
             raise Exception("simulator:%s is not yet implemented"%simulator)
