@@ -26,7 +26,7 @@ def add_pop(nml_doc, network, cell_type, pop_size, duration=None, rate=None):
                                                        pop_id="pop_%s"%cell_type, cell_id="%scell"%cell_type,
                                                        size=pop_size,
                                                        x_min=0, y_min=0, z_min=0,
-                                                       x_size=1000, y_size=1000, z_size=200,
+                                                       x_size=1000, y_size=1000, z_size=1000,
                                                        color=helper_getcolor(cell_type))
                                                    
     else:
@@ -37,7 +37,7 @@ def add_pop(nml_doc, network, cell_type, pop_size, duration=None, rate=None):
                                                        pop_id="pop_%s"%cell_type, cell_id=spike_gen.id,
                                                        size=pop_size,
                                                        x_min=0, y_min=0, z_min=0,
-                                                       x_size=1000, y_size=1000, z_size=200,
+                                                       x_size=1000, y_size=1000, z_size=1000,
                                                        color=helper_getcolor(cell_type))
                                                  
                                                   
