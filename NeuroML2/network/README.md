@@ -18,3 +18,7 @@ Want to run paralell? NetPyNE is a NeuroML friendly NEURON parallelization packa
 You just have to install [NetPyNE](https://github.com/Neurosim-lab/netpyne) and run:
 
     jnml LEMS_HippocampalNetwork_scale100000_oc.xml -netpyne -np -4  # will run on 4 cores
+    
+To run the simplified PING network (only PCs and BCs), run:
+
+    python GeneratePINGNet_oc.py True  # run with NERUON

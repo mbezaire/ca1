@@ -165,69 +165,49 @@ def generate_PING_net(networkID, dPopsize, dNconns, dWeightMults, rate=5,
 
 if __name__ == "__main__":
 
+    try:
+        run_simulation = sys.argv[1]
+    except:
+        run_simulation = False
+    try:
+        simulator = sys.argv[2]
+    except:
+        simulator = "NEURON"
+
     dPopsize = {"poolosyn":50, "pvbasket":20, "stim":40}
-    # 18, 35, 50, 25
     
-    lNconns = [{"proj_poolosyn_to_pvbasket":30, "proj_pvbasket_to_poolosyn":18, "proj_pvbasket_to_pvbasket":18,
-               "proj_ca3_to_poolosyn":50, "proj_ec_to_poolosyn":30, "proj_ca3_to_pvbasket":40}]
+    dNconns = {"proj_poolosyn_to_pvbasket":30, "proj_pvbasket_to_poolosyn":18, "proj_pvbasket_to_pvbasket":18,
+               "proj_ca3_to_poolosyn":50, "proj_ec_to_poolosyn":30, "proj_ca3_to_pvbasket":40}
                
-    lWeightMults = [{"proj_poolosyn_to_pvbasket":20, "proj_pvbasket_to_poolosyn":20, "proj_pvbasket_to_pvbasket":50,
-                    "proj_ca3_to_poolosyn":50, "proj_ec_to_poolosyn":15, "proj_ca3_to_pvbasket":15},
-                    {"proj_poolosyn_to_pvbasket":20, "proj_pvbasket_to_poolosyn":20, "proj_pvbasket_to_pvbasket":50,
-                    "proj_ca3_to_poolosyn":50, "proj_ec_to_poolosyn":20, "proj_ca3_to_pvbasket":15},
-                    {"proj_poolosyn_to_pvbasket":20, "proj_pvbasket_to_poolosyn":20, "proj_pvbasket_to_pvbasket":50,
-                    "proj_ca3_to_poolosyn":60, "proj_ec_to_poolosyn":15, "proj_ca3_to_pvbasket":15},
-                    {"proj_poolosyn_to_pvbasket":20, "proj_pvbasket_to_poolosyn":20, "proj_pvbasket_to_pvbasket":50,
-                    "proj_ca3_to_poolosyn":60, "proj_ec_to_poolosyn":20, "proj_ca3_to_pvbasket":15}]
-    rates = [10]
-    simduration = 300  # ms
+    dWeightMults = {"proj_poolosyn_to_pvbasket":20, "proj_pvbasket_to_poolosyn":20, "proj_pvbasket_to_pvbasket":50,
+                    "proj_ca3_to_poolosyn":50, "proj_ec_to_poolosyn":15, "proj_ca3_to_pvbasket":15}
+    rate = 10
+    simduration = 100  # ms
     dt = 0.01  # ms
-        
-    i = 0
-    for dNconns in lNconns:
-        for dWeightMults in lWeightMults:
-            for rate in rates:
-                print("\n\n it:%s \n\n"%i)
     
-                lems_fName = generate_PING_net("PINGNet", dPopsize, dNconns, dWeightMults, rate,
-                                               generate_LEMS=True, duration=simduration, dt=dt)    
-                #try:
-                #    run_simulation = sys.argv[1]
-                #except:
-                #    run_simulation = False
+    lems_fName = generate_PING_net("PINGNet", dPopsize, dNconns, dWeightMults, rate,
+                                   generate_LEMS=True, duration=simduration, dt=dt)
+                                   
+    if lems_fName and run_simulation:
+        if simulator == "NEURON":
+            oc.simulate_network(lems_fName, simulator="jNeuroML_%s"%simulator,
+                                max_memory="5G")
+        elif simulator == "NetPyNE":
+            import multiprocessing as mp
+            oc.simulate_network(lems_fName, simulator="jNeuroML_%s"%simulator,
+                                max_memory="5G", num_processors=mp.cpu_count())
+                                
+            # analyse saved results                  
+            dTraces = {}; dSpikeTimes = {}; dSpikingNeurons = {}
+            for cell_type in ["poolosyn", "pvbasket"]:
+                t, traces = get_traces("Sim_PINGNet.pop_%s.v.dat"%cell_type, simduration, dt, dPopsize[cell_type])
+                spikeTimes, spikingNeurons = get_spikes(t, traces)
+                dSpikeTimes[cell_type] = spikeTimes; dSpikingNeurons[cell_type] = spikingNeurons
+                dTraces[cell_type] = traces[0, :]
                 
-                run_simulation = True           
-                if lems_fName and run_simulation:
-                    simulator =  "jNeuroML_NetPyNE"  # "jNeuroML_NEURON"
-                    oc.simulate_network(lems_fName, simulator=simulator,
-                                        max_memory="4G", nogui=True, num_processors=4)  #nogui=False
-                    
-                    # analyse saved results                  
-                    if simulator == "jNeuroML_NetPyNE":
-                        dTraces = {}; dSpikeTimes = {}; dSpikingNeurons = {}
-                        for cell_type in ["poolosyn", "pvbasket"]:
-                            t, traces = get_traces("Sim_PINGNet.pop_%s.v.dat"%cell_type, simduration, dt, dPopsize[cell_type])
-                            spikeTimes, spikingNeurons = get_spikes(t, traces)
-                            dSpikeTimes[cell_type] = spikeTimes; dSpikingNeurons[cell_type] = spikingNeurons
-                            dTraces[cell_type] = traces[0, :]
-                
-                        saveName = "%s_%s_%s_%s_%s_%s_%s_%snS_%snS_%snS_%snS_%snS_%snS_%sHz"%(i,
-                                                           dNconns["proj_poolosyn_to_pvbasket"],
-                                                           dNconns["proj_pvbasket_to_poolosyn"],
-                                                           dNconns["proj_pvbasket_to_pvbasket"],  #
-                                                           dNconns["proj_ca3_to_poolosyn"],
-                                                           dNconns["proj_ec_to_poolosyn"],
-                                                           dNconns["proj_ca3_to_pvbasket"], #
-                                                           dWeightMults["proj_poolosyn_to_pvbasket"],
-                                                           dWeightMults["proj_pvbasket_to_poolosyn"],
-                                                           dWeightMults["proj_pvbasket_to_pvbasket"], #
-                                                           dWeightMults["proj_ca3_to_poolosyn"],
-                                                           dWeightMults["proj_ec_to_poolosyn"],
-                                                           dWeightMults["proj_ca3_to_pvbasket"], #
-                                                           rate)
-                        plot_rasters(dSpikeTimes, dSpikingNeurons, simduration=t[-1], saveName=saveName)
-                        plot_traces(t, dTraces, saveName=saveName)
-                        i += 1
-        
+                plot_rasters(dSpikeTimes, dSpikingNeurons, simduration=t[-1], saveName="PINGNet")
+                plot_traces(t, dTraces, saveName="PINGNet")
+        else:
+            raise Exception("simulator:%s is not yet implemented"%simulator)
 
 
