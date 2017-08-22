@@ -21,6 +21,7 @@ build/*
 *pyc
 *.dat
 *.svg
+*.pov
 NeuroML2/*.mod
 
 NeuroML2/channels/LEMS_Test_*.xml
