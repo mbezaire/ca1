@@ -1,21 +1,27 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
 """
-creates .zip archive from the necessary files, (and sends job to NSG REST API)
-note: Scale = 300 -> ~ 1100 PCs, 5s: takes ~ 1.2h on 1 node and 24 cores (Comet NEURON 7.4)
-author: András Ecker, last update 06.2017
+creates .zip archive from the necessary hoc and mod files (to send NEURON jobs to NSG REST API afterwards)
+author: András Ecker, last update 08.2017
 """
 
 import os
+import sys
 import shutil
 import zipfile
+import warnings
 
 basePath = os.path.sep.join(os.path.abspath(__file__).split(os.path.sep)[:-2])
 
 
-def create_zip(zipName, runName="TestRun", simDuration=100, rm=True,
-               scale=300, numData=101, connData=430, synData=120, rateP=0.65):
-    """copies the necessary files to a subfolder and zips it afterwards (NSG prefered way)"""
+def create_zip(zipName, runName, scale, simDuration=100, rm=True,
+               conn_algo="fastconn", numData=101, connData=430, synData=120, rateP=0.65):
+    """copies the necessary files to a subfolder and zips it afterwards (in the NSG prefered way)"""
+    
+    assert conn_algo in ["fastconn", "repeatconn"], "%s not implemented"%conn_algo
+    
+    if scale > 1000:
+        warnings.warn("***** Scaling down more then 1000x alters population size, slice volume and the connectivity seriously! *****")
     
     # create directory (if exist it will delete and recreate)
     mainDirName = os.path.join(basePath, "NSG", zipName)
@@ -59,18 +65,23 @@ def create_zip(zipName, runName="TestRun", simDuration=100, rm=True,
             for line in f:
                 if "RunName" in line:
                     outf.write('default_var("RunName","%s")\n'%runName)
-                if "Connectivity" in line:
-                    outf.write('default_var("Connectivity","try_all_repeatstim")\n')  # allows multiple connection from save precell to postcell (usefull for the downscaled version)
+                elif "Connectivity" in line:
+                    if conn_algo == "fastconn":
+                        outf.write('default_var("Connectivity","try_all_repeatstim")\n')  # doesn't allows multiple connection from the same precell to postcell (see fastconn.mod)
+                    elif conn_algo == "repeatconn":                        
+                        outf.write('default_var("Connectivity","try_all_repeatstim")\n')  # allows multiple connection from the same precell to postcell - usefull for the downscaled version (see repeatconn.mod)
                 elif "Scale" in line:
                     outf.write('default_var("Scale",%i)\n'%scale)
+                elif "PrintConnDetails" in line:
+                    outf.write('default_var("PrintConnDetails",1)\n')  # no need to run launch_synapse
                 elif "SimDuration" in line:
                     outf.write('default_var("SimDuration",%i)\n'%simDuration)
-                elif "NumData" in line:
-                    outf.write('default_var("NumData",%i)\n'%numData)
                 elif "ConnData" in line:
                     outf.write('default_var("ConnData",%i)\n'%connData)
                 elif "SynData" in line:
                     outf.write('default_var("SynData",%i)\n'%synData)
+                elif "NumData" in line:
+                    outf.write('default_var("NumData",%i)\n'%numData)
                 elif "DegreeStim" in line:
                     outf.write('default_var("DegreeStim",%f)\n'%rateP)  # rate of the input Poisson proc.
                 else:
@@ -94,15 +105,25 @@ def create_zip(zipName, runName="TestRun", simDuration=100, rm=True,
     if rm: # remove directory (and keep only the .zip file)
         shutil.rmtree(mainDirName)
     
-    print("zip file created: %s"%mainDirName+".zip")
+    print("zip file created: %s.zip"%mainDirName)
 
 
 if __name__ == "__main__":
 
-    zipName = "CA1"
-    runName = "repeatconn"
-    simDuration = 2e3  # ms
-    create_zip(zipName, runName=runName, simDuration=simDuration, rm=False)
+    try:
+        runName = sys.argv[1]    
+    except:
+        runName = "TestRun_nrn"
+    try:
+        scale = int(sys.argv[2])       
+    except:
+        scale = 10000
+
+    zipName = "CA1_nrn"
+    simDuration = 10  # ms
+    conn_algo = "fastconn"
+    
+    create_zip(zipName, runName, scale, simDuration=simDuration, rm=False, conn_algo=conn_algo)
     
     
     
