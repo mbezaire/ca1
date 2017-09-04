@@ -85,9 +85,14 @@ if __name__ == "__main__":
     mainDirName = create_folder(zipName, runName, networkName, copysyn=False)
                
     # generate NetPyNE simulation
-    call("./jnml_netpyne.sh %s %s"%(zipName, networkName), shell=True)    
-    # rename LEMS_*_netpyne.py to init.hoc
-    shutil.move(os.path.join(mainDirName, "network", "LEMS_%s_netpyne.py"%networkName), os.path.join(mainDirName, "network", "init.py"))
+    call("./jnml_netpyne.sh %s %s"%(zipName, networkName), shell=True)
+    
+    # create init.py and call generated simulation
+    s = '#!/usr/bin/python\n"""hacky init.py to call NetPyNE generated simulation from the top level (not from network/ folder)"""\n\n'\
+    'import os\nfrom subprocess import call\n\n'\
+    'os.chdir("network")\ncall("python LEMS_%s_netpyne.py", shell=True)'%networkName
+    with open(os.path.join(mainDirName, "init.py"), "w") as f_:
+        f_.write(s)
     
     create_zip(zipName, mainDirName, rm=False)
     
