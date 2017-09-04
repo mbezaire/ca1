@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 basePath = os.path.sep.join(os.path.abspath(__file__).split(os.path.sep)[:-3])
 
 
-def input_currents(cell_file, custom_amps_nA, analysis_duration, pre_zero_pulse, post_zero_pulse):
+def input_currents(cell_file, custom_amps_nA, analysis_duration, pre_zero_pulse, post_zero_pulse, verbose=False):
     """
     injects specified currents to NeuroML cell, using pyneuroml
     :param celltype: string - name of the cell
@@ -21,11 +21,15 @@ def input_currents(cell_file, custom_amps_nA, analysis_duration, pre_zero_pulse,
     :param analysis_duration: int - simulation duration in ms
     :param pre_zero_pulse: int - offset of input current(s) in ms
     :param post_zero_pulse: int - simulated time after the input in ms
+    :param verbose: verbose output
     """
     from pyneuroml.analysis import generate_current_vs_frequency_curve
     
     tmp = re.match(r"../cells/(.*).cell.nml", cell_file)  # hard coded for path-sep: "/" (linux, mac)
     cell_id = tmp.group(1)+"cell"
+    
+    if verbose:
+        print("Running input_currents() on %s, cell_id=%s"%(cell_file,cell_id))
 
     curve = generate_current_vs_frequency_curve(cell_file,
                                                 cell_id,
@@ -41,7 +45,8 @@ def input_currents(cell_file, custom_amps_nA, analysis_duration, pre_zero_pulse,
                                                 plot_iv=False,
                                                 temperature="34degC",
                                                 title_above_plot=True,
-                                                save_voltage_traces_to="figures/%s_traces.png"%cell_id)
+                                                save_voltage_traces_to="figures/%s_traces.png"%cell_id,
+                                                verbose=verbose)
     
 def fI_curve(cell_file):
     """
