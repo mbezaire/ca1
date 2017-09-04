@@ -16,8 +16,6 @@ import neuroml
 from pyneuroml import pynml
 import opencortex.core as oc
 import opencortex.build as oc_build
-# helper functions from other scripts
-from oc_helper import add_targeted_corr_input
 
 basePath = os.path.sep.join(os.path.abspath(__file__).split(os.path.sep)[:-3])
 
@@ -105,7 +103,6 @@ def get_projdata(connData, synData):
 def helper_layer(layer):
     """sets boundaries in z direction, based on layer"""
     # slice size: 4000*1000*450 (see distr. of layers (450um) below)
-    # Note: scaling alters only x and y size and keeps z inact! (as in the original model)
     if layer == 0:  # oriens
         z_min = 0; z_size = 100
     elif layer == 1:  # pyramidale
@@ -255,7 +252,7 @@ def generate_hippocampal_net(networkID, scale=1000, numData=101, connData=430, s
     """generates hippocampal network, by reproducing the placement, connectivity and scaling of the Bezaire network""" 
   
     if scale > 1000:
-        warnings.warn("\n***** Scaling down more then 1000x alters population size, slice volume and the connectivity seriously! *****\n")
+        warnings.warn("***** Scaling down more then 1000x alters both population size and the connectivity seriously! *****")
     
     cell_types = ["axoaxonic", "bistratified", "cck", "ivy", "ngf", "olm", "poolosyn", "pvbasket", "sca"]
     
