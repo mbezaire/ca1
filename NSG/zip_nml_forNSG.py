@@ -48,6 +48,10 @@ def create_folder(zipName, runName, networkName, copysyn=False):
     shutil.copy2(os.path.join(nmlFolder, "network", "LEMS_%s.xml"%networkName),
                  os.path.join(mainDirName, "network", "LEMS_%s.xml"%networkName))
                  
+    for file_ in os.listdir(os.path.join(nmlFolder, "network")):
+        if file_.endswith(".mod"):
+            shutil.copy2(os.path.join(nmlFolder, "network", file_), os.path.join(mainDirName, file_))
+                 
     return mainDirName
 
 
@@ -88,11 +92,18 @@ if __name__ == "__main__":
     call("./jnml_netpyne.sh %s %s"%(zipName, networkName), shell=True)
     
     # create init.py and call generated simulation
-    s = '#!/usr/bin/python\n"""hacky init.py to call NetPyNE generated simulation from the top level (not from network/ folder)"""\n\n'\
-    'import os\nfrom subprocess import call\n\n'\
-    'os.chdir("network")\ncall("python LEMS_%s_netpyne.py", shell=True)'%networkName
+    s = '#!/usr/bin/python\n'+ \
+        '"""init.py to call NetPyNE generated simulation from the top level (not from network folder)"""\n\n' + \
+        'import os\n' + \
+        'os.chdir("network")\n\n' + \
+        'import network.LEMS_%s_netpyne'%networkName
+        
     with open(os.path.join(mainDirName, "init.py"), "w") as f_:
         f_.write(s)
+        
+    
+    with open(os.path.join(mainDirName, "network", "__init__.py"), "w") as f_:
+        f_.write(" ")
     
     create_zip(zipName, mainDirName, rm=False)
     
