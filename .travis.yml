@@ -22,6 +22,7 @@ system_site_packages: true
 
 env:
     - OMV_ENGINE=jNeuroML
+    - OMV_ENGINE=NEURON
     - OMV_ENGINE=jNeuroML_NEURON
     - OMV_ENGINE=jNeuroML_NetPyNE
     - OMV_ENGINE=jNeuroML_validate
@@ -29,6 +30,13 @@ env:
 install: 
     - pip install git+https://github.com/OpenSourceBrain/osb-model-validation
     - pip install scipy==0.9.0 # Why is this needed? Doesn't seem to get installed correctly on trusty with addons above...
+        
+    # Need to pre install NEURON so nrnivmodl can be run targeting mod files in a different directory
+    - omv install NEURON
+    - cd NeuroML2
+    - /home/travis/neuron/nrn/x86_64/bin/nrnivmodl ..
+    - ls -alt
+    - cd ..
 
 script:
     - omv all -V
