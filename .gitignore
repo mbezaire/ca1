@@ -69,4 +69,11 @@ NeuroML2/network/figures/
 NSG/*.zip
 NSG/*.tar.gz
 NSG/figures/
-
+/NSG/CA1_nml
+/NeuroML2/cells/*.png
+/NeuroML2/network/*.pov-state
+/NeuroML2/network/*.spikes
+/NeuroML2/network/*.ini
+/NeuroML2/network/HippocampalNet_oc.net.nml
+/NeuroML2/network/LEMS_HippocampalNet_scale100000_oc.xml
+/NeuroML2/network/*.png

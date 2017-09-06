@@ -96,7 +96,8 @@ if __name__ == "__main__":
         '"""init.py to call NetPyNE generated simulation from the top level (not from network folder)"""\n\n' + \
         'import os\n' + \
         'os.chdir("network")\n\n' + \
-        'import network.LEMS_%s_netpyne'%networkName
+        'sys.path.append(".")\n\n' + \
+        'import LEMS_%s_netpyne'%networkName
         
     with open(os.path.join(mainDirName, "init.py"), "w") as f_:
         f_.write(s)
