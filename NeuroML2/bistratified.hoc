@@ -1,4 +1,4 @@
-show_plot = 0
+show_plot = 1
 
 {load_file("nrngui.hoc")}
 
