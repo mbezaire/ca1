@@ -37,6 +37,7 @@ def helper_getcelltype(cell_name):
     else:
         return cell_name[:-4]
 
+
 def get_popdata(numData):
     """reads in cell numbers from config file"""
     
@@ -162,20 +163,24 @@ def add_pop(nml_doc, network, scale, cell_type, pop_size, layer, duration=None):
         return oc.add_population_in_rectangular_region(network,
                                                        pop_id="pop_%s"%cell_type, cell_id="%scell"%cell_type,
                                                        size=pop_size,
-                                                       x_min=0, y_min=0, z_min=z_min,
+                                                       x_min=0, y_min=z_min, z_min=0,  # y-z changed on OSB...
                                                        #x_size=4000/np.sqrt(scale), y_size=1000/np.sqrt(scale), z_size=z_size,
-                                                       x_size=4000, y_size=1000, z_size=z_size,  # don't scale volume to get better visualization
+                                                       x_size=4000, y_size=z_size, z_size=1000,  # don't scale volume to get better visualization; # y-z changed on OSB...
                                                        color=helper_getcolor(cell_type))
     else:
         spike_gen = oc.add_spike_source_poisson(nml_doc, id="stim_%s"%cell_type,
                                                 start="0ms", duration="%fms"%duration, rate="0.65Hz")  # duration used only here
         
+        # add outer stimulations outside of the slice... (to get better visualization on OSB)
+        if cell_type == "ca3":
+            x_min = 0
+        elif cell_type == "ec":
+            x_min = 3900
         return oc.add_population_in_rectangular_region(network,
                                                        pop_id="pop_%s"%cell_type, cell_id=spike_gen.id,
                                                        size=pop_size,
-                                                       x_min=0, y_min=0, z_min=z_min,
-                                                       #x_size=4000/np.sqrt(scale), y_size=1000/np.sqrt(scale), z_size=z_size,
-                                                       x_size=4000, y_size=1000, z_size=z_size,  # don't scale volume to get better visualization
+                                                       x_min=x_min, y_min=500, z_min=450,  # y-z changed on OSB...
+                                                       x_size=100, y_size=100, z_size=100,
                                                        color=helper_getcolor(cell_type))
 
 
