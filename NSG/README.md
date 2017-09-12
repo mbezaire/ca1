@@ -1,4 +1,4 @@
-### Interacting with Neuroscience Gateway Portal
+## Interacting with Neuroscience Gateway Portal
 
 **The folder contains python and bash script to send jobs to supercomputers through [NSG](https://www.nsgportal.org/).**
 
@@ -22,10 +22,12 @@ You can upload your `.zip` file and run tasks through their interface! Alternati
 8. Copy the [nsgrest_example.conf](https://github.com/mbezaire/ca1/blob/development/NSG/nsgrest_example.conf) file to **nsgrest.conf** and move it to your home folder
 9. Update the details there with the information you entered on the NSG REST server:
 
+    ```
     URL=https://nsgr.sdsc.edu:8443/cipresrest/v1
     USERNAME=uuuuuu
     PASSWORD=xxxxxx
     DIRECT_APPID=Direct111111111111
+   ```
    
 > `DIRECT_APPID` should be set to your Application ID
 
@@ -34,22 +36,28 @@ You can upload your `.zip` file and run tasks through their interface! Alternati
 
 1. Test listing/submitting of jobs with the original NEURON version:
 
+    ```
     ./list_jobs.sh                # none yet...
     ./submit_nrn_toNSG.sh Test 1  # submit NEURON job (ID=Test, number of nodes=1)
     ./list_jobs.sh                # should be listed
     ./status_job.sh JOBIDXXXX     # Replace job ID with that listed above
+    ```
     
 2. Get results after simulation is finished (and notification was sent by e-mail):
 
+    ```
     ./list_results.sh JOBIDXXXX           # Replace job ID with that listed above (or found in the e-mail)
     # look for output.tar.gz (should be the last one) and <outputDocumentId>
     ./download_results.sh JOBIDXXXX DIDx  # Replace job ID and doc ID with that found above
+    ```
     
 3. Send NetPyNE jobs to NSG-R, based on the NeuroML2 version (Note: this is not possible through the web interface yet!):
 
+    ```
     python zip_nml_forNSG.py      # zips necessary files in NSG preferred way
     ./submit_nml_toNSG.sh Test 1  # submit NetPyNE job (ID=Test, number of nodes=1)
     # repeat the same as above to get results
+    ```
     
 see more about `curl` functions used to interact with the REST API [here](https://www.nsgportal.org/guide.html).
 
