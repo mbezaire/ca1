@@ -3,7 +3,7 @@
 """ 
 Creates a NeuroML2 version of the hippocampal network by Marianne Bezaire using opencortex
 (by reproducing the cell placement and the connectivity)
-Authors: András Ecker, Padraig Gleeson, last update: 08.2017
+Authors: András Ecker, Padraig Gleeson, last update: 09.2017
 """
 
 import os
@@ -323,32 +323,25 @@ def generate_hippocampal_net(networkID, scale=1000, numData=101, connData=430, s
 
     if generate_LEMS:
     
-        """ comment this back if the laset NetPyNE is on NSG and spikes get saved
         # dictionary to specify saving (voltage traces)
         max_traces = 5
         save_traces= {}        
-        for pop_name, pop in dPops.iteritems():   
-            f_ = "Sim_%s.%s.v.dat"%(nml_doc.id, pop.component)
-            save_traces[f_] = []
-            if pop.get_size() < max_traces:  # check if there are enough cells in pop to save
-                max_traces = pop.get_size()
-            for i in range(0, max_traces):
-                quantity = "%s/%i/%s/v"%(pop.id, i, pop.component)
-                save_traces[f_].append(quantity)
-        """
-        
-        # don't try to save ca3, ec tsince
-        gen_saves_for_only_populations = []
-        for cell_type in cell_types:
-            gen_saves_for_only_populations.append("pop_%s"%cell_type)
+        for pop_name, pop in dPops.iteritems():
+            if "ca3" not in pop_name and "ec" not in pop_name:
+                f_ = "Sim_%s.%s.v.dat"%(nml_doc.id, pop.component)
+                save_traces[f_] = []
+                if pop.get_size() < max_traces:  # check if there are enough cells in pop to save
+                    max_traces = pop.get_size()
+                for i in range(0, max_traces):
+                    quantity = "%s/%i/%s/v"%(pop.id, i, pop.component)
+                    save_traces[f_].append(quantity)
             
         
         lems_fName = oc.generate_lems_simulation(nml_doc, network, nml_fName,
                                                  duration=duration, dt=dt,
-                                                 gen_saves_for_all_v=False,  # no ca3, ec                                             
-                                                 gen_saves_for_only_populations=gen_saves_for_only_populations,                                                
-                                                 #gen_saves_for_quantities=save_traces,
-                                                 gen_spike_saves_for_all_somas=True,  # will work only with the latest jNeuroML_NetPyNE (not on NSG to date: 16.08.2017)
+                                                 gen_saves_for_all_v=False,  # don't try to save tsince for ca3, ec                              
+                                                 gen_saves_for_quantities=save_traces,
+                                                 gen_spike_saves_for_all_somas=True,
                                                  lems_file_name="LEMS_%s.xml"%network.id,
                                                  include_extra_lems_files=["PyNN.xml"],  # to include SpikeSourcePoisson
                                                  simulation_seed=12345)
