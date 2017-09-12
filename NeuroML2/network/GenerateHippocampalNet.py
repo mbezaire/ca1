@@ -3,7 +3,7 @@
 """ 
 Creates a NeuroML2 version of the hippocampal network by Marianne Bezaire using libNeuroML and pyNeuroML
 (by loading placement and connectivity saved by the NEURON version)
-Authors: András Ecker, Padraig Gleeson, last update: 08.2017
+Authors: András Ecker, Padraig Gleeson, last update: 09.2017
 """
 
 import os
@@ -67,15 +67,7 @@ def helper_writesynapse_txt(dSyns):
 
 
 def create_populations(net, cell_types, nrn_runname, randomSeed):
-    """
-    Reads original data files (mainly position.dat) and creates population of cells
-    :param net: neuroml.Network() - to which the populations will be added 
-    :param cell_types: list - (just to avoid multiple declaration of cell_types)
-    :param nrn_runname: string - name of the directory where the saved data files are stored (celltype.dat, position.dat)
-    :param randomSeed: int - seed for random color generation
-    :return dCellIDs: dictionary - key: cellID, value: [cell_type, ID in pop_cell_type] (for creating synapses)
-    :return dNumCells: dictonary with the number of cells in a given population (for creating output files -> just for "real cells")
-    """
+    """Reads original data files (mainly position.dat) and creates population of cells"""
     
     # read in cell gids:
     dCellIDs = {}
@@ -149,13 +141,8 @@ def create_populations(net, cell_types, nrn_runname, randomSeed):
 
 def add_synapses(net, cell_types, nrn_runname, dCellIDs, write_synapse_file=False):
     """
-    Reads data files: conndata_x.dat (used to setup), connections.dat (saved after run) and synlist.dat (created by launch_synapse_printer.hoc)
-    creates synapse files (only .txt files TODO: automate to make .nml-files)
-    calculates the place of synapses and connects the cells
-    :param net: neuroml.Network() - to which the projections will be added
-    :param cell_types: list - (just to avoid multiple declaration of cell_types)
-    :param nrn_runname: string - name of the directory where the saved data files are stored (synlist.dat, connections.dat)
-    :param dCellIDs: dictionary created by create_populations, which stroes the gIDs
+    Reads data files: conndata_x.dat (used to setup), connections.dat (saved after run) and synlist.dat (created by launch_synapse_printer.hoc or saved after run if PrintConnDetails flag is set to 1...)
+    creates synapse files (only .txt files TODO: automate to make .nml-files) + calculates the place of synapses and connects the cells
     """
     
     # automatically get some run specific info...
@@ -294,7 +281,7 @@ def generate_hippocampal_net(networkID,
                              duration=100,
                              dt=0.01,
                              temperature="34.0 degC"):
-    """creates NeuroML2 network file (.net.nml) based on data saved from NEURON, using the methods above"""
+    """creates NeuroML2 network file (.net.nml) based on data saved from the NEURON run, using the methods above"""
     
     cell_types = ["axoaxonic", "bistratified", "cck", "ivy", "ngf", "olm", "poolosyn", "pvbasket", "sca"]
     synapse_types = ["exp2Synapses", "customGABASynapses"]
