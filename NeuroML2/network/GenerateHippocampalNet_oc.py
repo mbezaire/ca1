@@ -337,12 +337,16 @@ def generate_hippocampal_net(networkID, scale=1000, numData=101, connData=430, s
                 save_traces[f_].append(quantity)
         """
         
+        # don't try to save ca3, ec tsince
+        gen_saves_for_only_populations = []
+        for cell_type in cell_types:
+            gen_saves_for_only_populations.append("pop_%s"%cell_type)
+            
+        
         lems_fName = oc.generate_lems_simulation(nml_doc, network, nml_fName,
-                                                 duration=duration, dt=dt,                                                 
-                                                 gen_saves_for_only_populations=["pop_ngf","pop_bistratified","pop_sca",
-                                                                                 "pop_olm","pop_poolosyn","pop_pvbasket", 
-                                                                                 "pop_cck","pop_axoaxonic","pop_ivy"],
-                                                 gen_saves_for_all_v=False,
+                                                 duration=duration, dt=dt,
+                                                 gen_saves_for_all_v=False,  # no ca3, ec                                             
+                                                 gen_saves_for_only_populations=gen_saves_for_only_populations,                                                
                                                  #gen_saves_for_quantities=save_traces,
                                                  gen_spike_saves_for_all_somas=True,  # will work only with the latest jNeuroML_NetPyNE (not on NSG to date: 16.08.2017)
                                                  lems_file_name="LEMS_%s.xml"%network.id,
