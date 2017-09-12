@@ -2,7 +2,7 @@
     
     <!-- 
 
-        This LEMS file has been automatically generated using PyNeuroML v0.3.0 (libNeuroML v0.2.33)
+        This LEMS file has been automatically generated using PyNeuroML v0.3.1 (libNeuroML v0.2.33)
 
      -->
     
@@ -14,6 +14,7 @@
     <Include file="Networks.xml"/>
     <Include file="Simulation.xml"/>
     
+    <Include file="PyNN.xml"/>
     <Include file="HippocampalNet_oc.net.nml"/>
    
     <Simulation id="Sim_HippocampalNet_oc" length="100ms" step="0.01ms" target="HippocampalNet_oc" seed="12345">  <!-- Note seed: ensures same random numbers used every run -->
@@ -35,8 +36,8 @@
         </Display>
         
         <Display id="DispPop__pop_ec" title="Membrane potentials of cells in pop_ec" timeScale="1ms" xmin="-10.0" xmax="110.0" ymin="-90" ymax="50">
-            <Line id="pop_ec[0]: v" quantity="pop_ec/0/stim_ec/v" scale="1mV" color="#5e503a" timeScale="1ms"/>
-            <Line id="pop_ec[1]: v" quantity="pop_ec/1/stim_ec/v" scale="1mV" color="#3193ca" timeScale="1ms"/>
+            <Line id="pop_ec[0]: v" quantity="pop_ec/0/stim_ec/tsince" scale="1mV" color="#5e503a" timeScale="1ms"/>
+            <Line id="pop_ec[1]: v" quantity="pop_ec/1/stim_ec/tsince" scale="1mV" color="#3193ca" timeScale="1ms"/>
         </Display>
         
         <Display id="DispPop__pop_poolosyn" title="Membrane potentials of cells in pop_poolosyn" timeScale="1ms" xmin="-10.0" xmax="110.0" ymin="-90" ymax="50">
@@ -50,8 +51,8 @@
         </Display>
         
         <Display id="DispPop__pop_ca3" title="Membrane potentials of cells in pop_ca3" timeScale="1ms" xmin="-10.0" xmax="110.0" ymin="-90" ymax="50">
-            <Line id="pop_ca3[0]: v" quantity="pop_ca3/0/stim_ca3/v" scale="1mV" color="#8fe460" timeScale="1ms"/>
-            <Line id="pop_ca3[1]: v" quantity="pop_ca3/1/stim_ca3/v" scale="1mV" color="#2ca1c7" timeScale="1ms"/>
+            <Line id="pop_ca3[0]: v" quantity="pop_ca3/0/stim_ca3/tsince" scale="1mV" color="#8fe460" timeScale="1ms"/>
+            <Line id="pop_ca3[1]: v" quantity="pop_ca3/1/stim_ca3/tsince" scale="1mV" color="#2ca1c7" timeScale="1ms"/>
         </Display>
         
         <Display id="DispPop__pop_cck" title="Membrane potentials of cells in pop_cck" timeScale="1ms" xmin="-10.0" xmax="110.0" ymin="-90" ymax="50">
@@ -82,9 +83,9 @@
             <OutputColumn id="v_pop_olm_0_olmcell_v" quantity="pop_olm/0/olmcell/v"/> 
         </OutputFile>
         
-        <OutputFile id="Volts_file__pop_ec" fileName="Sim_HippocampalNet_oc.pop_ec.v.dat">
-            <OutputColumn id="v_pop_ec_0_stim_ec_v" quantity="pop_ec/0/stim_ec/v"/> 
-            <OutputColumn id="v_pop_ec_1_stim_ec_v" quantity="pop_ec/1/stim_ec/v"/> 
+        <OutputFile id="Volts_file__pop_ec" fileName="Sim_HippocampalNet_oc.pop_ec.tsince.dat">
+            <OutputColumn id="v_pop_ec_0_stim_ec_tsince" quantity="pop_ec/0/stim_ec/tsince"/> 
+            <OutputColumn id="v_pop_ec_1_stim_ec_tsince" quantity="pop_ec/1/stim_ec/tsince"/> 
         </OutputFile>
         
         <OutputFile id="Volts_file__pop_poolosyn" fileName="Sim_HippocampalNet_oc.pop_poolosyn.v.dat">
@@ -97,9 +98,9 @@
             <OutputColumn id="v_pop_pvbasket_0_pvbasketcell_v" quantity="pop_pvbasket/0/pvbasketcell/v"/> 
         </OutputFile>
         
-        <OutputFile id="Volts_file__pop_ca3" fileName="Sim_HippocampalNet_oc.pop_ca3.v.dat">
-            <OutputColumn id="v_pop_ca3_0_stim_ca3_v" quantity="pop_ca3/0/stim_ca3/v"/> 
-            <OutputColumn id="v_pop_ca3_1_stim_ca3_v" quantity="pop_ca3/1/stim_ca3/v"/> 
+        <OutputFile id="Volts_file__pop_ca3" fileName="Sim_HippocampalNet_oc.pop_ca3.tsince.dat">
+            <OutputColumn id="v_pop_ca3_0_stim_ca3_tsince" quantity="pop_ca3/0/stim_ca3/tsince"/> 
+            <OutputColumn id="v_pop_ca3_1_stim_ca3_tsince" quantity="pop_ca3/1/stim_ca3/tsince"/> 
         </OutputFile>
         
         <OutputFile id="Volts_file__pop_cck" fileName="Sim_HippocampalNet_oc.pop_cck.v.dat">
