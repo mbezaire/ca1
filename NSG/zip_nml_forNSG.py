@@ -35,7 +35,7 @@ def create_folder(zipName, runName, networkName, copysyn=False):
         if file_.endswith(".cell.nml"):
             shutil.copy2(os.path.join(nmlFolder, "cells", file_), os.path.join(mainDirName, "cells", file_))
     # cp synapses
-    if copysyn:   # only for regenerated network (the one generated from scratch in oc. has the synapses inside the .net.nml file)    
+    if copysyn:   # only for regenerated network (the one generated from scratch in oc. has the synapses inside the .net.nml file)
         os.mkdir(os.path.join(mainDirName, "synapses"))
         shutil.copy2(os.path.join(nmlFolder, "synapses", "exp2Synapses.synapse.nml"),
                      os.path.join(mainDirName, "synapses", "exp2Synapses.synapse.nml"))
@@ -95,14 +95,14 @@ if __name__ == "__main__":
     s = '#!/usr/bin/python\n'+ \
         '"""init.py to call NetPyNE generated simulation from the top level (not from network folder)"""\n\n' + \
         'import os\n' + \
-        'os.chdir("network")\n\n' + \
+        'import sys\n\n' + \
+        'os.chdir("network")\n' + \
         'sys.path.append(".")\n\n' + \
         'import LEMS_%s_netpyne'%networkName
         
     with open(os.path.join(mainDirName, "init.py"), "w") as f_:
         f_.write(s)
-        
-    
+
     with open(os.path.join(mainDirName, "network", "__init__.py"), "w") as f_:
         f_.write(" ")
     
