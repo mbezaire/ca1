@@ -2,13 +2,14 @@
 # -*- coding: utf8 -*-
 """
 creates .zip archive from the necessary nml files (to sends NetPyNE jobs to NSG REST API afterwards)
-author: András Ecker, last update 08.2017
+authors: András Ecker, Padraig Gleeson last update 09.2017
 """
 
 import os
 import sys
 import shutil
 import zipfile
+from pyneuroml import pynml
 from subprocess import call
 
 basePath = os.path.sep.join(os.path.abspath(__file__).split(os.path.sep)[:-2])
@@ -89,7 +90,7 @@ if __name__ == "__main__":
     mainDirName = create_folder(zipName, runName, networkName, copysyn=False)
                
     # generate NetPyNE simulation
-    call("./jnml_netpyne.sh %s %s"%(zipName, networkName), shell=True)
+    pynml.run_jneuroml("", "LEMS_%s.xml"%networkName, "-netpyne", max_memory="4096M", exec_in_dir=os.path.join(mainDirName, "network"))
     
     # create init.py and call generated simulation
     s = '#!/usr/bin/python\n'+ \
