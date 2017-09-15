@@ -252,8 +252,7 @@ def add_proj(nml_doc, network, projID,
     return proj
                                     
                                       
-def generate_hippocampal_net(networkID, scale=1000, numData=101, connData=430, synData=120,
-                             generate_LEMS=True, duration=100, dt=0.01):
+def generate_hippocampal_net(networkID, scale=100000, duration=100, numData=101, connData=430, synData=120):
     """generates hippocampal network, by reproducing the placement, connectivity and scaling of the Bezaire network""" 
   
     if scale > 1000:
@@ -315,39 +314,41 @@ def generate_hippocampal_net(networkID, scale=1000, numData=101, connData=430, s
     if scale > 1000:
         oc.save_network(nml_doc, nml_fName,
                         validate=True, format="xml", use_subfolder=False)
-    else:
+    else:  # easier to set JAVA heap space this way
         oc.save_network(nml_doc, nml_fName,
                         validate=False, format="xml", use_subfolder=False)
-        
+        print("validating ... \n")
+        pynml.run_jneuroml("-validate", nml_fName, "", max_memory="8G", verbose=True)  # increase heap size if necessary!
+                        
+    return nml_doc, network, dPops
 
+                     
+def generate_lems(nml_doc, network, dPops, duration=100, dt=0.01):
+    """generates lems simulation (and specifies savings)"""
 
-    if generate_LEMS:
+    nml_fName = "%s.net.nml"%network.id
     
-        # dictionary to specify saving (voltage traces)
-        max_traces = 5
-        save_traces= {}        
-        for pop_name, pop in dPops.iteritems():
-            if "ca3" not in pop_name and "ec" not in pop_name:
-                f_ = "Sim_%s.%s.v.dat"%(nml_doc.id, pop.component)
-                save_traces[f_] = []
-                if pop.get_size() < max_traces:  # check if there are enough cells in pop to save
-                    max_traces = pop.get_size()
-                for i in range(0, max_traces):
-                    quantity = "%s/%i/%s/v"%(pop.id, i, pop.component)
-                    save_traces[f_].append(quantity)
-            
-        
-        lems_fName = oc.generate_lems_simulation(nml_doc, network, nml_fName,
-                                                 duration=duration, dt=dt,
-                                                 gen_saves_for_all_v=False,  # don't try to save tsince for ca3, ec                              
-                                                 gen_saves_for_quantities=save_traces,
-                                                 gen_spike_saves_for_all_somas=True,
-                                                 lems_file_name="LEMS_%s.xml"%network.id,
-                                                 include_extra_lems_files=["PyNN.xml"],  # to include SpikeSourcePoisson
-                                                 simulation_seed=12345)
-                                          
-    else:
-        lems_fName = None
+    # dictionary to specify saving (voltage traces)
+    max_traces = 5
+    save_traces= {}        
+    for pop_name, pop in dPops.iteritems():
+        if "ca3" not in pop_name and "ec" not in pop_name:
+            f_ = "Sim_%s.%s.v.dat"%(nml_doc.id, pop.component)
+            save_traces[f_] = []
+            if pop.get_size() < max_traces:  # check if there are enough cells in pop to save
+                max_traces = pop.get_size()
+            for i in range(0, max_traces):
+                quantity = "%s/%i/%s/v"%(pop.id, i, pop.component)
+                save_traces[f_].append(quantity)
+               
+    lems_fName = oc.generate_lems_simulation(nml_doc, network, nml_fName,
+                                             duration=duration, dt=dt,
+                                             gen_saves_for_all_v=False,  # don't try to save tsince for ca3, ec                              
+                                             gen_saves_for_quantities=save_traces,
+                                             gen_spike_saves_for_all_somas=True,
+                                             lems_file_name="LEMS_%s.xml"%network.id,
+                                             include_extra_lems_files=["PyNN.xml"],  # to include SpikeSourcePoisson
+                                             simulation_seed=12345)
         
     return lems_fName
 
@@ -367,10 +368,20 @@ if __name__ == "__main__":
     except:
         simulator = "NEURON"
     
+    duration = 500  # ms
     networkID = "HippocampalNet_scale%i_oc"%scale
-    lems_fName = generate_hippocampal_net(networkID=networkID,
-                                          scale=scale,
-                                          generate_LEMS=True)
+    generate_LEMS = True
+    
+    # generate network
+    nml_doc, network, dPops = generate_hippocampal_net(networkID=networkID,
+                                                       scale=scale,
+                                                       duration=duration)
+    # generate LEMS simulation                                                
+    if generate_LEMS:
+        lems_fName = generate_lems(nml_doc, network, dPops, duration=duration)
+    else:
+        lems_fName = None
+                                                       
     
     if lems_fName and run_simulation:
         if simulator == "NEURON":

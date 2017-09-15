@@ -10,13 +10,12 @@ import sys
 import shutil
 import zipfile
 from pyneuroml import pynml
-from subprocess import call
 
 basePath = os.path.sep.join(os.path.abspath(__file__).split(os.path.sep)[:-2])
 nmlFolder = os.path.join(basePath, "NeuroML2")
 
 
-def create_folder(zipName, runName, networkName, copysyn=False):
+def create_folder(zipName, networkName, copysyn=False):
     """copies the necessary files to a subfolder (in the NSG prefered way)"""
     
     # create directory (if exist it will delete and recreate)
@@ -49,10 +48,6 @@ def create_folder(zipName, runName, networkName, copysyn=False):
     shutil.copy2(os.path.join(nmlFolder, "network", "LEMS_%s.xml"%networkName),
                  os.path.join(mainDirName, "network", "LEMS_%s.xml"%networkName))
                  
-    for file_ in os.listdir(os.path.join(nmlFolder, "network")):
-        if file_.endswith(".mod"):
-            shutil.copy2(os.path.join(nmlFolder, "network", file_), os.path.join(mainDirName, file_))
-                 
     return mainDirName
 
 
@@ -77,20 +72,23 @@ def create_zip(zipName, mainDirName, rm=True):
 if __name__ == "__main__":
 
     try:
-        runName = sys.argv[1]    
+        scale = sys.argv[1] 
     except:
-        runName = "TestRun_nml"
-    try:
-        networkName = sys.argv[2]    
-    except:
-        networkName = "HippocampalNet_scale100000_oc"
-        
-    zipName = "CA1_nml"
+        scale = 100000
     
-    mainDirName = create_folder(zipName, runName, networkName, copysyn=False)
+    zipName = "CA1_nml"
+    networkName = "HippocampalNet_scale%s_oc"%scale  # change this for rerun NEURON version instead of oc. generated!
+        
+    mainDirName = create_folder(zipName, networkName, copysyn=False)
                
     # generate NetPyNE simulation
-    pynml.run_jneuroml("", "LEMS_%s.xml"%networkName, "-netpyne", max_memory="4096M", exec_in_dir=os.path.join(mainDirName, "network"))
+    pynml.run_jneuroml("", "LEMS_%s.xml"%networkName, "-netpyne",
+                       max_memory="14G", exec_in_dir=os.path.join(mainDirName, "network"), verbose=True)  # increase heap size if necessary!
+    
+    # move .mod files into root (for NSG)                            
+    for file_ in os.listdir(os.path.join(mainDirName, "network")):
+        if file_.endswith(".mod"):
+            shutil.move(os.path.join(mainDirName, "network", file_), os.path.join(mainDirName, file_))
     
     # create init.py and call generated simulation
     s = '#!/usr/bin/python\n'+ \

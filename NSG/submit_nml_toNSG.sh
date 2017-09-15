@@ -12,4 +12,5 @@ curl -i --user $USERNAME:$PASSWORD \
      -F metadata.clientJobId=$1 \
      -F metadata.statusEmail=true \
      -F vparam.number_cores_=24 \
-     -F vparam.number_nodes_=$2
+     -F vparam.number_nodes_=$2 \
+     -F vparam.runtime_=$3
