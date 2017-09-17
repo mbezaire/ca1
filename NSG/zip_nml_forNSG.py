@@ -49,6 +49,24 @@ def create_folder(zipName, networkName, copysyn=False):
                  os.path.join(mainDirName, "network", "LEMS_%s.xml"%networkName))
                  
     return mainDirName
+    
+
+def create_init(mainDirName, networkName):
+    """helper function to create init.py file called by NSG"""
+    
+    s = '#!/usr/bin/python\n'+ \
+        '"""init.py to call NetPyNE generated simulation from the top level (not from network folder)"""\n\n' + \
+        'import os\n' + \
+        'import sys\n\n' + \
+        'os.chdir("network")\n' + \
+        'sys.path.append(".")\n\n' + \
+        'import LEMS_%s_netpyne'%networkName
+        
+    with open(os.path.join(mainDirName, "init.py"), "w") as f_:
+        f_.write(s)
+
+    with open(os.path.join(mainDirName, "network", "__init__.py"), "w") as f_:
+        f_.write(" ")
 
 
 def create_zip(zipName, mainDirName, rm=True):
@@ -77,7 +95,7 @@ if __name__ == "__main__":
         scale = 100000
     
     zipName = "CA1_nml"
-    networkName = "HippocampalNet_scale%s_oc"%scale  # change this for rerun NEURON version instead of oc. generated!
+    networkName = "HippocampalNet_scale%s_oc"%scale  # change this to rerun NEURON version instead of oc. generated!
         
     mainDirName = create_folder(zipName, networkName, copysyn=False)
                
@@ -90,20 +108,7 @@ if __name__ == "__main__":
         if file_.endswith(".mod"):
             shutil.move(os.path.join(mainDirName, "network", file_), os.path.join(mainDirName, file_))
     
-    # create init.py and call generated simulation
-    s = '#!/usr/bin/python\n'+ \
-        '"""init.py to call NetPyNE generated simulation from the top level (not from network folder)"""\n\n' + \
-        'import os\n' + \
-        'import sys\n\n' + \
-        'os.chdir("network")\n' + \
-        'sys.path.append(".")\n\n' + \
-        'import LEMS_%s_netpyne'%networkName
-        
-    with open(os.path.join(mainDirName, "init.py"), "w") as f_:
-        f_.write(s)
-
-    with open(os.path.join(mainDirName, "network", "__init__.py"), "w") as f_:
-        f_.write(" ")
+    create_init(mainDirName)
     
     create_zip(zipName, mainDirName, rm=False)
     
