@@ -6,7 +6,7 @@ author: András Ecker, last update 09.2017
 """
 
 import os
-import sys
+import re
 import shutil
 import tarfile
 import numpy as np
@@ -17,15 +17,19 @@ from plots import plot_LFP, plot_SDF, plot_raster
 basePath = os.path.sep.join(os.path.abspath(__file__).split(os.path.sep)[:-1])
 
 
-def extract_tar(tarName, zipName):
+def extract_tar(tarName):
     """extract run specific results from NSG output file"""
 
     fName = os.path.join(basePath, tarName)
-    with tarfile.open(fName, "r:gz") as tf:
-        subdir_and_files = [tarinfo for tarinfo in tf.getmembers()
-                            if tarinfo.name.startswith(os.path.join(".", zipName, "network"))
-                            or tarinfo.name == os.path.join(".", "stderr.txt") or tarinfo.name == os.path.join(".", "stdout.txt")]
-        tf.extractall(members=subdir_and_files)
+    tf = tarfile.open(fName, "r:gz")
+    scale = int(re.findall(r'\d+', tf.getmembers()[0].name)[1])  # get scale from dirname ([0] would be '1' -> because of 'CA1_*')
+    zipName = "CA1_nml_scale%s"%scale
+    
+    subdir_and_files = [tarinfo for tarinfo in tf.getmembers()
+                        if tarinfo.name.startswith(os.path.join(".", zipName, "network"))
+                        or tarinfo.name == os.path.join(".", "stderr.txt") or tarinfo.name == os.path.join(".", "stdout.txt")]
+    tf.extractall(members=subdir_and_files)
+    tf.close()
     
     # move zipName/network to a new result directory (if exist it will delete and recreate)
     resultDir = os.path.join(basePath, "results_nml_scale%s"%scale)
@@ -42,22 +46,16 @@ def extract_tar(tarName, zipName):
     print("results moved to: %s"%resultDir)
             
     # delete remaining directory...
-    #shutil.rmtree(os.path.join(basePath, zipName))
+    shutil.rmtree(os.path.join(basePath, zipName))
        
-    return resultDir
+    return scale, resultDir
     
     
 if __name__ == "__main__":
-
-    try:
-        scale = sys.argv[1]
-    except:
-        scale = 100000
         
     tarName = "output.tar.gz"
-    zipName = "CA1_nml_scale%s"%scale
        
-    resultDir = extract_tar(tarName, zipName)
+    scale, resultDir = extract_tar(tarName)
     
     
     
