@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
 """
-analyses output of NSG simulation
+analyses output of NSG simulation  (based on the NEURON version)
 author: András Ecker, last update 06.2017
 """
 
@@ -144,9 +144,9 @@ if __name__ == "__main__":
 
     tarName = "output.tar.gz"
     zipName = "CA1"
-    runName = "fastconn"
+    runName = "best_mixed_fastconn_scale10"
        
-    extract_tar(tarName, zipName, runName)
+    #extract_tar(tarName, zipName, runName)
     numCores = helper_getcores(runName)
     runTime = analyse_lfp(runName)
     _, _, rate = get_spikes(runName, numCores, runTime)
