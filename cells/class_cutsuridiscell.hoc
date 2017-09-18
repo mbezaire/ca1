@@ -1,11 +1,11 @@
+begintemplate cutsuridiscell
+
 // Network cell template
 // PyramidalCell
 // Geometry: 14 sections + axon
 // Active properties: from Poirazi et al, Neuron 2003
 // Adjusted to get more decrementing BPAP
 // BPG & VCU, 2-1-09
-
-begintemplate cutsuridiscell
 
 // public variables
 public is_art, gid, randi, Vrest
@@ -35,25 +35,26 @@ create soma[NumSoma], apical[NumApical], basal[NumBasal], axon[NumAxon]
 proc init() { 
 	gid = $1
 	randi = $2
-	Vrest = -66 // -65 // $3 resting membrane potential in mV
-	// cell sections: soma, dendrites, axon
-	append_sections() // append all sections to the section list
-	connect_sections()// connect soma, dendrites, axon
-	size_sections()	// set the size dimensions of each section
-	define_shape()
 	
-	// subcellular mechanisms: channels, pumps, transporters
+	// init updated by András to match other templates
+	
+    // morphology
+	connect_sections()	// local fcn: connect soma, dendrites, axon initial segment
+	size_sections()		// local fcn: set the size dimensions of each section
+	define_shape()		// builtin fcn: fill in 3d info for sections defined by only L and diam, translate 3d points for consistency with their connections 
+  	append_sections()	// local fcn: append all sections to the section list
+	set_nseg()			// local fcn: set the number of segments in each section
+	get_root()			// local fcn: perform morphology checks
+	
+    // electrophysiology
 	mechinit()			// local fcn: set values for max conductances and reversal potentials of ion channels and other ephys parameters that are subject to fitting
-	insert_mechs()		// local fcn: insert ion channels and actually set values determined in the mechinit fcn
+	insert_mechs()		// local fcn: insert ion channels and actually set values determined in the mechinit fcn	
 	
-	set_nseg()		// set the number of segments in each section
-					// if this is driven by an error-minimization rule,
-					// make sure to do it after setting the morphology
-					// and inserting the mechanisms, as it depends on those
-	get_root()
-	
-	pre_list = new List() // define a list for the presynaptic connections
-	define_synapses($3)	// local fcn: define all possible synaptic connections received by this cell
+	// synapses
+	if ($3 >= 0) {        // using the cell alone/outside of the network (eg. test with omv call with (0,0,-1)), András
+	    pre_list = new List() // define a list for the presynaptic connections	
+	    define_synapses($3)	// local fcn: define all possible synaptic connections received by this cell
+	}
 
 }
 
@@ -260,6 +261,10 @@ proc set_nseg() {
 
 
 proc mechinit() {
+
+	// resting membrane potential. Must lie between Na+ and K+ reversal potentials
+	Vrest=-66
+
 	NumSoma=1
 	NumApical=9
 	NumBasal=4
