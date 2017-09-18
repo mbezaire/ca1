@@ -55,7 +55,7 @@ You can upload your `.zip` file and run tasks through their interface! Alternati
 
     ```
     python zip_nml_forNSG.py      # zips necessary files in NSG preferred way
-    ./submit_nml_toNSG.sh Test 1  # submit NetPyNE job (ID=Test, number of nodes=1)
+    ./submit_nml_toNSG.sh 100000 Test 1 0.5  # submit NetPyNE job (scale=100000, ID=Test, nNodes=1, runTime=0.5)
     # repeat the same as above to get results
     ```
     
