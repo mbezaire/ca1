@@ -90,11 +90,11 @@ def create_zip(zipName, mainDirName, rm=True):
 if __name__ == "__main__":
 
     try:
-        scale = sys.argv[1] 
+        scale = sys.argv[1]
     except:
         scale = 100000
     
-    zipName = "CA1_nml"
+    zipName = "CA1_nml_scale%s"%scale
     networkName = "HippocampalNet_scale%s_oc"%scale  # change this to rerun NEURON version instead of oc. generated!
         
     mainDirName = create_folder(zipName, networkName, copysyn=False)
@@ -108,7 +108,7 @@ if __name__ == "__main__":
         if file_.endswith(".mod"):
             shutil.move(os.path.join(mainDirName, "network", file_), os.path.join(mainDirName, file_))
     
-    create_init(mainDirName)
+    create_init(mainDirName, networkName)
     
     create_zip(zipName, mainDirName, rm=False)
     

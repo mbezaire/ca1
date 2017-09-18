@@ -322,17 +322,18 @@ def generate_hippocampal_net(networkID, scale=100000, duration=100, numData=101,
                         
     return nml_doc, network, dPops
 
-                     
+
+''' uncomment this version - if the latest NetPyNE gets installed on NSG (the one that can save spike times) 
 def generate_lems(nml_doc, network, dPops, duration=100, dt=0.01):
-    """generates lems simulation (and specifies savings)"""
+    """generates lems simulation (and specifies savings - spikes + 5 random traces for pops)"""
 
     nml_fName = "%s.net.nml"%network.id
     
     # dictionary to specify saving (voltage traces)
     max_traces = 5
     save_traces= {}        
-    for pop_name, pop in dPops.iteritems():
-        if "ca3" not in pop_name and "ec" not in pop_name:
+    for cell_type, pop in dPops.iteritems():
+        if cell_type != "ca3" and cell_type != "ec":
             f_ = "Sim_%s.%s.v.dat"%(nml_doc.id, pop.component)
             save_traces[f_] = []
             if pop.get_size() < max_traces:  # check if there are enough cells in pop to save
@@ -343,11 +344,36 @@ def generate_lems(nml_doc, network, dPops, duration=100, dt=0.01):
                
     lems_fName = oc.generate_lems_simulation(nml_doc, network, nml_fName,
                                              duration=duration, dt=dt,
+                                             include_extra_lems_files=["PyNN.xml"],  # to include SpikeSourcePoisson
+                                             gen_plots_for_all_v=False,
                                              gen_saves_for_all_v=False,  # don't try to save tsince for ca3, ec                              
                                              gen_saves_for_quantities=save_traces,
                                              gen_spike_saves_for_all_somas=True,
                                              lems_file_name="LEMS_%s.xml"%network.id,
+                                             simulation_seed=12345)
+        
+    return lems_fName
+'''
+    
+    
+def generate_lems(nml_doc, network, dPops, duration=100, dt=0.01):
+    """generates lems simulation (and specifies savings - all traces (spikes from traces during the analysis))"""
+
+    nml_fName = "%s.net.nml"%network.id
+    
+    # list to specify saving (voltage traces)
+    save_pops = []     
+    for cell_type, pop in dPops.iteritems():
+        if cell_type != "ca3" and cell_type != "ec":
+            save_pops.append("pop_%s"%cell_type)
+               
+    lems_fName = oc.generate_lems_simulation(nml_doc, network, nml_fName,
+                                             duration=duration, dt=dt,
                                              include_extra_lems_files=["PyNN.xml"],  # to include SpikeSourcePoisson
+                                             gen_plots_for_all_v=False,
+                                             gen_saves_for_all_v=False,  # don't try to save tsince for ca3, ec
+                                             gen_saves_for_only_populations=save_pops,
+                                             lems_file_name="LEMS_%s.xml"%network.id,
                                              simulation_seed=12345)
         
     return lems_fName
