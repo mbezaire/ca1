@@ -29,7 +29,7 @@ def input_currents(cell_file, custom_amps_nA, analysis_duration, pre_zero_pulse,
     cell_id = tmp.group(1)+"cell"
     
     if verbose:
-        print("Running input_currents() on %s, cell_id=%s"%(cell_file,cell_id))
+        print("Running input_currents() on %s, cell_id=%s"%(cell_file, cell_id))
 
     curve = generate_current_vs_frequency_curve(cell_file,
                                                 cell_id,
