@@ -58,7 +58,7 @@ def check_projections(networkName, dSyns):
         
 if __name__ == "__main__":
 
-    netName = "HippocampalNet_oc"
+    netName = "HippocampalNet_scale5000_oc"
     # get data from spec. config files
     dSyns = get_projdata(connData=430, synData=120)
     
