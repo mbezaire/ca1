@@ -6,6 +6,7 @@ authors: András Ecker, Padraig Gleeson last update 09.2017
 """
 
 import os
+import re
 import sys
 import shutil
 import zipfile
@@ -15,9 +16,9 @@ basePath = os.path.sep.join(os.path.abspath(__file__).split(os.path.sep)[:-2])
 nmlFolder = os.path.join(basePath, "NeuroML2")
 
 
-def create_folder(zipName, networkName, copysyn=False):
+def create_folder(scale, zipName, networkName, copysyn=False):
     """copies the necessary files to a subfolder (in the NSG prefered way)"""
-    
+
     # create directory (if exist it will delete and recreate)
     mainDirName = os.path.join(basePath, "NSG", zipName)
     if os.path.isdir(mainDirName):
@@ -47,6 +48,9 @@ def create_folder(zipName, networkName, copysyn=False):
                  os.path.join(mainDirName, "network", "%s.net.nml"%networkName))
     shutil.copy2(os.path.join(nmlFolder, "network", "LEMS_%s.xml"%networkName),
                  os.path.join(mainDirName, "network", "LEMS_%s.xml"%networkName))
+    # cp popsize data (easier to analyse results afterwards)
+    shutil.copy2(os.path.join(nmlFolder, "network", "popsize_scale%s.txt"%scale),
+                 os.path.join(mainDirName, "network", "popsize_scale%s.txt"%scale))
                  
     return mainDirName
     
@@ -97,7 +101,7 @@ if __name__ == "__main__":
     zipName = "CA1_nml_scale%s"%scale
     networkName = "HippocampalNet_scale%s_oc"%scale  # change this to rerun NEURON version instead of oc. generated!
         
-    mainDirName = create_folder(zipName, networkName, copysyn=False)
+    mainDirName = create_folder(scale, zipName, networkName, copysyn=False)
                
     # generate NetPyNE simulation
     pynml.run_jneuroml("", "LEMS_%s.xml"%networkName, "-netpyne",
@@ -106,11 +110,11 @@ if __name__ == "__main__":
     # move .mod files into root (for NSG)                            
     for file_ in os.listdir(os.path.join(mainDirName, "network")):
         if file_.endswith(".mod"):
-            shutil.move(os.path.join(mainDirName, "network", file_), os.path.join(mainDirName, file_))
+            shutil.move(os.path.join(mainDirName, "network", file_), os.path.join(mainDirName, file_))  # change to copy2 if you want to test locally...
     
     create_init(mainDirName, networkName)
     
-    create_zip(zipName, mainDirName, rm=False)
+    create_zip(zipName, mainDirName, rm=True)
     
     
     

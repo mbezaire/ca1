@@ -146,7 +146,21 @@ def helper_popsize(pop_size, scale):
             return 1
     else:
         return pop_size
-
+        
+        
+def write_popinfo(dPops, scale):
+    """writes out size of the populations"""
+    
+    with open("popsize_scale%s.txt"%scale, "w") as f:
+        f.write("popname, number of cells\n")
+    
+        for cell_type, pop in dPops.iteritems():
+            popsize = pop.get_size()
+            if cell_type not in ["ca3", "ec"]:
+                line = "pop_%s: %s\n"%(cell_type, popsize)
+            else:
+                line = "(stim) pop_%s: %s\n"%(cell_type, popsize)
+            f.write(line)
 
 # helper functions (mostly to process config files)
 # *************************************************************************************************************
@@ -282,6 +296,7 @@ def generate_hippocampal_net(networkID, scale=100000, duration=100, numData=101,
             num_cells += pop.get_size()       
         
     print("Populations created; #cells:%i (without stimulating 'cells')"%num_cells)
+    write_popinfo(dPops, scale)
     
     
     # connect populations
@@ -333,7 +348,7 @@ def generate_lems(nml_doc, network, dPops, duration=100, dt=0.01):
     max_traces = 5
     save_traces= {}        
     for cell_type, pop in dPops.iteritems():
-        if cell_type != "ca3" and cell_type != "ec":
+        if cell_type not in ["ca3", "ec"]:
             f_ = "Sim_%s.%s.v.dat"%(nml_doc.id, pop.component)
             save_traces[f_] = []
             if pop.get_size() < max_traces:  # check if there are enough cells in pop to save
@@ -364,7 +379,7 @@ def generate_lems(nml_doc, network, dPops, duration=100, dt=0.01):
     # list to specify saving (voltage traces)
     save_pops = []     
     for cell_type, pop in dPops.iteritems():
-        if cell_type != "ca3" and cell_type != "ec":
+        if cell_type not in ["ca3", "ec"]:
             save_pops.append("pop_%s"%cell_type)
                
     lems_fName = oc.generate_lems_simulation(nml_doc, network, nml_fName,
