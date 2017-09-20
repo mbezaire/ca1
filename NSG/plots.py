@@ -166,8 +166,8 @@ def plot_rasters(dSpikeTimes, dSpikingNeurons, dIDx, simduration, runName):
                  "ngf":[ax8, "#DA70D6", "NGF."]}  # dummy dict to reproduce the same figure layout ...   
     
     for cell_type, spikeTimes in dSpikeTimes.iteritems():
-        spikingNeurons = dSpikingNeurons[cell_type]; ax, col, ylab = dSubplots[cell_type]; idx = dIDx[cell_type]        
-        ax.scatter(spikeTimes, spikingNeurons, color=col, marker='.', s=0.8)
+        spikingNeurons = dSpikingNeurons[cell_type]; ax, col, ylab = dSubplots[cell_type]; idx = dIDx[cell_type]    
+        ax.scatter(spikeTimes, spikingNeurons, color=col, marker='.', s=7.5)
         ax.set_ylabel(ylab, rotation=0, labelpad=25, color=col); ax.set_ylim([idx[0], idx[-1]])
         if simduration > 1000:
             ax.set_xlim([simduration/2-500, simduration/2+500])

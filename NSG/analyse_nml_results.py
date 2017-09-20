@@ -10,9 +10,9 @@ import re
 import sys
 import shutil
 import tarfile
-#import numpy as np
 import matplotlib.pyplot as plt
-from analyse_nrn_results import analyse_rate
+from analyse_nrn_results import analyse_rate  # PSD analysis of SDF (rate)
+from plots import plot_traces, plot_rasters  # Fig3 like plots
 #from plots import plot_SDF, plot_raster
 basePath = os.path.sep.join(os.path.abspath('__file__').split(os.path.sep)[:-2])
 # add the 'network' directory to the path (import the modules)
@@ -92,7 +92,7 @@ if __name__ == "__main__":
     # untar results
     tarName = "output.tar.gz"       
     #scale, resultDir = extract_tar(tarName)    
-    scale = 4000
+    scale = 2500
     resultDir = os.path.join(NSGbasePath, "results_nml_scale%s"%scale)
     print("scale = %s"%scale)
     
@@ -112,8 +112,22 @@ if __name__ == "__main__":
         # analyse PC rate (same way as in the original article)
         if cell_type == "poolosyn" and rate.any():
             analyse_rate(rate, "nml_scale%s"%scale)
-            plt.show()
     
+    # prepare data structure to be convertible with NEURON version's Fig3 like plots
+    dPlotTraces = {}; dIDx = {} # dIDx used only for setting ylim of rasters...
+    for cell_type, traces in dTraces.iteritems():
+        trace = traces[0, :]
+        dPlotTraces[cell_type] = trace
+        popsize = dPops[cell_type]
+        if popsize != 1:
+            dIDx[cell_type] = [0, popsize-1]
+        else:
+            dIDx[cell_type] = [-1e-3, 1.e-3]
+            
+        
+    plot_traces(dPlotTraces, t, "nml_scale%s"%scale)
+    plot_rasters(dSpikeTimes, dSpikingNeurons, dIDx, simduration, "nml_scale%s"%scale)
     
+    plt.show()
     
     
