@@ -11,12 +11,13 @@ import sys
 import shutil
 import tarfile
 #import numpy as np
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
+from analyse_nrn_results import analyse_rate
+#from plots import plot_SDF, plot_raster
 basePath = os.path.sep.join(os.path.abspath('__file__').split(os.path.sep)[:-2])
 # add the 'network' directory to the path (import the modules)
 sys.path.insert(0, os.path.sep.join([basePath, "NeuroML2", "network"]))
-from analyse_PING import get_traces, get_spikes
-from plots import plot_SDF, plot_raster
+from analyse_PING import get_traces, get_spikes_rate  # functions to process dummy NetPyNE output
 
 NSGbasePath = os.path.join(basePath, "NSG")
 
@@ -91,7 +92,7 @@ if __name__ == "__main__":
     # untar results
     tarName = "output.tar.gz"       
     #scale, resultDir = extract_tar(tarName)    
-    scale = 2500
+    scale = 4000
     resultDir = os.path.join(NSGbasePath, "results_nml_scale%s"%scale)
     print("scale = %s"%scale)
     
@@ -100,13 +101,18 @@ if __name__ == "__main__":
     dPops = get_popsize(resultDir, scale)
     
     # load in traces, search spikes  #TODO: update this after fixing NetPyNE on NSG!
-    dTraces = {}; dSpikeTimes = {}; dSpikingNeurons = {}
+    dTraces = {}; dSpikeTimes = {}; dSpikingNeurons = {}; dRates = {}
     for cell_type, ncells in dPops.iteritems():
         fName = os.path.join(resultDir, "Sim_HippocampalNet_scale%s_oc.pop_%s.v.dat"%(scale, cell_type))
         t, traces = get_traces(fName, simduration, dt, ncells)
-        spikeTimes, spikingNeurons = get_spikes(t, traces)    
-        dTraces[cell_type] = traces; dSpikeTimes[cell_type] = spikeTimes; dSpikingNeurons[cell_type] = spikingNeurons
-    print("traces read from files, spikes read from traces")
+        dTraces[cell_type] = traces
+        spikeTimes, spikingNeurons, rate = get_spikes_rate(t, traces)
+        dSpikeTimes[cell_type] = spikeTimes; dSpikingNeurons[cell_type] = spikingNeurons; dRates[cell_type] = rate
+    
+        # analyse PC rate (same way as in the original article)
+        if cell_type == "poolosyn" and rate.any():
+            analyse_rate(rate, "nml_scale%s"%scale)
+            plt.show()
     
     
     

@@ -109,7 +109,7 @@ def plot_SDF(SDF, f, Pxx, runName):
     ax.plot(plotT, plotSDF, "b-")
     #ax.set_xlim([0, simduration])
     ax.set_xlim([50, simduration])
-    ax.set_title("Spike Density Function (rate) of PCs")
+    ax.set_title("Spike Density Function (Rate) of PCs (without initial transient)")
     ax.set_xlabel("Time (ms)")
     ax.set_ylabel("SDF (Hz)")
     
@@ -119,7 +119,7 @@ def plot_SDF(SDF, f, Pxx, runName):
     ax2.plot(fTheta, PxxTheta, "r-", marker="o", lw=2, label="theta (5-10Hz)")
     #ax2.set_xlim([0, nyq])
     ax2.set_xlim([0, 100])
-    ax2.set_title("Power Spectrum Density of SDF")
+    ax2.set_title("Power Spectrum Density of SDF (including initial transient)")
     ax2.set_xlabel("Frequency (Hz)")
     ax2.set_ylabel("PSD (dB)")
     ax2.legend()

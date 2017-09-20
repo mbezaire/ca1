@@ -6,6 +6,7 @@ Authors: András Ecker, Padraig Gleeson, last update: 08.2017
 """
 
 import os
+import warnings
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
@@ -24,19 +25,26 @@ def get_traces(fName, simduration, dt, popsize):
     datapoints = int(simduration/dt)
     t = np.linspace(0, simduration-dt, datapoints); traces = np.zeros((popsize, datapoints))
     
+    warn = False
     with open(fName) as f_:
         for j, line in enumerate(f_):
             for i in range(1, popsize+1):
-                traces[i-1, j] = float(line.split()[i])*1000  # *1000 mV conversion
+                if not np.isnan(float(line.split()[i])):  # added because some wrong NetPyNE saves on NSG have nans inside...
+                    traces[i-1, j] = float(line.split()[i])*1000  # *1000 mV conversion
+                else:
+                    warn = True  # throw warning at the end...
+    if warn:
+        warnings.warn("*** nan's encountered while loadning NetPyNE saved traces... ***")
                 
     return t, traces
                
 
-def get_spikes(t, traces):
+def get_spikes_rate(t, traces):
     """gets spike times from traces"""
     
     spikeTimes = []
     spikingNeurons = []
+    rate = np.zeros(int(np.ceil(t[-1])))  # np.zeros_like(t) would not be consistent with nrn analysis scripts...
     
     for i in range(0, traces.shape[0]):
         trace = traces[i, :]
@@ -46,9 +54,13 @@ def get_spikes(t, traces):
             for crossing in cons_crossings:
                 spike = trace[crossing]
                 spiketimeID = crossing[np.argmax(spike)]  # find local max. of the crossing
-                spikeTimes.append(t[spiketimeID]); spikingNeurons.append(i)
+                spiketime = t[spiketimeID]
+                spikeTimes.append(spiketime); spikingNeurons.append(i); rate[int(spiketime)] += 1
+    
+    if rate.any():
+        rate = rate / (traces.shape[0] * 0.001)  # normalize rate        
             
-    return spikeTimes, spikingNeurons
+    return spikeTimes, spikingNeurons, rate
 
 
 def plot_rasters(dSpikeTimes, dSpikingNeurons, simduration, saveName):
@@ -109,7 +121,7 @@ if __name__ == "__main__":
     dTraces = {}; dSpikeTimes = {}; dSpikingNeurons = {}
     for cell_type in ["poolosyn", "pvbasket"]:
         t, traces = get_traces("Sim_PINGNet.pop_%s.v.dat"%cell_type, 100, 0.01, 20)
-        spikeTimes, spikingNeurons = get_spikes(t, traces)
+        spikeTimes, spikingNeurons, _ = get_spikes_rate(t, traces)
         dSpikeTimes[cell_type] = spikeTimes; dSpikingNeurons[cell_type] = spikingNeurons
         dTraces[cell_type] = traces[0, :]
     
