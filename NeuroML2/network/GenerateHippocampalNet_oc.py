@@ -162,6 +162,7 @@ def write_popinfo(dPops, scale):
                 line = "(stim) pop_%s: %s\n"%(cell_type, popsize)
             f.write(line)
 
+
 # helper functions (mostly to process config files)
 # *************************************************************************************************************
 # network specific methods, using opencortex functions       
@@ -266,7 +267,7 @@ def add_proj(nml_doc, network, projID,
     return proj
                                     
                                       
-def generate_hippocampal_net(networkID, scale=100000, duration=100, numData=101, connData=430, synData=120):
+def generate_hippocampal_net(networkID, scale=100000, duration=100, numData=101, connData=430, synData=120, addSyns=True):
     """generates hippocampal network, by reproducing the placement, connectivity and scaling of the Bezaire network""" 
   
     if scale > 1000:
@@ -300,28 +301,29 @@ def generate_hippocampal_net(networkID, scale=100000, duration=100, numData=101,
     
     
     # connect populations
-    dSyns = get_projdata(connData, synData)
-    num_cons = 0
-    for projID, props in dSyns.iteritems():
-        precell_type = props["precell_type"]; postcell_type = props["postcell_type"]  # just to get populations from pop dictionary 
-        prepop = dPops[precell_type]; postpop = dPops[postcell_type]               
-        if "tau_rise_A" not in props:  # single synapse
-            proj = add_proj(nml_doc, network,
-                            projID, prepop, postpop,
-                            tau_rise=[props["tau_rise"]], tau_decay=[props["tau_decay"]], e_rev=[props["e_rev"]],
-                            weight=props["weight"], ncons=props["ncons"], nsyns=props["nsyns"],
-                            post_seg_group=props["post_seg_group"])
-        else:  # boundled synapse
-            proj = add_proj(nml_doc, network,
-                            projID, prepop, postpop,
-                            tau_rise=[props["tau_rise_A"], props["tau_rise_B"]],
-                            tau_decay=[props["tau_decay_A"], props["tau_decay_B"]],
-                            e_rev=[props["e_rev_A"], props["e_rev_B"]],
-                            weight=props["weight"], ncons=props["ncons"], nsyns=props["nsyns"],
-                            post_seg_group=props["post_seg_group"])            
-        num_cons += len(proj[0].connection_wds)
-                                    
-    print("Cells connected; #connections:%i "%num_cons)
+    if addSyns:  # easier to visualize on OSB without synapses...
+        dSyns = get_projdata(connData, synData)
+        num_cons = 0
+        for projID, props in dSyns.iteritems():
+            precell_type = props["precell_type"]; postcell_type = props["postcell_type"]  # just to get populations from pop dictionary 
+            prepop = dPops[precell_type]; postpop = dPops[postcell_type]               
+            if "tau_rise_A" not in props:  # single synapse
+                proj = add_proj(nml_doc, network,
+                                projID, prepop, postpop,
+                                tau_rise=[props["tau_rise"]], tau_decay=[props["tau_decay"]], e_rev=[props["e_rev"]],
+                                weight=props["weight"], ncons=props["ncons"], nsyns=props["nsyns"],
+                                post_seg_group=props["post_seg_group"])
+            else:  # boundled synapse
+                proj = add_proj(nml_doc, network,
+                                projID, prepop, postpop,
+                                tau_rise=[props["tau_rise_A"], props["tau_rise_B"]],
+                                tau_decay=[props["tau_decay_A"], props["tau_decay_B"]],
+                                e_rev=[props["e_rev_A"], props["e_rev_B"]],
+                                weight=props["weight"], ncons=props["ncons"], nsyns=props["nsyns"],
+                                post_seg_group=props["post_seg_group"])            
+            num_cons += len(proj[0].connection_wds)
+                                        
+        print("Cells connected; #connections:%i "%num_cons)
         
     
     # save to file
@@ -332,7 +334,6 @@ def generate_hippocampal_net(networkID, scale=100000, duration=100, numData=101,
     else:  # easier to set JAVA heap space this way
         oc.save_network(nml_doc, nml_fName,
                         validate=False, format="xml", use_subfolder=False)
-        print("validating ... \n")
         pynml.run_jneuroml("-validate", nml_fName, "", max_memory="8G", verbose=True)  # increase heap size if necessary!
                         
     return nml_doc, network, dPops
