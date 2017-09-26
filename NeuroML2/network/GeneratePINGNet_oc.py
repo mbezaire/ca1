@@ -26,18 +26,24 @@ def add_pop(nml_doc, network, cell_type, pop_size, duration=None, rate=None):
                                                        pop_id="pop_%s"%cell_type, cell_id="%scell"%cell_type,
                                                        size=pop_size,
                                                        x_min=0, y_min=0, z_min=0,
-                                                       x_size=2000, y_size=2000, z_size=2000,
+                                                       x_size=2000, y_size=500, z_size=1000,
                                                        color=helper_getcolor(cell_type))
                                                    
     else:
         spike_gen = oc.add_spike_source_poisson(nml_doc, id="stim_%s"%cell_type,
                                                 start="0ms", duration="%fms"%duration, rate="%fHz"%rate)  # duration and rate used only here
         
+        # add outer stimulations outside of the slice... (to get better visualization on OSB)                                       
+        if cell_type == "ca3":
+            x_min = 0
+        elif cell_type == "ec":
+            x_min = 1900
+        
         return oc.add_population_in_rectangular_region(network,
                                                        pop_id="pop_%s"%cell_type, cell_id=spike_gen.id,
                                                        size=pop_size,
-                                                       x_min=0, y_min=0, z_min=0,
-                                                       x_size=2000, y_size=2000, z_size=2000,
+                                                       x_min=x_min, y_min=550, z_min=450,
+                                                       x_size=100, y_size=100, z_size=100,
                                                        color=helper_getcolor(cell_type))
                                                  
                                                   
@@ -182,7 +188,7 @@ if __name__ == "__main__":
     dWeightMults = {"proj_poolosyn_to_pvbasket":20, "proj_pvbasket_to_poolosyn":20, "proj_pvbasket_to_pvbasket":50,
                     "proj_ca3_to_poolosyn":50, "proj_ec_to_poolosyn":15, "proj_ca3_to_pvbasket":15}
     rate = 10
-    simduration = 100  # ms
+    simduration = 500  # ms
     dt = 0.01  # ms
     
     lems_fName = generate_PING_net("PINGNet", dPopsize, dNconns, dWeightMults, rate,
