@@ -157,7 +157,8 @@ def generate_PING_net(networkID, dPopsize, dNconns, dWeightMults, rate=5,
                                                  duration=duration, dt=dt,
                                                  gen_plots_for_all_v=False,
                                                  gen_plots_for_quantities=plots,
-                                                 gen_saves_for_all_v=True,  # needed if using current NetPyNE to get spikes
+                                                 gen_saves_for_all_v=False,  # don't try to save tsince for ca3, ec
+                                                 gen_saves_for_only_populations=[pop_poolosyn.id,pop_pvbasket.id],
                                                  gen_spike_saves_for_all_somas=True,  # will work only with the latest jNeuroML_NetPyNE (not on NSG to date: 16.08.2017)
                                                  lems_file_name="LEMS_%s.xml"%network.id,
                                                  include_extra_lems_files=["PyNN.xml"],  # to include SpikeSourcePoisson
@@ -167,8 +168,12 @@ def generate_PING_net(networkID, dPopsize, dNconns, dWeightMults, rate=5,
         lems_fName = None
         
     return lems_fName
-                                 
-
+     
+def scale(num, scale, min=3):
+    new_num = int(num*scale)
+    
+    return new_num if new_num>=min else min
+     
 if __name__ == "__main__":
 
     try:
@@ -179,8 +184,10 @@ if __name__ == "__main__":
         simulator = sys.argv[2]
     except:
         simulator = "NEURON"
+        
+    scaling = 1
 
-    dPopsize = {"poolosyn":50, "pvbasket":20, "stim":40}
+    dPopsize = {"poolosyn":scale(50,scaling), "pvbasket":scale(20,scaling), "stim":scale(40,scaling)}
     
     dNconns = {"proj_poolosyn_to_pvbasket":30, "proj_pvbasket_to_poolosyn":18, "proj_pvbasket_to_pvbasket":18,
                "proj_ca3_to_poolosyn":50, "proj_ec_to_poolosyn":30, "proj_ca3_to_pvbasket":40}
@@ -191,7 +198,10 @@ if __name__ == "__main__":
     simduration = 500  # ms
     dt = 0.01  # ms
     
-    lems_fName = generate_PING_net("PINGNet", dPopsize, dNconns, dWeightMults, rate,
+    reference = "PINGNet"
+    if scaling!=1:
+        reference+="_%s"%scaling
+    lems_fName = generate_PING_net(reference, dPopsize, dNconns, dWeightMults, rate,
                                    generate_LEMS=True, duration=simduration, dt=dt)
                                    
     if lems_fName and run_simulation:
