@@ -1,0 +1,28 @@
+# Script for running automated tests on OSB using Travis-CI, see https://github.com/OpenSourceBrain/osb-model-validation
+
+target: ../LEMS_PINGNet_0_1.xml
+engine: jNeuroML_NetPyNE
+mep: .test.ping0.1.mep
+experiments:
+  pr0:
+    observables:
+      spike times:
+        file: 
+          path: ../Sim_PINGNet_0_1.pop_poolosyn.v.dat
+          columns: [0,1]
+          scaling: [1000, 1000]
+        spike detection: 
+          method: threshold
+          threshold: 0
+        tolerance: 0.000209095661265
+  pr1:
+    observables:
+      spike times:
+        file: 
+          path: ../Sim_PINGNet_0_1.pop_pvbasket.v.dat
+          columns: [0,1]
+          scaling: [1000, 1000]
+        spike detection: 
+          method: threshold
+          threshold: 0
+        tolerance: 0
