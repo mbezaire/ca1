@@ -2,7 +2,7 @@
     
     <!-- 
 
-        This LEMS file has been automatically generated using PyNeuroML v0.3.1 (libNeuroML v0.2.33)
+        This LEMS file has been automatically generated using PyNeuroML v0.3.1 (libNeuroML v0.2.34)
 
      -->
     
@@ -17,9 +17,9 @@
     <Include file="PyNN.xml"/>
     <Include file="PINGNet.net.nml"/>
    
-    <Simulation id="Sim_PINGNet" length="100ms" step="0.01ms" target="PINGNet" seed="12345">  <!-- Note seed: ensures same random numbers used every run -->
+    <Simulation id="Sim_PINGNet" length="500ms" step="0.01ms" target="PINGNet" seed="12345">  <!-- Note seed: ensures same random numbers used every run -->
         
-        <Display id="Display_pop_pvbasket_v" title="Plots of Display_pop_pvbasket_v" timeScale="1ms" xmin="-10.0" xmax="110.0" ymin="-80" ymax="40">
+        <Display id="Display_pop_pvbasket_v" title="Plots of Display_pop_pvbasket_v" timeScale="1ms" xmin="-50.0" xmax="550.0" ymin="-80" ymax="40">
             <Line id="pop_pvbasket_0_pvbasketcell_v" quantity="pop_pvbasket/0/pvbasketcell/v" scale="1mV" color="#6aa799" timeScale="1ms"/>
             <Line id="pop_pvbasket_1_pvbasketcell_v" quantity="pop_pvbasket/1/pvbasketcell/v" scale="1mV" color="#029a72" timeScale="1ms"/>
             <Line id="pop_pvbasket_2_pvbasketcell_v" quantity="pop_pvbasket/2/pvbasketcell/v" scale="1mV" color="#d340bb" timeScale="1ms"/>
@@ -27,7 +27,7 @@
             <Line id="pop_pvbasket_4_pvbasketcell_v" quantity="pop_pvbasket/4/pvbasketcell/v" scale="1mV" color="#5e503a" timeScale="1ms"/>
         </Display>
         
-        <Display id="Display_pop_poolosyn_v" title="Plots of Display_pop_poolosyn_v" timeScale="1ms" xmin="-10.0" xmax="110.0" ymin="-80" ymax="40">
+        <Display id="Display_pop_poolosyn_v" title="Plots of Display_pop_poolosyn_v" timeScale="1ms" xmin="-50.0" xmax="550.0" ymin="-80" ymax="40">
             <Line id="pop_poolosyn_0_poolosyncell_v" quantity="pop_poolosyn/0/poolosyncell/v" scale="1mV" color="#3193ca" timeScale="1ms"/>
             <Line id="pop_poolosyn_1_poolosyncell_v" quantity="pop_poolosyn/1/poolosyncell/v" scale="1mV" color="#90e5e9" timeScale="1ms"/>
             <Line id="pop_poolosyn_2_poolosyncell_v" quantity="pop_poolosyn/2/poolosyncell/v" scale="1mV" color="#29645f" timeScale="1ms"/>
@@ -109,92 +109,6 @@
             <OutputColumn id="v_pop_pvbasket_17_pvbasketcell_v" quantity="pop_pvbasket/17/pvbasketcell/v"/> 
             <OutputColumn id="v_pop_pvbasket_18_pvbasketcell_v" quantity="pop_pvbasket/18/pvbasketcell/v"/> 
             <OutputColumn id="v_pop_pvbasket_19_pvbasketcell_v" quantity="pop_pvbasket/19/pvbasketcell/v"/> 
-        </OutputFile>
-        
-        <OutputFile id="Volts_file__pop_ca3" fileName="Sim_PINGNet.pop_ca3.tsince.dat">
-            <OutputColumn id="v_pop_ca3_0_stim_ca3_tsince" quantity="pop_ca3/0/stim_ca3/tsince"/> 
-            <OutputColumn id="v_pop_ca3_1_stim_ca3_tsince" quantity="pop_ca3/1/stim_ca3/tsince"/> 
-            <OutputColumn id="v_pop_ca3_2_stim_ca3_tsince" quantity="pop_ca3/2/stim_ca3/tsince"/> 
-            <OutputColumn id="v_pop_ca3_3_stim_ca3_tsince" quantity="pop_ca3/3/stim_ca3/tsince"/> 
-            <OutputColumn id="v_pop_ca3_4_stim_ca3_tsince" quantity="pop_ca3/4/stim_ca3/tsince"/> 
-            <OutputColumn id="v_pop_ca3_5_stim_ca3_tsince" quantity="pop_ca3/5/stim_ca3/tsince"/> 
-            <OutputColumn id="v_pop_ca3_6_stim_ca3_tsince" quantity="pop_ca3/6/stim_ca3/tsince"/> 
-            <OutputColumn id="v_pop_ca3_7_stim_ca3_tsince" quantity="pop_ca3/7/stim_ca3/tsince"/> 
-            <OutputColumn id="v_pop_ca3_8_stim_ca3_tsince" quantity="pop_ca3/8/stim_ca3/tsince"/> 
-            <OutputColumn id="v_pop_ca3_9_stim_ca3_tsince" quantity="pop_ca3/9/stim_ca3/tsince"/> 
-            <OutputColumn id="v_pop_ca3_10_stim_ca3_tsince" quantity="pop_ca3/10/stim_ca3/tsince"/> 
-            <OutputColumn id="v_pop_ca3_11_stim_ca3_tsince" quantity="pop_ca3/11/stim_ca3/tsince"/> 
-            <OutputColumn id="v_pop_ca3_12_stim_ca3_tsince" quantity="pop_ca3/12/stim_ca3/tsince"/> 
-            <OutputColumn id="v_pop_ca3_13_stim_ca3_tsince" quantity="pop_ca3/13/stim_ca3/tsince"/> 
-            <OutputColumn id="v_pop_ca3_14_stim_ca3_tsince" quantity="pop_ca3/14/stim_ca3/tsince"/> 
-            <OutputColumn id="v_pop_ca3_15_stim_ca3_tsince" quantity="pop_ca3/15/stim_ca3/tsince"/> 
-            <OutputColumn id="v_pop_ca3_16_stim_ca3_tsince" quantity="pop_ca3/16/stim_ca3/tsince"/> 
-            <OutputColumn id="v_pop_ca3_17_stim_ca3_tsince" quantity="pop_ca3/17/stim_ca3/tsince"/> 
-            <OutputColumn id="v_pop_ca3_18_stim_ca3_tsince" quantity="pop_ca3/18/stim_ca3/tsince"/> 
-            <OutputColumn id="v_pop_ca3_19_stim_ca3_tsince" quantity="pop_ca3/19/stim_ca3/tsince"/> 
-            <OutputColumn id="v_pop_ca3_20_stim_ca3_tsince" quantity="pop_ca3/20/stim_ca3/tsince"/> 
-            <OutputColumn id="v_pop_ca3_21_stim_ca3_tsince" quantity="pop_ca3/21/stim_ca3/tsince"/> 
-            <OutputColumn id="v_pop_ca3_22_stim_ca3_tsince" quantity="pop_ca3/22/stim_ca3/tsince"/> 
-            <OutputColumn id="v_pop_ca3_23_stim_ca3_tsince" quantity="pop_ca3/23/stim_ca3/tsince"/> 
-            <OutputColumn id="v_pop_ca3_24_stim_ca3_tsince" quantity="pop_ca3/24/stim_ca3/tsince"/> 
-            <OutputColumn id="v_pop_ca3_25_stim_ca3_tsince" quantity="pop_ca3/25/stim_ca3/tsince"/> 
-            <OutputColumn id="v_pop_ca3_26_stim_ca3_tsince" quantity="pop_ca3/26/stim_ca3/tsince"/> 
-            <OutputColumn id="v_pop_ca3_27_stim_ca3_tsince" quantity="pop_ca3/27/stim_ca3/tsince"/> 
-            <OutputColumn id="v_pop_ca3_28_stim_ca3_tsince" quantity="pop_ca3/28/stim_ca3/tsince"/> 
-            <OutputColumn id="v_pop_ca3_29_stim_ca3_tsince" quantity="pop_ca3/29/stim_ca3/tsince"/> 
-            <OutputColumn id="v_pop_ca3_30_stim_ca3_tsince" quantity="pop_ca3/30/stim_ca3/tsince"/> 
-            <OutputColumn id="v_pop_ca3_31_stim_ca3_tsince" quantity="pop_ca3/31/stim_ca3/tsince"/> 
-            <OutputColumn id="v_pop_ca3_32_stim_ca3_tsince" quantity="pop_ca3/32/stim_ca3/tsince"/> 
-            <OutputColumn id="v_pop_ca3_33_stim_ca3_tsince" quantity="pop_ca3/33/stim_ca3/tsince"/> 
-            <OutputColumn id="v_pop_ca3_34_stim_ca3_tsince" quantity="pop_ca3/34/stim_ca3/tsince"/> 
-            <OutputColumn id="v_pop_ca3_35_stim_ca3_tsince" quantity="pop_ca3/35/stim_ca3/tsince"/> 
-            <OutputColumn id="v_pop_ca3_36_stim_ca3_tsince" quantity="pop_ca3/36/stim_ca3/tsince"/> 
-            <OutputColumn id="v_pop_ca3_37_stim_ca3_tsince" quantity="pop_ca3/37/stim_ca3/tsince"/> 
-            <OutputColumn id="v_pop_ca3_38_stim_ca3_tsince" quantity="pop_ca3/38/stim_ca3/tsince"/> 
-            <OutputColumn id="v_pop_ca3_39_stim_ca3_tsince" quantity="pop_ca3/39/stim_ca3/tsince"/> 
-        </OutputFile>
-        
-        <OutputFile id="Volts_file__pop_ec" fileName="Sim_PINGNet.pop_ec.tsince.dat">
-            <OutputColumn id="v_pop_ec_0_stim_ec_tsince" quantity="pop_ec/0/stim_ec/tsince"/> 
-            <OutputColumn id="v_pop_ec_1_stim_ec_tsince" quantity="pop_ec/1/stim_ec/tsince"/> 
-            <OutputColumn id="v_pop_ec_2_stim_ec_tsince" quantity="pop_ec/2/stim_ec/tsince"/> 
-            <OutputColumn id="v_pop_ec_3_stim_ec_tsince" quantity="pop_ec/3/stim_ec/tsince"/> 
-            <OutputColumn id="v_pop_ec_4_stim_ec_tsince" quantity="pop_ec/4/stim_ec/tsince"/> 
-            <OutputColumn id="v_pop_ec_5_stim_ec_tsince" quantity="pop_ec/5/stim_ec/tsince"/> 
-            <OutputColumn id="v_pop_ec_6_stim_ec_tsince" quantity="pop_ec/6/stim_ec/tsince"/> 
-            <OutputColumn id="v_pop_ec_7_stim_ec_tsince" quantity="pop_ec/7/stim_ec/tsince"/> 
-            <OutputColumn id="v_pop_ec_8_stim_ec_tsince" quantity="pop_ec/8/stim_ec/tsince"/> 
-            <OutputColumn id="v_pop_ec_9_stim_ec_tsince" quantity="pop_ec/9/stim_ec/tsince"/> 
-            <OutputColumn id="v_pop_ec_10_stim_ec_tsince" quantity="pop_ec/10/stim_ec/tsince"/> 
-            <OutputColumn id="v_pop_ec_11_stim_ec_tsince" quantity="pop_ec/11/stim_ec/tsince"/> 
-            <OutputColumn id="v_pop_ec_12_stim_ec_tsince" quantity="pop_ec/12/stim_ec/tsince"/> 
-            <OutputColumn id="v_pop_ec_13_stim_ec_tsince" quantity="pop_ec/13/stim_ec/tsince"/> 
-            <OutputColumn id="v_pop_ec_14_stim_ec_tsince" quantity="pop_ec/14/stim_ec/tsince"/> 
-            <OutputColumn id="v_pop_ec_15_stim_ec_tsince" quantity="pop_ec/15/stim_ec/tsince"/> 
-            <OutputColumn id="v_pop_ec_16_stim_ec_tsince" quantity="pop_ec/16/stim_ec/tsince"/> 
-            <OutputColumn id="v_pop_ec_17_stim_ec_tsince" quantity="pop_ec/17/stim_ec/tsince"/> 
-            <OutputColumn id="v_pop_ec_18_stim_ec_tsince" quantity="pop_ec/18/stim_ec/tsince"/> 
-            <OutputColumn id="v_pop_ec_19_stim_ec_tsince" quantity="pop_ec/19/stim_ec/tsince"/> 
-            <OutputColumn id="v_pop_ec_20_stim_ec_tsince" quantity="pop_ec/20/stim_ec/tsince"/> 
-            <OutputColumn id="v_pop_ec_21_stim_ec_tsince" quantity="pop_ec/21/stim_ec/tsince"/> 
-            <OutputColumn id="v_pop_ec_22_stim_ec_tsince" quantity="pop_ec/22/stim_ec/tsince"/> 
-            <OutputColumn id="v_pop_ec_23_stim_ec_tsince" quantity="pop_ec/23/stim_ec/tsince"/> 
-            <OutputColumn id="v_pop_ec_24_stim_ec_tsince" quantity="pop_ec/24/stim_ec/tsince"/> 
-            <OutputColumn id="v_pop_ec_25_stim_ec_tsince" quantity="pop_ec/25/stim_ec/tsince"/> 
-            <OutputColumn id="v_pop_ec_26_stim_ec_tsince" quantity="pop_ec/26/stim_ec/tsince"/> 
-            <OutputColumn id="v_pop_ec_27_stim_ec_tsince" quantity="pop_ec/27/stim_ec/tsince"/> 
-            <OutputColumn id="v_pop_ec_28_stim_ec_tsince" quantity="pop_ec/28/stim_ec/tsince"/> 
-            <OutputColumn id="v_pop_ec_29_stim_ec_tsince" quantity="pop_ec/29/stim_ec/tsince"/> 
-            <OutputColumn id="v_pop_ec_30_stim_ec_tsince" quantity="pop_ec/30/stim_ec/tsince"/> 
-            <OutputColumn id="v_pop_ec_31_stim_ec_tsince" quantity="pop_ec/31/stim_ec/tsince"/> 
-            <OutputColumn id="v_pop_ec_32_stim_ec_tsince" quantity="pop_ec/32/stim_ec/tsince"/> 
-            <OutputColumn id="v_pop_ec_33_stim_ec_tsince" quantity="pop_ec/33/stim_ec/tsince"/> 
-            <OutputColumn id="v_pop_ec_34_stim_ec_tsince" quantity="pop_ec/34/stim_ec/tsince"/> 
-            <OutputColumn id="v_pop_ec_35_stim_ec_tsince" quantity="pop_ec/35/stim_ec/tsince"/> 
-            <OutputColumn id="v_pop_ec_36_stim_ec_tsince" quantity="pop_ec/36/stim_ec/tsince"/> 
-            <OutputColumn id="v_pop_ec_37_stim_ec_tsince" quantity="pop_ec/37/stim_ec/tsince"/> 
-            <OutputColumn id="v_pop_ec_38_stim_ec_tsince" quantity="pop_ec/38/stim_ec/tsince"/> 
-            <OutputColumn id="v_pop_ec_39_stim_ec_tsince" quantity="pop_ec/39/stim_ec/tsince"/> 
         </OutputFile>
         
         <EventOutputFile id="Spikes_file__pop_poolosyn" fileName="Sim_PINGNet.pop_poolosyn.spikes" format="ID_TIME">

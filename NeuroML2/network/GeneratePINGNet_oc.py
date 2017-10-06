@@ -73,7 +73,7 @@ def add_proj(network, prepop, postpop, ncons, post_seg_group, weight_mult=1):
 
 
 def generate_PING_net(networkID, dPopsize, dNconns, dWeightMults, rate=5,
-                      generate_LEMS=True, duration=100, dt=0.01):
+                      generate_LEMS=True, duration=100, dt=0.01, format='xml',target_dir='./'):
     """generates PC-BC network using methods above"""
     
     if dt > 0.015:
@@ -81,13 +81,18 @@ def generate_PING_net(networkID, dPopsize, dNconns, dWeightMults, rate=5,
     
     nml_doc, network = oc.generate_network(networkID, network_seed=12345, temperature="34degC")
     
+    relative = '../'
+    if 'test' in target_dir:
+        relative = '../../'
     # include necessary files
-    nml_doc.includes.append(neuroml.IncludeType(href="../cells/poolosyn.cell.nml"))
-    nml_doc.includes.append(neuroml.IncludeType(href="../cells/pvbasket.cell.nml"))
+    if dPopsize["poolosyn"]>0:
+        nml_doc.includes.append(neuroml.IncludeType(href=relative+"cells/poolosyn.cell.nml"))
+    if dPopsize["pvbasket"]:
+        nml_doc.includes.append(neuroml.IncludeType(href=relative+"cells/pvbasket.cell.nml"))
     # workaround to handle opencortex's way of including cell templates
     oc_build.cell_ids_vs_nml_docs["poolosyncell"] = pynml.read_neuroml2_file("../cells/poolosyn.cell.nml", include_includes=False)    
     oc_build.cell_ids_vs_nml_docs["pvbasketcell"] = pynml.read_neuroml2_file("../cells/pvbasket.cell.nml", include_includes=False)
-    nml_doc.includes.append(neuroml.IncludeType(href="../synapses/exp2Synapses.synapse.nml"))
+    nml_doc.includes.append(neuroml.IncludeType(href=relative+"synapses/exp2Synapses.synapse.nml"))
     
     # create populations
     pop_poolosyn = add_pop(nml_doc, network, "poolosyn", dPopsize["poolosyn"])
@@ -102,19 +107,23 @@ def generate_PING_net(networkID, dPopsize, dNconns, dWeightMults, rate=5,
                                          ncons=dNconns["proj_poolosyn_to_pvbasket"],
                                          post_seg_group="apical_list_100_to_1000",
                                          weight_mult=dWeightMults["proj_poolosyn_to_pvbasket"])
-    total_cons += len(proj_poolosyn_to_pvbasket[0].connection_wds)                                           
+    if proj_poolosyn_to_pvbasket:
+        total_cons += len(proj_poolosyn_to_pvbasket[0].connection_wds)                                           
     proj_pvbasket_to_poolosyn = add_proj(network,
                                          prepop=pop_pvbasket, postpop=pop_poolosyn,
                                          ncons=dNconns["proj_pvbasket_to_poolosyn"],
                                          post_seg_group="soma_group",
                                          weight_mult=dWeightMults["proj_pvbasket_to_poolosyn"])
-    total_cons += len(proj_pvbasket_to_poolosyn[0].connection_wds)                                           
+    if proj_pvbasket_to_poolosyn:
+        total_cons += len(proj_pvbasket_to_poolosyn[0].connection_wds)                                           
     proj_pvbasket_to_pvbasket = add_proj(network,
                                          prepop=pop_pvbasket, postpop=pop_pvbasket,
                                          ncons=dNconns["proj_pvbasket_to_pvbasket"],
                                          post_seg_group="soma_group",
                                          weight_mult=dWeightMults["proj_pvbasket_to_pvbasket"])
-    total_cons += len(proj_pvbasket_to_pvbasket[0].connection_wds)
+    if proj_pvbasket_to_pvbasket:
+        total_cons += len(proj_pvbasket_to_pvbasket[0].connection_wds)
+        
     print("number of connections: %i (outer stimulation not included)"%total_cons)
     
     proj_ca3_to_poolosyn = add_proj(network,
@@ -134,9 +143,10 @@ def generate_PING_net(networkID, dPopsize, dNconns, dWeightMults, rate=5,
                                     weight_mult=dWeightMults["proj_ca3_to_pvbasket"])                       
                                             
     # save to file
-    nml_fName = "%s.net.nml"%network.id
+    nml_fName = "%s.net.nml"%network.id + ('.h5' if format=='hdf5' else '')
     oc.save_network(nml_doc, nml_fName,
-                    validate=True, format="xml", use_subfolder=False)
+                    validate=(format=='xml'), format=format, 
+                    use_subfolder=False,target_dir=target_dir)
     
     if generate_LEMS:
     
@@ -153,47 +163,50 @@ def generate_PING_net(networkID, dPopsize, dNconns, dWeightMults, rate=5,
             quantity_pvbasket = "%s/%i/%s/v"%(pop_pvbasket.id, i, pop_pvbasket.component)
             plots[display_pvbasket].append(quantity_pvbasket)
         
-        lems_fName = oc.generate_lems_simulation(nml_doc, network, nml_fName,
+        lems_fName = oc.generate_lems_simulation(nml_doc, network, 
+                                                 target_dir+'/'+nml_fName,
                                                  duration=duration, dt=dt,
                                                  gen_plots_for_all_v=False,
                                                  gen_plots_for_quantities=plots,
-                                                 gen_saves_for_all_v=True,  # needed if using current NetPyNE to get spikes
+                                                 gen_saves_for_all_v=False,  # don't try to save tsince for ca3, ec
+                                                 gen_saves_for_only_populations=[pop_poolosyn.id,pop_pvbasket.id],
                                                  gen_spike_saves_for_all_somas=True,  # will work only with the latest jNeuroML_NetPyNE (not on NSG to date: 16.08.2017)
-                                                 lems_file_name="LEMS_%s.xml"%network.id,
+                                                 lems_file_name="LEMS_%s%s.xml"%(network.id,'.h5' if format=='hdf5' else ''),
                                                  include_extra_lems_files=["PyNN.xml"],  # to include SpikeSourcePoisson
-                                                 simulation_seed=12345)
+                                                 simulation_seed=12345,
+                                                 target_dir=target_dir)
                                                  
     else:
         lems_fName = None
         
     return lems_fName
-                                 
-
-if __name__ == "__main__":
-
-    try:
-        run_simulation = sys.argv[1]
-    except:
-        run_simulation = False
-    try:
-        simulator = sys.argv[2]
-    except:
-        simulator = "NEURON"
-
-    dPopsize = {"poolosyn":50, "pvbasket":20, "stim":40}
+     
+def scale(num, scale, min=3):
+    new_num = int(num*scale)
     
+    return new_num if new_num>=min else min
+     
+
+def generate_instance(scaling, simduration, format, run_simulation, simulator, target_dir):
+
+    rate = 10
+    dt = 0.01  # ms
+
+    dPopsize = {"poolosyn":scale(50,scaling), "pvbasket":scale(20,scaling), "stim":scale(40,scaling)}
+
     dNconns = {"proj_poolosyn_to_pvbasket":30, "proj_pvbasket_to_poolosyn":18, "proj_pvbasket_to_pvbasket":18,
                "proj_ca3_to_poolosyn":50, "proj_ec_to_poolosyn":30, "proj_ca3_to_pvbasket":40}
-               
+
     dWeightMults = {"proj_poolosyn_to_pvbasket":20, "proj_pvbasket_to_poolosyn":20, "proj_pvbasket_to_pvbasket":50,
                     "proj_ca3_to_poolosyn":50, "proj_ec_to_poolosyn":15, "proj_ca3_to_pvbasket":15}
-    rate = 10
-    simduration = 500  # ms
-    dt = 0.01  # ms
-    
-    lems_fName = generate_PING_net("PINGNet", dPopsize, dNconns, dWeightMults, rate,
-                                   generate_LEMS=True, duration=simduration, dt=dt)
-                                   
+
+    reference = "PINGNet"
+    if scaling!=1:
+        reference+=("_%s"%scaling).replace('.','_')
+    lems_fName = generate_PING_net(reference, dPopsize, dNconns, dWeightMults, rate,
+                                   generate_LEMS=True, duration=simduration, dt=dt,
+                                   format=format, target_dir=target_dir)
+
     if lems_fName and run_simulation:
         if simulator == "NEURON":
             oc.simulate_network(lems_fName, simulator="jNeuroML_%s"%simulator,
@@ -202,7 +215,7 @@ if __name__ == "__main__":
             import multiprocessing as mp
             oc.simulate_network(lems_fName, simulator="jNeuroML_%s"%simulator,
                                 max_memory="5G", num_processors=mp.cpu_count())
-                                
+
             # analyse saved results                  
             dTraces = {}; dSpikeTimes = {}; dSpikingNeurons = {}
             for cell_type in ["poolosyn", "pvbasket"]:
@@ -210,10 +223,34 @@ if __name__ == "__main__":
                 spikeTimes, spikingNeurons = get_spikes(t, traces)
                 dSpikeTimes[cell_type] = spikeTimes; dSpikingNeurons[cell_type] = spikingNeurons
                 dTraces[cell_type] = traces[0, :]
-                
+
                 plot_rasters(dSpikeTimes, dSpikingNeurons, simduration=t[-1], saveName="PINGNet")
                 plot_traces(t, dTraces, saveName="PINGNet")
         else:
             raise Exception("simulator:%s is not yet implemented"%simulator)
 
 
+
+if __name__ == "__main__":
+    
+    if sys.argv[1]=='-test':
+        
+        generate_instance(0.1, 100, 'xml', False, 'NEURON', './')
+        generate_instance(0.1, 100, 'hdf5', False, 'NEURON', './')
+        generate_instance(10, 100, 'hdf5', False, 'NEURON', './')
+
+    else:
+        try:
+            run_simulation = sys.argv[1]
+        except:
+            run_simulation = False
+        try:
+            simulator = sys.argv[2]
+        except:
+            simulator = "NEURON"
+
+        scaling = 1
+        format = 'xml'
+        simduration = 500  # ms
+
+        generate_instance(scaling, simduration, format, run_simulation, simulator)
