@@ -2,8 +2,8 @@ system: Test Simple
 experiments:
     pr0:
         expected:
-            spike times: [48.480000000000004, 66.23]
+            spike times: [28.209999999999997, 47.93]
     pr1:
         expected:
-            spike times: [52.03, 68.6]
+            spike times: [31.8, 48.730000000000004, 52.68, 62.71]
 
