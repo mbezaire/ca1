@@ -270,8 +270,11 @@ def add_proj(nml_doc, network, projID,
 def generate_hippocampal_net(networkID, scale=100000, duration=100, numData=101, connData=430, synData=120, addSyns=True):
     """generates hippocampal network, by reproducing the placement, connectivity and scaling of the Bezaire network""" 
   
-    if scale > 1000:
-        warnings.warn("***** Scaling down more then 1000x alters both population size and the connectivity seriously! *****")
+    format_ = "xml"
+    #if scale > 2000:
+    #    format_ = "xml"
+    #    warnings.warn("***** Scaling down more then 2000x alters both population size and the connectivity seriously! *****")
+        
     
     cell_types = ["axoaxonic", "bistratified", "cck", "ivy", "ngf", "olm", "poolosyn", "pvbasket", "sca"]
     
@@ -327,33 +330,31 @@ def generate_hippocampal_net(networkID, scale=100000, duration=100, numData=101,
         
     
     # save to file
-    nml_fName = "%s.net.nml"%network.id
-    if scale > 1000:
+    nml_fName = "%s.net.nml%s"%(network.id, ".h5" if format_=="hdf5" else "")
+    if format_ == "xml":  # save small networks to nml (and validate)
         oc.save_network(nml_doc, nml_fName,
                         validate=True, format="xml", use_subfolder=False)
-    else:  # easier to set JAVA heap space this way
+        #pynml.run_jneuroml("-validate", nml_fName, "", max_memory="8G", verbose=True)  # increase heap size if necessary!
+    else:  # save big networks to h5 file
         oc.save_network(nml_doc, nml_fName,
-                        validate=False, format="xml", use_subfolder=False)
-        pynml.run_jneuroml("-validate", nml_fName, "", max_memory="8G", verbose=True)  # increase heap size if necessary!
+                        validate=False, format="hdf5", use_subfolder=False)
+        
                         
-    return nml_doc, network, dPops
+    return nml_doc, network, nml_fName, dPops
 
 
-''' uncomment this version - if the latest NetPyNE gets installed on NSG (the one that can save spike times) 
-def generate_lems(nml_doc, network, dPops, duration=100, dt=0.01):
+# uncomment this version - if the latest NetPyNE gets installed on NSG (the one that can save spike times) 
+def generate_lems(nml_doc, network, nml_fName, dPops, duration=100, dt=0.01):
     """generates lems simulation (and specifies savings - spikes + 5 random traces for pops)"""
-
-    nml_fName = "%s.net.nml"%network.id
     
     # dictionary to specify saving (voltage traces)
-    max_traces = 5
+    mt_ = 5  #max traces to save
     save_traces= {}        
     for cell_type, pop in dPops.iteritems():
         if cell_type not in ["ca3", "ec"]:
             f_ = "Sim_%s.%s.v.dat"%(nml_doc.id, pop.component)
-            save_traces[f_] = []
-            if pop.get_size() < max_traces:  # check if there are enough cells in pop to save
-                max_traces = pop.get_size()
+            save_traces[f_] = []            
+            max_traces = mt_ if pop.get_size() >= mt_ else pop.get_size()
             for i in range(0, max_traces):
                 quantity = "%s/%i/%s/v"%(pop.id, i, pop.component)
                 save_traces[f_].append(quantity)
@@ -365,35 +366,11 @@ def generate_lems(nml_doc, network, dPops, duration=100, dt=0.01):
                                              gen_saves_for_all_v=False,  # don't try to save tsince for ca3, ec                              
                                              gen_saves_for_quantities=save_traces,
                                              gen_spike_saves_for_all_somas=True,
-                                             lems_file_name="LEMS_%s.xml"%network.id,
+                                             lems_file_name="LEMS_%s%s.xml"%(network.id, "_h5" if ".h5" in nml_fName else ""),
                                              simulation_seed=12345)
         
     return lems_fName
-'''
     
-    
-def generate_lems(nml_doc, network, dPops, duration=100, dt=0.01):
-    """generates lems simulation (and specifies savings - all traces (spikes from traces during the analysis))"""
-
-    nml_fName = "%s.net.nml"%network.id
-    
-    # list to specify saving (voltage traces)
-    save_pops = []     
-    for cell_type, pop in dPops.iteritems():
-        if cell_type not in ["ca3", "ec"]:
-            save_pops.append("pop_%s"%cell_type)
-               
-    lems_fName = oc.generate_lems_simulation(nml_doc, network, nml_fName,
-                                             duration=duration, dt=dt,
-                                             include_extra_lems_files=["PyNN.xml"],  # to include SpikeSourcePoisson
-                                             gen_plots_for_all_v=False,
-                                             gen_saves_for_all_v=False,  # don't try to save tsince for ca3, ec
-                                             gen_saves_for_only_populations=save_pops,
-                                             lems_file_name="LEMS_%s.xml"%network.id,
-                                             simulation_seed=12345)
-        
-    return lems_fName
-
 
 if __name__ == "__main__":
 
@@ -415,12 +392,12 @@ if __name__ == "__main__":
     generate_LEMS = True
     
     # generate network
-    nml_doc, network, dPops = generate_hippocampal_net(networkID=networkID,
-                                                       scale=scale,
-                                                       duration=duration)
+    nml_doc, network, nml_fName, dPops = generate_hippocampal_net(networkID=networkID,
+                                                                  scale=scale,
+                                                                  duration=duration)
     # generate LEMS simulation                                                
     if generate_LEMS:
-        lems_fName = generate_lems(nml_doc, network, dPops, duration=duration)
+        lems_fName = generate_lems(nml_doc, network, nml_fName, dPops, duration=duration)
     else:
         lems_fName = None
                                                        
