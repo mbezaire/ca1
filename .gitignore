@@ -63,8 +63,10 @@ NeuroML2/network/*.dat
 NeuroML2/network/*.spikes
 NeuroML2/network/*.ini
 NeuroML2/network/*.png
+NeuroML2/network/*.net.nml.h5
 NeuroML2/network/popsize_scale*.txt
 NeuroML2/network/LEMS_*_nrn.py
+NeuroML2/network/LEMS_HippocampalNet_scale*_oc_h5.xml
 NeuroML2/network/test/LEMS_Stim_*.xml
 NeuroML2/network/test/*.hoc
 NeuroML2/network/test/LEMS_Stim_*_nrn.py
