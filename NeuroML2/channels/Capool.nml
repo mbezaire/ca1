@@ -53,7 +53,7 @@
     <ComponentType name="FixedCaConcentrationModel"
                    extends="concentrationModel"
                    description="Model of fixed Capool (initialize the ca concentrations and holds them there)">
-            
+                          
         <Dynamics>
 
             <StateVariable name="concentration" exposure="concentration" dimension="concentration"/>
