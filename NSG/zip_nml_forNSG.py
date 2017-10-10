@@ -16,7 +16,7 @@ basePath = os.path.sep.join(os.path.abspath(__file__).split(os.path.sep)[:-2])
 nmlFolder = os.path.join(basePath, "NeuroML2")
 
 
-def create_folder(scale, zipName, networkName, copysyn=False):
+def create_folder(scale, format_, zipName, networkName, copysyn=False):
     """copies the necessary files to a subfolder (in the NSG prefered way)"""
 
     # create directory (if exist it will delete and recreate)
@@ -41,13 +41,14 @@ def create_folder(scale, zipName, networkName, copysyn=False):
         shutil.copy2(os.path.join(nmlFolder, "synapses", "exp2Synapses.synapse.nml"),
                      os.path.join(mainDirName, "synapses", "exp2Synapses.synapse.nml"))
         shutil.copy2(os.path.join(nmlFolder, "synapses", "customGABASynapses.synapse.nml"),
-                     os.path.join(mainDirName, "synapses", "customGABASynapses.synapse.nml")) 
+                     os.path.join(mainDirName, "synapses", "customGABASynapses.synapse.nml"))
+                     
     # cp network and LEMS file
     os.mkdir(os.path.join(mainDirName, "network"))
-    shutil.copy2(os.path.join(nmlFolder, "network", "%s.net.nml"%networkName),
-                 os.path.join(mainDirName, "network", "%s.net.nml"%networkName))
-    shutil.copy2(os.path.join(nmlFolder, "network", "LEMS_%s.xml"%networkName),
-                 os.path.join(mainDirName, "network", "LEMS_%s.xml"%networkName))
+    shutil.copy2(os.path.join(nmlFolder, "network", "%s.net.nml%s"%(networkName, ".h5" if format_=="hdf5" else "")),
+                 os.path.join(mainDirName, "network", "%s.net.nml%s"%(networkName, ".h5" if format_=="hdf5" else "")))
+    shutil.copy2(os.path.join(nmlFolder, "network", "LEMS_%s%s.xml"%(networkName, "_h5" if format_=="hdf5" else "")),
+                 os.path.join(mainDirName, "network", "LEMS_%s%s.xml"%(networkName, "_h5" if format_=="hdf5" else "")))
     # cp popsize data (easier to analyse results afterwards)
     shutil.copy2(os.path.join(nmlFolder, "network", "popsize_scale%s.txt"%scale),
                  os.path.join(mainDirName, "network", "popsize_scale%s.txt"%scale))
@@ -55,7 +56,7 @@ def create_folder(scale, zipName, networkName, copysyn=False):
     return mainDirName
     
 
-def create_init(mainDirName, networkName):
+def create_init(mainDirName, format_, networkName):
     """helper function to create init.py file called by NSG"""
     
     s = '#!/usr/bin/python\n'+ \
@@ -64,7 +65,7 @@ def create_init(mainDirName, networkName):
         'import sys\n\n' + \
         'os.chdir("network")\n' + \
         'sys.path.append(".")\n\n' + \
-        'import LEMS_%s_netpyne'%networkName
+        'import LEMS_%s%s_netpyne'%(networkName, "_h5" if format_=="hdf5" else "")
         
     with open(os.path.join(mainDirName, "init.py"), "w") as f_:
         f_.write(s)
@@ -97,24 +98,25 @@ if __name__ == "__main__":
         scale = sys.argv[1]
     except:
         scale = 100000
-    
+        
+    format_ = "xml" #if scale < 2000 else "xml"  # see saving in GenerateHippocampalNet_oc
     zipName = "CA1_nml_scale%s"%scale
     networkName = "HippocampalNet_scale%s_oc"%scale  # change this to rerun NEURON version instead of oc. generated!
         
-    mainDirName = create_folder(scale, zipName, networkName, copysyn=False)
+    mainDirName = create_folder(scale, format_, zipName, networkName, copysyn=False)
                
     # generate NetPyNE simulation
-    pynml.run_jneuroml("", "LEMS_%s.xml"%networkName, "-netpyne",
-                       max_memory="14G", exec_in_dir=os.path.join(mainDirName, "network"), verbose=True)  # increase heap size if necessary!
+    pynml.run_jneuroml("", "LEMS_%s%s.xml"%(networkName, "_h5" if format_=="hdf5" else ""), "-netpyne",
+                       max_memory="12G", exec_in_dir=os.path.join(mainDirName, "network"), verbose=True)  # increase heap size if necessary!
     
     # move .mod files into root (for NSG)                            
     for file_ in os.listdir(os.path.join(mainDirName, "network")):
         if file_.endswith(".mod"):
-            shutil.move(os.path.join(mainDirName, "network", file_), os.path.join(mainDirName, file_))  # change to copy2 if you want to test locally...
+            shutil.move(os.path.join(mainDirName, "network", file_), os.path.join(mainDirName, file_))  # change move to copy2 if you want to test locally...
     
-    create_init(mainDirName, networkName)
+    create_init(mainDirName, format_, networkName)
     
-    create_zip(zipName, mainDirName, rm=True)
+    create_zip(zipName, mainDirName, rm=False)
     
     
     
