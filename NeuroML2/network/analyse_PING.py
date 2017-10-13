@@ -19,8 +19,8 @@ basePath = os.path.sep.join(os.path.abspath(__file__).split(os.path.sep)[:-1])
 figFolder = os.path.join(basePath, "figures")
 
 
-def get_traces(fName, simduration, dt, popsize):
-    """reads in single cell traces"""
+def get_traces(fName, simduration, dt, popsize=1):
+    """reads in single cell traces from file"""
     
     datapoints = int(simduration/dt)
     t = np.linspace(0, simduration-dt, datapoints); traces = np.zeros((popsize, datapoints))
@@ -37,54 +37,26 @@ def get_traces(fName, simduration, dt, popsize):
         warnings.warn("*** nan's encountered while loadning NetPyNE saved traces... ***")
                 
     return t, traces
-               
 
-def get_spikes_rate(t, traces):
-    """gets spike times from traces"""
+
+def get_spikes_rate(fName, t, popsize):
+    """reads in spikes from saved file"""
     
     spikeTimes = []
     spikingNeurons = []
     rate = np.zeros(int(np.ceil(t[-1])))  # np.zeros_like(t) would not be consistent with nrn analysis scripts...
     
-    for i in range(0, traces.shape[0]):
-        trace = traces[i, :]
-        crossings = np.where(trace > 0)[0]  # 0 as voltage criterion from cell templates
-        if crossings.size:
-            cons_crossings = np.split(crossings, np.where(np.diff(crossings) != 1)[0]+1)  # will be a list of arrays
-            for crossing in cons_crossings:
-                spike = trace[crossing]
-                spiketimeID = crossing[np.argmax(spike)]  # find local max. of the crossing
-                spiketime = t[spiketimeID]
-                spikeTimes.append(spiketime); spikingNeurons.append(i); rate[int(spiketime)] += 1
-    
-    if rate.any():
-        rate = rate / (traces.shape[0] * 0.001)  # normalize rate        
+    with open(fName) as f_:
+        for j, line in enumerate(f_):
+            spikingNeurons.append(int(line.split()[0]))
+            spiketime = float(line.split()[1])*1000  # *1000 ms conversion
+            spikeTimes.append(spiketime); rate[int(spiketime)] += 1
             
-    return spikeTimes, spikingNeurons, rate
+    if rate.any():
+        rate = rate / (popsize * 0.001)  # normalize rate 
+        
+    return spikeTimes, spikingNeurons, rate   
 
-
-def plot_rasters(dSpikeTimes, dSpikingNeurons, simduration, saveName):
-    """raster plots"""
-    
-    fig = plt.figure(figsize=(10, 5))
-    
-    gs = gridspec.GridSpec(2, 1, height_ratios=[1.5, 1], hspace=0.1)
-    ax0 = fig.add_subplot(gs[0]); ax1 = fig.add_subplot(gs[1])
-    dSubplots = {"poolosyn":[ax0, "#4169E1", "Pyr."], "pvbasket":[ax1, "#20B2AA", "PV+B."]}  # dummy dict to reproduce the same figure layout ...   
-    
-    for cell_type, spikeTimes in dSpikeTimes.iteritems():
-        spikingNeurons = dSpikingNeurons[cell_type]; ax, col, ylab = dSubplots[cell_type]      
-        ax.scatter(spikeTimes, spikingNeurons, color=col, marker='.')
-        ax.set_ylabel(ylab, rotation=0, labelpad=25, color=col)
-        if simduration > 1000:
-            ax.set_xlim([simduration/2-500, simduration/2+500])
-        else:
-            ax.set_xlim([0, simduration])
-        ax.set_xticks([]); ax.set_yticks([])
-    
-    figName = os.path.join(figFolder, "%s_rasters.png"%saveName)
-    fig.savefig(figName)
-    
 
 def plot_traces(t, dTraces, saveName):
     """plot (randomly selected) traces from each cell type"""
@@ -115,15 +87,41 @@ def plot_traces(t, dTraces, saveName):
     figName = os.path.join(figFolder, "%s_traces.png"%saveName)
     fig.savefig(figName)
 
+
+def plot_rasters(dSpikeTimes, dSpikingNeurons, simduration, saveName):
+    """raster plots"""
+    
+    fig = plt.figure(figsize=(10, 5))
+    
+    gs = gridspec.GridSpec(2, 1, height_ratios=[1.5, 1], hspace=0.1)
+    ax0 = fig.add_subplot(gs[0]); ax1 = fig.add_subplot(gs[1])
+    dSubplots = {"poolosyn":[ax0, "#4169E1", "Pyr."], "pvbasket":[ax1, "#20B2AA", "PV+B."]}  # dummy dict to reproduce the same figure layout ...   
+    
+    for cell_type, spikeTimes in dSpikeTimes.iteritems():
+        spikingNeurons = dSpikingNeurons[cell_type]; ax, col, ylab = dSubplots[cell_type]      
+        ax.scatter(spikeTimes, spikingNeurons, color=col, marker='.')
+        ax.set_ylabel(ylab, rotation=0, labelpad=25, color=col)
+        if simduration > 1000:
+            ax.set_xlim([simduration/2-500, simduration/2+500])
+        else:
+            ax.set_xlim([0, simduration])
+        ax.set_xticks([]); ax.set_yticks([])
+    
+    figName = os.path.join(figFolder, "%s_rasters.png"%saveName)
+    fig.savefig(figName)
+
           
 if __name__ == "__main__":
+
+    ref = "Sim_PINGNet_0_1"
+    dPopsize = {"poolosyn":5, "pvbasket":3}
     
     dTraces = {}; dSpikeTimes = {}; dSpikingNeurons = {}
     for cell_type in ["poolosyn", "pvbasket"]:
-        t, traces = get_traces("Sim_PINGNet.pop_%s.v.dat"%cell_type, 100, 0.01, 20)
-        spikeTimes, spikingNeurons, _ = get_spikes_rate(t, traces)
-        dSpikeTimes[cell_type] = spikeTimes; dSpikingNeurons[cell_type] = spikingNeurons
+        t, traces = get_traces("%s.%scell.v.dat"%(ref, cell_type), 100, 0.01)
         dTraces[cell_type] = traces[0, :]
+        spikeTimes, spikingNeurons, _ = get_spikes_rate("%s.pop_%s.spikes"%(ref, cell_type), t, dPopsize[cell_type])
+        dSpikeTimes[cell_type] = spikeTimes; dSpikingNeurons[cell_type] = spikingNeurons
     
     plot_rasters(dSpikeTimes, dSpikingNeurons, simduration=t[-1], saveName="test")
     plot_traces(t, dTraces, saveName="test")

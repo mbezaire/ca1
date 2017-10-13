@@ -17,7 +17,7 @@ from plots import plot_traces, plot_rasters  # Fig3 like plots
 basePath = os.path.sep.join(os.path.abspath('__file__').split(os.path.sep)[:-2])
 # add the 'network' directory to the path (import the modules)
 sys.path.insert(0, os.path.sep.join([basePath, "NeuroML2", "network"]))
-from analyse_PING import get_traces, get_spikes_rate  # functions to process dummy NetPyNE output
+from analyse_PING import get_traces, get_spikes_rate  # functions to process NetPyNE output
 
 NSGbasePath = os.path.join(basePath, "NSG")
 
@@ -100,31 +100,22 @@ if __name__ == "__main__":
     simduration, dt = get_simduration_dt(resultDir)
     dPops = get_popsize(resultDir, scale)
     
-    # load in traces, search spikes  #TODO: update this after fixing NetPyNE on NSG!
-    dTraces = {}; dSpikeTimes = {}; dSpikingNeurons = {}; dRates = {}
+    # load in traces and spikes
+    dTraces = {}; dSpikeTimes = {}; dSpikingNeurons = {}; dRates = {}; dPlotTraces; dPlotTraces = {}; dIDx = {} # dIDx used only for setting ylim of rasters...
     for cell_type, ncells in dPops.iteritems():
-        fName = os.path.join(resultDir, "Sim_HippocampalNet_scale%s_oc.pop_%s.v.dat"%(scale, cell_type))
-        t, traces = get_traces(fName, simduration, dt, ncells)
-        dTraces[cell_type] = traces
-        spikeTimes, spikingNeurons, rate = get_spikes_rate(t, traces)
+        fName = os.path.join(resultDir, "Sim_HippocampalNet_scale%s_oc.%scell.v.dat"%(scale, cell_type))
+        t, traces = get_traces(fName, simduration, dt)
+        dPlotTraces[cell_type] = traces[0, :]; dIDx[cell_type] = [0, dPops[cell_type]-1] if dPops[cell_type] != 1 else [-1e-3, 1.e-3]  # for NEURON version's Fig3 plot
+        
+        fName = os.path.join(resultDir, "Sim_HippocampalNet_scale%s_oc.pop_%s.spikes"%(scale, cell_type))
+        spikeTimes, spikingNeurons, rate = get_spikes_rate(fName, t, dPops[cell_type])
         dSpikeTimes[cell_type] = spikeTimes; dSpikingNeurons[cell_type] = spikingNeurons; dRates[cell_type] = rate
     
         # analyse PC rate (same way as in the original article)
         if cell_type == "poolosyn" and rate.any():
             analyse_rate(rate, "nml_scale%s"%scale)
-    
-    # prepare data structure to be convertible with NEURON version's Fig3 like plots
-    dPlotTraces = {}; dIDx = {} # dIDx used only for setting ylim of rasters...
-    for cell_type, traces in dTraces.iteritems():
-        trace = traces[0, :]
-        dPlotTraces[cell_type] = trace
-        popsize = dPops[cell_type]
-        if popsize != 1:
-            dIDx[cell_type] = [0, popsize-1]
-        else:
-            dIDx[cell_type] = [-1e-3, 1.e-3]
-            
-        
+   
+    # plot results (see plots.py)                 
     plot_traces(dPlotTraces, t, "nml_scale%s"%scale)
     plot_rasters(dSpikeTimes, dSpikingNeurons, dIDx, simduration, "nml_scale%s"%scale)
     

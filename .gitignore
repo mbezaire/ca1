@@ -73,13 +73,14 @@ NeuroML2/network/test/LEMS_Stim_*_nrn.py
 NeuroML2/network/test/Stim_*.net.nml
 NeuroML2/network/figures/
 NeuroML2/network/*.pov-state
+NeuroML2/network/jsbml.log
+NeuroML2/network/libjhdf5.so
+NeuroML2/network/LEMS_PINGNet_10.h5.xml
 
 NSG/*.zip
 NSG/*.tar.gz
 NSG/figures/
+NSG/*.html
 NSG/.ipynb_checkpoints/
 NSG/CA1_nml_scale*/
 NSG/results_nml_scale*/
-/NeuroML2/network/jsbml.log
-/NeuroML2/network/libjhdf5.so
-/NeuroML2/network/LEMS_PINGNet_10.h5.xml
