@@ -5,7 +5,7 @@
 
     <ionChannel id="CavN" conductance="1pS" type="ionChannelHH" species="ca">
         
-        <notes>N-type Ca++ channel description (from Jaffe 1994 modified by Aradi and Holmes 1999, GHK replaced by Santakhumar 2005)</notes>
+        <notes>N-type Ca++ channel description (Fisher 1990, Fox 1987 - modeled by Jaffe 1994 modified by Aradi and Holmes 1999, GHK replaced by Santakhumar 2005)</notes>
 
         <gateHHrates id="c" instances="2">
             <q10Settings type="q10ExpTemp" q10Factor="3" experimentalTemp="34 degC"/>

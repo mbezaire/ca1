@@ -5,7 +5,7 @@
 
     <ionChannel id="CavL" conductance="1pS" type="ionChannelHH" species="ca">
         
-        <notes>L-type Ca++ channel description (from Jaffe 1994 - modeled by Lawrence 2006)</notes>
+        <notes>L-type Ca++ channel description (Fisher 1990, Fox 1987 - modeled by Jaffe 1994)</notes>
         
         <gate id="m" type="gateHHrates" instances="2">
             <forwardRate type="HHExpLinearRate" rate="156.9per_ms" midpoint="81.5mV" scale="10mV"/>
