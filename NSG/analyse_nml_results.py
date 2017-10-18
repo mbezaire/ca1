@@ -27,7 +27,8 @@ def extract_tar(tarName):
 
     fName = os.path.join(NSGbasePath, tarName)
     tf = tarfile.open(fName, "r:gz")
-    scale = int(re.findall(r'\d+', tf.getmembers()[0].name)[1])  # get scale from dirname ([0] would be '1' -> because of 'CA1_*')
+    for tarinfo in tf.getmembers():  # get scale from dirname 
+        if ("CA1_nml_scale" in tarinfo.name): scale = int(re.findall(r'\d+', tarinfo.name)[1])  # ([0] would be '1' -> because of 'CA1_*')  
     zipName = "CA1_nml_scale%s"%scale
     
     subdir_and_files = [tarinfo for tarinfo in tf.getmembers()
@@ -42,11 +43,11 @@ def extract_tar(tarName):
         shutil.rmtree(resultDir)
     os.mkdir(resultDir)
     
-    # move .dat files into separate directory (+ popsize, err and out files)
+    # move dat files into separate directory (+ popsize, err and out files)
     for file_ in os.listdir(os.path.join(NSGbasePath, zipName, "network")):
-        if file_.endswith(".dat"):  # you might extend this to keep net.nml or .xml files too !!!
+        if file_.endswith(".dat") or file_.endswith(".spikes"):  # you might extend this to keep net.nml or .xml files too !!!
             shutil.move(os.path.join(NSGbasePath, zipName, "network", file_), os.path.join(resultDir, file_))
-    shutil.move(os.path.join(NSGbasePath, "popsize_scale%s.txt"%scale), os.path.join(resultDir, "popsize_scale%s.txt"%scale))
+    shutil.move(os.path.join(NSGbasePath, zipName, "network", "popsize_scale%s.txt"%scale), os.path.join(resultDir, "popsize_scale%s.txt"%scale))
     shutil.move(os.path.join(NSGbasePath, "stderr.txt"), os.path.join(resultDir, "stderr.txt"))
     shutil.move(os.path.join(NSGbasePath, "stdout.txt"), os.path.join(resultDir, "stdout.txt"))
     print("results moved to: %s"%resultDir)
@@ -90,9 +91,9 @@ def get_popsize(resultDir, scale):
 if __name__ == "__main__":
     
     # untar results
-    tarName = "output.tar.gz"       
-    #scale, resultDir = extract_tar(tarName)    
-    scale = 2500
+    tarName = "output_750.tar.gz"       
+    scale, resultDir = extract_tar(tarName)    
+    #scale = 2500
     resultDir = os.path.join(NSGbasePath, "results_nml_scale%s"%scale)
     print("scale = %s"%scale)
     
@@ -101,7 +102,7 @@ if __name__ == "__main__":
     dPops = get_popsize(resultDir, scale)
     
     # load in traces and spikes
-    dTraces = {}; dSpikeTimes = {}; dSpikingNeurons = {}; dRates = {}; dPlotTraces; dPlotTraces = {}; dIDx = {} # dIDx used only for setting ylim of rasters...
+    dTraces = {}; dSpikeTimes = {}; dSpikingNeurons = {}; dRates = {}; dPlotTraces = {}; dIDx = {} # dIDx used only for setting ylim of rasters...
     for cell_type, ncells in dPops.iteritems():
         fName = os.path.join(resultDir, "Sim_HippocampalNet_scale%s_oc.%scell.v.dat"%(scale, cell_type))
         t, traces = get_traces(fName, simduration, dt)
