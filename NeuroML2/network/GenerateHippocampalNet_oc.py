@@ -338,7 +338,7 @@ def generate_hippocampal_net(networkID, scale=100000, duration=100, numData=101,
         #pynml.run_jneuroml("-validate", nml_fName, "", max_memory="8G", verbose=True)  # increase heap size if necessary!
     else:  # save big networks to h5 file
         oc.save_network(nml_doc, nml_fName,
-                        validate=False, format="hdf5", use_subfolder=False)
+                        validate=False, format=format_, use_subfolder=False)
         
                         
     return nml_doc, network, nml_fName, dPops
@@ -405,7 +405,9 @@ if __name__ == "__main__":
 
     if len(sys.argv)==2 and sys.argv[1] == "-test":
         
-        generate_instance(100000, 500, "xml", False, None)
+        #generate_instance(100000, 500, "xml", False, None)
+        #generate_instance(10000, 100, "xml", False, None)
+        generate_instance(1000, 100, "hdf5", False, None)
 
     else:
         try:
