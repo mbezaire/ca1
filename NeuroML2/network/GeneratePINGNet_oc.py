@@ -160,17 +160,20 @@ def generate_PING_net(networkID, dPopsize, dNconns, dWeightMults, rate=5,
     
         # create display for both population (+ specify saving)
         mt_ = 5  # max traces to display and save
-        displays = {}; save_traces= {}       
+        displays = {}; save_traces = {}; save_spikes = {}     
         for cell_type, pop in dPops.iteritems():  # stim pops not included
             d_ = "Display_%s_v"%pop.id
             displays[d_] = []
             f_ = "Sim_%s.%s.v.dat"%(nml_doc.id, pop.component)           
             save_traces[f_] = []
+            s_ = "Sim_%s.%s.spikes"%(nml_doc.id, pop.component)
+            save_spikes[s_] = []
             max_traces = mt_ if pop.get_size() >= mt_ else pop.get_size()
             for i in range(0, max_traces):
                 quantity = "%s/%i/%s/v"%(pop.id, i, pop.component)
                 displays[d_].append(quantity)
                 save_traces[f_].append(quantity)
+                save_spikes[s_].append("%s/%i/%s"%(pop.id, i, pop.component))
         
         lems_fName = oc.generate_lems_simulation(nml_doc, network, 
                                                  target_dir+'/'+nml_fName,
@@ -179,7 +182,9 @@ def generate_PING_net(networkID, dPopsize, dNconns, dWeightMults, rate=5,
                                                  gen_plots_for_quantities=displays,
                                                  gen_saves_for_all_v=False,  # don't try to save tsince for ca3, ec
                                                  gen_saves_for_quantities=save_traces,
-                                                 gen_spike_saves_for_all_somas=True,
+                                                 gen_spike_saves_for_all_somas=False,
+                                                 gen_spike_saves_for_only_populations=[pop_poolosyn.id, pop_pvbasket.id],
+                                                 #gen_spike_saves_for_cells=save_spikes,
                                                  lems_file_name="LEMS_%s%s.xml"%(network.id,".h5" if format_=="hdf5" else ""),
                                                  include_extra_lems_files=["PyNN.xml"],  # to include SpikeSourcePoisson
                                                  simulation_seed=12345,
@@ -239,25 +244,26 @@ def generate_instance(scaling, simduration, format_, run_simulation, simulator, 
 
 if __name__ == "__main__":
     
-    if sys.argv[1] == "-test":
-        
-        generate_instance(0.1, 100, "xml",  False, "NEURON", "./")
-        generate_instance(0.1, 100, "hdf5", False, "NEURON", "./")  # scaled down by 10
-        generate_instance(10,  100, "hdf5", False, "NEURON", "./")  # scaled up by 10
+    if len(sys.argv) > 1:    
+        if sys.argv[1] == "-test":
+            
+            generate_instance(0.1, 100, "xml",  False, "NEURON", "./")
+            generate_instance(0.1, 100, "hdf5", False, "NEURON", "./")  # scaled down by 10
+            generate_instance(10,  100, "hdf5", False, "NEURON", "./")  # scaled up by 10
 
-    else:
-        try:
+        else:
             run_simulation = sys.argv[1]
-        except:
-            run_simulation = False
-        try:
-            simulator = sys.argv[2]
-        except:
-            simulator = "NEURON"
+            try:
+                simulator = sys.argv[2]
+            except:
+                simulator = "NEURON"
+    else:
+        run_simulation = False
+        simulator = "NEURON"
 
-        scaling = 0.1
-        format_ = "xml"
-        simduration = 100  # ms
+    scaling = 0.1
+    simduration = 100  # ms
+    format_ = "xml"
 
-        generate_instance(scaling, simduration, format_, run_simulation, simulator, "./")
+    generate_instance(scaling, simduration, format_, run_simulation, simulator, "./")
         
