@@ -267,10 +267,11 @@ def add_proj(nml_doc, network, projID,
     return proj
                                     
                                       
-def generate_hippocampal_net(networkID, scale=100000, duration=100, numData=101, connData=430, synData=120, addSyns=True):
+def generate_hippocampal_net(networkID, scale=100000, duration=100, numData=101, 
+                             connData=430, synData=120, addSyns=True, format_="xml"):
+                                 
     """generates hippocampal network, by reproducing the placement, connectivity and scaling of the Bezaire network""" 
   
-    format_ = "xml"
     #if scale > 2000:
     #    format_ = "xml"
     #    warnings.warn("***** Scaling down more then 2000x alters both population size and the connectivity seriously! *****")
@@ -337,7 +338,7 @@ def generate_hippocampal_net(networkID, scale=100000, duration=100, numData=101,
         #pynml.run_jneuroml("-validate", nml_fName, "", max_memory="8G", verbose=True)  # increase heap size if necessary!
     else:  # save big networks to h5 file
         oc.save_network(nml_doc, nml_fName,
-                        validate=False, format="hdf5", use_subfolder=False)
+                        validate=False, format=format_, use_subfolder=False)
         
                         
     return nml_doc, network, nml_fName, dPops
@@ -372,36 +373,23 @@ def generate_lems(nml_doc, network, nml_fName, dPops, duration=100, dt=0.01):
     return lems_fName
     
 
-if __name__ == "__main__":
+def generate_instance(scale, duration, format_, run_simulation, simulator, generate_LEMS = True):
+    """helper function to make automated testing easier"""
 
-    try:
-        scale = int(sys.argv[1])       
-    except:
-        scale = 100000     
-    try:
-        run_simulation = sys.argv[2]    
-    except:
-        run_simulation = False
-    try:
-        simulator = sys.argv[3]
-    except:
-        simulator = "NEURON"
-    
-    duration = 500  # ms
     networkID = "HippocampalNet_scale%i_oc"%scale
-    generate_LEMS = True
     
     # generate network
     nml_doc, network, nml_fName, dPops = generate_hippocampal_net(networkID=networkID,
                                                                   scale=scale,
-                                                                  duration=duration)
+                                                                  duration=duration,
+                                                                  format_=format_)
     # generate LEMS simulation                                                
     if generate_LEMS:
         lems_fName = generate_lems(nml_doc, network, nml_fName, dPops, duration=duration)
     else:
         lems_fName = None
-                                                       
-    
+
+
     if lems_fName and run_simulation:
         if simulator == "NEURON":
             oc.simulate_network(lems_fName, simulator="jNeuroML_%s"%simulator,
@@ -412,5 +400,32 @@ if __name__ == "__main__":
                                 max_memory="5G", num_processors=mp.cpu_count())
         else:
             raise Exception("simulator:%s is not yet implemented"%simulator)
+
+if __name__ == "__main__":
+
+    if len(sys.argv)==2 and sys.argv[1] == "-test":
+        
+        #generate_instance(100000, 500, "xml", False, None)
+        #generate_instance(10000, 100, "xml", False, None)
+        generate_instance(1000, 100, "hdf5", False, None)
+
+    else:
+        try:
+            scale = int(sys.argv[1])       
+        except:
+            scale = 100000     
+        try:
+            run_simulation = sys.argv[2]    
+        except:
+            run_simulation = False
+        try:
+            simulator = sys.argv[3]
+        except:
+            simulator = "NEURON"
+
+        duration = 500  # ms
+        
+        generate_instance(scale, duration, "xml", run_simulation, simulator)
+
 
 
