@@ -120,8 +120,8 @@
                 <channelDensity id="Kdrfast_soma" ionChannel="Kdrfast" condDensity="73.37mS_per_cm2" erev="-77mV" segmentGroup="soma_group" ion="k"/>
                 <channelDensity id="Kdrfast_dendrite" ionChannel="Kdrfast" condDensity="105.8mS_per_cm2" erev="-77mV" segmentGroup="dendrite_group" ion="k"/>
                 <channelDensity id="Kdrfast_axon" ionChannel="Kdrfast" condDensity="117.392mS_per_cm2" erev="-77mV" segmentGroup="axon_group" ion="k"/>
-                <channelDensity id="KvAolm_soma" ionChannel="KvAolm" condDensity="4.95mS_per_cm2" erev="-77mV" segmentGroup="soma_group" ion="k"/>
-                <channelDensity id="KvAolm_dendrite" ionChannel="KvAolm" condDensity="2.8mS_per_cm2" erev="-77mV" segmentGroup="dendrite_group" ion="k"/>
+                <channelDensity id="KvAolm_soma" ionChannel="KvAolm" condDensity="7.425mS_per_cm2" erev="-77mV" segmentGroup="soma_group" ion="k"/>
+                <channelDensity id="KvAolm_dendrite" ionChannel="KvAolm" condDensity="4.2mS_per_cm2" erev="-77mV" segmentGroup="dendrite_group" ion="k"/>
                 <channelDensity id="Nav_soma" ionChannel="Nav" condDensity="10.7mS_per_cm2" erev="50mV" segmentGroup="soma_group" ion="na"/>
                 <channelDensity id="Nav_dendrite" ionChannel="Nav" condDensity="23.4mS_per_cm2" erev="50mV" segmentGroup="dendrite_group" ion="na"/>
                 <channelDensity id="Nav_axon" ionChannel="Nav" condDensity="17.12mS_per_cm2" erev="50mV" segmentGroup="axon_group" ion="na"/>

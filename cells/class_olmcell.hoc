@@ -201,6 +201,8 @@ proc set_chanparams() {
 		cm = 1.3	// capacitance in uF/cm^2. default = 1.0
 		//ena = 55
 		//ek = -90
+        insert h_ion  // added by Andras (h ion used by HCNolm)
+            eh = -32.9
 	}  // make catau slower70e-3 	cao=2 cai=50.e-6 
 }
 
