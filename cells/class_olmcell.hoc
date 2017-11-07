@@ -127,8 +127,8 @@ proc mechinit() {
 	
 	gH = 0.0005
 	
-	gKvAsoma = 0.0165*.3*1.5
-	gKvAdend = 0.004*.7*1.5
+	gKvAsoma = 0.0165*.3//*1.5
+	gKvAdend = 0.004*.7//*1.5
 	
 	// *2.3 gives 2x frequency & no depol. block
 	gKvEaxon =  0.05104*2.3
