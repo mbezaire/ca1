@@ -2,7 +2,7 @@
     <title>Channel information</title>
     
     <body>
-        <p style="font-family:arial">Channel information at: T = 24.0 degC, E_rev = 0 mV, [Ca2+] = 5e-06 mM</p>
+        <p style="font-family:arial">Channel information at: T = 34.0 degC, E_rev = 0 mV, [Ca2+] = 5e-06 mM</p>
         <table>
             <tr>
         <td width="130px">
@@ -39,8 +39,8 @@
             <p style="font-size:80%;font-family:arial"><b>Navcck</b></p>
             <p style="font-size:80%;font-family:arial"><a href="../Navcck.channel.nml">Navcck.channel.nml</a></p>
             <p style="font-size:80%;background-color:#1E90FF;"><b>Ion: na</b></p>
-            <p style="font-size:80%;font-family:arial">g = gmax * m<sup>3</sup> * h </p><br/>
-            <p style="font-size:80%;font-family:arial">Na+ channel description; modified from Nav to have higher threshold and slow inactivation, suitable for cck cells)</p><br/>
+            <p style="font-size:80%;font-family:arial">g = gmax * m<sup>3</sup> * h * s </p><br/>
+            <p style="font-size:80%;font-family:arial">Na+ channel description; modified from Nav to have higher threshold and slow inactivation (suitable for cck cells)</p><br/>
         </td>
         <td>
         <a href="Navcck.inf.png"><img alt="Navcck steady state" src="Navcck.inf.png" height="300"/></a>
@@ -251,7 +251,7 @@
             <p style="font-size:80%;font-family:arial"><a href="../KvGroup.channel.nml">KvGroup.channel.nml</a></p>
             <p style="font-size:80%;background-color:#CD5C5C;"><b>Ion: k</b></p>
             <p style="font-size:80%;font-family:arial">g = gmax * n </p><br/>
-            <p style="font-size:80%;font-family:arial">Slow K+ channel description (from Yuen and Durand 1991 - modeled by Aradi and Holmes 2002, modified by Marianne Bezaire (based on Lien and Jonas 2003))</p><br/>
+            <p style="font-size:80%;font-family:arial">Slow K+ channel description (data from Yuen and Durand 1991, modeled by Aradi and Holmes 2002, modified by Bezaire (to fit Lien and Jonas 2003))</p><br/>
         </td>
         <td>
         <a href="KvGroup.inf.png"><img alt="KvGroup steady state" src="KvGroup.inf.png" height="300"/></a>
@@ -281,7 +281,7 @@
             <p style="font-size:80%;font-family:arial"><a href="../CavN.channel.nml">CavN.channel.nml</a></p>
             <p style="font-size:80%;background-color:#8FBC8F;"><b>Ion: ca</b></p>
             <p style="font-size:80%;font-family:arial">g = gmax * c<sup>2</sup> * d </p><br/>
-            <p style="font-size:80%;font-family:arial">N-type Ca++ channel description (from Jaffe 1994 modified by Aradi and Holmes 1999, GHK replaced by Santakhumar 2005)</p><br/>
+            <p style="font-size:80%;font-family:arial">N-type Ca++ channel description (Fisher 1990, Fox 1987 - modeled by Jaffe 1994 modified by Aradi and Holmes 1999, GHK replaced by Santakhumar 2005)</p><br/>
         </td>
         <td>
         <a href="CavN.inf.png"><img alt="CavN steady state" src="CavN.inf.png" height="300"/></a>

@@ -1,7 +1,7 @@
 Channel information
 ===================
     
-<p style="font-family:arial">Channel information at: T = 24.0 degC, E_rev = 0 mV, [Ca2+] = 5e-06 mM</p>
+<p style="font-family:arial">Channel information at: T = 34.0 degC, E_rev = 0 mV, [Ca2+] = 5e-06 mM</p>
 
 <table>
     <tr>
@@ -39,8 +39,8 @@ Channel information
             <sup><b>Navcck</b><br/>
             <a href="../Navcck.channel.nml">Navcck.channel.nml</a><br/>
             <b>Ion: na</b><br/>
-            <i>g = gmax * m<sup>3</sup> * h </i><br/>
-            Na+ channel description; modified from Nav to have higher threshold and slow inactivation, suitable for cck cells)</sup>
+            <i>g = gmax * m<sup>3</sup> * h * s </i><br/>
+            Na+ channel description; modified from Nav to have higher threshold and slow inactivation (suitable for cck cells)</sup>
 </td>
 <td>
 <a href="Navcck.inf.png"><img alt="Navcck steady state" src="Navcck.inf.png" height="220"/></a>
@@ -251,7 +251,7 @@ Channel information
             <a href="../KvGroup.channel.nml">KvGroup.channel.nml</a><br/>
             <b>Ion: k</b><br/>
             <i>g = gmax * n </i><br/>
-            Slow K+ channel description (from Yuen and Durand 1991 - modeled by Aradi and Holmes 2002, modified by Marianne Bezaire (based on Lien and Jonas 2003))</sup>
+            Slow K+ channel description (data from Yuen and Durand 1991, modeled by Aradi and Holmes 2002, modified by Bezaire (to fit Lien and Jonas 2003))</sup>
 </td>
 <td>
 <a href="KvGroup.inf.png"><img alt="KvGroup steady state" src="KvGroup.inf.png" height="220"/></a>
@@ -281,7 +281,7 @@ Channel information
             <a href="../CavN.channel.nml">CavN.channel.nml</a><br/>
             <b>Ion: ca</b><br/>
             <i>g = gmax * c<sup>2</sup> * d </i><br/>
-            N-type Ca++ channel description (from Jaffe 1994 modified by Aradi and Holmes 1999, GHK replaced by Santakhumar 2005)</sup>
+            N-type Ca++ channel description (Fisher 1990, Fox 1987 - modeled by Jaffe 1994 modified by Aradi and Holmes 1999, GHK replaced by Santakhumar 2005)</sup>
 </td>
 <td>
 <a href="CavN.inf.png"><img alt="CavN steady state" src="CavN.inf.png" height="220"/></a>
