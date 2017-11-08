@@ -1,16 +1,16 @@
-target: LEMS_cck.xml
+target: LEMS_ccknew.xml
 engine: jNeuroML_NetPyNE
 mep: ../../.test.mep
 
 experiments:
-  current clamp cck:
+  current clamp ccknew:
     observables:
       spike times:
         file:
-          path: cck.dat
+          path: ccknew.dat
           columns: [0, 1]
           scaling: [1000, 1000]
         spike detection:
           method: threshold
           threshold: 0
-        tolerance: 0.000797303342916
+        tolerance: 0.00042933092587

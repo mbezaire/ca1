@@ -10,6 +10,9 @@ experiments:
   current clamp cck:
     expected:
       spike times: [115.035, 225.761]
+  current clamp ccknew:
+    expected:
+      spike times: [89.048, 168.035, 249.225]
   current clamp cutsuridis:
     expected:
       spike times: [110.952, 134.83, 159.141, 183.453]
@@ -30,4 +33,4 @@ experiments:
       spike times: [63.023, 83.132, 103.653, 124.415, 145.326, 166.33, 187.396, 208.502, 229.635, 251.381]
   current clamp sca:
     expected:
-      spike times: [101.39, 179.716]
+      spike times: [66.987, 122.202, 178.138, 234.197]
