@@ -27,10 +27,10 @@ pynml-modchananalysis ch_KvAolm     -temperature 34 -stepV 5 -nogui # not workin
 pynml-modchananalysis ch_KvAproxp   -temperature 34 -stepV 5 -nogui
 pynml-modchananalysis ch_KvGroup    -temperature 34 -stepV 5 -nogui
 
-pynml-modchananalysis ch_Nav        -temperature 34 -stepV 5 -nogui
-pynml-modchananalysis ch_Navaxonp   -temperature 34 -stepV 5 -nogui
-pynml-modchananalysis ch_Navbis     -temperature 34 -stepV 5 -nogui
-pynml-modchananalysis ch_Navcck     -temperature 34 -stepV 5 -nogui
-pynml-modchananalysis ch_Navngf     -temperature 34 -stepV 5 -nogui
-pynml-modchananalysis ch_Navp       -temperature 34 -stepV 5 -nogui
+pynml-modchananalysis ch_Nav        -temperature 34 -stepV 5 -nogui -dt 0.001
+pynml-modchananalysis ch_Navaxonp   -temperature 34 -stepV 5 -nogui -dt 0.001
+pynml-modchananalysis ch_Navbis     -temperature 34 -stepV 5 -nogui -dt 0.001
+pynml-modchananalysis ch_Navcck     -temperature 34 -stepV 5 -nogui -dt 0.001
+pynml-modchananalysis ch_Navngf     -temperature 34 -stepV 5 -nogui -dt 0.001
+pynml-modchananalysis ch_Navp       -temperature 34 -stepV 5 -nogui -dt 0.001
                       
