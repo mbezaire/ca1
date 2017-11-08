@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<neuroml xmlns="http://www.neuroml.org/schema/neuroml2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.neuroml.org/schema/neuroml2 https://raw.github.com/NeuroML/NeuroML2/development/Schemas/NeuroML2/NeuroML_v2beta4.xsd" id="NeuroML_ionChannel">
+
+    <notes>NeuroML file containing a single ion channel</notes>
+
+    <ionChannel id="KvMnew" conductance="1pS" type="ionChannelHH" species="k">
+        
+        <notes>M-type K+ channel description (from M.Shah 2008 - modeled by Migliore)</notes>
+    
+        <gateHHtauInf id="m" instances="1">
+            <!--<q10Settings type="q10ExpTemp" q10Factor="5" experimentalTemp="35 degC"/>-->
+            <timeCourse type="Bezaire_KvM_tau"/>
+            <steadyState type="HHSigmoidVariable" rate="1" midpoint="-40mV" scale="10mV"/>
+        </gateHHtauInf>
+    
+    </ionChannel>
+    
+    <ComponentType name="Bezaire_KvM_tau"
+                   extends="baseVoltageDepTime"
+                   description="Tau parameter to describe KvM">
+        
+        <Constant name="TIME_SCALE" dimension="time" value="1 ms"/>
+        <Constant name="VOLT_SCALE" dimension="voltage" value="1 mV"/>
+
+        <Dynamics>
+            <DerivedVariable name="V" dimension="none" value="v / VOLT_SCALE"/>
+            
+            <DerivedVariable name="alpha_T" dimension="none" value="exp(0.0378 * 7 * (V + 42))"/>
+            <DerivedVariable name="beta_T" dimension="none" value="exp(0.0378 * 7 * 0.4 * (V + 42))"/>
+            <DerivedVariable name="t" dimension="time" value="(120 + (beta_T / (0.009 * (1 + alpha_T)))) * TIME_SCALE" exposure="t"/>
+        </Dynamics>
+
+    </ComponentType>
+
+</neuroml>
