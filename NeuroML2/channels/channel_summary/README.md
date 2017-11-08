@@ -54,7 +54,7 @@ Channel information
             <sup><b>Navccknew</b><br/>
             <a href="../Navccknew.channel.nml">Navccknew.channel.nml</a><br/>
             <b>Ion: na</b><br/>
-            <i>g = gmax * m<sup>3</sup> * h * s </i><br/>
+            <i>g = gmax * s * m<sup>3</sup> * h </i><br/>
             Na+ channel description; modified from Nav to have higher threshold and slow inactivation (suitable for cck cells) rates are different + additional s variable - hence the name new</sup>
 </td>
 <td>

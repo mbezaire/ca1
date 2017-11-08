@@ -20,11 +20,11 @@
         </gateHHrates>
         
         <!--whole new gating variable-->
-        <gateHHrates id="s" instances="1">
+        <gate id="s" type="gateHHtauInf" instances="1">
             <q10Settings type="q10ExpTemp" q10Factor="3" experimentalTemp="34 degC"/>
-            <forwardRate type="Bezaire_Navcck_alphas"/>  
-            <reverseRate type="HHSigmoidRate" rate="0.005per_ms" midpoint="-35mV" scale="20mV"/> 
-        </gateHHrates>
+            <timeCourse type="Bezaire_Navcck_taus"/>
+            <steadyState type="Bezaire_Navcck_sss"/>
+        </gate>
         
     </ionChannel>
     
@@ -44,19 +44,48 @@
         
     </ComponentType>
     
-    <ComponentType name="Bezaire_Navcck_alphas"
-            extends="baseVoltageDepRate"
-            description="forward rate to describe Navcck">
+    <ComponentType name="Bezaire_Navcck_taus"
+                   extends="baseVoltageDepTime"
+                   description="Tau parameter to describe Navcck">
         
         <Constant name="TIME_SCALE" dimension="time" value="1 ms"/>
         <Constant name="VOLT_SCALE" dimension="voltage" value="1 mV"/>
         
+        <Requirement name="rateScale" dimension="none"/> 
+        <Requirement name="temperature" dimension="temperature"/>
+
         <Dynamics>
-            <DerivedVariable name="V" dimension="none" value="v / VOLT_SCALE"/> 
-                  
-            <DerivedVariable name="r" dimension="per_time" value="(0.003 / (exp((V+45)/6))) / TIME_SCALE" exposure="r"/>          
+            <DerivedVariable name="V" dimension="none" value="v / VOLT_SCALE"/>
+            
+            <DerivedVariable name="alpha" dimension="none" value="0.003 / (exp((V+45)/6))"/>
+            <DerivedVariable name="beta" dimension="none" value="0.005 * (1 / (1 + exp(0-(V+35)/20)))"/>
+            
+            <DerivedVariable name="tmp" value="1 / (alpha + beta)" dimension="none"/>
+            <ConditionalDerivedVariable name="t" dimension="time" exposure="t" >
+                <Case condition="(tmp / rateScale) .lt. 10" value="10 * rateScale * TIME_SCALE"/>
+                <Case value="tmp * TIME_SCALE"/>                
+            </ConditionalDerivedVariable>
+
         </Dynamics>
-        
+
     </ComponentType>
+    
+    <ComponentType name="Bezaire_Navcck_sss"
+                   extends="baseVoltageDepVariable"
+                   description="steadyState parameter to describe Navcck">
+        
+        <Constant name="VOLT_SCALE" dimension="voltage" value="1 mV"/>
+
+        <Dynamics>
+            <DerivedVariable name="V" dimension="none" value="v / VOLT_SCALE"/>
+            
+            <DerivedVariable name="alpha" dimension="none" value="0.003 / (exp((V+45)/6))"/>
+            <DerivedVariable name="beta" dimension="none" value="0.005 * (1 / (1 + exp(0-(V+35)/20)))"/>
+ 
+            <DerivedVariable name="x" exposure="x" dimension="none" value="alpha / (alpha + beta)"/>
+        </Dynamics>
+
+    </ComponentType>
+
     
 </neuroml>
