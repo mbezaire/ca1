@@ -12,4 +12,4 @@ pynml-channelanalysis Kdrslow.channel.nml Kdrfast.channel.nml  Kdrp.channel.nml 
                       Nav.channel.nml Navbis.channel.nml Navcck.channel.nml Navaxonp.channel.nml \
                       Navngf.channel.nml Navp.channel.nml \
                       CavN.channel.nml \
-                      -temperature 24 -caConc 5e-6  -html -md
+                      -temperature 34 -caConc 5e-6  -html -md

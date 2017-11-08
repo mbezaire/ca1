@@ -12,12 +12,12 @@ chans = ['Kdrfast', 'Kdrslow', 'Kdrp', 'Kdrfastngf',
          'KvCaB',
          'HCN','HCNolm', 'HCNp',  
          'Nav','Navbis', 'Navcck','Navaxonp',
-         'Navp','Navapicalp', 'Navngf',
+         'Navp', 'Navngf',
          'CavN']
          
 gates = ['m', 'h', 'c', 'd', 'r', 'q', 'n', 'l', 'a', 'b', 'o', 's']
 
-temperatures = [24, 34]
+temperatures = [34]
 
 comparison_readme = open('compare/README.md','w')
 
