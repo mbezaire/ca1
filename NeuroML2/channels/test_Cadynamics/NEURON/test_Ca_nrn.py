@@ -1,8 +1,12 @@
-#!/usr/bin/ipython -i
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+""" 
+Runs NEURON and plots membrane potential, [Ca++]_i and I_Ca (to compare Ca++ dynamics)
+Authors: András Ecker, Boris Marin, Padraig Gleeson, last update: 11.2017
+"""
 
 from neuron import *
 from nrn import *
-#from neuron import gui
 
 
 def create_comp(name = 'soma'):
@@ -23,6 +27,8 @@ def create_comp(name = 'soma'):
     comp.gmax_ch_CavN = 5e-3
 
     comp.insert('ch_KvCaB')
+    comp.gmax_ch_KvCaB = 10e-3
+    comp.insert('ch_KCaS')
     comp.gmax_ch_KvCaB = 10e-3
     comp.ek = -90
 
