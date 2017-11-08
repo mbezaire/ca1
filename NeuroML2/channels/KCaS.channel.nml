@@ -26,7 +26,7 @@
         <Dynamics>
             <DerivedVariable name="ca_conc_i" dimension="none" value="caConc / CONC_SCALE"/>
             
-            <DerivedVariable name="r" dimension="per_time" value="(12.5 * ca_conc_i * ca_conc_i) / TIME_SCALE" exposure="r"/>          
+            <DerivedVariable name="r" dimension="per_time" value="(15 * ca_conc_i * ca_conc_i) / TIME_SCALE" exposure="r"/>          
         </Dynamics>
 
     </ComponentType>
