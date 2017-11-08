@@ -1,4 +1,4 @@
-begintemplate scacell
+begintemplate scacellnew
 public init, connect_sections, size_sections, append_sections
 public mechinit, insert_mechs, set_biophys, get_root
 public  pre_list, connect_pre, is_art, is_connected, gid, randi
@@ -194,18 +194,18 @@ proc set_nseg() {
 proc mechinit() {
 
 	// resting membrane potential. Must lie between Na+ and K+ reversal potentials
-	Vrest = -72
+	Vrest = -57//-72
 	
 	// Temperature of simulation
 	celsius = 34.0  
 
 	// Membrane resistance in ohm*cm2
-	RmDend = 35000 // 60000
-	RmSoma = 35000 // 60000 
+	RmDend = 45000//35000 // 60000
+	RmSoma = 45000//35000 // 60000 
 
 	// Membrane capacitance in uF/cm2
-	CmSoma = 1.2 // 1.8
-	CmDend = 1.2 // 1.8
+	CmSoma = 1.0//1.2 // 1.8
+	CmDend = 1.0//1.2 // 1.8
 
 	// Axial resistance in ohm*cm
 	RaDend = 150 //75*3
@@ -227,15 +227,16 @@ proc mechinit() {
 	eleakval = Vrest
 
 	// max ion channel conductances in mho/cm2
-	gNav     = 0.04 // soma: // 0.12 //original 0.030 to .055 ; lm: //0.5  	//original 0.015
-	gKdr     = 0.000006    // Delayed rectifier potassium
-	gKGroup  = 0.0011 //0.1465/1
+	gNav     = 0.04*0.1//0.04 // soma: // 0.12 //original 0.030 to .055 ; lm: //0.5  	//original 0.015
+	gKdr     = 0.000006*1.2//0.000006    // Delayed rectifier potassium
+	gKGroup  = 0.0011*.8//0.0011 //0.1465/1
 	gKvA 	 = 0.0001 // Proximal A-type potassium
 	gHCN     = 0.00007 // HCN (hyperpolarization-activated cyclic nucleotide-gated channel)
-	gCavN    = 0.00002 //   T-type calcium
-	gCavL    = 0.001 //  L-type calcium
-	gKvCaB	 = 0.000007 // Big potassium channel: voltage and calcium gated 
-	gKCaS	 = 0.000001 //  Small potassium channel: calcium gated
+	gCavN    = 0.00002*2//0.00002 //   T-type calcium
+	gCavL    = 0.001*1.5//0.001 //  L-type calcium
+	gKvCaB	 = 0.000007*1.1//0.000007 // Big potassium channel: voltage and calcium gated 
+	gKCaS	 = 0.000001*1.1//0.000001 //  Small potassium channel: calcium gated
+	gKvM	 = 0.06*2
 }
 
 proc insert_mechs() {
@@ -249,8 +250,8 @@ proc insert_mechs() {
 		    gmax_ch_CavN = gCavN
 		insert ch_CavL
 		    gmax_ch_CavL = gCavL		
-		insert ch_KCaS
-	        gmax_ch_KCaS = gKCaS		
+		insert ch_KCaSnew
+	        gmax_ch_KCaSnew = gKCaS		
 		insert ch_KvCaB
 		    gmax_ch_KvCaB = gKvCaB
 		insert ch_HCN
@@ -260,13 +261,16 @@ proc insert_mechs() {
 	} 
 
 	soma {
-		insert ch_Navcck
-		    gmax_ch_Navcck = gNav
+		insert ch_Navccknew
+		    gmax_ch_Navccknew = gNav
 		    ena = enaval
 		insert ch_Kdrfast
 		    gmax_ch_Kdrfast = gKdr
 		insert ch_KvGroup
 		    gmax_ch_KvGroup = gKGroup
+        insert ch_KvMnew // M-type K+ conductance
+            gmax_ch_KvMnew = gKvM // <- using default 0.0001 from .mod file, instead of gKvM=0.06 - András
+		    //gbar_ch_KvMnew = gKvM	<- this should be the correct one... but this just hyperpolarizes everything:/  - András
 		
 		insert ch_leak
 		    gmax_ch_leak = 1/RmSoma
@@ -285,9 +289,9 @@ proc insert_mechs() {
 		
 		for (x,0) {
 			if (distance(x) < 100) {
-				insert ch_Navcck
+				insert ch_Navccknew
                     //gmax_ch_Navcck = gNav*.5 <- sets gmax uniformly in the whole section, not only in the segments, whose (midpoints) are closer than 100 um (it changed the behaviour of the cell dramatically (tested with 0.5nA somatic IClamp))
-				    gmax_ch_Navcck(x) = gNav*.5
+				    gmax_ch_Navccknew(x) = gNav*.5
 				    ena = enaval
 				insert ch_Kdrfast
 				    gmax_ch_Kdrfast(x) = gKdr*10  // <- see above - András
@@ -392,4 +396,4 @@ proc define_synapses() {
 		findme = 1
 	}
 }
-endtemplate scacell
+endtemplate scacellnew

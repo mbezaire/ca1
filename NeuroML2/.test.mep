@@ -33,4 +33,7 @@ experiments:
       spike times: [63.023, 83.132, 103.653, 124.415, 145.326, 166.33, 187.396, 208.502, 229.635, 251.381]
   current clamp sca:
     expected:
-      spike times: [66.987, 122.202, 178.138, 234.197]
+      spike times: [101.39, 179.716]
+  current clamp scanew:
+    expected:
+      spike times: [84.3, 166.167, 250.174]
