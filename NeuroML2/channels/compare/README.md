@@ -137,10 +137,8 @@
 <table><tr>
 <td><a href="Navcck_m_tau.png"><img alt="???" src="Navcck_m_tau.png" height="200"/></a></td>
 <td><a href="Navcck_h_tau.png"><img alt="???" src="Navcck_h_tau.png" height="200"/></a></td>
-<td><a href="Navcck_s_tau.png"><img alt="???" src="Navcck_s_tau.png" height="200"/></a></td>
 <td><a href="Navcck_m_inf.png"><img alt="???" src="Navcck_m_inf.png" height="200"/></a></td>
 <td><a href="Navcck_h_inf.png"><img alt="???" src="Navcck_h_inf.png" height="200"/></a></td>
-<td><a href="Navcck_s_inf.png"><img alt="???" src="Navcck_s_inf.png" height="200"/></a></td>
 </tr></table>
 
 #### Navccknew
