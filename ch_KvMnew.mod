@@ -25,7 +25,7 @@ PARAMETER {
 
 
 NEURON {
-	THREADSAFE SUFFIX ch_KvM
+	THREADSAFE SUFFIX ch_KvMnew
 	USEION k READ ek WRITE ik
         RANGE  gbar,ik, mye, myi
       GLOBAL inf, tau
