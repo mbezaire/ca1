@@ -39,7 +39,7 @@ Channel information
             <sup><b>Navcck</b><br/>
             <a href="../Navcck.channel.nml">Navcck.channel.nml</a><br/>
             <b>Ion: na</b><br/>
-            <i>g = gmax * m<sup>3</sup> * h * s </i><br/>
+            <i>g = gmax * m<sup>3</sup> * h </i><br/>
             Na+ channel description; modified from Nav to have higher threshold and slow inactivation (suitable for cck cells)</sup>
 </td>
 <td>
@@ -47,6 +47,21 @@ Channel information
 </td>
 <td>
 <a href="Navcck.tau.png"><img alt="Navcck time course" src="Navcck.tau.png" height="220"/></a>
+</td>
+</tr>
+    <tr>
+<td width="120px">
+            <sup><b>Navccknew</b><br/>
+            <a href="../Navccknew.channel.nml">Navccknew.channel.nml</a><br/>
+            <b>Ion: na</b><br/>
+            <i>g = gmax * m<sup>3</sup> * h * s </i><br/>
+            Na+ channel description; modified from Nav to have higher threshold and slow inactivation (suitable for cck cells) rates are different + additional s variable - hence the name new</sup>
+</td>
+<td>
+<a href="Navccknew.inf.png"><img alt="Navccknew steady state" src="Navccknew.inf.png" height="220"/></a>
+</td>
+<td>
+<a href="Navccknew.tau.png"><img alt="Navccknew time course" src="Navccknew.tau.png" height="220"/></a>
 </td>
 </tr>
     <tr>
@@ -273,6 +288,21 @@ Channel information
 </td>
 <td>
 <a href="KvCaB.tau.png"><img alt="KvCaB time course" src="KvCaB.tau.png" height="220"/></a>
+</td>
+</tr>
+    <tr>
+<td width="120px">
+            <sup><b>KvMnew</b><br/>
+            <a href="../KvMnew.channel.nml">KvMnew.channel.nml</a><br/>
+            <b>Ion: k</b><br/>
+            <i>g = gmax * m </i><br/>
+            M-type K+ channel description (from M.Shah 2008 - modeled by Migliore)</sup>
+</td>
+<td>
+<a href="KvMnew.inf.png"><img alt="KvMnew steady state" src="KvMnew.inf.png" height="220"/></a>
+</td>
+<td>
+<a href="KvMnew.tau.png"><img alt="KvMnew time course" src="KvMnew.tau.png" height="220"/></a>
 </td>
 </tr>
     <tr>

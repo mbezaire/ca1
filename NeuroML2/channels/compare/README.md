@@ -86,6 +86,13 @@
 <td><a href="KvCaB_o_inf.png"><img alt="???" src="KvCaB_o_inf.png" height="200"/></a></td>
 </tr></table>
 
+#### KvMnew
+<p><a href="../../../ch_KvMnew.mod">ch_KvMnew.mod</a>, <a href="../KvMnew.channel.nml">KvMnew.channel.nml</a></p>
+<table><tr>
+<td><a href="KvMnew_m_tau.png"><img alt="???" src="KvMnew_m_tau.png" height="200"/></a></td>
+<td><a href="KvMnew_m_inf.png"><img alt="???" src="KvMnew_m_inf.png" height="200"/></a></td>
+</tr></table>
+
 #### HCN
 <p><a href="../../../ch_HCN.mod">ch_HCN.mod</a>, <a href="../HCN.channel.nml">HCN.channel.nml</a></p>
 <table><tr>
@@ -134,6 +141,17 @@
 <td><a href="Navcck_m_inf.png"><img alt="???" src="Navcck_m_inf.png" height="200"/></a></td>
 <td><a href="Navcck_h_inf.png"><img alt="???" src="Navcck_h_inf.png" height="200"/></a></td>
 <td><a href="Navcck_s_inf.png"><img alt="???" src="Navcck_s_inf.png" height="200"/></a></td>
+</tr></table>
+
+#### Navccknew
+<p><a href="../../../ch_Navccknew.mod">ch_Navccknew.mod</a>, <a href="../Navccknew.channel.nml">Navccknew.channel.nml</a></p>
+<table><tr>
+<td><a href="Navccknew_m_tau.png"><img alt="???" src="Navccknew_m_tau.png" height="200"/></a></td>
+<td><a href="Navccknew_h_tau.png"><img alt="???" src="Navccknew_h_tau.png" height="200"/></a></td>
+<td><a href="Navccknew_s_tau.png"><img alt="???" src="Navccknew_s_tau.png" height="200"/></a></td>
+<td><a href="Navccknew_m_inf.png"><img alt="???" src="Navccknew_m_inf.png" height="200"/></a></td>
+<td><a href="Navccknew_h_inf.png"><img alt="???" src="Navccknew_h_inf.png" height="200"/></a></td>
+<td><a href="Navccknew_s_inf.png"><img alt="???" src="Navccknew_s_inf.png" height="200"/></a></td>
 </tr></table>
 
 #### Navaxonp

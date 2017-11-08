@@ -1,23 +1,27 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-"""Compares channel dynamics in .mod files and in .nml files (run ../../analyse_modchans.sh and ./analyse_chans.sh first to create the .dat files!)"""
+"""
+Compares channel dynamics in .mod files and in .nml files (run cd ../.. & ./analyse_modchans.sh and ./analyse_chans.sh first to create the .dat files!)
+Authors: András Ecker, Padraig Gleeson, last update: 11.2017
+"""
 
 import sys
 import os.path
 import matplotlib.pyplot as plt
          
 chans = ['Kdrfast', 'Kdrslow', 'Kdrp', 'Kdrfastngf',
-         'KvA','KvAolm', 'KvAproxp', 'KvAdistp', 
+         'KvA', 'KvAolm', 'KvAproxp', 'KvAdistp', 
          'KvAngf', 'KvGroup',
          'KvCaB',
+         'KvMnew',
          'HCN','HCNolm', 'HCNp',  
-         'Nav','Navbis', 'Navcck','Navaxonp',
-         'Navp', 'Navngf',
+         'Nav','Navbis', 'Navcck', 'Navccknew',
+         'Navaxonp', 'Navp', 'Navngf',
          'CavN']
          
 gates = ['m', 'h', 'c', 'd', 'r', 'q', 'n', 'l', 'a', 'b', 'o', 's']
 
-temperatures = [34]
+temperatures = [34]  # [24, 34]
 
 comparison_readme = open('compare/README.md','w')
 
