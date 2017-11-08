@@ -270,73 +270,76 @@ proc insert_mechs() {
 		insert iconc_Ca
 			catau_iconc_Ca = 10
 			caiinf_iconc_Ca = 5.e-6
+
 		insert ch_KvAngf
-	gmax_ch_KvAngf = gKvA
-		insert ch_CavN  // HAV-N- Ca channel
-	gmax_ch_CavN =   gCavN
+	        gmax_ch_KvAngf = gKvA
+		insert ch_CavN              // HAV-N- Ca channel
+	        gmax_ch_CavN = gCavN
 		insert ch_CavL 
-	gmax_ch_CavL=gCavL
+	        gmax_ch_CavL = gCavL
 		insert ch_KCaS
-	gmax_ch_KCaS=gKCaS
+	        gmax_ch_KCaS = gKCaS
 		insert ch_KvCaB
-	gmax_ch_KvCaB =gKvCaB
-	cm=CM
+	        gmax_ch_KvCaB = gKvCaB
+
+	    cm = CM
 	} 
 
 	soma {
-	insert ch_Navngf
-	gmax_ch_Navngf=gNasoma //0.10*gna_scale
-	offset1_ch_Navngf=offset1
-	offset2_ch_Navngf=offset2
-	offset3_ch_Navngf=offset3
-	offset4_ch_Navngf=offset4
-	slope1_ch_Navngf=slope1
-	slope2_ch_Navngf=slope2
-	slope3_ch_Navngf=slope3
-	slope4_ch_Navngf=slope4
-	ena = 55 
+	    insert ch_Navngf
+	        gmax_ch_Navngf = gNasoma //0.10*gna_scale
+	        //offset1_ch_Navngf = offset1 <- thera isn't offset1 in ch_Navngf, András (and so on...)
+	        //offset2_ch_Navngf = offset2
+	        //offset3_ch_Navngf = offset3
+	        //offset4_ch_Navngf = offset4
+	        //slope1_ch_Navngf = slope1
+	        //slope2_ch_Navngf = slope2
+	        //slope3_ch_Navngf = slope3
+	        //slope4_ch_Navngf = slope4
+	        ena = 55 
 		insert ch_Kdrfastngf
-	gmax_ch_Kdrfastngf=kdrf 
-	offset5_ch_Kdrfastngf=offset5 
-	offset6_ch_Kdrfastngf=offset6 
-	slope6_ch_Kdrfastngf=slope6 
-	slope5_ch_Kdrfastngf=slope5	
-//		insert ch_Kdrslow
-//	gmax_ch_Kdrslow=kdrf 
+	        gmax_ch_Kdrfastngf = kdrf 
+	        offset5_ch_Kdrfastngf = offset5 
+	        offset6_ch_Kdrfastngf = offset6 
+	        slope6_ch_Kdrfastngf = slope6 
+	        slope5_ch_Kdrfastngf = slope5	
+		//insert ch_Kdrslow
+	    //    gmax_ch_Kdrslow=kdrf 
 	
-	insert ch_leak
-	gmax_ch_leak = gleak
+	    insert ch_leak
+	        gmax_ch_leak = gleak
 	} 
 
 	access soma
 	distance()
-	forsec dendrite_list {
-		for (x,0) {
-			if (distance(x)<100) {
-			insert ch_Navngf
-			gmax_ch_Navngf=gNadend //0.08*gna_scale
-			offset1_ch_Navngf=offset1
-			offset2_ch_Navngf=offset2
-			offset3_ch_Navngf=offset3
-			offset4_ch_Navngf=offset4
-			slope1_ch_Navngf=slope1
-			slope2_ch_Navngf=slope2
-			slope3_ch_Navngf=slope3
-			slope4_ch_Navngf=slope4
-			ena = 55 
-				insert ch_Kdrfastngf
-			gmax_ch_Kdrfastngf=kdrfdend //.007
-			offset5_ch_Kdrfastngf=offset5 
-			offset6_ch_Kdrfastngf=offset6 
-			slope6_ch_Kdrfastngf=slope6 
-			slope5_ch_Kdrfastngf=slope5	
-			}
-		}
-	}	
 
 	forsec dendrite_list {
-	insert ch_leak
-	gmax_ch_leak = gleak
+	    insert ch_leak
+	        gmax_ch_leak = gleak
+
+		for (x,0) {
+			if (distance(x) < 100) {
+			    insert ch_Navngf
+                    //gmax_ch_Navngf = gNadend <- sets gmax uniformly in the whole section, not only in the segments, whose (midpoints) are closer than 100 um
+			        gmax_ch_Navngf(x) = gNadend //0.08*gna_scale
+			        //offset1_ch_Navngf = offset1 <- thera isn't offset1 in ch_Navngf, András (and so on...)
+			        //offset2_ch_Navngf = offset2
+			        //offset3_ch_Navngf = offset3
+			        //offset4_ch_Navngf = offset4
+			        //slope1_ch_Navngf = slope1
+			        //slope2_ch_Navngf = slope2
+			        //slope3_ch_Navngf = slope3
+			        //slope4_ch_Navngf = slope4
+			        ena = 55 
+				insert ch_Kdrfastngf
+			        //gmax_ch_Kdrfastngf = gKdrfdend <- see above - András
+                    gmax_ch_Kdrfastngf(x) = kdrfdend //.007
+			        offset5_ch_Kdrfastngf = offset5 
+			        offset6_ch_Kdrfastngf = offset6 
+			        slope6_ch_Kdrfastngf = slope6 
+			        slope5_ch_Kdrfastngf = slope5	
+			}
+		}
 	}
 }
 
