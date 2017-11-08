@@ -5,7 +5,7 @@
 
     <ionChannel id="KCaS" conductance="1pS" type="ionChannelHH" species="k">
         
-        <notes>Ca++ activated K+ channel (AKA small/'SK' channel) description (Yuen and Durand 1991, modified by Aradi and Holmes 1999 (based on data from Beck 1997, Lattore 1989, Sah 1991 and Lancaster 1991))</notes>
+        <notes>Ca++ activated K+ channel (AKA small/'SK' channel) description (Yuen and Durand 1991, modified by Aradi and Holmes 1999 (based on data from Beck 1997, Lattore 1989, Sah 1991 and Lancaster 1991)) forward rate is different from KCaS - hence the name new</notes>
         
         <gateHHrates id="q" instances="2">
             <q10Settings type="q10ExpTemp" q10Factor="3" experimentalTemp="34 degC"/>
@@ -26,7 +26,8 @@
         <Dynamics>
             <DerivedVariable name="ca_conc_i" dimension="none" value="caConc / CONC_SCALE"/>
             
-            <DerivedVariable name="r" dimension="per_time" value="(12.5 * ca_conc_i * ca_conc_i) / TIME_SCALE" exposure="r"/>          
+            <!-- value="(12.5 * ca_conc_i * ca_conc_i) ... in KCaS. 15 is used in Bezaire et al. 2016 eLife, but the cell models were still using 12.5 -->
+            <DerivedVariable name="r" dimension="per_time" value="(15 * ca_conc_i * ca_conc_i) / TIME_SCALE" exposure="r"/>          
         </Dynamics>
 
     </ComponentType>
