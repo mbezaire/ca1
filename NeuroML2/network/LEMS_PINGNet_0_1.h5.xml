@@ -2,7 +2,7 @@
     
     <!-- 
 
-        This LEMS file has been automatically generated using PyNeuroML v0.3.1 (libNeuroML v0.2.34)
+        This LEMS file has been automatically generated using PyNeuroML v0.3.3 (libNeuroML v0.2.34)
 
      -->
     
@@ -17,51 +17,35 @@
     <Include file="PyNN.xml"/>
     <Include file="PINGNet_0_1.net.nml.h5"/>
    
-    <Simulation id="Sim_PINGNet_0_1" length="100ms" step="0.01ms" target="PINGNet_0_1" seed="12345">  <!-- Note seed: ensures same random numbers used every run -->
+    <Simulation id="Sim_PINGNet_0_1" length="80ms" step="0.01ms" target="PINGNet_0_1" seed="1111">  <!-- Note seed: ensures same random numbers used every run -->
         
-        <Display id="Display_pop_pvbasket_v" title="Plots of Display_pop_pvbasket_v" timeScale="1ms" xmin="-10.0" xmax="110.0" ymin="-80" ymax="40">
+        <Display id="Display_pop_pvbasket_v" title="Plots of Display_pop_pvbasket_v" timeScale="1ms" xmin="-8.0" xmax="88.0" ymin="-80" ymax="40">
             <Line id="pop_pvbasket_0_pvbasketcell_v" quantity="pop_pvbasket/0/pvbasketcell/v" scale="1mV" color="#6aa799" timeScale="1ms"/>
             <Line id="pop_pvbasket_1_pvbasketcell_v" quantity="pop_pvbasket/1/pvbasketcell/v" scale="1mV" color="#029a72" timeScale="1ms"/>
             <Line id="pop_pvbasket_2_pvbasketcell_v" quantity="pop_pvbasket/2/pvbasketcell/v" scale="1mV" color="#d340bb" timeScale="1ms"/>
-            <Line id="pop_pvbasket_3_pvbasketcell_v" quantity="pop_pvbasket/3/pvbasketcell/v" scale="1mV" color="#4c73a9" timeScale="1ms"/>
-            <Line id="pop_pvbasket_4_pvbasketcell_v" quantity="pop_pvbasket/4/pvbasketcell/v" scale="1mV" color="#5e503a" timeScale="1ms"/>
         </Display>
         
-        <Display id="Display_pop_poolosyn_v" title="Plots of Display_pop_poolosyn_v" timeScale="1ms" xmin="-10.0" xmax="110.0" ymin="-80" ymax="40">
-            <Line id="pop_poolosyn_0_poolosyncell_v" quantity="pop_poolosyn/0/poolosyncell/v" scale="1mV" color="#3193ca" timeScale="1ms"/>
-            <Line id="pop_poolosyn_1_poolosyncell_v" quantity="pop_poolosyn/1/poolosyncell/v" scale="1mV" color="#90e5e9" timeScale="1ms"/>
-            <Line id="pop_poolosyn_2_poolosyncell_v" quantity="pop_poolosyn/2/poolosyncell/v" scale="1mV" color="#29645f" timeScale="1ms"/>
-            <Line id="pop_poolosyn_3_poolosyncell_v" quantity="pop_poolosyn/3/poolosyncell/v" scale="1mV" color="#1fcff4" timeScale="1ms"/>
-            <Line id="pop_poolosyn_4_poolosyncell_v" quantity="pop_poolosyn/4/poolosyncell/v" scale="1mV" color="#6ed4e9" timeScale="1ms"/>
+        <Display id="Display_pop_poolosyn_v" title="Plots of Display_pop_poolosyn_v" timeScale="1ms" xmin="-8.0" xmax="88.0" ymin="-80" ymax="40">
+            <Line id="pop_poolosyn_0_poolosyncell_v" quantity="pop_poolosyn/0/poolosyncell/v" scale="1mV" color="#4c73a9" timeScale="1ms"/>
+            <Line id="pop_poolosyn_1_poolosyncell_v" quantity="pop_poolosyn/1/poolosyncell/v" scale="1mV" color="#5e503a" timeScale="1ms"/>
+            <Line id="pop_poolosyn_2_poolosyncell_v" quantity="pop_poolosyn/2/poolosyncell/v" scale="1mV" color="#3193ca" timeScale="1ms"/>
+            <Line id="pop_poolosyn_3_poolosyncell_v" quantity="pop_poolosyn/3/poolosyncell/v" scale="1mV" color="#90e5e9" timeScale="1ms"/>
+            <Line id="pop_poolosyn_4_poolosyncell_v" quantity="pop_poolosyn/4/poolosyncell/v" scale="1mV" color="#29645f" timeScale="1ms"/>
         </Display>
         
-        <OutputFile id="Volts_file__pop_poolosyn" fileName="Sim_PINGNet_0_1.pop_poolosyn.v.dat">
-            <OutputColumn id="v_pop_poolosyn_0_poolosyncell_v" quantity="pop_poolosyn/0/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_1_poolosyncell_v" quantity="pop_poolosyn/1/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_2_poolosyncell_v" quantity="pop_poolosyn/2/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_3_poolosyncell_v" quantity="pop_poolosyn/3/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_4_poolosyncell_v" quantity="pop_poolosyn/4/poolosyncell/v"/> 
+        <OutputFile id="Sim_PINGNet_0_1_pop_pvbasket_v_dat" fileName="Sim_PINGNet_0_1.pop_pvbasket.v.dat">
+            <OutputColumn id="pop_pvbasket_0_pvbasketcell_v" quantity="pop_pvbasket/0/pvbasketcell/v"/> 
+            <OutputColumn id="pop_pvbasket_1_pvbasketcell_v" quantity="pop_pvbasket/1/pvbasketcell/v"/> 
+            <OutputColumn id="pop_pvbasket_2_pvbasketcell_v" quantity="pop_pvbasket/2/pvbasketcell/v"/> 
         </OutputFile>
         
-        <OutputFile id="Volts_file__pop_pvbasket" fileName="Sim_PINGNet_0_1.pop_pvbasket.v.dat">
-            <OutputColumn id="v_pop_pvbasket_0_pvbasketcell_v" quantity="pop_pvbasket/0/pvbasketcell/v"/> 
-            <OutputColumn id="v_pop_pvbasket_1_pvbasketcell_v" quantity="pop_pvbasket/1/pvbasketcell/v"/> 
-            <OutputColumn id="v_pop_pvbasket_2_pvbasketcell_v" quantity="pop_pvbasket/2/pvbasketcell/v"/> 
+        <OutputFile id="Sim_PINGNet_0_1_pop_poolosyn_v_dat" fileName="Sim_PINGNet_0_1.pop_poolosyn.v.dat">
+            <OutputColumn id="pop_poolosyn_0_poolosyncell_v" quantity="pop_poolosyn/0/poolosyncell/v"/> 
+            <OutputColumn id="pop_poolosyn_1_poolosyncell_v" quantity="pop_poolosyn/1/poolosyncell/v"/> 
+            <OutputColumn id="pop_poolosyn_2_poolosyncell_v" quantity="pop_poolosyn/2/poolosyncell/v"/> 
+            <OutputColumn id="pop_poolosyn_3_poolosyncell_v" quantity="pop_poolosyn/3/poolosyncell/v"/> 
+            <OutputColumn id="pop_poolosyn_4_poolosyncell_v" quantity="pop_poolosyn/4/poolosyncell/v"/> 
         </OutputFile>
-        
-        <EventOutputFile id="Spikes_file__pop_ca3" fileName="Sim_PINGNet_0_1.pop_ca3.spikes" format="ID_TIME">
-            <EventSelection id="0" select="pop_ca3/0/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="1" select="pop_ca3/1/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="2" select="pop_ca3/2/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="3" select="pop_ca3/3/stim_ca3" eventPort="spike"/> 
-        </EventOutputFile>
-        
-        <EventOutputFile id="Spikes_file__pop_ec" fileName="Sim_PINGNet_0_1.pop_ec.spikes" format="ID_TIME">
-            <EventSelection id="0" select="pop_ec/0/stim_ec" eventPort="spike"/> 
-            <EventSelection id="1" select="pop_ec/1/stim_ec" eventPort="spike"/> 
-            <EventSelection id="2" select="pop_ec/2/stim_ec" eventPort="spike"/> 
-            <EventSelection id="3" select="pop_ec/3/stim_ec" eventPort="spike"/> 
-        </EventOutputFile>
         
         <EventOutputFile id="Spikes_file__pop_poolosyn" fileName="Sim_PINGNet_0_1.pop_poolosyn.spikes" format="ID_TIME">
             <EventSelection id="0" select="pop_poolosyn/0/poolosyncell" eventPort="spike"/> 
