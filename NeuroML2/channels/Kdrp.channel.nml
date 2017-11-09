@@ -3,7 +3,7 @@
 
     <notes>NeuroML file containing a single ion channel</notes>
 
-    <ionChannel id="Kdrp" conductance="1pS" type="ionChannelHH" species="k">
+    <ionChannel id="Kdrp" conductance="10pS" type="ionChannelHH" species="k">
         
         <notes>Delayed rectifier K+ channel description (from Klee, Ficker and Heinmann 1995, modified by Migliore 1997 to account Dax)</notes>
         

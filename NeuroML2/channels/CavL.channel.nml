@@ -3,7 +3,7 @@
 
     <notes>NeuroML file containing a single ion channel</notes>
 
-    <ionChannel id="CavL" conductance="1pS" type="ionChannelHH" species="ca">
+    <ionChannel id="CavL" conductance="10pS" type="ionChannelHH" species="ca">
         
         <notes>L-type Ca++ channel description (Fisher 1990, Fox 1987 - modeled by Jaffe 1994)</notes>
         

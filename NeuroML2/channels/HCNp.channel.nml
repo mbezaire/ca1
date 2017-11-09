@@ -3,7 +3,7 @@
 
     <notes>NeuroML file containing a single ion channel</notes>
 
-    <ionChannel id="HCNp" conductance="1pS" type="ionChannelHH" species="non_specific">
+    <ionChannel id="HCNp" conductance="10pS" type="ionChannelHH" species="non_specific">
         
         <notes>Hyperpolarization-activated, CN-gated channel descriptions (from Magee 1998 - modeled by Cutsuridis 2010)</notes>
     
@@ -16,7 +16,7 @@
     </ionChannel>
     
     
-    <ionChannel id="HCNsomap" conductance="1pS" type="ionChannelHH" species="non_specific">
+    <ionChannel id="HCNsomap" conductance="10pS" type="ionChannelHH" species="non_specific">
         
         <gateHHtauInf id="l" instances="1">
             <q10Settings type="q10ExpTemp" q10Factor="4.5" experimentalTemp="33 degC"/>

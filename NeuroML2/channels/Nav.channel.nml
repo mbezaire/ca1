@@ -3,7 +3,7 @@
 
     <notes>NeuroML file containing a single ion channel</notes>
 
-    <ionChannel id="Nav" conductance="1pS" type="ionChannelHH" species="na">
+    <ionChannel id="Nav" conductance="10pS" type="ionChannelHH" species="na">
         
         <notes>Na+ channel description (modeled by Yuen and Durand 1991, modified by Aradi and Holmes 1999)</notes>
     

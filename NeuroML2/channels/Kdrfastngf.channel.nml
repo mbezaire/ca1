@@ -3,7 +3,7 @@
 
     <notes>NeuroML file containing a single ion channel</notes>
     
-    <ionChannel id="Kdrfastngf" conductance="1pS" type="ionChannelHH" species="k">
+    <ionChannel id="Kdrfastngf" conductance="10pS" type="ionChannelHH" species="k">
     <!-- not the same as ch_Kdrfastngf.mod, because those parameters are changed from hoc level ... - András -->
         
         <notes>Fast delayed rectifier K+ channel description for neurogliaform family (shifted from Kdrfast)</notes> 

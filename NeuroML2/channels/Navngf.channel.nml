@@ -3,7 +3,7 @@
 
     <notes>NeuroML file containing a single ion channel</notes>
 
-    <ionChannel id="Navngf" conductance="1pS" type="ionChannelHH" species="na">
+    <ionChannel id="Navngf" conductance="10pS" type="ionChannelHH" species="na">
 
         <notes>Na+ channel description; modified from Nav to have a much higher threshold, suitable for neurogliaform and ivy cells)</notes>
     

@@ -3,7 +3,7 @@
 
     <notes>NeuroML file containing a single ion channel</notes>
 
-    <ionChannel id="KvMnew" conductance="1pS" type="ionChannelHH" species="k">
+    <ionChannel id="KvMnew" conductance="10pS" type="ionChannelHH" species="k">
         
         <notes>M-type K+ channel description (from M.Shah 2008 - modeled by Migliore)</notes>
     
