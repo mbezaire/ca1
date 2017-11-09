@@ -98,8 +98,8 @@ if __name__ == "__main__":
         scale = sys.argv[1]
     except:
         scale = 100000
-        
-    format_ = "xml" #if scale < 2000 else "xml"  # see saving in GenerateHippocampalNet_oc
+    format_ = "hdf5" if scale < 2000 else "xml"
+
     zipName = "CA1_nml_scale%s"%scale
     networkName = "HippocampalNet_scale%s_oc"%scale  # change this to rerun NEURON version instead of oc. generated!
         

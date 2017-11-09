@@ -268,13 +268,11 @@ def add_proj(nml_doc, network, projID,
                                     
                                       
 def generate_hippocampal_net(networkID, scale=100000, duration=100, numData=101, 
-                             connData=430, synData=120, addSyns=True, format_="xml"):
-                                 
+                             connData=430, synData=120, addSyns=True, format_="xml"):                                 
     """generates hippocampal network, by reproducing the placement, connectivity and scaling of the Bezaire network""" 
   
-    #if scale > 2000:
-    #    format_ = "xml"
-    #    warnings.warn("***** Scaling down more then 2000x alters both population size and the connectivity seriously! *****")
+    if scale > 2000:
+        warnings.warn("***** Scaling down more then 2000x alters both population size and the connectivity seriously! *****")
         
     
     cell_types = ["axoaxonic", "bistratified", "cck", "ivy", "ngf", "olm", "poolosyn", "pvbasket", "sca"]
@@ -339,39 +337,52 @@ def generate_hippocampal_net(networkID, scale=100000, duration=100, numData=101,
     else:  # save big networks to h5 file
         oc.save_network(nml_doc, nml_fName,
                         validate=False, format=format_, use_subfolder=False)
-        
-                        
+                                
     return nml_doc, network, nml_fName, dPops
 
 
-# uncomment this version - if the latest NetPyNE gets installed on NSG (the one that can save spike times) 
 def generate_lems(nml_doc, network, nml_fName, dPops, duration=100, dt=0.01):
     """generates lems simulation (and specifies savings - spikes + 5 random traces for pops)"""
     
     # dictionary to specify saving (voltage traces)
-    mt_ = 5  #max traces to save
-    save_traces= {}        
+    mt_ = 5; ms_PC = 300  # max traces to save, max PCs for spike saving (to spare memory on NSG)
+    save_traces= {}; spike_save_pops = []; save_PCspikes = {}      
     for cell_type, pop in dPops.iteritems():
+    
         if cell_type not in ["ca3", "ec"]:
+            # save traces
             f_ = "Sim_%s.%s.v.dat"%(nml_doc.id, pop.component)
             save_traces[f_] = []            
             max_traces = mt_ if pop.get_size() >= mt_ else pop.get_size()
             for i in range(0, max_traces):
                 quantity = "%s/%i/%s/v"%(pop.id, i, pop.component)
                 save_traces[f_].append(quantity)
+            
+            # save spikes   
+            if cell_type != "poolosyn":
+                spike_save_pops.append(pop.id)
+            else:
+                s_ = "Sim_%s.%s.spikes"%(nml_doc.id, pop.component)
+                save_PCspikes[s_] = []
+                max_spikes = ms_PC if pop.get_size() >= ms_PC else pop.get_size()
+                for i in range(0, max_spikes):
+                    save_PCspikes[s_].append("%s/%i/%s"%(pop.id, i, pop.component))
+                
                
     lems_fName = oc.generate_lems_simulation(nml_doc, network, nml_fName,
                                              duration=duration, dt=dt,
                                              include_extra_lems_files=["PyNN.xml"],  # to include SpikeSourcePoisson
                                              gen_plots_for_all_v=False,
-                                             gen_saves_for_all_v=False,  # don't try to save tsince for ca3, ec                              
-                                             gen_saves_for_quantities=save_traces,
-                                             gen_spike_saves_for_all_somas=True,
+                                             gen_saves_for_all_v=False,                            
+                                             gen_saves_for_quantities=save_traces,  # save a few traces for every population
+                                             gen_spike_saves_for_all_somas=False,  # don't save ca3, ec spikes (just because they take memory)
+                                             gen_spike_saves_for_cells=save_PCspikes,  # save only "some" PC spikes
+                                             gen_spike_saves_for_only_populations=spike_save_pops,  # save spikes for other populations                               
                                              lems_file_name="LEMS_%s%s.xml"%(network.id, "_h5" if ".h5" in nml_fName else ""),
                                              simulation_seed=12345)
         
     return lems_fName
-    
+  
 
 def generate_instance(scale, duration, format_, run_simulation, simulator, generate_LEMS = True):
     """helper function to make automated testing easier"""
@@ -401,19 +412,22 @@ def generate_instance(scale, duration, format_, run_simulation, simulator, gener
         else:
             raise Exception("simulator:%s is not yet implemented"%simulator)
 
+
 if __name__ == "__main__":
 
     if len(sys.argv)==2 and sys.argv[1] == "-test":
         
-        #generate_instance(100000, 500, "xml", False, None)
-        #generate_instance(10000, 100, "xml", False, None)
+        generate_instance(100000, 500, "xml", False, None)
+        generate_instance(10000, 100, "xml", False, None)
         generate_instance(1000, 100, "hdf5", False, None)
 
     else:
         try:
             scale = int(sys.argv[1])       
         except:
-            scale = 100000     
+            scale = 100000
+        format_ = "hdf5" if scale < 2000 else "xml"   
+        
         try:
             run_simulation = sys.argv[2]    
         except:
@@ -425,7 +439,7 @@ if __name__ == "__main__":
 
         duration = 500  # ms
         
-        generate_instance(scale, duration, "xml", run_simulation, simulator)
+        generate_instance(scale, duration, format_, run_simulation, simulator)
 
 
 
