@@ -2,7 +2,7 @@
     
     <!-- 
 
-        This LEMS file has been automatically generated using PyNeuroML v0.3.2 (libNeuroML v0.2.34)
+        This LEMS file has been automatically generated using PyNeuroML v0.3.4 (libNeuroML v0.2.34)
 
      -->
     
@@ -73,24 +73,8 @@
             <EventSelection id="0" select="pop_olm/0/olmcell" eventPort="spike"/> 
         </EventOutputFile>
         
-        <EventOutputFile id="Spikes_file__pop_ec" fileName="Sim_HippocampalNet_scale100000_oc.pop_ec.spikes" format="ID_TIME">
-            <EventSelection id="0" select="pop_ec/0/stim_ec" eventPort="spike"/> 
-            <EventSelection id="1" select="pop_ec/1/stim_ec" eventPort="spike"/> 
-        </EventOutputFile>
-        
-        <EventOutputFile id="Spikes_file__pop_poolosyn" fileName="Sim_HippocampalNet_scale100000_oc.pop_poolosyn.spikes" format="ID_TIME">
-            <EventSelection id="0" select="pop_poolosyn/0/poolosyncell" eventPort="spike"/> 
-            <EventSelection id="1" select="pop_poolosyn/1/poolosyncell" eventPort="spike"/> 
-            <EventSelection id="2" select="pop_poolosyn/2/poolosyncell" eventPort="spike"/> 
-        </EventOutputFile>
-        
         <EventOutputFile id="Spikes_file__pop_pvbasket" fileName="Sim_HippocampalNet_scale100000_oc.pop_pvbasket.spikes" format="ID_TIME">
             <EventSelection id="0" select="pop_pvbasket/0/pvbasketcell" eventPort="spike"/> 
-        </EventOutputFile>
-        
-        <EventOutputFile id="Spikes_file__pop_ca3" fileName="Sim_HippocampalNet_scale100000_oc.pop_ca3.spikes" format="ID_TIME">
-            <EventSelection id="0" select="pop_ca3/0/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="1" select="pop_ca3/1/stim_ca3" eventPort="spike"/> 
         </EventOutputFile>
         
         <EventOutputFile id="Spikes_file__pop_cck" fileName="Sim_HippocampalNet_scale100000_oc.pop_cck.spikes" format="ID_TIME">
@@ -103,6 +87,12 @@
         
         <EventOutputFile id="Spikes_file__pop_ivy" fileName="Sim_HippocampalNet_scale100000_oc.pop_ivy.spikes" format="ID_TIME">
             <EventSelection id="0" select="pop_ivy/0/ivycell" eventPort="spike"/> 
+        </EventOutputFile>
+        
+        <EventOutputFile id="Sim_HippocampalNet_scale100000_oc_poolosyncell_spikes" fileName="Sim_HippocampalNet_scale100000_oc.poolosyncell.spikes" format="ID_TIME">
+            <EventSelection id="0" select="pop_poolosyn/0/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="1" select="pop_poolosyn/1/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="2" select="pop_poolosyn/2/poolosyncell" eventPort="spike"/> 
         </EventOutputFile>
         
     </Simulation>

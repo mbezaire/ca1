@@ -268,7 +268,8 @@ def add_proj(nml_doc, network, projID,
                                     
                                       
 def generate_hippocampal_net(networkID, scale=100000, duration=100, numData=101, 
-                             connData=430, synData=120, addSyns=True, format_="xml"):                                 
+                             connData=430, synData=120, addSyns=True, format_="xml",
+                             include_external_stims=True):                                 
     """generates hippocampal network, by reproducing the placement, connectivity and scaling of the Bezaire network""" 
   
     if scale > 2000:
@@ -276,9 +277,10 @@ def generate_hippocampal_net(networkID, scale=100000, duration=100, numData=101,
         
     
     cell_types = ["axoaxonic", "bistratified", "cck", "ivy", "ngf", "olm", "poolosyn", "pvbasket", "sca"]
-    
+
+    reference = networkID + ('' if include_external_stims else '_NoInput')
     # init nml document
-    nml_doc, network = oc.generate_network(networkID, network_seed=12345, temperature="34degC")
+    nml_doc, network = oc.generate_network(reference, network_seed=12345, temperature="34degC")
     
     # include necessary files
     for cell_type in cell_types:
@@ -289,6 +291,12 @@ def generate_hippocampal_net(networkID, scale=100000, duration=100, numData=101,
     
     # create populations
     dCells = get_popdata(numData)
+    
+    if not include_external_stims:
+        
+        del dCells['ca3']
+        del dCells['ec']
+    
     dPops = {}  # dict for storing populations (used for creating projections)
     num_cells = 0
     for cell_type, props in dCells.iteritems():
@@ -308,22 +316,23 @@ def generate_hippocampal_net(networkID, scale=100000, duration=100, numData=101,
         num_cons = 0
         for projID, props in dSyns.iteritems():
             precell_type = props["precell_type"]; postcell_type = props["postcell_type"]  # just to get populations from pop dictionary 
-            prepop = dPops[precell_type]; postpop = dPops[postcell_type]               
-            if "tau_rise_A" not in props:  # single synapse
-                proj = add_proj(nml_doc, network,
-                                projID, prepop, postpop,
-                                tau_rise=[props["tau_rise"]], tau_decay=[props["tau_decay"]], e_rev=[props["e_rev"]],
-                                weight=props["weight"], ncons=props["ncons"], nsyns=props["nsyns"],
-                                post_seg_group=props["post_seg_group"])
-            else:  # boundled synapse
-                proj = add_proj(nml_doc, network,
-                                projID, prepop, postpop,
-                                tau_rise=[props["tau_rise_A"], props["tau_rise_B"]],
-                                tau_decay=[props["tau_decay_A"], props["tau_decay_B"]],
-                                e_rev=[props["e_rev_A"], props["e_rev_B"]],
-                                weight=props["weight"], ncons=props["ncons"], nsyns=props["nsyns"],
-                                post_seg_group=props["post_seg_group"])            
-            num_cons += len(proj[0].connection_wds)
+            if precell_type in dPops and postcell_type in dPops:
+                prepop = dPops[precell_type]; postpop = dPops[postcell_type]               
+                if "tau_rise_A" not in props:  # single synapse
+                    proj = add_proj(nml_doc, network,
+                                    projID, prepop, postpop,
+                                    tau_rise=[props["tau_rise"]], tau_decay=[props["tau_decay"]], e_rev=[props["e_rev"]],
+                                    weight=props["weight"], ncons=props["ncons"], nsyns=props["nsyns"],
+                                    post_seg_group=props["post_seg_group"])
+                else:  # boundled synapse
+                    proj = add_proj(nml_doc, network,
+                                    projID, prepop, postpop,
+                                    tau_rise=[props["tau_rise_A"], props["tau_rise_B"]],
+                                    tau_decay=[props["tau_decay_A"], props["tau_decay_B"]],
+                                    e_rev=[props["e_rev_A"], props["e_rev_B"]],
+                                    weight=props["weight"], ncons=props["ncons"], nsyns=props["nsyns"],
+                                    post_seg_group=props["post_seg_group"])            
+                num_cons += len(proj[0].connection_wds)
                                         
         print("Cells connected; #connections:%i "%num_cons)
         
@@ -384,7 +393,7 @@ def generate_lems(nml_doc, network, nml_fName, dPops, duration=100, dt=0.01):
     return lems_fName
   
 
-def generate_instance(scale, duration, format_, run_simulation, simulator, generate_LEMS = True):
+def generate_instance(scale, duration, format_, run_simulation, simulator, generate_LEMS = True, include_external_stims=True):
     """helper function to make automated testing easier"""
 
     networkID = "HippocampalNet_scale%i_oc"%scale
@@ -393,7 +402,8 @@ def generate_instance(scale, duration, format_, run_simulation, simulator, gener
     nml_doc, network, nml_fName, dPops = generate_hippocampal_net(networkID=networkID,
                                                                   scale=scale,
                                                                   duration=duration,
-                                                                  format_=format_)
+                                                                  format_=format_,
+                                                                  include_external_stims=include_external_stims)
     # generate LEMS simulation                                                
     if generate_LEMS:
         lems_fName = generate_lems(nml_doc, network, nml_fName, dPops, duration=duration)
@@ -418,8 +428,11 @@ if __name__ == "__main__":
     if len(sys.argv)==2 and sys.argv[1] == "-test":
         
         generate_instance(100000, 500, "xml", False, None)
-        generate_instance(10000, 100, "xml", False, None)
+        generate_instance(100000, 500, "xml", False, None, include_external_stims=False)
+        generate_instance(10000, 100, "hdf5", False, None)
+        generate_instance(10000, 100, "hdf5", False, None, include_external_stims=False)
         generate_instance(1000, 100, "hdf5", False, None)
+        generate_instance(1000, 100, "hdf5", False, None, include_external_stims=False)
 
     else:
         try:
