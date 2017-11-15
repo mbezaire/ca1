@@ -3,7 +3,7 @@
 """ 
 Creates a NeuroML2 version of the hippocampal network by Marianne Bezaire using opencortex
 (by reproducing the cell placement and the connectivity)
-Authors: András Ecker, Padraig Gleeson, last update: 09.2017
+Authors: András Ecker, Padraig Gleeson, last update: 11.2017
 """
 
 import os

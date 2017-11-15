@@ -95,7 +95,7 @@ def create_zip(zipName, mainDirName, rm=True):
 if __name__ == "__main__":
 
     try:
-        scale = sys.argv[1]
+        scale = int(sys.argv[1])
     except:
         scale = 100000
     format_ = "hdf5" if scale < 2000 else "xml"
