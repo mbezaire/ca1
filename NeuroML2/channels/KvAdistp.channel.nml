@@ -3,7 +3,7 @@
 
     <notes>NeuroML file containing a single ion channel</notes>
     
-    <ionChannel id="KvAdistp" conductance="1pS" type="ionChannelHH" species="k">
+    <ionChannel id="KvAdistp" conductance="10pS" type="ionChannelHH" species="k">
         
         <notes>A-type K+ channel description (from Klee, Ficker and Heinmann 1995, modeled by Migliore 1997 - modified by Poolos 2002, Poirazi 2003 and Marianne Bezaire)</notes>
 

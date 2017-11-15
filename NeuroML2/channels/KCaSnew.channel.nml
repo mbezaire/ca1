@@ -3,7 +3,7 @@
 
     <notes>NeuroML file containing a single ion channel</notes>
 
-    <ionChannel id="KCaSnew" conductance="1pS" type="ionChannelHH" species="k">
+    <ionChannel id="KCaSnew" conductance="10pS" type="ionChannelHH" species="k">
         
         <notes>Ca++ activated K+ channel (AKA small/'SK' channel) description (Yuen and Durand 1991, modified by Aradi and Holmes 1999 (based on data from Beck 1997, Lattore 1989, Sah 1991 and Lancaster 1991)) forward rate is different from KCaS - hence the name new</notes>
         

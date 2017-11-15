@@ -78,7 +78,8 @@ def add_proj(network, prepop, postpop, ncons, post_seg_group, weight_mult=1):
 
 
 def generate_PING_net(networkID, dPopsize, dNconns, dWeightMults, rate=5,
-                      generate_LEMS=True, duration=100, dt=0.01, format_="xml",target_dir="./"):
+                      generate_LEMS=True, duration=100, dt=0.01, format_="xml", target_dir="./",
+                      simulation_seed=12345, network_seed=12345):
     """generates PC-BC network using methods above"""
     
     if dt > 0.015:
@@ -88,7 +89,7 @@ def generate_PING_net(networkID, dPopsize, dNconns, dWeightMults, rate=5,
     if "test" in target_dir:
         relative = "../../"
     
-    nml_doc, network = oc.generate_network(networkID, network_seed=12345, temperature="34degC")
+    nml_doc, network = oc.generate_network(networkID, network_seed=network_seed, temperature="34degC")
         
     # include necessary files
     if dPopsize["poolosyn"] > 0:
@@ -164,9 +165,9 @@ def generate_PING_net(networkID, dPopsize, dNconns, dWeightMults, rate=5,
         for cell_type, pop in dPops.iteritems():  # stim pops not included
             d_ = "Display_%s_v"%pop.id
             displays[d_] = []
-            f_ = "Sim_%s.%s.v.dat"%(nml_doc.id, pop.component)           
+            f_ = "Sim_%s.%s.v.dat"%(nml_doc.id, pop.id)           
             save_traces[f_] = []
-            s_ = "Sim_%s.%s.spikes"%(nml_doc.id, pop.component)
+            s_ = "Sim_%s.%s.spikes"%(nml_doc.id, pop.id)
             save_spikes[s_] = []
             max_traces = mt_ if pop.get_size() >= mt_ else pop.get_size()
             for i in range(0, max_traces):
@@ -187,7 +188,7 @@ def generate_PING_net(networkID, dPopsize, dNconns, dWeightMults, rate=5,
                                                  #gen_spike_saves_for_cells=save_spikes,
                                                  lems_file_name="LEMS_%s%s.xml"%(network.id,".h5" if format_=="hdf5" else ""),
                                                  include_extra_lems_files=["PyNN.xml"],  # to include SpikeSourcePoisson
-                                                 simulation_seed=12345,
+                                                 simulation_seed=simulation_seed,
                                                  target_dir=target_dir)
                                                  
     else:
@@ -196,7 +197,14 @@ def generate_PING_net(networkID, dPopsize, dNconns, dWeightMults, rate=5,
     return lems_fName
      
 
-def generate_instance(scaling, simduration, format_, run_simulation, simulator, target_dir):
+def generate_instance(scaling, 
+                      simduration, 
+                      format_, 
+                      run_simulation, 
+                      simulator, 
+                      target_dir,
+                      simulation_seed=12345,
+                      network_seed=12345):
     """helper function to make automated testing easier"""
 
     rate = 10
@@ -215,7 +223,9 @@ def generate_instance(scaling, simduration, format_, run_simulation, simulator, 
         reference += ("_%s"%scaling).replace(".","_")       
     lems_fName = generate_PING_net(reference, dPopsize, dNconns, dWeightMults, rate,
                                    generate_LEMS=True, duration=simduration, dt=dt,
-                                   format_=format_, target_dir=target_dir)
+                                   format_=format_, target_dir=target_dir,
+                                   simulation_seed=simulation_seed,
+                                   network_seed=network_seed)
 
     if lems_fName and run_simulation:
         if simulator == "NEURON":
@@ -247,10 +257,12 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:    
         if sys.argv[1] == "-test":
             
-            generate_instance(0.1, 100, "xml",  False, "NEURON", "./")
-            generate_instance(0.1, 100, "hdf5", False, "NEURON", "./")  # scaled down by 10
+            generate_instance(0.1, 80, "xml",  False, "NEURON", "./",simulation_seed=1111,network_seed=12345)  # scaled down by 10
+            generate_instance(0.1, 80, "hdf5", False, "NEURON", "./",simulation_seed=1111,network_seed=12345)  # scaled down by 10
             generate_instance(10,  100, "hdf5", False, "NEURON", "./")  # scaled up by 10
 
+            exit()
+            
         else:
             run_simulation = sys.argv[1]
             try:

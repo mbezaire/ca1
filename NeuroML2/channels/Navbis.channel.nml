@@ -3,7 +3,7 @@
 
     <notes>NeuroML file containing a single ion channel</notes>
 
-    <ionChannel id="Navbis" conductance="1pS" type="ionChannelHH" species="na">
+    <ionChannel id="Navbis" conductance="10pS" type="ionChannelHH" species="na">
         
         <notes>Na+ channel description; modified from Nav to have a slightly higher threshold, suitable for bistratified cells</notes>
                

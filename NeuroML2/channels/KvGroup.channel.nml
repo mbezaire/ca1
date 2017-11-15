@@ -3,7 +3,7 @@
 
     <notes>NeuroML file containing a single ion channel</notes>
 
-    <ionChannel id="KvGroup" conductance="1pS" type="ionChannelHH" species="k">
+    <ionChannel id="KvGroup" conductance="10pS" type="ionChannelHH" species="k">
         
         <notes>Slow K+ channel description (data from Yuen and Durand 1991, modeled by Aradi and Holmes 2002, modified by Bezaire (to fit Lien and Jonas 2003))</notes>
 

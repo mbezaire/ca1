@@ -37,10 +37,11 @@
                 <channelDensity condDensity="0.3mS_per_cm2" id="passive" ionChannel="passive_chan" erev="-65 mV" ion="non_specific"/>
                 <channelDensity condDensity="0mS_per_cm2" id="ica_clamp_all" ionChannel="ica_clamp" erev="50mV" ion="ca"/> <!-- condDensity="1e-3"-->
              
-                <channelDensityNernst condDensity="5mS_per_cm2" id="CavN_all" ionChannel="CavN" ion="ca"/>
-                <channelDensityGHK2 condDensity="15mS_per_cm2" id="CavL_all" ionChannel="CavL" ion="ca"/>
                 <channelDensity condDensity="10mS_per_cm2" id="KvCaB_all" ionChannel="KvCaB" erev="-90mV" ion="k"/>
                 <channelDensity condDensity="10mS_per_cm2" id="KCaS_all" ionChannel="KCaS" erev="-90mV" ion="k"/>
+                
+                <channelDensityNernst condDensity="5mS_per_cm2" id="CavN_all" ionChannel="CavN" ion="ca"/>
+                <channelDensityGHK2 condDensity="15mS_per_cm2" id="CavL_all" ionChannel="CavL" ion="ca"/>
                 
                 <spikeThresh value="0 mV"/>
                 <specificCapacitance value="1.0 uF_per_cm2"/>

@@ -3,7 +3,7 @@
 
     <notes>NeuroML file containing a single ion channel</notes>
 
-    <ionChannel id="Navp" conductance="1pS" type="ionChannelHH" species="na">
+    <ionChannel id="Navp" conductance="10pS" type="ionChannelHH" species="na">
 
         <notes>Na+ channel description (from Migliore 1997, modified in 1999, Poolos 2002)</notes>
         
@@ -31,7 +31,7 @@
     </ionChannel>
     
 
-    <ionChannel id="Navapicalp" conductance="1pS" type="ionChannelHH" species="na">
+    <ionChannel id="Navapicalp" conductance="10pS" type="ionChannelHH" species="na">
 
         <gate id="m" type="gateHHratesTau" instances="3">
             <q10Settings type="q10ExpTemp" q10Factor="2" experimentalTemp="24 degC"/>

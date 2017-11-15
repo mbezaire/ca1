@@ -3,7 +3,7 @@
 
     <notes>NeuroML file containing a single ion channel</notes>
 
-    <ionChannel id="HCNolm" conductance="1pS" type="ionChannelHH" species="h">
+    <ionChannel id="HCNolm" conductance="10pS" type="ionChannelHH" species="h">
         
         <notes>Hyperpolarization-activated, CN-gated h channel description (from Saraga 2003, Lawrence 2006 and Cutsuridis 2010)</notes>
         
