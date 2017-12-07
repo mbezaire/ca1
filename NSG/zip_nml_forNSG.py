@@ -116,7 +116,7 @@ if __name__ == "__main__":
     
     create_init(mainDirName, format_, networkName)
     
-    create_zip(zipName, mainDirName, rm=False)
+    create_zip(zipName, mainDirName)#, rm=False)
     
     
     

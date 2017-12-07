@@ -8,7 +8,7 @@ author: András Ecker, last update 08.2017
 import os
 import numpy as np
 import matplotlib.pyplot as plt
-from analyse_results import helper_getcores, helper_simduration
+from analyse_nrn_results import helper_getcores, helper_simduration
 from plots import plot_rasters, plot_traces
 
 basePath = os.path.sep.join(os.path.abspath(__file__).split(os.path.sep)[:-1])
@@ -53,17 +53,17 @@ def get_spikes(runName, dIDx, numCores):
             lastID = idx[-1]
     
     # read in spike times
-    for core in range(0, numCores):  # iterates over diff. files by diff. cores
-        with open(os.path.join(basePath, runName, "spikeraster_%i.dat"%core)) as f:
-        #with open(os.path.join(basePath, runName, "spikeraster.dat")) as f:  # for concatenated spikerasters
-            for line in f:
-                spikingNeuron = int(line.split()[1])
-                if spikingNeuron < lastID:  # not stim. cell
-                    spikeTime = float(line.split()[0])
-                    for cell_type, idx in dIDx.iteritems():  # this is a pretty slow solution...
-                        if spikingNeuron in idx:
-                            dSpikeTimes[cell_type].append(spikeTime)
-                            dSpikingNeurons[cell_type].append(spikingNeuron)
+    #for core in range(0, numCores):  # iterates over diff. files by diff. cores
+        #with open(os.path.join(basePath, runName, "spikeraster_%i.dat"%core)) as f:
+    with open(os.path.join(basePath, runName, "spikeraster.dat")) as f:  # for concatenated spikerasters
+        for line in f:
+            spikingNeuron = int(line.split()[1])
+            if spikingNeuron < lastID:  # not stim. cell
+                spikeTime = float(line.split()[0])
+                for cell_type, idx in dIDx.iteritems():  # this is a pretty slow solution...
+                    if spikingNeuron in idx:
+                        dSpikeTimes[cell_type].append(spikeTime)
+                        dSpikingNeurons[cell_type].append(spikingNeuron)
                    
     if len(dSpikingNeurons["poolosyn"]):
         print("spikes read from run: %s"%runName)
@@ -101,7 +101,7 @@ def get_traces(runName, dIDx):
     
 if __name__ == "__main__":
 
-    runName = "best_mixed_fastconn_scale10"
+    runName = "CA1_nrn_scale10_run" #"best_mixed_fastconn_scale10"
        
     numCores = helper_getcores(runName)
     simduration = helper_simduration(runName)

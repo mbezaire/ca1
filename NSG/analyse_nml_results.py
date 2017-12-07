@@ -91,9 +91,9 @@ def get_popsize(resultDir, scale):
 if __name__ == "__main__":
     
     # untar results
-    tarName = "output_750.tar.gz"       
-    scale, resultDir = extract_tar(tarName)    
-    #scale = 2500
+    tarName = "output_nml300.tar.gz"       
+    #scale, resultDir = extract_tar(tarName)
+    scale = 300
     resultDir = os.path.join(NSGbasePath, "results_nml_scale%s"%scale)
     print("scale = %s"%scale)
     

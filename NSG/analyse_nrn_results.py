@@ -44,7 +44,7 @@ def helper_getcores(runName):
     return ncores
 
 
-def helper_simduration(runName):  
+def helper_simduration(runName):
     """get specified duration of the simulation (only for figure xlims)"""
     
     import re
@@ -103,15 +103,15 @@ def get_spikes(runName, numCores, runTime, plot_=True):
     spikeTimes = []
     spikingNeurons = []
     rate = np.zeros((int(runTime)))  # hard coded for 1*ms binning
-    for core in range(0, numCores):  # iterates over diff. files by diff. cores
-        with open(os.path.join(basePath, runName, "spikeraster_%i.dat"%core)) as f:
-        #with open(os.path.join(basePath, runName, "spikeraster.dat")) as f:  # for concatenated spikerasters...
-            for line in f:
-                if int(line.split()[1]) in idx:
-                    spikeTime = float(line.split()[0])
-                    spikeTimes.append(spikeTime)
-                    spikingNeurons.append(int(line.split()[1]))
-                    rate[int(spikeTime)] += 1
+    #for core in range(0, numCores):  # iterates over diff. files by diff. cores
+        #with open(os.path.join(basePath, runName, "spikeraster_%i.dat"%core)) as f:
+    with open(os.path.join(basePath, runName, "spikeraster.dat")) as f:  # for concatenated spikerasters...
+        for line in f:
+            if int(line.split()[1]) in idx:
+                spikeTime = float(line.split()[0])
+                spikeTimes.append(spikeTime)
+                spikingNeurons.append(int(line.split()[1]))
+                rate[int(spikeTime)] += 1
     rate = rate / (idx.shape[0] * 0.001)  # normalize rate
                    
     if len(spikingNeurons):
@@ -143,11 +143,12 @@ def analyse_rate(rate, runName):
 if __name__ == "__main__":
 
     tarName = "output.tar.gz"
-    zipName = "CA1"
-    runName = "best_mixed_fastconn_scale10"
+    zipName = "CA1_nrn_scale10"
+    runName = "CA1_nrn_scale10_run"
        
-    #extract_tar(tarName, zipName, runName)
+    extract_tar(tarName, zipName, runName)
     numCores = helper_getcores(runName)
+    print("sim: %s (#cores:%s) loaded"%(runName, numCores))
     runTime = analyse_lfp(runName)
     _, _, rate = get_spikes(runName, numCores, runTime)
     if rate.any():

@@ -21,7 +21,7 @@ def create_zip(zipName, runName, scale, simDuration=100, rm=True,
     assert conn_algo in ["fastconn", "repeatconn"], "%s not implemented"%conn_algo
     
     if scale > 1000:
-        warnings.warn("***** Scaling down more then 1000x alters population size, slice volume and the connectivity seriously! *****")
+        warnings.warn("***** Scaling down more then 2000x alters population size, slice volume and the connectivity seriously! *****")
     
     # create directory (if exist it will delete and recreate)
     mainDirName = os.path.join(basePath, "NSG", zipName)
@@ -67,7 +67,7 @@ def create_zip(zipName, runName, scale, simDuration=100, rm=True,
                     outf.write('default_var("RunName","%s")\n'%runName)
                 elif "Connectivity" in line:
                     if conn_algo == "fastconn":
-                        outf.write('default_var("Connectivity","try_all_repeatstim")\n')  # doesn't allows multiple connection from the same precell to postcell (see fastconn.mod)
+                        outf.write('default_var("Connectivity","try_all_randfaststim")\n')  # doesn't allows multiple connection from the same precell to postcell (see fastconn.mod)
                     elif conn_algo == "repeatconn":                        
                         outf.write('default_var("Connectivity","try_all_repeatstim")\n')  # allows multiple connection from the same precell to postcell - usefull for the downscaled version (see repeatconn.mod)
                 elif "Scale" in line:
@@ -111,16 +111,16 @@ def create_zip(zipName, runName, scale, simDuration=100, rm=True,
 if __name__ == "__main__":
 
     try:
-        runName = sys.argv[1]    
-    except:
-        runName = "TestRun_nrn"
-    try:
-        scale = int(sys.argv[2])       
+        scale = int(sys.argv[1])       
     except:
         scale = 10000
+    try:
+        runName = sys.argv[2]    
+    except:
+        runName = "CA1_nrn_scale%s_run"%scale
 
-    zipName = "CA1_nrn"
-    simDuration = 10  # ms
+    zipName = "CA1_nrn_scale%s"%scale
+    simDuration = 2000  # ms
     conn_algo = "fastconn"
     
     create_zip(zipName, runName, scale, simDuration=simDuration, rm=False, conn_algo=conn_algo)
