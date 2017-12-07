@@ -347,14 +347,14 @@ def generate_hippocampal_net(networkID, scale=100000, duration=100, numData=101,
         oc.save_network(nml_doc, nml_fName,
                         validate=False, format=format_, use_subfolder=False)
                                 
-    return nml_doc, network, nml_fName, dPops
+    return nml_doc, network.id, nml_fName, dPops
 
 
-def generate_lems(nml_doc, network, nml_fName, dPops, duration=100, dt=0.01):
+def generate_lems(nml_doc, networkID, nml_fName, dPops, duration=100, dt=0.01):
     """generates lems simulation (and specifies savings - spikes + 5 random traces for pops)"""
     
     # dictionary to specify saving (voltage traces)
-    mt_ = 5; ms_PC = 300  # max traces to save, max PCs for spike saving (to spare memory on NSG)
+    mt_ = 5; ms_PC = 1500  # max traces to save, max PCs for spike saving (to spare memory on NSG)
     save_traces= {}; spike_save_pops = []; save_PCspikes = {}      
     for cell_type, pop in dPops.iteritems():
     
@@ -371,15 +371,16 @@ def generate_lems(nml_doc, network, nml_fName, dPops, duration=100, dt=0.01):
             if cell_type != "poolosyn":
                 spike_save_pops.append(pop.id)
             else:
-                s_ = "Sim_%s.%s.spikes"%(nml_doc.id, pop.component)
+                s_ = "Sim_%s.pop_poolosyn.spikes"%(nml_doc.id, pop.component)
                 save_PCspikes[s_] = []
                 max_spikes = ms_PC if pop.get_size() >= ms_PC else pop.get_size()
                 for i in range(0, max_spikes):
                     save_PCspikes[s_].append("%s/%i/%s"%(pop.id, i, pop.component))
                 
                
-    lems_fName = oc.generate_lems_simulation(nml_doc, network, nml_fName,
+    lems_fName = oc.generate_lems_simulation(networkID, nml_fName,
                                              duration=duration, dt=dt,
+                                             nml_doc=nml_doc,
                                              include_extra_lems_files=["PyNN.xml"],  # to include SpikeSourcePoisson
                                              gen_plots_for_all_v=False,
                                              gen_saves_for_all_v=False,                            
@@ -387,7 +388,9 @@ def generate_lems(nml_doc, network, nml_fName, dPops, duration=100, dt=0.01):
                                              gen_spike_saves_for_all_somas=False,  # don't save ca3, ec spikes (just because they take memory)
                                              gen_spike_saves_for_cells=save_PCspikes,  # save only "some" PC spikes
                                              gen_spike_saves_for_only_populations=spike_save_pops,  # save spikes for other populations                               
-                                             lems_file_name="LEMS_%s%s.xml"%(network.id, "_h5" if ".h5" in nml_fName else ""),
+                                             lems_file_name="LEMS_%s%s.xml"%(networkID, "_h5" if ".h5" in nml_fName else ""),
+                                             copy_neuroml=False,
+                                             lems_file_generate_seed=12345,
                                              simulation_seed=12345)
         
     return lems_fName
@@ -399,14 +402,14 @@ def generate_instance(scale, duration, format_, run_simulation, simulator, gener
     networkID = "HippocampalNet_scale%i_oc"%scale
     
     # generate network
-    nml_doc, network, nml_fName, dPops = generate_hippocampal_net(networkID=networkID,
-                                                                  scale=scale,
-                                                                  duration=duration,
-                                                                  format_=format_,
-                                                                  include_external_stims=include_external_stims)
+    nml_doc, networkID, nml_fName, dPops = generate_hippocampal_net(networkID=networkID,
+                                                                    scale=scale,
+                                                                    duration=duration,
+                                                                    format_=format_,
+                                                                    include_external_stims=include_external_stims)
     # generate LEMS simulation                                                
     if generate_LEMS:
-        lems_fName = generate_lems(nml_doc, network, nml_fName, dPops, duration=duration)
+        lems_fName = generate_lems(nml_doc, networkID, nml_fName, dPops, duration=duration)
     else:
         lems_fName = None
 
@@ -450,7 +453,7 @@ if __name__ == "__main__":
         except:
             simulator = "NEURON"
 
-        duration = 500  # ms
+        duration = 2000  # ms
         
         generate_instance(scale, duration, format_, run_simulation, simulator)
 
