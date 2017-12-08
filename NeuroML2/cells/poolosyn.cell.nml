@@ -5416,6 +5416,9 @@
                 <include segmentGroup="soma_11"/>
                 <include segmentGroup="soma_12"/>
             </segmentGroup>
+            <segmentGroup id="somaMidpoint">
+                <member segment="12"/>
+            </segmentGroup>
             <segmentGroup id="dendrite_group">
                 <include segmentGroup="basal_0"/>
                 <include segmentGroup="basal_1"/>

@@ -33,8 +33,7 @@ def add_pop(nml_doc, network, cell_type, pop_size, duration=None, rate=None):
                                                        x_min=0, y_min=0, z_min=0,
                                                        x_size=2000, y_size=500, z_size=1000,
                                                        color=helper_getcolor(cell_type))
-        
-        pop.properties.append(neuroml.Property("radius", 5))                                     
+                                   
         return pop
                                                    
     else:
@@ -47,12 +46,14 @@ def add_pop(nml_doc, network, cell_type, pop_size, duration=None, rate=None):
         elif cell_type == "ec":
             x_min = 1900
         
-        return oc.add_population_in_rectangular_region(network,
+        pop = oc.add_population_in_rectangular_region(network,
                                                        pop_id="pop_%s"%cell_type, cell_id=spike_gen.id,
                                                        size=pop_size,
                                                        x_min=x_min, y_min=550, z_min=450,
                                                        x_size=100, y_size=100, z_size=100,
                                                        color=helper_getcolor(cell_type))
+        pop.properties.append(neuroml.Property("radius", 5))        
+        return pop     
                                                  
                                                   
 def add_proj(network, prepop, postpop, ncons, post_seg_group, weight_mult=1):
@@ -62,7 +63,9 @@ def add_proj(network, prepop, postpop, ncons, post_seg_group, weight_mult=1):
     precell_type = re.split(r'\_', prepop.id)[1]
     postcell_type = re.split(r'\_', postpop.id)[1]
     
-    if precell_type not in ["ca3", "ec"]:
+    if precell_type == "poolosyn":
+        pre_seg_group = "somaMidpoint"
+    elif precell_type not in ["ca3", "ec"]:
         pre_seg_group = "soma_group"
     else:
         pre_seg_group = None  # will leave preSegmentId and preFractionAlong in the generated file (which is the way how 'artificial cells' connect to 'real cells')
@@ -260,8 +263,8 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:    
         if sys.argv[1] == "-test":
             
-            generate_instance(0.1, 80, "xml",  False, "NEURON", "./",simulation_seed=1111,network_seed=12345)  # scaled down by 10
-            generate_instance(0.1, 80, "hdf5", False, "NEURON", "./",simulation_seed=1111,network_seed=12345)  # scaled down by 10
+            generate_instance(0.1, 60, "xml",  False, "NEURON", "./",simulation_seed=1111,network_seed=12345)  # scaled down by 10
+            generate_instance(0.1, 60, "hdf5", False, "NEURON", "./",simulation_seed=1111,network_seed=12345)  # scaled down by 10
             generate_instance(10,  100, "hdf5", False, "NEURON", "./")  # scaled up by 10
 
             exit()
