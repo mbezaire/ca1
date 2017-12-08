@@ -27,12 +27,15 @@ def add_pop(nml_doc, network, cell_type, pop_size, duration=None, rate=None):
     """adds population using opencortex function"""
     
     if cell_type not in ["ca3", "ec"]:  # "real" cells have template
-        return oc.add_population_in_rectangular_region(network,
+        pop = oc.add_population_in_rectangular_region(network,
                                                        pop_id="pop_%s"%cell_type, cell_id="%scell"%cell_type,
                                                        size=pop_size,
                                                        x_min=0, y_min=0, z_min=0,
                                                        x_size=2000, y_size=500, z_size=1000,
                                                        color=helper_getcolor(cell_type))
+        
+        pop.properties.append(neuroml.Property("radius", 5))                                     
+        return pop
                                                    
     else:
         spike_gen = oc.add_spike_source_poisson(nml_doc, id="stim_%s"%cell_type,
