@@ -91,3 +91,6 @@ NSG/results_nml_scale*/
 /NeuroML2/network/HippocampalNet_scale100000_oc_NoInput.net.nml
 /NeuroML2/network/HippocampalNet_scale10000_oc_NoInput.net.nml
 /NeuroML2/network/LEMS_HippocampalNet_scale1000_oc_NoInput_h5.xml
+/NSG/STDERR
+/NSG/STDOUT
+/NeuroML2/network/*.gv
