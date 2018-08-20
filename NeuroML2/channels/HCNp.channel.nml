@@ -18,6 +18,8 @@
     
     <ionChannel id="HCNsomap" conductance="10pS" type="ionChannelHH" species="non_specific">
         
+        <notes>Hyperpolarization-activated, CN-gated channel descriptions (from Magee 1998 - modeled by Cutsuridis 2010). Slight modification of HCNp: vhalf=-82mV</notes>
+    
         <gateHHtauInf id="l" instances="1">
             <q10Settings type="q10ExpTemp" q10Factor="4.5" experimentalTemp="33 degC"/>
             <timeCourse type="Bezaire_HCNp_tau"/>

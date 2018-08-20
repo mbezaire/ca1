@@ -54,7 +54,7 @@ Channel information
             <sup><b>Navccknew</b><br/>
             <a href="../Navccknew.channel.nml">Navccknew.channel.nml</a><br/>
             <b>Ion: na</b><br/>
-            <i>g = gmax * s * m<sup>3</sup> * h </i><br/>
+            <i>g = gmax * m<sup>3</sup> * h * s </i><br/>
             Na+ channel description; modified from Nav to have higher threshold and slow inactivation (suitable for cck cells) rates are different + additional s variable - hence the name new</sup>
 </td>
 <td>
@@ -371,7 +371,7 @@ Channel information
             <a href="../HCNp.channel.nml">HCNp.channel.nml</a><br/>
             <b>Ion: non_specific</b><br/>
             <i>g = gmax * l </i><br/>
-            ${channel.notes}</sup>
+            Hyperpolarization-activated, CN-gated channel descriptions (from Magee 1998 - modeled by Cutsuridis 2010). Slight modification of HCNp: vhalf=-82mV</sup>
 </td>
 <td>
 <a href="HCNsomap.inf.png"><img alt="HCNsomap steady state" src="HCNsomap.inf.png" height="220"/></a>
