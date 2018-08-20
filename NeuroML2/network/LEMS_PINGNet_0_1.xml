@@ -2,7 +2,7 @@
     
     <!-- 
 
-        This LEMS file has been automatically generated using PyNeuroML v0.3.5 (libNeuroML v0.2.36)
+        This LEMS file has been automatically generated using PyNeuroML v0.3.12 (libNeuroML v0.2.44)
 
      -->
     
@@ -16,6 +16,23 @@
     
     <Include file="PyNN.xml"/>
     <Include file="PINGNet_0_1.net.nml"/>
+    <Include file="../cells/poolosyn.cell.nml"/>
+    <Include file="../channels/HCNp.channel.nml"/>
+    <Include file="../channels/Kdrp.channel.nml"/>
+    <Include file="../channels/KvAproxp.channel.nml"/>
+    <Include file="../channels/KvAdistp.channel.nml"/>
+    <Include file="../channels/Navp.channel.nml"/>
+    <Include file="../channels/Navaxonp.channel.nml"/>
+    <Include file="../channels/leak_chan.channel.nml"/>
+    <Include file="../cells/pvbasket.cell.nml"/>
+    <Include file="../channels/CavL.channel.nml"/>
+    <Include file="../channels/CavN.channel.nml"/>
+    <Include file="../channels/KCaS.channel.nml"/>
+    <Include file="../channels/Kdrfast.channel.nml"/>
+    <Include file="../channels/KvA.channel.nml"/>
+    <Include file="../channels/KvCaB.channel.nml"/>
+    <Include file="../channels/Capool.nml"/>
+    <Include file="../synapses/exp2Synapses.synapse.nml"/>
    
     <Simulation id="Sim_PINGNet_0_1" length="60ms" step="0.01ms" target="PINGNet_0_1" seed="1111">  <!-- Note seed: ensures same random numbers used every run -->
         

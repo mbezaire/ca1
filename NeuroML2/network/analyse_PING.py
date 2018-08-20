@@ -116,9 +116,13 @@ if __name__ == "__main__":
     ref = "Sim_PINGNet_0_1"
     dPopsize = {"poolosyn":5, "pvbasket":3}
     
+    ref = "Sim_PINGNet"
+    duration = 500
+    dPopsize = {"poolosyn":50, "pvbasket":30}
+    
     dTraces = {}; dSpikeTimes = {}; dSpikingNeurons = {}
     for cell_type in ["poolosyn", "pvbasket"]:
-        t, traces = get_traces("%s.%scell.v.dat"%(ref, cell_type), 100, 0.01)
+        t, traces = get_traces("%s.pop_%s.v.dat"%(ref, cell_type), duration, 0.01)
         dTraces[cell_type] = traces[0, :]
         spikeTimes, spikingNeurons, _ = get_spikes_rate("%s.pop_%s.spikes"%(ref, cell_type), t, dPopsize[cell_type])
         dSpikeTimes[cell_type] = spikeTimes; dSpikingNeurons[cell_type] = spikingNeurons

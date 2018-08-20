@@ -14,3 +14,4 @@ cd -
 ./analyse_nmlchans.sh  # analyses .nml channels (using pyNeuroML and saves .dat files + creates /channel_summary)
 python compare_nml_mod.py  # loads in .dat files (created by the bash scripts) and plots them together!
 ```
+See the output of the comparison [here](compare/README.md).
