@@ -1,0 +1,20 @@
+<neuroml xmlns="http://www.neuroml.org/schema/neuroml2"  xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.neuroml.org/schema/neuroml2 https://raw.github.com/NeuroML/NeuroML2/development/Schemas/NeuroML2/NeuroML_v2beta5.xsd" id="IClamp_olm">
+    <notes>Generated network: IClamp_olm
+    NeuroMLlite parameters: 
+        stim_amp = 55pA</notes>
+    <include href="../../cells/olm.cell.nml"/>
+    <pulseGenerator id="iclamp_0" delay="50ms" duration="1000ms" amplitude="55pA"/>
+    <network id="IClamp_olm" type="networkWithTemperature" temperature="37.0degC">
+        <notes>A simple network: IClamp_olm.</notes>
+        <population id="pop_olm" component="olmcell" size="1" type="populationList">
+            <property tag="color" value="0.4 0.2 0.6"/>
+            <property tag="region" value="region1"/>
+            <instance id="0">
+                <location x="966.453535692138757" y="44.073259917535268" z="7.491470058587191"/>
+            </instance>
+        </population>
+        <inputList id="Stim0" population="pop_olm" component="iclamp_0">
+            <input id="0" target="../pop_olm/0/olmcell" destination="synapses"/>
+        </inputList>
+    </network>
+</neuroml>

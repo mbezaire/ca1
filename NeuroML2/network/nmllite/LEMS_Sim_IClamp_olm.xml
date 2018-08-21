@@ -1,0 +1,38 @@
+<Lems>
+    
+    <!-- 
+
+        This LEMS file has been automatically generated using PyNeuroML v0.3.12 (libNeuroML v0.2.44)
+
+     -->
+    
+    <!-- Specify which component to run -->
+    <Target component="Sim_IClamp_olm" reportFile="report.Sim_IClamp_olm.txt"/>
+
+    <!-- Include core NeuroML2 ComponentType definitions -->
+    <Include file="Cells.xml"/>
+    <Include file="Networks.xml"/>
+    <Include file="Simulation.xml"/>
+    
+    <Include file="PyNN.xml"/>
+    <Include file="IClamp_olm.net.nml"/>
+    <Include file="../../cells/olm.cell.nml"/>
+    <Include file="../channels/HCNolm.channel.nml"/>
+    <Include file="../channels/Kdrfast.channel.nml"/>
+    <Include file="../channels/KvAolm.channel.nml"/>
+    <Include file="../channels/Nav.channel.nml"/>
+    <Include file="../channels/leak_chan.channel.nml"/>
+   
+    <Simulation id="Sim_IClamp_olm" length="1000.0ms" step="0.025ms" target="IClamp_olm" seed="12345">  <!-- Note seed: ensures same random numbers used every run -->
+        
+        <Display id="DispPop__pop_olm" title="Membrane potentials of cells in pop_olm" timeScale="1ms" xmin="-100.0" xmax="1100.0" ymin="-90" ymax="50">
+            <Line id="pop_olm[0]: v" quantity="pop_olm/0/olmcell/v" scale="1mV" color="#6aa799" timeScale="1ms"/>
+        </Display>
+        
+        <OutputFile id="Volts_file__pop_olm" fileName="Sim_IClamp_olm.pop_olm.v.dat">
+            <OutputColumn id="v_pop_olm_0_olmcell_v" quantity="pop_olm/0/olmcell/v"/> 
+        </OutputFile>
+        
+    </Simulation>
+
+</Lems>

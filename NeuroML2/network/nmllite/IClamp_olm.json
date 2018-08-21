@@ -1,0 +1,64 @@
+{
+    "IClamp_olm": {
+        "version": "NeuroMLlite v0.1.4", 
+        "temperature": 37.0, 
+        "parameters": {
+            "stim_amp": "55pA"
+        }, 
+        "notes": "A simple network: IClamp_olm.", 
+        "cells": [
+            {
+                "olm": {
+                    "neuroml2_source_file": "../../cells/olm.cell.nml"
+                }
+            }
+        ], 
+        "input_sources": [
+            {
+                "iclamp_0": {
+                    "neuroml2_input": "PulseGenerator", 
+                    "parameters": {
+                        "delay": "50ms", 
+                        "duration": "1000ms", 
+                        "amplitude": "stim_amp"
+                    }
+                }
+            }
+        ], 
+        "regions": [
+            {
+                "region1": {
+                    "x": 0.0, 
+                    "y": 0.0, 
+                    "z": 0.0, 
+                    "width": 1000.0, 
+                    "height": 100.0, 
+                    "depth": 1000.0
+                }
+            }
+        ], 
+        "populations": [
+            {
+                "pop_olm": {
+                    "size": 1, 
+                    "component": "olmcell", 
+                    "properties": {
+                        "color": "0.4 0.2 0.6"
+                    }, 
+                    "random_layout": {
+                        "region": "region1"
+                    }
+                }
+            }
+        ], 
+        "inputs": [
+            {
+                "Stim0": {
+                    "input_source": "iclamp_0", 
+                    "population": "pop_olm", 
+                    "percentage": 100.0
+                }
+            }
+        ]
+    }
+}
