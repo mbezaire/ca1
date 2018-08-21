@@ -1,13 +1,13 @@
 ## Interacting with Neuroscience Gateway Portal
 
-**The folder contains python and bash script to send jobs to supercomputers through [NSG](https://www.nsgportal.org/).**
+**This folder contains Python and bash script to send jobs to supercomputers through the [Neuroscience Gateway (NSG)](https://www.nsgportal.org/).**
 
 In order to prepare necessary files from the original NEURON version of the model run:
 
     python zip_nrn_forNSG.py  # zips necessary files in NSG preferred way
 
-Afterwars you can register an account on https://www.nsgportal.org/gest/reg.php and access the web interface at https://nsgdev.sdsc.edu:8443/portal2/login!input.action
-You can upload your `.zip` file and run tasks through their interface! Alternatively you can use the REST API as described below!
+Afterwards you can register an account on https://www.nsgportal.org/gest/reg.php and access the web interface at https://nsgdev.sdsc.edu:8443/portal2/login!input.action
+You can upload your `.zip` file and run tasks through their interface. Alternatively you can use the REST API as described below.
 
 
 #### Sign up to the NSG REST server
@@ -29,7 +29,7 @@ You can upload your `.zip` file and run tasks through their interface! Alternati
     DIRECT_APPID=Direct111111111111
    ```
    
-> `DIRECT_APPID` should be set to your Application ID
+`DIRECT_APPID` should be set to your Application ID
 
 
 #### Access NSG-R using shell scripts
@@ -37,10 +37,10 @@ You can upload your `.zip` file and run tasks through their interface! Alternati
 1. Test listing/submitting of jobs with the original NEURON version:
 
     ```
-    ./list_jobs.sh                # none yet...
-    ./submit_nrn_toNSG.sh Test 1  # submit NEURON job (ID=Test, number of nodes=1)
-    ./list_jobs.sh                # should be listed
-    ./status_job.sh JOBIDXXXX     # Replace job ID with that listed above
+    ./list_jobs.sh                         # there will be none yet...
+    ./submit_nrn_toNSG.sh 100000 Test 1 1  # submit NEURON job (Scale=100000, JobId=Test, number of nodes=1, runtime=1hr)
+    ./list_jobs.sh                         # your job should be listed
+    ./status_job.sh JOBIDXXXX              # Replace job ID with that listed above
     ```
     
 2. Get results after simulation is finished (and notification was sent by e-mail):
@@ -59,10 +59,11 @@ You can upload your `.zip` file and run tasks through their interface! Alternati
     # repeat the same as above to get results
     ```
     
-see more about `curl` functions used to interact with the REST API [here](https://www.nsgportal.org/guide.html).
+See more about `curl` functions used to interact with the REST API [here](https://www.nsgportal.org/guide.html).
 
 
-> This work is based [OSB's NSG showcase](https://github.com/OpenSourceBrain/NSGPortalShowcase/tree/master/NSG-R), which is on the REST API from [CIPRES - Cyberinfrastructure for Phylogenetic Research](http://www.phylo.org/index.php/news/detail/announcing-cipres-restful-services-a-new-way-to-use-cipres).
+This work is based [OSB's NSG showcase](https://github.com/OpenSourceBrain/NSGPortalShowcase/tree/master/NSG-R), 
+which is on the REST API from [CIPRES - Cyberinfrastructure for Phylogenetic Research](http://www.phylo.org/index.php/news/detail/announcing-cipres-restful-services-a-new-way-to-use-cipres).
 
 
 

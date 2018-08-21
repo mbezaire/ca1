@@ -94,3 +94,4 @@ NSG/results_nml_scale*/
 /NSG/STDERR
 /NSG/STDOUT
 /NeuroML2/network/*.gv
+/NSG/CA1_nrn_scale*
