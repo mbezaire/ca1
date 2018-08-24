@@ -30,7 +30,7 @@ if __name__ == '__main__':
             if type!='ec' and type !='ca3':
 
                 run = True
-                #run = False
+                run = False
                 
                 if run:
                 
@@ -51,17 +51,26 @@ if __name__ == '__main__':
                     #ps.plotLines('stim_amp','average_last_1percent',save_figure_to='average_last_1percent_%s.png'%type)
                     ps.plotLines('stim_amp','mean_spike_frequency',save_figure_to='mean_spike_frequency_%s.png'%type)
                 
-                
+                height = '160'
                 html+='<tr>\n'
-                html+='  <td><b>'+type+'</b></td>\n'
+                html+='  <td width=30><b>'+type+'</b></td>\n'
                 html+='  <td><a href="mean_spike_frequency_%s.png'%type+'">\n'
-                html+='    <img alt="?" src="mean_spike_frequency_%s.png'%type+'" height="180"/></a>\n'
+                html+='    <img alt="?" src="mean_spike_frequency_%s.png'%type+'" height="'+height+'"/></a>\n'
                 html+='  </td>\n'
                 html+='  <td><a href="firing_rates_%s.png'%type+'">\n'
-                html+='    <img alt="?" src="firing_rates_%s.png'%type+'" height="180"/></a>\n'
+                html+='    <img alt="?" src="firing_rates_%s.png'%type+'" height="'+height+'"/></a>\n'
                 html+='  </td>\n'
                 html+='  <td><a href="heatmap_%s.png'%type+'">\n'
-                html+='    <img alt="?" src="heatmap_%s.png'%type+'" height="180"/></a>\n'
+                html+='    <img alt="?" src="heatmap_%s.png'%type+'" height="'+height+'"/></a>\n'
+                html+='  </td>\n'
+                html+='  <td><a href="dt_traces_%s.png'%type+'">\n'
+                html+='    <img alt="?" src="dt_traces_%s.png'%type+'" height="'+height+'"/></a>\n'
+                html+='  </td>\n'
+                html+='  <td><a href="heatmap_dt_%s.png'%type+'">\n'
+                html+='    <img alt="?" src="heatmap_dt_%s.png'%type+'" height="'+height+'"/></a>\n'
+                html+='  </td>\n'
+                html+='  <td><a href="mean_spike_frequency_dt_%s.png'%type+'">\n'
+                html+='    <img alt="?" src="mean_spike_frequency_dt_%s.png'%type+'" height="'+height+'"/></a>\n'
                 html+='  </td>\n'
                 html+='<tr>\n'
 
@@ -75,6 +84,51 @@ if __name__ == '__main__':
             f.write('<html><body>\n%s\n</body></html>'%html)
         with open(save_fig_dir+'README.md','w') as f2:
             f2.write('### CA1 cell summary \n%s'%(html.replace('.html','.md')))
+        
+    elif '-dt' in sys.argv:
+        
+        optimal_stim = {'olm':100,'sca':100,'pvbasket':350,'ivy':220,'ngf':220,'bistratified':350,'cck':180,'axoaxonic':220,'poolosyn':280}
+        
+
+        vary = {'dt':[0.1,0.05,0.025,0.01,0.005,0.0025,0.001,0.0005,0.00025,0.0001]}
+        vary = {'dt':[0.1,0.05,0.025,0.01,0.005,0.0025,0.001]}
+        vary = {'dt':[0.025,0.01,0.005,0.0025,0.001]}
+        #vary = {'dt':[0.1,0.05,0.025,0.01,0.005]}
+        #vary = {'dt':[0.1,0.05,0.025]}
+
+        for type in optimal_stim:
+            if type!='ec' and type !='ca3':
+
+                run = True
+                
+                if run:
+                
+                    fixed = {'duration':700, 'stim_amp':'%spA'%optimal_stim[type]}
+                    
+                    nmllr = NeuroMLliteRunner('Sim_IClamp_%s.json'%type,
+                                              simulator='jNeuroML_NEURON')
+                    ps = ParameterSweep(nmllr, 
+                                        vary, 
+                                        fixed,
+                                        num_parallel_runs=16,
+                                        save_plot_all_to='dt_traces_%s.png'%type,
+                                        heatmap_all=True,
+                                        save_heatmap_to='heatmap_dt_%s.png'%type,
+                                        plot_all=True, 
+                                        show_plot_already=False)
+
+                    report = ps.run()
+
+                    #ps.plotLines('stim_amp','average_last_1percent',save_figure_to='average_last_1percent_%s.png'%type)
+                    ps.plotLines('dt','mean_spike_frequency',save_figure_to='mean_spike_frequency_dt_%s.png'%type, logx=True)
+                
+                
+
+        import matplotlib.pyplot as plt
+        if not '-nogui' in sys.argv:
+            print("Showing plots")
+            plt.show()
+            
         
     else:
         
