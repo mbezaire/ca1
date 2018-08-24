@@ -1,9 +1,9 @@
 <neuroml xmlns="http://www.neuroml.org/schema/neuroml2"  xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.neuroml.org/schema/neuroml2 https://raw.github.com/NeuroML/NeuroML2/development/Schemas/NeuroML2/NeuroML_v2beta5.xsd" id="NeuroML2_file_exported_from_NEURON">
-    <include href="../channels/HCNolm.channel.nml"></include>
-    <include href="../channels/Kdrfast.channel.nml"></include>
-    <include href="../channels/KvAolm.channel.nml"></include>
-    <include href="../channels/Nav.channel.nml"></include>
-    <include href="../channels/leak_chan.channel.nml"></include>
+    <include href="../channels/HCNolm.channel.nml"/>
+    <include href="../channels/Kdrfast.channel.nml"/>
+    <include href="../channels/KvAolm.channel.nml"/>
+    <include href="../channels/Nav.channel.nml"/>
+    <include href="../channels/leak_chan.channel.nml"/>
     <cell id="olmcell">
         <notes>Cell: olmcell exported from NEURON ModelView</notes>
         <morphology id="morphology">
@@ -12,7 +12,7 @@
                 <distal x="0.000000e+00" y="1.000000e+01" z="0.000000e+00" diameter="10.0"/>
             </segment>
             <segment id="2" name="Seg1_soma_0">
-                <parent segment="0" fractionAlong="1"/>
+                <parent segment="0"/>
                 <distal x="0.000000e+00" y="2.000000e+01" z="0.000000e+00" diameter="10.0"/>
             </segment>
             <segment id="7" name="Seg0_axon_0">
@@ -21,25 +21,25 @@
                 <distal x="0.000000e+00" y="-7.500000e+01" z="0.000000e+00" diameter="1.5"/>
             </segment>
             <segment id="8" name="Seg1_axon_0">
-                <parent segment="7" fractionAlong="1"/>
+                <parent segment="7"/>
                 <distal x="0.000000e+00" y="-1.500000e+02" z="0.000000e+00" diameter="1.5"/>
             </segment>
             <segment id="5" name="Seg0_dend_1">
-                <parent segment="2" fractionAlong="1"/>
+                <parent segment="2"/>
                 <proximal x="0.000000e+00" y="2.000000e+01" z="0.000000e+00" diameter="3.0"/>
                 <distal x="-1.000000e+02" y="1.200000e+02" z="0.000000e+00" diameter="3.0"/>
             </segment>
             <segment id="6" name="Seg1_dend_1">
-                <parent segment="5" fractionAlong="1"/>
+                <parent segment="5"/>
                 <distal x="-1.770000e+02" y="1.970000e+02" z="0.000000e+00" diameter="3.0"/>
             </segment>
             <segment id="3" name="Seg0_dend_0">
-                <parent segment="2" fractionAlong="1"/>
+                <parent segment="2"/>
                 <proximal x="0.000000e+00" y="2.000000e+01" z="0.000000e+00" diameter="3.0"/>
                 <distal x="1.000000e+02" y="1.200000e+02" z="0.000000e+00" diameter="3.0"/>
             </segment>
             <segment id="4" name="Seg1_dend_0">
-                <parent segment="3" fractionAlong="1"/>
+                <parent segment="3"/>
                 <distal x="1.770000e+02" y="1.970000e+02" z="0.000000e+00" diameter="3.0"/>
             </segment>
             <segmentGroup neuroLexId="sao864921383" id="soma_0">

@@ -7,7 +7,6 @@ sys.path.append("..")
 from GenerateHippocampalNet_oc import helper_getcolor
 
 colors = helper_getcolor(None)
-print colors
 
 def generate(cell, config='IClamp'):
     
@@ -17,8 +16,8 @@ def generate(cell, config='IClamp'):
     ref = "%s_%s"%(config, cell)
     net = Network(id=ref)
     net.notes = "A simple network: %s."%ref
-    net.temperature = 37 # degC
-    net.parameters = {}
+    net.temperature = 34 # degC
+    #net.parameters = {}
     
 
     ################################################################################
@@ -38,9 +37,9 @@ def generate(cell, config='IClamp'):
     ################################################################################
     ###   Add some synapses
     
-    #ampa = 'wbsFake'
-    #net.synapses.append(Synapse(id=ampa, 
-    #                            lems_source_file='WangBuzsakiSynapse.xml'))
+    syn_exc = Synapse(id='syn_poolosyn_to_%s'%cell, 
+                      neuroml2_source_file='../../synapses/exp2Synapses.synapse.nml')
+    net.synapses.append(syn_exc)
 
 
 
@@ -48,7 +47,7 @@ def generate(cell, config='IClamp'):
     ###   Add some populations
 
     comp = '%scell'%cell
-    duration = 1000
+    duration = 300
     size = 1 
 
     pop = Population(id='pop_%s'%cell, 
@@ -78,10 +77,12 @@ def generate(cell, config='IClamp'):
     ###   Add some inputs
     
     if 'IClamp' in config:
-        net.parameters['stim_amp'] = '55pA'
+        net.parameters = {}
+        net.parameters['stim_amp'] = '450pA'
         input_source = InputSource(id='iclamp_0', 
                                    neuroml2_input='PulseGenerator', 
-                                   parameters={'amplitude':'stim_amp', 'delay':'50ms', 'duration':'%sms'%duration})
+                                   parameters={'amplitude':'stim_amp', 'delay':'100ms', 'duration':'500ms'})
+        duration = 700
 
         net.input_sources.append(input_source)
 
@@ -91,18 +92,26 @@ def generate(cell, config='IClamp'):
                                 percentage=100))
         
     else:
+        
+        duration = 3000
 
+        net.parameters = {}
+        net.parameters['average_rate'] = '100 Hz'
+        net.parameters['number_per_cell'] = '10'
         input_source = InputSource(id='pfs0', 
                                    neuroml2_input='PoissonFiringSynapse', 
-                                   parameters={'average_rate':'50 Hz', 'synapse':ampa, 'spike_target':"./%s"%ampa})
+                                   parameters={'average_rate':'average_rate', 
+                                               'synapse':syn_exc.id, 
+                                               'spike_target':"./%s"%syn_exc.id})
 
         net.input_sources.append(input_source)
 
 
         net.inputs.append(Input(id='Stim0',
                                 input_source=input_source.id,
-                                population=pop_pv.id,
-                                percentage=100))
+                                population=pop.id,
+                                percentage=100,
+                                number_per_cell='number_per_cell'))
 
 
     ################################################################################
@@ -120,7 +129,7 @@ def generate(cell, config='IClamp'):
     sim = Simulation(id='Sim_%s'%ref,
                      network=new_file,
                      duration=duration,
-                     dt='0.025',
+                     dt='0.01',
                      recordTraces={'all':'*'})
 
     sim.to_json_file()
@@ -139,11 +148,15 @@ def generate(cell, config='IClamp'):
 if __name__ == "__main__":
     
     if '-all' in sys.argv:
-        generate('IClamp_PV')
-        generate('IClamp_Pyr')
+        for cell in colors:
+            if cell!='ec' and cell !='ca3':
+                generate(cell)
+            
         
     else:
         #generate('IFcurve_PV')
-        generate('olm')
+        #generate('olm')
+        generate('olm',config="PoissonFiringSynapse")
+        #generate('bistratified')
         #generate('IClamp_Pyr')
     

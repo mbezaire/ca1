@@ -16,16 +16,17 @@
     
     <Include file="PyNN.xml"/>
     <Include file="IClamp_olm.net.nml"/>
-    <Include file="../../cells/olm.cell.nml"/>
+    <Include file="/home/padraig/git/ca1/NeuroML2/cells/olm.cell.nml"/>
     <Include file="../channels/HCNolm.channel.nml"/>
     <Include file="../channels/Kdrfast.channel.nml"/>
     <Include file="../channels/KvAolm.channel.nml"/>
     <Include file="../channels/Nav.channel.nml"/>
     <Include file="../channels/leak_chan.channel.nml"/>
+    <Include file="/home/padraig/git/ca1/NeuroML2/synapses/exp2Synapses.synapse.nml"/>
    
-    <Simulation id="Sim_IClamp_olm" length="1000.0ms" step="0.025ms" target="IClamp_olm" seed="12345">  <!-- Note seed: ensures same random numbers used every run -->
+    <Simulation id="Sim_IClamp_olm" length="300.0ms" step="0.001ms" target="IClamp_olm" seed="12345">  <!-- Note seed: ensures same random numbers used every run -->
         
-        <Display id="DispPop__pop_olm" title="Membrane potentials of cells in pop_olm" timeScale="1ms" xmin="-100.0" xmax="1100.0" ymin="-90" ymax="50">
+        <Display id="DispPop__pop_olm" title="Membrane potentials of cells in pop_olm" timeScale="1ms" xmin="-30.0" xmax="330.0" ymin="-90" ymax="50">
             <Line id="pop_olm[0]: v" quantity="pop_olm/0/olmcell/v" scale="1mV" color="#6aa799" timeScale="1ms"/>
         </Display>
         

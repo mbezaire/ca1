@@ -1,9 +1,9 @@
 {
     "IClamp_olm": {
         "version": "NeuroMLlite v0.1.4", 
-        "temperature": 37.0, 
+        "temperature": 34.0, 
         "parameters": {
-            "stim_amp": "55pA"
+            "stim_amp": "450pA"
         }, 
         "notes": "A simple network: IClamp_olm.", 
         "cells": [
@@ -13,13 +13,20 @@
                 }
             }
         ], 
+        "synapses": [
+            {
+                "syn_poolosyn_to_olm": {
+                    "neuroml2_source_file": "../../synapses/exp2Synapses.synapse.nml"
+                }
+            }
+        ], 
         "input_sources": [
             {
                 "iclamp_0": {
                     "neuroml2_input": "PulseGenerator", 
                     "parameters": {
-                        "delay": "50ms", 
-                        "duration": "1000ms", 
+                        "delay": "100ms", 
+                        "duration": "500ms", 
                         "amplitude": "stim_amp"
                     }
                 }
