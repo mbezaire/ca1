@@ -2,20 +2,19 @@
     <notes>Generated network: IClamp_olm
     NeuroMLlite parameters: 
         stim_amp = 350pA</notes>
-    <include href="/home/padraig/git/ca1/NeuroML2/cells/olm.cell.nml"/>
-    <include href="/home/padraig/git/ca1/NeuroML2/synapses/exp2Synapses.synapse.nml"/>
-    <pulseGenerator id="iclamp_0" delay="50ms" duration="200ms" amplitude="350pA"/>
+    <include href="../../cells/olm.cell.nml"/>
+    <pulseGenerator id="iclamp_0" delay="100ms" duration="500ms" amplitude="350pA"/>
     <network id="IClamp_olm" type="networkWithTemperature" temperature="34.0degC">
-        <notes>A simple network: IClamp_olm.</notes>
-        <population id="pop_olm" component="olmcell" size="1" type="populationList">
+        <notes>A network model: IClamp_olm.</notes>
+        <population id="pop_olmcell" component="olmcell" size="1" type="populationList">
             <property tag="color" value="0.4 0.2 0.6"/>
-            <property tag="region" value="region1"/>
+            <property tag="region" value="CA1"/>
             <instance id="0">
                 <location x="966.453535692138757" y="44.073259917535268" z="7.491470058587191"/>
             </instance>
         </population>
-        <inputList id="Stim0" population="pop_olm" component="iclamp_0">
-            <input id="0" target="../pop_olm/0/olmcell" destination="synapses"/>
+        <inputList id="Stim_iclamp_0" population="pop_olmcell" component="iclamp_0">
+            <input id="0" target="../pop_olmcell/0/olmcell" destination="synapses"/>
         </inputList>
     </network>
 </neuroml>

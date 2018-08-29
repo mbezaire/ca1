@@ -3,20 +3,13 @@
         "version": "NeuroMLlite v0.1.4", 
         "temperature": 34.0, 
         "parameters": {
-            "stim_amp": "450pA"
+            "stim_amp": "350pA"
         }, 
-        "notes": "A simple network: IClamp_olm.", 
+        "notes": "A network model: IClamp_olm.", 
         "cells": [
             {
-                "olm": {
+                "olmcell": {
                     "neuroml2_source_file": "../../cells/olm.cell.nml"
-                }
-            }
-        ], 
-        "synapses": [
-            {
-                "syn_poolosyn_to_olm": {
-                    "neuroml2_source_file": "../../synapses/exp2Synapses.synapse.nml"
                 }
             }
         ], 
@@ -34,7 +27,7 @@
         ], 
         "regions": [
             {
-                "region1": {
+                "CA1": {
                     "x": 0.0, 
                     "y": 0.0, 
                     "z": 0.0, 
@@ -46,23 +39,23 @@
         ], 
         "populations": [
             {
-                "pop_olm": {
+                "pop_olmcell": {
                     "size": 1, 
                     "component": "olmcell", 
                     "properties": {
                         "color": "0.4 0.2 0.6"
                     }, 
                     "random_layout": {
-                        "region": "region1"
+                        "region": "CA1"
                     }
                 }
             }
         ], 
         "inputs": [
             {
-                "Stim0": {
+                "Stim_iclamp_0": {
                     "input_source": "iclamp_0", 
-                    "population": "pop_olm", 
+                    "population": "pop_olmcell", 
                     "percentage": 100.0
                 }
             }
