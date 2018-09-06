@@ -5,7 +5,7 @@
         "parameters": {
             "stim_amp": "350pA"
         }, 
-        "notes": "A network model: IClamp_olm.", 
+        "notes": "A network model: IClamp_olm", 
         "cells": [
             {
                 "olmcell": {

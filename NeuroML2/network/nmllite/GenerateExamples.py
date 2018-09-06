@@ -15,6 +15,7 @@ def generate(cell, duration, config='IClamp'):
 
     cell_id = '%scell'%cell
     cell_nmll = Cell(id=cell_id, neuroml2_source_file='../../cells/%s.cell.nml'%cell)
+    synapses = []
  
     ################################################################################
     ###   Add some inputs
@@ -27,7 +28,14 @@ def generate(cell, duration, config='IClamp'):
                                    parameters={'amplitude':'stim_amp', 'delay':'100ms', 'duration':'500ms'})
       
         
-    else:
+    elif 'PoissonFiringSynapse' in config:
+        
+        syn_exc = Synapse(id='syn_poolosyn_to_%s'%cell, 
+                      neuroml2_source_file='../../synapses/exp2Synapses.synapse.nml')
+        syn_exc = Synapse(id='syn_poolosyn_to_pvbasket', 
+                      neuroml2_source_file='../../synapses/exp2Synapses.synapse.nml')
+    
+        synapses.append(syn_exc)
 
         parameters = {}
         parameters['average_rate'] = '100 Hz'
@@ -38,6 +46,8 @@ def generate(cell, duration, config='IClamp'):
                                                'synapse':syn_exc.id, 
                                                'spike_target':"./%s"%syn_exc.id})
                                                
+    network_filename = '%s.json'%reference         
+    
     sim, net = create_new_model(reference,
                      duration, 
                      dt=0.01, # ms 
@@ -46,8 +56,18 @@ def generate(cell, duration, config='IClamp'):
                      parameters = parameters,
                      cell_for_default_population=cell_nmll,
                      color_for_default_population=colors[cell],
-                     input_for_default_population=input_source)
-
+                     input_for_default_population=input_source,
+                     synapses=synapses,
+                     network_filename=network_filename)
+                     
+    if 'PoissonFiringSynapse' in config:
+        
+        net.inputs[0].number_per_cell = 'number_per_cell'
+        print net.inputs[0]
+        
+        # Resave...
+        net.to_json_file(network_filename)
+    
     return sim, net
 
 
@@ -58,13 +78,14 @@ if __name__ == "__main__":
         for cell in colors:
             if cell!='ec' and cell !='ca3':
                 generate(cell, 700, config="IClamp")
+                generate(cell, 1000, config="PoissonFiringSynapse")
             
         
     else:
         #generate('IFcurve_PV')
         #generate('olm')
-        sim, net = generate('olm', 700, config="IClamp")
-        #generate('olm', 1000, config="PoissonFiringSynapse")
+        #sim, net = generate('olm', 700, config="IClamp")
+        sim, net = generate('olm', 1000, config="PoissonFiringSynapse")
         #generate('bistratified')
         #generate('IClamp_Pyr')
         
