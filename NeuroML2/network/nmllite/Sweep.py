@@ -142,7 +142,7 @@ if __name__ == '__main__':
     elif '-pois' in sys.argv:
         
         cells = colors.keys()
-        cells = ['olm','ivy']
+        #cells = ['olm','ivy']
         #cells = ['olm']
         #cells = ['ivy']
         save_fig_dir = './'
@@ -154,13 +154,15 @@ if __name__ == '__main__':
         vary = {'average_rate':['%sHz'%f for f in xrange(1,500,10)],
                 'number_per_cell':[1,10,30,50,100,300,500]}
                 
-        vary = {'average_rate':['%sHz'%f for f in xrange(1,500,100)],
-                'number_per_cell':[30,50,100]}
+        vary = {'average_rate':['%sHz'%f for f in xrange(1,500,50)],
+                'number_per_cell':[5,20,50,100,200],
+                'seed':[i for i in range(1)]}
                 
-        vary = {'average_rate':['%sHz'%f for f in xrange(1,2000,200)],
-                'seed':[i for i in range(5)]}
+        #vary = {'average_rate':['%sHz'%f for f in xrange(1,2000,200)],
+        #        'seed':[i for i in range(5)]}
                 
         fixed = {'duration':1000, 'dt':0.01, 'number_per_cell':20}
+        fixed = {'duration':1000, 'dt':0.005}
 
         for type in cells:
             if type!='ec' and type !='ca3':
@@ -173,7 +175,7 @@ if __name__ == '__main__':
                     ps = ParameterSweep(nmllr, 
                                         vary, 
                                         fixed,
-                                        num_parallel_runs=16,
+                                        num_parallel_runs=17,
                                         save_plot_all_to='pois_traces_%s.png'%type,
                                         heatmap_all=False,
                                         plot_all=True, 
@@ -184,13 +186,20 @@ if __name__ == '__main__':
                     #ps.plotLines('stim_amp','average_last_1percent',save_figure_to='average_last_1percent_%s.png'%type)
                     ps.plotLines('average_rate',
                                  'mean_spike_frequency',
-                                 second_param='seed',
+                                 #second_param='seed',
+                                 second_param='number_per_cell',
                                  save_figure_to='pois_traces_average_rate_%s.png'%type)
                                  
                                 
                 height = '160'
                 html+='<tr>\n'
-                html+='  <td width=30><b>'+type+'</b></td>\n'
+                html+='  <td width="30%"><b>'+type+'</b>\n'
+                for f in fixed:
+                    html+='<p><sup>%s = %s</sup></p>\n'%(f,fixed[f])
+                for v in vary:
+                    vs = vary[v]
+                    html+='<p><sup>%s = %s-&gt;%s</sup></p>\n'%(v,vs[0],vs[-1])
+                html+='</td>\n'
                 html+='  <td><a href="pois_traces_%s.png'%type+'">\n'
                 html+='    <img alt="?" src="pois_traces_%s.png'%type+'" height="'+height+'"/></a>\n'
                 html+='  </td>\n'

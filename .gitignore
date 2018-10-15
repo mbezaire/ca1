@@ -119,3 +119,7 @@ NSG/results_nml_scale*/
 /NeuroML2/network/nmllite/Sim_IClamp_poolosyn.json
 /NeuroML2/network/nmllite/Sim_IClamp_pvbasket.json
 /NeuroML2/network/nmllite/Sim_IClamp_sca.json
+/NeuroML2/network/nmllite/PoissonFiringSynapse_*.json
+/NeuroML2/network/nmllite/Sim_PoissonFiringSynapse_*.json
+/NeuroML2/network/nmllite/LEMS_Sim_PoissonFiringSynapse_olm.xml
+/NeuroML2/network/nmllite/PoissonFiringSynapse_olm.net.nml
