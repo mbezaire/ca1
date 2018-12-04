@@ -2,7 +2,7 @@
     
     <!-- 
 
-        This LEMS file has been automatically generated using PyNeuroML v0.3.5 (libNeuroML v0.2.36)
+        This LEMS file has been automatically generated using PyNeuroML v0.3.14 (libNeuroML v0.2.45)
 
      -->
     
@@ -16,6 +16,15 @@
     
     <Include file="PyNN.xml"/>
     <Include file="HippocampalNet_scale100000_oc.net.nml"/>
+    <Include file="../cells/axoaxonic.cell.nml"/>
+    <Include file="../cells/bistratified.cell.nml"/>
+    <Include file="../cells/cck.cell.nml"/>
+    <Include file="../cells/ivy.cell.nml"/>
+    <Include file="../cells/ngf.cell.nml"/>
+    <Include file="../cells/olm.cell.nml"/>
+    <Include file="../cells/poolosyn.cell.nml"/>
+    <Include file="../cells/pvbasket.cell.nml"/>
+    <Include file="../cells/sca.cell.nml"/>
    
     <Simulation id="Sim_HippocampalNet_scale100000_oc" length="500ms" step="0.01ms" target="HippocampalNet_scale100000_oc" seed="12345">  <!-- Note seed: ensures same random numbers used every run -->
         
