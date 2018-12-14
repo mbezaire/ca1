@@ -6,14 +6,21 @@ sys.path.append("..")
 
 from GenerateHippocampalNet_oc import helper_getcolor
 
+from neuromllite.sweep.ParameterSweep import ParameterSweep
+from neuromllite.sweep.ParameterSweep import NeuroMLliteRunner
+
 colors = helper_getcolor(None)
 
-def generate(cell_numbers, input_num_freqs, duration, dt=0.025, simulation_seed=1234, config='Net'):
+def generate(cell_numbers, 
+             input_num_freqs, 
+             duration, 
+             dt=0.025, 
+             simulation_seed=1234, 
+             reference=None):
     
-    reference = "%s"%(config)
+    reference0 = "Net"
     
-    net = Network(id=reference)
-    net.notes = "A network model: %s"%reference
+    net = Network(id=reference0)
     net.temperature = 34 # degC
     
     ca1 = RectangularRegion(id='ca1', x=0,y=0,z=0,width=1000,height=100,depth=1000)
@@ -23,18 +30,19 @@ def generate(cell_numbers, input_num_freqs, duration, dt=0.025, simulation_seed=
     net.regions.append(ext)
     
     net.parameters = {}
-    net.parameters['stim_amp'] = '350pA'
     
     for cell in cell_numbers.keys():
-        reference += '_%s%s'%(cell,cell_numbers[cell])
+        reference0 += '_%s%s'%(cell,cell_numbers[cell])
 
         cell_id = '%scell'%cell
         cell_nmll = Cell(id=cell_id, neuroml2_source_file='../../cells/%s.cell.nml'%cell)
         
         net.cells.append(cell_nmll)
         
+        net.parameters['num_%s'%cell] = cell_numbers[cell]
+        
         pop = Population(id='pop_%s'%cell, 
-                            size=cell_numbers[cell], 
+                            size='num_%s'%cell, 
                             component=cell_id, 
                             properties={'color':colors[cell]})
 
@@ -42,7 +50,6 @@ def generate(cell_numbers, input_num_freqs, duration, dt=0.025, simulation_seed=
 
         net.populations.append(pop)
  
-    net.id = reference 
 
     ################################################################################
     ###   Add some inputs
@@ -50,8 +57,10 @@ def generate(cell_numbers, input_num_freqs, duration, dt=0.025, simulation_seed=
 
         num, freq = input_num_freqs[input]
         ssp = Cell(id='%scell'%input, pynn_cell='SpikeSourcePoisson')
+        
+        net.parameters['rate_%s'%input] = freq
 
-        ssp.parameters = { 'rate':       '%s'%freq,
+        ssp.parameters = { 'rate':     'rate_%s'%input,
                          'start':      0,
                          'duration':   1e9}
         net.cells.append(ssp)
@@ -82,7 +91,10 @@ def generate(cell_numbers, input_num_freqs, duration, dt=0.025, simulation_seed=
                                       weight=1,
                                       random_connectivity=RandomConnectivity(probability=.5)))
             
-        
+    if reference == None: 
+        reference = reference0
+    net.id = reference 
+    net.notes = "A network model: %s"%reference
                                                
     network_filename = '%s.json'%reference         
     
@@ -112,7 +124,38 @@ def generate(cell_numbers, input_num_freqs, duration, dt=0.025, simulation_seed=
 if __name__ == "__main__":
     
     if '-all' in sys.argv:
-        pass
+        sim, net = generate({'ngf':3}, 
+                            {'ec':(5,50)}, 
+                            duration=1000, 
+                            dt=0.01,
+                            reference="TestNet")
+                            
+        check_to_generate_or_run(sys.argv, sim)
+    
+    elif '-sweep' in sys.argv:
+        
+        fixed = {'num_ngf':'3'}
+
+        vary = {'rate_ec':[10,20]}
+        
+        simulator='jNeuroML_NetPyNE'
+        simulator='jNeuroML_NEURON'
+        
+        nmllr = NeuroMLliteRunner('Sim_TestNet.json',
+                                  simulator=simulator)        
+
+        ps = ParameterSweep(nmllr, 
+                            vary, 
+                            fixed,
+                            num_parallel_runs=16,
+                            save_plot_all_to='traces.png',
+                            heatmap_all=True,
+                            save_heatmap_to='heatmap.png',
+                            plot_all=True, 
+                            show_plot_already=False)
+
+        report = ps.run()
+        ps.print_report()
         
     else:
         
