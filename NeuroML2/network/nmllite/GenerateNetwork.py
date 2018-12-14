@@ -134,9 +134,10 @@ if __name__ == "__main__":
     
     elif '-sweep' in sys.argv:
         
-        fixed = {'num_ngf':'3'}
+        fixed = {'num_ngf':'3', 'duration':500}
 
         vary = {'rate_ec':[10,20]}
+        vary = {'rate_ec':[10,20,30,40,50,60,70]}
         
         simulator='jNeuroML_NetPyNE'
         simulator='jNeuroML_NEURON'
@@ -157,6 +158,11 @@ if __name__ == "__main__":
         report = ps.run()
         ps.print_report()
         
+        ps.plotLines('rate_ec','pop_ngf/0/ngfcell/v:mean_spike_frequency',save_figure_to='mean_spike_frequency_ngf.png')
+        
+        import matplotlib.pyplot as plt
+
+        plt.show()
     else:
         
         #sim, net = generate({'olm':5}, 1000)
