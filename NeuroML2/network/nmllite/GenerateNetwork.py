@@ -117,7 +117,7 @@ if __name__ == "__main__":
     else:
         
         #sim, net = generate({'olm':5}, 1000)
-        sim, net = generate({'ngf':5}, {'ec':(5,50)}, 1000)
+        sim, net = generate({'ngf':5, 'sca':5}, {'ec':(5,50)}, duration=1000, dt=0.01)
         
         check_to_generate_or_run(sys.argv, sim)
     
