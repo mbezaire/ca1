@@ -131,6 +131,15 @@ if __name__ == "__main__":
                             reference="TestNet")
                             
         check_to_generate_or_run(sys.argv, sim)
+        
+        
+    elif '-pyr' in sys.argv:
+        sim, net = generate({'poolosyn':6}, 
+                            {'ec':(200,200)}, 
+                            duration=300, 
+                            reference="Pyr")
+                            
+        check_to_generate_or_run(sys.argv, sim)
     
     elif '-sweep' in sys.argv:
         
