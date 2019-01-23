@@ -11,12 +11,31 @@ from neuromllite.sweep.ParameterSweep import NeuroMLliteRunner
 
 colors = helper_getcolor(None)
 
+# See https://github.com/mbezaire/ca1/blob/development/NeuroML2/network/nmllite/README.md
+largest_allowable_dt = {'sca':0.01,
+                        'olm':0.01,
+                        'pvbasket':0.005,
+                        'ivy':0.01,
+                        'ngf':0.01,
+                        'bistratified':0.005,
+                        'cck':0.01,
+                        'axoaxonic':0.01,
+                        'poolosyn':0.025}
+
 def generate(cell_numbers, 
              input_num_freqs, 
              duration, 
-             dt=0.025, 
+             dt=None, 
              simulation_seed=1234, 
              reference=None):
+                 
+    if dt==None:
+        dt=1
+        for cell in cell_numbers.keys():
+            dt = min(dt,largest_allowable_dt[cell])
+         
+        print("Using dt for simulation: %sms"%dt)
+
     
     reference0 = "Net"
     
@@ -127,7 +146,6 @@ if __name__ == "__main__":
         sim, net = generate({'ngf':3}, 
                             {'ec':(5,50)}, 
                             duration=1000, 
-                            dt=0.01,
                             reference="TestNet")
                             
         check_to_generate_or_run(sys.argv, sim)
@@ -160,7 +178,7 @@ if __name__ == "__main__":
     else:
         
         #sim, net = generate({'olm':5}, 1000)
-        sim, net = generate({'ngf':5, 'sca':5}, {'ec':(5,50)}, duration=1000, dt=0.01)
+        sim, net = generate({'ngf':5, 'sca':5}, {'ec':(5,50)}, duration=1000)
         
         check_to_generate_or_run(sys.argv, sim)
     
