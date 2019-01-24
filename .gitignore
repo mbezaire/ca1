@@ -123,3 +123,5 @@ NSG/results_nml_scale*/
 /NeuroML2/network/nmllite/Sim_PoissonFiringSynapse_*.json
 /NeuroML2/network/nmllite/LEMS_Sim_PoissonFiringSynapse_olm.xml
 /NeuroML2/network/nmllite/PoissonFiringSynapse_olm.net.nml
+/NeuroML2/cells/*.hoc
+/NeuroML2/network/nmllite/clean.sh
