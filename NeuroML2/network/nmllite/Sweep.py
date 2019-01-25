@@ -22,12 +22,21 @@ if __name__ == '__main__':
         fixed = {'dt':0.001, 'duration':700}
 
 
-        vary = {'stim_amp':['%spA'%(i) for i in xrange(-100,500,2)]}
-        #vary = {'stim_amp':['%spA'%(i/10.0) for i in xrange(-10,20,5)]}
+        #vary = {'stim_amp':['%spA'%(i) for i in xrange(-100,500,2)]}
+        vary = {'stim_amp':['%spA'%(i*10.0) for i in xrange(-10,50,5)]}
         #vary = {'stim_amp':['-100pA','0pA','100pA','200pA','300pA','400pA']}
         
         cells = colors.keys()
         #cells = ['olm','ivy']
+        #cells = ['olm']
+        #cells.remove('olm')
+        #cells.remove('sca')
+        #cells.remove('ivy')
+        #cells.remove('bistratified')
+        #cells.remove('ngf')
+        #cells.remove('pvbasket')
+        #cells = ['poolosyn']
+        #fixed['dt']=0.025
 
         for type in cells:
             if type!='ec' and type !='ca3':
@@ -43,9 +52,9 @@ if __name__ == '__main__':
                                         vary, 
                                         fixed,
                                         num_parallel_runs=16,
-                                        save_plot_all_to='firing_rates_%s.png'%type,
+                                        save_plot_all_to='images/firing_rates_%s.png'%type,
                                         heatmap_all=True,
-                                        save_heatmap_to='heatmap_%s.png'%type,
+                                        save_heatmap_to='images/heatmap_%s.png'%type,
                                         heatmap_lims=[-100,20],
                                         plot_all=True, 
                                         show_plot_already=False)
@@ -53,28 +62,28 @@ if __name__ == '__main__':
                     report = ps.run()
 
                     #ps.plotLines('stim_amp','average_last_1percent',save_figure_to='average_last_1percent_%s.png'%type)
-                    ps.plotLines('stim_amp','mean_spike_frequency',save_figure_to='mean_spike_frequency_%s.png'%type)
+                    ps.plotLines('stim_amp','mean_spike_frequency',save_figure_to='images/mean_spike_frequency_%s.png'%type)
                 
                 height = '160'
                 html+='<tr>\n'
                 html+='  <td width=30><b>'+type+'</b></td>\n'
-                html+='  <td><a href="mean_spike_frequency_%s.png'%type+'">\n'
-                html+='    <img alt="?" src="mean_spike_frequency_%s.png'%type+'" height="'+height+'"/></a>\n'
+                html+='  <td><a href="images/mean_spike_frequency_%s.png'%type+'">\n'
+                html+='    <img alt="?" src="images/mean_spike_frequency_%s.png'%type+'" height="'+height+'"/></a>\n'
                 html+='  </td>\n'
-                html+='  <td><a href="firing_rates_%s.png'%type+'">\n'
-                html+='    <img alt="?" src="firing_rates_%s.png'%type+'" height="'+height+'"/></a>\n'
+                html+='  <td><a href="images/firing_rates_%s.png'%type+'">\n'
+                html+='    <img alt="?" src="images/firing_rates_%s.png'%type+'" height="'+height+'"/></a>\n'
                 html+='  </td>\n'
-                html+='  <td><a href="heatmap_%s.png'%type+'">\n'
-                html+='    <img alt="?" src="heatmap_%s.png'%type+'" height="'+height+'"/></a>\n'
+                html+='  <td><a href="images/heatmap_%s.png'%type+'">\n'
+                html+='    <img alt="?" src="images/heatmap_%s.png'%type+'" height="'+height+'"/></a>\n'
                 html+='  </td>\n'
-                html+='  <td><a href="dt_traces_%s.png'%type+'">\n'
-                html+='    <img alt="?" src="dt_traces_%s.png'%type+'" height="'+height+'"/></a>\n'
+                html+='  <td><a href="images/dt_traces_%s.png'%type+'">\n'
+                html+='    <img alt="?" src="images/dt_traces_%s.png'%type+'" height="'+height+'"/></a>\n'
                 html+='  </td>\n'
-                html+='  <td><a href="heatmap_dt_%s.png'%type+'">\n'
-                html+='    <img alt="?" src="heatmap_dt_%s.png'%type+'" height="'+height+'"/></a>\n'
+                html+='  <td><a href="images/heatmap_dt_%s.png'%type+'">\n'
+                html+='    <img alt="?" src="images/heatmap_dt_%s.png'%type+'" height="'+height+'"/></a>\n'
                 html+='  </td>\n'
-                html+='  <td><a href="mean_spike_frequency_dt_%s.png'%type+'">\n'
-                html+='    <img alt="?" src="mean_spike_frequency_dt_%s.png'%type+'" height="'+height+'"/></a>\n'
+                html+='  <td><a href="images/mean_spike_frequency_dt_%s.png'%type+'">\n'
+                html+='    <img alt="?" src="images/mean_spike_frequency_dt_%s.png'%type+'" height="'+height+'"/></a>\n'
                 html+='  </td>\n'
                 html+='<tr>\n'
 
@@ -103,7 +112,7 @@ if __name__ == '__main__':
         #vary = {'dt':[0.025,0.01,0.005,0.0025,0.001]}
         #vary = {'dt':[0.1,0.05,0.025,0.01,0.005]}
         #vary = {'dt':[0.05,0.025,0.01]}
-        vary = {'dt':[0.1,0.05,0.025,0.01,0.005,0.0025,0.001]}
+        vary = {'dt':[0.025,0.01,0.005,0.0025,0.001]}
         vary = {'dt':[0.025,0.01,0.005,0.0025,0.001,0.0005,0.00025]}
 
         for type in optimal_stim:
@@ -121,16 +130,16 @@ if __name__ == '__main__':
                                         vary, 
                                         fixed,
                                         num_parallel_runs=16,
-                                        save_plot_all_to='dt_traces_%s.png'%type,
+                                        save_plot_all_to='images/dt_traces_%s.png'%type,
                                         heatmap_all=True,
-                                        save_heatmap_to='heatmap_dt_%s.png'%type,
+                                        save_heatmap_to='images/heatmap_dt_%s.png'%type,
                                         plot_all=True, 
                                         show_plot_already=False)
 
                     report = ps.run()
 
                     #ps.plotLines('stim_amp','average_last_1percent',save_figure_to='average_last_1percent_%s.png'%type)
-                    ps.plotLines('dt','mean_spike_frequency',save_figure_to='mean_spike_frequency_dt_%s.png'%type, logx=True)
+                    ps.plotLines('dt','mean_spike_frequency',save_figure_to='images/mean_spike_frequency_dt_%s.png'%type, logx=True)
                 
                 
 
@@ -176,7 +185,7 @@ if __name__ == '__main__':
                                         vary, 
                                         fixed,
                                         num_parallel_runs=17,
-                                        save_plot_all_to='pois_traces_%s.png'%type,
+                                        save_plot_all_to='images/pois_traces_%s.png'%type,
                                         heatmap_all=False,
                                         plot_all=True, 
                                         show_plot_already=False)
@@ -188,7 +197,7 @@ if __name__ == '__main__':
                                  'mean_spike_frequency',
                                  #second_param='seed',
                                  second_param='number_per_cell',
-                                 save_figure_to='pois_traces_average_rate_%s.png'%type)
+                                 save_figure_to='images/pois_traces_average_rate_%s.png'%type)
                                  
                                 
                 height = '160'
@@ -200,11 +209,11 @@ if __name__ == '__main__':
                     vs = vary[v]
                     html+='<p><sup>%s = %s-&gt;%s</sup></p>\n'%(v,vs[0],vs[-1])
                 html+='</td>\n'
-                html+='  <td><a href="pois_traces_%s.png'%type+'">\n'
-                html+='    <img alt="?" src="pois_traces_%s.png'%type+'" height="'+height+'"/></a>\n'
+                html+='  <td><a href="images/pois_traces_%s.png'%type+'">\n'
+                html+='    <img alt="?" src="images/pois_traces_%s.png'%type+'" height="'+height+'"/></a>\n'
                 html+='  </td>\n'
-                html+='  <td><a href="pois_traces_average_rate_%s.png'%type+'">\n'
-                html+='    <img alt="?" src="pois_traces_average_rate_%s.png'%type+'" height="'+height+'"/></a>\n'
+                html+='  <td><a href="images/pois_traces_average_rate_%s.png'%type+'">\n'
+                html+='    <img alt="?" src="images/pois_traces_average_rate_%s.png'%type+'" height="'+height+'"/></a>\n'
                 html+='  </td>\n'
              
                 html+='<tr>\n'
@@ -255,16 +264,16 @@ if __name__ == '__main__':
         ps = ParameterSweep(nmllr, vary, fixed,
                             num_parallel_runs=16,
                                   plot_all=True, 
-                                  save_plot_all_to='firing_rates_%s.png'%type,
+                                  save_plot_all_to='images/firing_rates_%s.png'%type,
                                   heatmap_all=True,
-                                  save_heatmap_to='heatmap_%s.png'%type,
+                                  save_heatmap_to='images/heatmap_%s.png'%type,
                                   show_plot_already=False)
 
         report = ps.run()
         ps.print_report()
 
         #ps.plotLines('stim_amp','average_last_1percent',save_figure_to='average_last_1percent_%s.png'%type)
-        ps.plotLines('stim_amp','mean_spike_frequency',save_figure_to='mean_spike_frequency_%s.png'%type)
+        ps.plotLines('stim_amp','mean_spike_frequency',save_figure_to='images/mean_spike_frequency_%s.png'%type)
         #ps.plotLines('dt','mean_spike_frequency',save_figure_to='mean_spike_frequency_%s.png'%type, logx=True)
         #ps.plotLines('number_per_cell','mean_spike_frequency',save_figure_to='poisson_mean_spike_frequency_%s.png'%type)
 
