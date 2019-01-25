@@ -42,11 +42,13 @@ def generate(cell_numbers,
     net = Network(id=reference0)
     net.temperature = 34 # degC
     
-    ca1 = RectangularRegion(id='ca1', x=0,y=0,z=0,width=1000,height=100,depth=1000)
+    ca1 = RectangularRegion(id='CA1', x=0,y=0,z=0,width=2000,height=500,depth=1000)
     net.regions.append(ca1)
     
-    ext = RectangularRegion(id='ext', x=1500,y=0,z=0,width=1000,height=100,depth=1000)
-    net.regions.append(ext)
+    ext_ca3 = RectangularRegion(id='CA3', x=0,y=550,z=450,width=100,height=100,depth=100)
+    net.regions.append(ext_ca3)
+    ext_ec = RectangularRegion(id='EC', x=1900,y=550,z=450,width=100,height=100,depth=100)
+    net.regions.append(ext_ec)
     
     net.parameters = {}
     
@@ -89,7 +91,7 @@ def generate(cell_numbers,
                             component=ssp.id, 
                             properties={'color':colors[input]})
 
-        pop.random_layout = RandomLayout(region=ext.id)
+        pop.random_layout = RandomLayout(region=ext_ca3.id if input=='ca3' else ext_ec.id)
 
         net.populations.append(pop)
             
@@ -156,6 +158,12 @@ if __name__ == "__main__":
                             {'ec':(200,200)}, 
                             duration=300, 
                             reference="Pyr")
+        
+    elif '-ping' in sys.argv:
+        sim, net = generate({'poolosyn':3, 'pvbasket':3}, 
+                            {'ca3':(100,200.0)}, #, 'ec':(100,100)}, 
+                            duration=300, 
+                            reference="PING")
                             
         check_to_generate_or_run(sys.argv, sim)
     
