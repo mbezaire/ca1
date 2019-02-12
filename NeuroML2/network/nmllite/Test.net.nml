@@ -1,0 +1,66 @@
+<neuroml xmlns="http://www.neuroml.org/schema/neuroml2"  xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.neuroml.org/schema/neuroml2 https://raw.github.com/NeuroML/NeuroML2/development/Schemas/NeuroML2/NeuroML_v2beta5.xsd" id="Test">
+    <notes>Generated network: Test
+    Generation seed: 1234
+    NeuroMLlite parameters: 
+        rate_ca3 = 500.0
+        num_poolosyn = 3</notes>
+    <include href="../../cells/poolosyn.cell.nml"/>
+    <expTwoSynapse id="syn_poolosyn_to_poolosyn" gbase="70nS" erev="0mV" tauDecay="1.5ms" tauRise="0.1ms"/>
+    <expTwoSynapse id="syn_ca3_to_poolosyn" gbase="0.2nS" erev="0mV" tauDecay="3ms" tauRise="0.5ms"/>
+    <SpikeSourcePoisson id="ca3cell" start="0.0ms" duration="1000000000.0ms" rate="500.0Hz"/>
+    <network id="Test" type="networkWithTemperature" temperature="34.0degC">
+        <notes>A network model: Test</notes>
+        <population id="pop_poolosyn" component="poolosyncell" size="3" type="populationList">
+            <property tag="color" value="0.25490196 0.41176471 0.88235294"/>
+            <property tag="region" value="CA1"/>
+            <instance id="0">
+                <location x="1932.907071384277515" y="220.366299587676338" z="7.491470058587191"/>
+            </instance>
+            <instance id="1">
+                <location x="1821.951924898248308" y="469.634498681882008" z="582.227573058949133"/>
+            </instance>
+            <instance id="2">
+                <location x="1343.126962975970173" y="41.96911341854198" z="766.480932791796249"/>
+            </instance>
+        </population>
+        <population id="pop_ca3" component="ca3cell" size="4" type="populationList">
+            <property tag="color" value="0.9 0.9 0.9"/>
+            <property tag="region" value="CA3"/>
+            <instance id="0">
+                <location x="23.680977536311776" y="553.081402172661001" z="528.877271723628382"/>
+            </instance>
+            <instance id="1">
+                <location x="34.608896559712306" y="612.328147503916853" z="511.581569510361533"/>
+            </instance>
+            <instance id="2">
+                <location x="14.855463870828755" y="568.309064740993108" z="461.441296968868755"/>
+            </instance>
+            <instance id="3">
+                <location x="1.461878048690912" y="598.675154060475847" z="546.490156091621543"/>
+            </instance>
+        </population>
+        <projection id="proj_pop_poolosyn_pop_poolosyn" presynapticPopulation="pop_poolosyn" postsynapticPopulation="pop_poolosyn" synapse="syn_poolosyn_to_poolosyn">
+            <connectionWD id="0" preCellId="../pop_poolosyn/1/poolosyncell" postCellId="../pop_poolosyn/0/poolosyncell" weight="1." delay="0.05ms"/>
+            <connectionWD id="1" preCellId="../pop_poolosyn/1/poolosyncell" postCellId="../pop_poolosyn/0/poolosyncell" weight="1." delay="0.05ms"/>
+            <connectionWD id="2" preCellId="../pop_poolosyn/1/poolosyncell" postCellId="../pop_poolosyn/0/poolosyncell" weight="1." delay="0.05ms"/>
+            <connectionWD id="3" preCellId="../pop_poolosyn/1/poolosyncell" postCellId="../pop_poolosyn/0/poolosyncell" weight="1." delay="0.05ms"/>
+            <connectionWD id="4" preCellId="../pop_poolosyn/0/poolosyncell" postCellId="../pop_poolosyn/1/poolosyncell" weight="1." delay="0.05ms"/>
+            <connectionWD id="5" preCellId="../pop_poolosyn/0/poolosyncell" postCellId="../pop_poolosyn/1/poolosyncell" weight="1." delay="0.05ms"/>
+            <connectionWD id="6" preCellId="../pop_poolosyn/2/poolosyncell" postCellId="../pop_poolosyn/1/poolosyncell" weight="1." delay="0.05ms"/>
+            <connectionWD id="7" preCellId="../pop_poolosyn/0/poolosyncell" postCellId="../pop_poolosyn/1/poolosyncell" weight="1." delay="0.05ms"/>
+            <connectionWD id="8" preCellId="../pop_poolosyn/1/poolosyncell" postCellId="../pop_poolosyn/2/poolosyncell" weight="1." delay="0.05ms"/>
+            <connectionWD id="9" preCellId="../pop_poolosyn/0/poolosyncell" postCellId="../pop_poolosyn/2/poolosyncell" weight="1." delay="0.05ms"/>
+            <connectionWD id="10" preCellId="../pop_poolosyn/0/poolosyncell" postCellId="../pop_poolosyn/2/poolosyncell" weight="1." delay="0.05ms"/>
+            <connectionWD id="11" preCellId="../pop_poolosyn/1/poolosyncell" postCellId="../pop_poolosyn/2/poolosyncell" weight="1." delay="0.05ms"/>
+        </projection>
+        <projection id="proj_ca3_poolosyn" presynapticPopulation="pop_ca3" postsynapticPopulation="pop_poolosyn" synapse="syn_ca3_to_poolosyn">
+            <connectionWD id="0" preCellId="../pop_ca3/0/ca3cell" postCellId="../pop_poolosyn/0/poolosyncell" weight="1." delay="0.05ms"/>
+            <connectionWD id="1" preCellId="../pop_ca3/0/ca3cell" postCellId="../pop_poolosyn/1/poolosyncell" weight="1." delay="0.05ms"/>
+            <connectionWD id="2" preCellId="../pop_ca3/1/ca3cell" postCellId="../pop_poolosyn/0/poolosyncell" weight="1." delay="0.05ms"/>
+            <connectionWD id="3" preCellId="../pop_ca3/1/ca3cell" postCellId="../pop_poolosyn/2/poolosyncell" weight="1." delay="0.05ms"/>
+            <connectionWD id="4" preCellId="../pop_ca3/3/ca3cell" postCellId="../pop_poolosyn/0/poolosyncell" weight="1." delay="0.05ms"/>
+            <connectionWD id="5" preCellId="../pop_ca3/3/ca3cell" postCellId="../pop_poolosyn/1/poolosyncell" weight="1." delay="0.05ms"/>
+            <connectionWD id="6" preCellId="../pop_ca3/3/ca3cell" postCellId="../pop_poolosyn/2/poolosyncell" weight="1." delay="0.05ms"/>
+        </projection>
+    </network>
+</neuroml>

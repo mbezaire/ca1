@@ -25,7 +25,7 @@ largest_allowable_dt = {'sca':0.005,
                         
 connection_numbers = {}
 connection_numbers['poolosyn'] = {}
-connection_numbers['poolosyn']['poolosyn'] = 20
+connection_numbers['poolosyn']['poolosyn'] = 4
 
 def generate(cell_numbers, 
              input_num_freqs, 
@@ -85,7 +85,6 @@ def generate(cell_numbers,
         
         recordTraces[pop_id] = '*'
         
-    print 666
     for post_cell in cell_numbers.keys():
         post_pop_id = 'pop_%s'%post_cell
         if post_cell in connection_numbers:
@@ -95,7 +94,10 @@ def generate(cell_numbers,
                 pre_pop_id = 'pop_%s'%pre_cell
                 
                 if pre_pop_id in all_population_ids:
-                    print(" - There are %i connections to each cell in %s from %s"%(connection_numbers[post_cell][pre_cell],post_pop_id, pre_pop_id))
+                    
+                    num_per_post=connection_numbers[post_cell][pre_cell]
+                    
+                    print(" - There are %i connections to each cell in %s from %s"%(num_per_post,post_pop_id, pre_pop_id))
                     syn_id = 'syn_%s_to_%s'%(pre_cell, post_cell)
                     net.synapses.append(Synapse(id=syn_id, neuroml2_source_file='../../synapses/exp2Synapses.synapse.nml'))
 
@@ -105,7 +107,7 @@ def generate(cell_numbers,
                                               synapse=syn_id,
                                               delay=dt*2,
                                               weight=1,
-                                              random_connectivity=RandomConnectivity(probability=.1)))
+                                              convergent_connectivity=ConvergentConnectivity(num_per_post=num_per_post)))
     
  
 
@@ -209,9 +211,9 @@ if __name__ == "__main__":
         check_to_generate_or_run(sys.argv, sim)
         
     elif '-test' in sys.argv:
-        sim, net = generate({'poolosyn':18}, 
-                            {'ca3':(50,500.0)}, #, 'ec':(100,100)}, 
-                            duration=500, 
+        sim, net = generate({'poolosyn':3}, 
+                            {'ca3':(4,500.0)}, #, 'ec':(100,100)}, 
+                            duration=100, 
                             reference="Test")
                             
         check_to_generate_or_run(sys.argv, sim)
