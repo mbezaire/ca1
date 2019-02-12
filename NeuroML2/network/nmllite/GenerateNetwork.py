@@ -12,15 +12,20 @@ from neuromllite.sweep.ParameterSweep import NeuroMLliteRunner
 colors = helper_getcolor(None)
 
 # See https://github.com/mbezaire/ca1/blob/development/NeuroML2/network/nmllite/README.md
-largest_allowable_dt = {'sca':0.01,
-                        'olm':0.01,
+largest_allowable_dt = {'sca':0.005,
+                        'olm':0.005,
                         'pvbasket':0.005,
-                        'ivy':0.01,
+                        'ivy':0.005,
                         'ngf':0.01,
                         'bistratified':0.005,
                         'cck':0.01,
-                        'axoaxonic':0.01,
+                        'axoaxonic':0.005,
                         'poolosyn':0.025}
+                        
+                        
+connection_numbers = {}
+connection_numbers['poolosyn'] = {}
+connection_numbers['poolosyn']['poolosyn'] = 20
 
 def generate(cell_numbers, 
              input_num_freqs, 
@@ -51,6 +56,11 @@ def generate(cell_numbers,
     net.regions.append(ext_ec)
     
     net.parameters = {}
+    recordTraces = {}
+    recordSpikes = {}
+
+    
+    all_population_ids = []
     
     for cell in cell_numbers.keys():
         reference0 += '_%s%s'%(cell,cell_numbers[cell])
@@ -61,8 +71,10 @@ def generate(cell_numbers,
         net.cells.append(cell_nmll)
         
         net.parameters['num_%s'%cell] = cell_numbers[cell]
+        pop_id = 'pop_%s'%cell
+        all_population_ids.append(pop_id)
         
-        pop = Population(id='pop_%s'%cell, 
+        pop = Population(id=pop_id, 
                             size='num_%s'%cell, 
                             component=cell_id, 
                             properties={'color':colors[cell]})
@@ -70,6 +82,31 @@ def generate(cell_numbers,
         pop.random_layout = RandomLayout(region=ca1.id)
 
         net.populations.append(pop)
+        
+        recordTraces[pop_id] = '*'
+        
+    print 666
+    for post_cell in cell_numbers.keys():
+        post_pop_id = 'pop_%s'%post_cell
+        if post_cell in connection_numbers:
+            
+            for pre_cell in connection_numbers[post_cell]:
+                
+                pre_pop_id = 'pop_%s'%pre_cell
+                
+                if pre_pop_id in all_population_ids:
+                    print(" - There are %i connections to each cell in %s from %s"%(connection_numbers[post_cell][pre_cell],post_pop_id, pre_pop_id))
+                    syn_id = 'syn_%s_to_%s'%(pre_cell, post_cell)
+                    net.synapses.append(Synapse(id=syn_id, neuroml2_source_file='../../synapses/exp2Synapses.synapse.nml'))
+
+                    net.projections.append(Projection(id='proj_%s_%s'%(pre_pop_id, post_pop_id),
+                                              presynaptic=pre_pop_id, 
+                                              postsynaptic=post_pop_id,
+                                              synapse=syn_id,
+                                              delay=dt*2,
+                                              weight=1,
+                                              random_connectivity=RandomConnectivity(probability=.1)))
+    
  
 
     ################################################################################
@@ -86,11 +123,14 @@ def generate(cell_numbers,
                          'duration':   1e9}
         net.cells.append(ssp)
 
-        pop = Population(id='pop_%s'%input, 
+        input_pop_id = 'pop_%s'%input
+        
+        pop = Population(id=input_pop_id, 
                             size=num, 
                             component=ssp.id, 
                             properties={'color':colors[input]})
-
+        recordSpikes[input_pop_id] = '*'   
+        
         pop.random_layout = RandomLayout(region=ext_ca3.id if input=='ca3' else ext_ec.id)
 
         net.populations.append(pop)
@@ -108,7 +148,7 @@ def generate(cell_numbers,
                                       presynaptic='pop_%s'%input, 
                                       postsynaptic='pop_%s'%cell,
                                       synapse=syn_id,
-                                      delay=0,
+                                      delay=dt*2,
                                       weight=1,
                                       random_connectivity=RandomConnectivity(probability=.5)))
             
@@ -133,7 +173,8 @@ def generate(cell_numbers,
                      duration=duration,
                      dt=dt,
                      seed=simulation_seed,
-                     recordTraces={'all':'*'})
+                     recordTraces=recordTraces,
+                     recordSpikes=recordSpikes)
 
     simulation_filename='%s.json'%sim.id
     sim.to_json_file(simulation_filename)
@@ -164,6 +205,14 @@ if __name__ == "__main__":
                             {'ca3':(100,200.0)}, #, 'ec':(100,100)}, 
                             duration=300, 
                             reference="PING")
+                            
+        check_to_generate_or_run(sys.argv, sim)
+        
+    elif '-test' in sys.argv:
+        sim, net = generate({'poolosyn':18}, 
+                            {'ca3':(50,500.0)}, #, 'ec':(100,100)}, 
+                            duration=500, 
+                            reference="Test")
                             
         check_to_generate_or_run(sys.argv, sim)
     

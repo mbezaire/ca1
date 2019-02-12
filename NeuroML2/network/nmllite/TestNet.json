@@ -33,23 +33,33 @@
         ], 
         "regions": [
             {
-                "ca1": {
+                "CA1": {
                     "x": 0.0, 
                     "y": 0.0, 
                     "z": 0.0, 
-                    "width": 1000.0, 
-                    "height": 100.0, 
+                    "width": 2000.0, 
+                    "height": 500.0, 
                     "depth": 1000.0
                 }
             }, 
             {
-                "ext": {
-                    "x": 1500.0, 
-                    "y": 0.0, 
-                    "z": 0.0, 
-                    "width": 1000.0, 
+                "CA3": {
+                    "x": 0.0, 
+                    "y": 550.0, 
+                    "z": 450.0, 
+                    "width": 100.0, 
                     "height": 100.0, 
-                    "depth": 1000.0
+                    "depth": 100.0
+                }
+            }, 
+            {
+                "EC": {
+                    "x": 1900.0, 
+                    "y": 550.0, 
+                    "z": 450.0, 
+                    "width": 100.0, 
+                    "height": 100.0, 
+                    "depth": 100.0
                 }
             }
         ], 
@@ -62,7 +72,7 @@
                         "color": "0.85490196 0.43921569 0.83921569"
                     }, 
                     "random_layout": {
-                        "region": "ca1"
+                        "region": "CA1"
                     }
                 }
             }, 
@@ -74,7 +84,7 @@
                         "color": "0.75 0.75 0.75"
                     }, 
                     "random_layout": {
-                        "region": "ext"
+                        "region": "EC"
                     }
                 }
             }
@@ -85,7 +95,7 @@
                     "presynaptic": "pop_ec", 
                     "postsynaptic": "pop_ngf", 
                     "synapse": "syn_ec_to_ngf", 
-                    "delay": 0, 
+                    "delay": 0.02, 
                     "weight": 1, 
                     "random_connectivity": {
                         "probability": 0.5
