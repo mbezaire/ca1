@@ -130,7 +130,7 @@ def generate(cell_numbers,
         pop = Population(id=input_pop_id, 
                             size=num, 
                             component=ssp.id, 
-                            properties={'color':colors[input]})
+                            properties={'color':colors[input], 'radius':5})
         recordSpikes[input_pop_id] = '*'   
         
         pop.random_layout = RandomLayout(region=ext_ca3.id if input=='ca3' else ext_ec.id)
