@@ -1,6 +1,8 @@
 import sys
+import json
 
 import pprint; pp = pprint.PrettyPrinter(depth=6)
+from pyneuroml import pynml
 
 from neuromllite.sweep.ParameterSweep import ParameterSweep
 from neuromllite.sweep.ParameterSweep import NeuroMLliteRunner
@@ -201,6 +203,9 @@ if __name__ == '__main__':
                                  second_param='number_per_cell',
                                  save_figure_to='images/pois_traces_average_rate_%s.png'%type)
                                  
+                    #print report
+                    with open('report_%s_pois.json'%type, 'w') as outfile:
+                        json.dump(report, outfile, ensure_ascii=False, indent=4)
                                 
                 height = '160'
                 html+='<tr>\n'
@@ -232,6 +237,74 @@ if __name__ == '__main__':
         with open(save_fig_dir+'poisson_inputs.md','w') as f2:
             f2.write('### CA1 cells response to poisson inputs \n%s'%(html.replace('.html','.md')))
             
+        
+    elif '-curves' in sys.argv:
+        
+        cells = colors.keys()
+        #cells = ['olm','ivy']
+        #cells = ['olm']
+        
+        xs = []
+        ys = []
+        p_colors = []
+        labels = []
+        markers = []
+        linewidths=[]
+        
+        rates = {}
+        
+        for type in cells:
+            if type!='ec' and type !='ca3':
+                rates[type] = {}
+                
+                f = 'report_%s_pois.json'%type
+                print('Opening: %s'%f)
+                with open(f, 'r') as rep:
+                    report = json.load(rep)
+                    
+                for s in report["Simulations"]:
+                    params = report["Simulations"][s]["parameters"]
+                    n = params["number_per_cell"]
+                    if not n in rates[type]:
+                        rates[type][n] = {}
+                    rate = float(params["average_rate"][:-2])
+                    freq = report["Simulations"][s]["analysis"].values()[0]["mean_spike_frequency"]
+                    print('Rate for %i inputs at %s Hz: %s Hz'%(n, rate, freq))
+                    
+                    rates[type][n][n*rate] = freq
+                    
+                for n in rates[type]:
+                    
+                    xx = []
+                    yy = []
+                    for in_r in sorted(rates[type][n].keys()):
+                        xx.append(in_r)
+                        yy.append(rates[type][n][in_r])
+                    xs.append(xx)
+                    ys.append(yy)
+
+                    labels.append('%s_%i'%(type,n))
+                    rgb = colors[type].split()
+                    c_hex = '#'
+                    for a in rgb:
+                        c_hex = c_hex+'%02x'%int(float(a)*255)
+                    p_colors.append(c_hex)
+                    markers.append('o')
+                    linewidths.append(0.2)
+                    
+
+                    
+        ax = pynml.generate_plot(xs,                    
+                         ys,               
+                         "Rates",  
+                         labels = labels,
+                         markers = markers,
+                         colors=p_colors,
+                         linewidths = linewidths,
+                         xaxis = 'Total input rate (Hz)',      
+                         yaxis = 'Output rate (Hz)',  
+                         title_above_plot = True,
+                         show_plot_already=True)     # Save figure
         
     else:
         
