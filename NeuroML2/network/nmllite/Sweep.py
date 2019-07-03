@@ -153,7 +153,7 @@ if __name__ == '__main__':
         cells = colors.keys()
         #cells = ['olm','ivy']
         #cells = ['olm']
-        #cells = ['ivy']
+        #cells = ['axoaxonic','ivy']
         save_fig_dir = './'
         html = '<table>\n'
  
@@ -170,8 +170,9 @@ if __name__ == '__main__':
         #vary = {'average_rate':['%sHz'%f for f in xrange(1,2000,200)],
         #        'seed':[i for i in range(5)]}
                 
-        fixed = {'duration':1000, 'dt':0.01, 'number_per_cell':20}
-        fixed = {'duration':1000, 'dt':0.005}
+        from GenerateNetwork import largest_allowable_dt
+        fixed = {'duration':1000, 'number_per_cell':20}
+        fixed = {'duration':1000}
 
         for type in cells:
             if type!='ec' and type !='ca3':
@@ -181,6 +182,7 @@ if __name__ == '__main__':
                 if run:
                     nmllr = NeuroMLliteRunner('Sim_PoissonFiringSynapse_%s.json'%type,
                                               simulator='jNeuroML_NEURON')
+                    fixed['dt'] = largest_allowable_dt[type]
                     ps = ParameterSweep(nmllr, 
                                         vary, 
                                         fixed,
