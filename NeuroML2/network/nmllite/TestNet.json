@@ -1,6 +1,6 @@
 {
     "TestNet": {
-        "version": "NeuroMLlite v0.1.8", 
+        "version": "NeuroMLlite v0.1.9", 
         "temperature": 34.0, 
         "parameters": {
             "rate_ec": 50, 

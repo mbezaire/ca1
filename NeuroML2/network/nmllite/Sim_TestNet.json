@@ -1,6 +1,6 @@
 {
     "Sim_TestNet": {
-        "version": "NeuroMLlite v0.1.8", 
+        "version": "NeuroMLlite v0.1.9", 
         "network": "TestNet.json", 
         "duration": 1000.0, 
         "dt": 0.01, 
@@ -9,7 +9,8 @@
             "pop_ngf": "*"
         }, 
         "recordSpikes": {
-            "pop_ec": "*"
+            "pop_ec": "*", 
+            "pop_ngf": "*"
         }
     }
 }

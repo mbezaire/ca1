@@ -84,6 +84,7 @@ def generate(cell_numbers,
         net.populations.append(pop)
         
         recordTraces[pop_id] = '*'
+        recordSpikes[pop_id] = '*'   
         
     for post_cell in cell_numbers.keys():
         post_pop_id = 'pop_%s'%post_cell
