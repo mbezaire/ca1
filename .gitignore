@@ -131,3 +131,7 @@ NSG/results_nml_scale*/
 /NeuroML2/network/nmllite/Sim_Test.json
 /NeuroML2/network/nmllite/Test.json
 /NeuroML2/network/libjhdf5.jnilib
+/NeuroML2/network/nmllite/Capool.nml
+/NeuroML2/network/nmllite/*.channel.nml
+/NeuroML2/network/nmllite/LEMS_Sim_PING.xml
+/NeuroML2/network/nmllite/*.cell.nml

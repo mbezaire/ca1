@@ -2,7 +2,7 @@
     
     <!-- 
 
-        This LEMS file has been automatically generated using PyNeuroML v0.3.19 (libNeuroML v0.2.47)
+        This LEMS file has been automatically generated using PyNeuroML v0.5.6 (libNeuroML v0.2.53)
 
      -->
     
@@ -20,17 +20,17 @@
     <Simulation id="Sim_PINGNet_0_1" length="60ms" step="0.01ms" target="PINGNet_0_1" seed="1111">  <!-- Note seed: ensures same random numbers used every run -->
         
         <Display id="Display_pop_poolosyn_v" title="Plots of Display_pop_poolosyn_v" timeScale="1ms" xmin="-6.0" xmax="66.0" ymin="-80" ymax="40">
-            <Line id="pop_poolosyn_0_poolosyncell_v" quantity="pop_poolosyn/0/poolosyncell/v" scale="1mV" color="#6aa799" timeScale="1ms"/>
-            <Line id="pop_poolosyn_1_poolosyncell_v" quantity="pop_poolosyn/1/poolosyncell/v" scale="1mV" color="#029a72" timeScale="1ms"/>
-            <Line id="pop_poolosyn_2_poolosyncell_v" quantity="pop_poolosyn/2/poolosyncell/v" scale="1mV" color="#d340bb" timeScale="1ms"/>
-            <Line id="pop_poolosyn_3_poolosyncell_v" quantity="pop_poolosyn/3/poolosyncell/v" scale="1mV" color="#4c73a9" timeScale="1ms"/>
-            <Line id="pop_poolosyn_4_poolosyncell_v" quantity="pop_poolosyn/4/poolosyncell/v" scale="1mV" color="#5e503a" timeScale="1ms"/>
+            <Line id="pop_poolosyn_0_poolosyncell_v" quantity="pop_poolosyn/0/poolosyncell/v" scale="1mV" color="#d54f33" timeScale="1ms"/>
+            <Line id="pop_poolosyn_1_poolosyncell_v" quantity="pop_poolosyn/1/poolosyncell/v" scale="1mV" color="#0534e4" timeScale="1ms"/>
+            <Line id="pop_poolosyn_2_poolosyncell_v" quantity="pop_poolosyn/2/poolosyncell/v" scale="1mV" color="#98e752" timeScale="1ms"/>
+            <Line id="pop_poolosyn_3_poolosyncell_v" quantity="pop_poolosyn/3/poolosyncell/v" scale="1mV" color="#bca074" timeScale="1ms"/>
+            <Line id="pop_poolosyn_4_poolosyncell_v" quantity="pop_poolosyn/4/poolosyncell/v" scale="1mV" color="#632794" timeScale="1ms"/>
         </Display>
         
         <Display id="Display_pop_pvbasket_v" title="Plots of Display_pop_pvbasket_v" timeScale="1ms" xmin="-6.0" xmax="66.0" ymin="-80" ymax="40">
-            <Line id="pop_pvbasket_0_pvbasketcell_v" quantity="pop_pvbasket/0/pvbasketcell/v" scale="1mV" color="#3193ca" timeScale="1ms"/>
-            <Line id="pop_pvbasket_1_pvbasketcell_v" quantity="pop_pvbasket/1/pvbasketcell/v" scale="1mV" color="#90e5e9" timeScale="1ms"/>
-            <Line id="pop_pvbasket_2_pvbasketcell_v" quantity="pop_pvbasket/2/pvbasketcell/v" scale="1mV" color="#29645f" timeScale="1ms"/>
+            <Line id="pop_pvbasket_0_pvbasketcell_v" quantity="pop_pvbasket/0/pvbasketcell/v" scale="1mV" color="#8a5d88" timeScale="1ms"/>
+            <Line id="pop_pvbasket_1_pvbasketcell_v" quantity="pop_pvbasket/1/pvbasketcell/v" scale="1mV" color="#df5954" timeScale="1ms"/>
+            <Line id="pop_pvbasket_2_pvbasketcell_v" quantity="pop_pvbasket/2/pvbasketcell/v" scale="1mV" color="#52c8bf" timeScale="1ms"/>
         </Display>
         
         <OutputFile id="Sim_PINGNet_0_1_pop_poolosyn_v_dat" fileName="Sim_PINGNet_0_1.pop_poolosyn.v.dat">

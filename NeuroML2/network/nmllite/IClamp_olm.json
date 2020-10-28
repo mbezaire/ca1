@@ -1,61 +1,61 @@
 {
     "IClamp_olm": {
-        "version": "NeuroMLlite v0.1.9", 
-        "temperature": 34.0, 
+        "version": "NeuroMLlite v0.2.1",
+        "temperature": 34.0,
         "parameters": {
             "stim_amp": "350pA"
-        }, 
-        "notes": "A network model: IClamp_olm", 
+        },
+        "notes": "A network model: IClamp_olm",
         "cells": [
             {
                 "olmcell": {
                     "neuroml2_source_file": "../../cells/olm.cell.nml"
                 }
             }
-        ], 
+        ],
         "input_sources": [
             {
                 "iclamp_0": {
-                    "neuroml2_input": "PulseGenerator", 
+                    "neuroml2_input": "PulseGenerator",
                     "parameters": {
-                        "delay": "100ms", 
-                        "duration": "500ms", 
-                        "amplitude": "stim_amp"
+                        "amplitude": "stim_amp",
+                        "delay": "100ms",
+                        "duration": "500ms"
                     }
                 }
             }
-        ], 
+        ],
         "regions": [
             {
                 "CA1": {
-                    "x": 0.0, 
-                    "y": 0.0, 
-                    "z": 0.0, 
-                    "width": 1000.0, 
-                    "height": 100.0, 
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "width": 1000.0,
+                    "height": 100.0,
                     "depth": 1000.0
                 }
             }
-        ], 
+        ],
         "populations": [
             {
                 "pop_olmcell": {
-                    "size": 1, 
-                    "component": "olmcell", 
+                    "size": 1,
+                    "component": "olmcell",
                     "properties": {
                         "color": "0.4 0.2 0.6"
-                    }, 
+                    },
                     "random_layout": {
                         "region": "CA1"
                     }
                 }
             }
-        ], 
+        ],
         "inputs": [
             {
                 "Stim_iclamp_0": {
-                    "input_source": "iclamp_0", 
-                    "population": "pop_olmcell", 
+                    "input_source": "iclamp_0",
+                    "population": "pop_olmcell",
                     "percentage": 100.0
                 }
             }

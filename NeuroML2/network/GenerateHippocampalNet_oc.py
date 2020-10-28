@@ -136,7 +136,7 @@ def helper_getpostseggroup(post_list, dist_crit_from, dist_crit_to):
     elif post_list == "basal_list":  # hacky solution for OLM cell
         return "dendrite_list_%i_to_%i"%(dist_from, dist_to)
     else:
-        print "something went wrong!", post_list, dist_crit_from, dist_crit_to
+        print("Something went wrong! %s, %s %s" %(post_list, dist_crit_from, dist_crit_to))
         
 
 def helper_popsize(pop_size, scale):
@@ -156,7 +156,8 @@ def write_popinfo(dPops, scale):
     with open("popsize_scale%s.txt"%scale, "w") as f:
         f.write("popname, number of cells\n")
     
-        for cell_type, pop in dPops.iteritems():
+        for cell_type in dPops:
+            pop = dPops[cell_type]
             popsize = pop.get_size()
             if cell_type not in ["ca3", "ec"]:
                 line = "pop_%s: %s\n"%(cell_type, popsize)
@@ -301,7 +302,8 @@ def generate_hippocampal_net(networkID, scale=100000, duration=100, numData=101,
     
     dPops = {}  # dict for storing populations (used for creating projections)
     num_cells = 0
-    for cell_type, props in dCells.iteritems():
+    for cell_type in dCells:
+        props = dCells[cell_type]
         pop = add_pop(nml_doc, network, scale,
                       cell_type, pop_size=props["ncells"], layer=props["layer"], duration=duration)
         dPops[cell_type] = pop
@@ -316,7 +318,8 @@ def generate_hippocampal_net(networkID, scale=100000, duration=100, numData=101,
     if addSyns:  # easier to visualize on OSB without synapses...
         dSyns = get_projdata(connData, synData)
         num_cons = 0
-        for projID, props in dSyns.iteritems():
+        for projID in dSyns:
+            props = dSyns[projID]
             precell_type = props["precell_type"]; postcell_type = props["postcell_type"]  # just to get populations from pop dictionary 
             if precell_type in dPops and postcell_type in dPops:
                 prepop = dPops[precell_type]; postpop = dPops[postcell_type]               
@@ -358,8 +361,8 @@ def generate_lems(nml_doc, network, nml_fName, dPops, duration=100, dt=0.01):
     # dictionary to specify saving (voltage traces)
     mt_ = 5; ms_PC = 1500  # max traces to save, max PCs for spike saving (to spare memory on NSG)
     save_traces= {}; spike_save_pops = []; save_PCspikes = {}      
-    for cell_type, pop in dPops.iteritems():
-    
+    for cell_type in dPops:
+        pop = dPops[cell_type]
         if cell_type not in ["ca3", "ec"]:
             # save traces
             f_ = "Sim_%s.%s.v.dat"%(nml_doc.id, pop.component)

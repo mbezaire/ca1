@@ -63,7 +63,7 @@ def generate(cell, duration, config='IClamp'):
     if 'PoissonFiringSynapse' in config:
         
         net.inputs[0].number_per_cell = 'number_per_cell'
-        print net.inputs[0]
+        print(net.inputs[0])
         
         # Resave...
         net.to_json_file(network_filename)
