@@ -266,6 +266,7 @@ if __name__ == "__main__":
 
             generate_instance(0.1, 60, "xml",  False, "NEURON", "./",simulation_seed=1111,network_seed=12345)  # scaled down by 10
             generate_instance(0.1, 60, "hdf5", False, "NEURON", "./",simulation_seed=1111,network_seed=12345)  # scaled down by 10
+            generate_instance(1,  100, "xml", False, "NEURON", "./")  
             generate_instance(10,  100, "hdf5", False, "NEURON", "./")  # scaled up by 10
 
             exit()

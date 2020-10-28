@@ -2,7 +2,7 @@
     
     <!-- 
 
-        This LEMS file has been automatically generated using PyNeuroML v0.3.1 (libNeuroML v0.2.34)
+        This LEMS file has been automatically generated using PyNeuroML v0.5.6 (libNeuroML v0.2.53)
 
      -->
     
@@ -16,99 +16,42 @@
     
     <Include file="PyNN.xml"/>
     <Include file="PINGNet.net.nml"/>
+    <Include file="../cells/poolosyn.cell.nml"/>
+    <Include file="../cells/pvbasket.cell.nml"/>
+    <Include file="../synapses/exp2Synapses.synapse.nml"/>
    
-    <Simulation id="Sim_PINGNet" length="500ms" step="0.01ms" target="PINGNet" seed="12345">  <!-- Note seed: ensures same random numbers used every run -->
+    <Simulation id="Sim_PINGNet" length="100ms" step="0.01ms" target="PINGNet" seed="12345">  <!-- Note seed: ensures same random numbers used every run -->
         
-        <Display id="Display_pop_pvbasket_v" title="Plots of Display_pop_pvbasket_v" timeScale="1ms" xmin="-50.0" xmax="550.0" ymin="-80" ymax="40">
-            <Line id="pop_pvbasket_0_pvbasketcell_v" quantity="pop_pvbasket/0/pvbasketcell/v" scale="1mV" color="#6aa799" timeScale="1ms"/>
-            <Line id="pop_pvbasket_1_pvbasketcell_v" quantity="pop_pvbasket/1/pvbasketcell/v" scale="1mV" color="#029a72" timeScale="1ms"/>
-            <Line id="pop_pvbasket_2_pvbasketcell_v" quantity="pop_pvbasket/2/pvbasketcell/v" scale="1mV" color="#d340bb" timeScale="1ms"/>
-            <Line id="pop_pvbasket_3_pvbasketcell_v" quantity="pop_pvbasket/3/pvbasketcell/v" scale="1mV" color="#4c73a9" timeScale="1ms"/>
-            <Line id="pop_pvbasket_4_pvbasketcell_v" quantity="pop_pvbasket/4/pvbasketcell/v" scale="1mV" color="#5e503a" timeScale="1ms"/>
+        <Display id="Display_pop_poolosyn_v" title="Plots of Display_pop_poolosyn_v" timeScale="1ms" xmin="-10.0" xmax="110.00000000000001" ymin="-80" ymax="40">
+            <Line id="pop_poolosyn_0_poolosyncell_v" quantity="pop_poolosyn/0/poolosyncell/v" scale="1mV" color="#d54f33" timeScale="1ms"/>
+            <Line id="pop_poolosyn_1_poolosyncell_v" quantity="pop_poolosyn/1/poolosyncell/v" scale="1mV" color="#0534e4" timeScale="1ms"/>
+            <Line id="pop_poolosyn_2_poolosyncell_v" quantity="pop_poolosyn/2/poolosyncell/v" scale="1mV" color="#98e752" timeScale="1ms"/>
+            <Line id="pop_poolosyn_3_poolosyncell_v" quantity="pop_poolosyn/3/poolosyncell/v" scale="1mV" color="#bca074" timeScale="1ms"/>
+            <Line id="pop_poolosyn_4_poolosyncell_v" quantity="pop_poolosyn/4/poolosyncell/v" scale="1mV" color="#632794" timeScale="1ms"/>
         </Display>
         
-        <Display id="Display_pop_poolosyn_v" title="Plots of Display_pop_poolosyn_v" timeScale="1ms" xmin="-50.0" xmax="550.0" ymin="-80" ymax="40">
-            <Line id="pop_poolosyn_0_poolosyncell_v" quantity="pop_poolosyn/0/poolosyncell/v" scale="1mV" color="#3193ca" timeScale="1ms"/>
-            <Line id="pop_poolosyn_1_poolosyncell_v" quantity="pop_poolosyn/1/poolosyncell/v" scale="1mV" color="#90e5e9" timeScale="1ms"/>
-            <Line id="pop_poolosyn_2_poolosyncell_v" quantity="pop_poolosyn/2/poolosyncell/v" scale="1mV" color="#29645f" timeScale="1ms"/>
-            <Line id="pop_poolosyn_3_poolosyncell_v" quantity="pop_poolosyn/3/poolosyncell/v" scale="1mV" color="#1fcff4" timeScale="1ms"/>
-            <Line id="pop_poolosyn_4_poolosyncell_v" quantity="pop_poolosyn/4/poolosyncell/v" scale="1mV" color="#6ed4e9" timeScale="1ms"/>
+        <Display id="Display_pop_pvbasket_v" title="Plots of Display_pop_pvbasket_v" timeScale="1ms" xmin="-10.0" xmax="110.00000000000001" ymin="-80" ymax="40">
+            <Line id="pop_pvbasket_0_pvbasketcell_v" quantity="pop_pvbasket/0/pvbasketcell/v" scale="1mV" color="#8a5d88" timeScale="1ms"/>
+            <Line id="pop_pvbasket_1_pvbasketcell_v" quantity="pop_pvbasket/1/pvbasketcell/v" scale="1mV" color="#df5954" timeScale="1ms"/>
+            <Line id="pop_pvbasket_2_pvbasketcell_v" quantity="pop_pvbasket/2/pvbasketcell/v" scale="1mV" color="#52c8bf" timeScale="1ms"/>
+            <Line id="pop_pvbasket_3_pvbasketcell_v" quantity="pop_pvbasket/3/pvbasketcell/v" scale="1mV" color="#bf0239" timeScale="1ms"/>
+            <Line id="pop_pvbasket_4_pvbasketcell_v" quantity="pop_pvbasket/4/pvbasketcell/v" scale="1mV" color="#3f9fe8" timeScale="1ms"/>
         </Display>
         
-        <OutputFile id="Volts_file__pop_poolosyn" fileName="Sim_PINGNet.pop_poolosyn.v.dat">
-            <OutputColumn id="v_pop_poolosyn_0_poolosyncell_v" quantity="pop_poolosyn/0/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_1_poolosyncell_v" quantity="pop_poolosyn/1/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_2_poolosyncell_v" quantity="pop_poolosyn/2/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_3_poolosyncell_v" quantity="pop_poolosyn/3/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_4_poolosyncell_v" quantity="pop_poolosyn/4/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_5_poolosyncell_v" quantity="pop_poolosyn/5/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_6_poolosyncell_v" quantity="pop_poolosyn/6/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_7_poolosyncell_v" quantity="pop_poolosyn/7/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_8_poolosyncell_v" quantity="pop_poolosyn/8/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_9_poolosyncell_v" quantity="pop_poolosyn/9/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_10_poolosyncell_v" quantity="pop_poolosyn/10/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_11_poolosyncell_v" quantity="pop_poolosyn/11/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_12_poolosyncell_v" quantity="pop_poolosyn/12/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_13_poolosyncell_v" quantity="pop_poolosyn/13/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_14_poolosyncell_v" quantity="pop_poolosyn/14/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_15_poolosyncell_v" quantity="pop_poolosyn/15/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_16_poolosyncell_v" quantity="pop_poolosyn/16/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_17_poolosyncell_v" quantity="pop_poolosyn/17/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_18_poolosyncell_v" quantity="pop_poolosyn/18/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_19_poolosyncell_v" quantity="pop_poolosyn/19/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_20_poolosyncell_v" quantity="pop_poolosyn/20/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_21_poolosyncell_v" quantity="pop_poolosyn/21/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_22_poolosyncell_v" quantity="pop_poolosyn/22/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_23_poolosyncell_v" quantity="pop_poolosyn/23/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_24_poolosyncell_v" quantity="pop_poolosyn/24/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_25_poolosyncell_v" quantity="pop_poolosyn/25/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_26_poolosyncell_v" quantity="pop_poolosyn/26/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_27_poolosyncell_v" quantity="pop_poolosyn/27/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_28_poolosyncell_v" quantity="pop_poolosyn/28/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_29_poolosyncell_v" quantity="pop_poolosyn/29/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_30_poolosyncell_v" quantity="pop_poolosyn/30/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_31_poolosyncell_v" quantity="pop_poolosyn/31/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_32_poolosyncell_v" quantity="pop_poolosyn/32/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_33_poolosyncell_v" quantity="pop_poolosyn/33/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_34_poolosyncell_v" quantity="pop_poolosyn/34/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_35_poolosyncell_v" quantity="pop_poolosyn/35/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_36_poolosyncell_v" quantity="pop_poolosyn/36/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_37_poolosyncell_v" quantity="pop_poolosyn/37/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_38_poolosyncell_v" quantity="pop_poolosyn/38/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_39_poolosyncell_v" quantity="pop_poolosyn/39/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_40_poolosyncell_v" quantity="pop_poolosyn/40/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_41_poolosyncell_v" quantity="pop_poolosyn/41/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_42_poolosyncell_v" quantity="pop_poolosyn/42/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_43_poolosyncell_v" quantity="pop_poolosyn/43/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_44_poolosyncell_v" quantity="pop_poolosyn/44/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_45_poolosyncell_v" quantity="pop_poolosyn/45/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_46_poolosyncell_v" quantity="pop_poolosyn/46/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_47_poolosyncell_v" quantity="pop_poolosyn/47/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_48_poolosyncell_v" quantity="pop_poolosyn/48/poolosyncell/v"/> 
-            <OutputColumn id="v_pop_poolosyn_49_poolosyncell_v" quantity="pop_poolosyn/49/poolosyncell/v"/> 
+        <OutputFile id="Sim_PINGNet_pop_poolosyn_v_dat" fileName="Sim_PINGNet.pop_poolosyn.v.dat">
+            <OutputColumn id="pop_poolosyn_0_poolosyncell_v" quantity="pop_poolosyn/0/poolosyncell/v"/> 
+            <OutputColumn id="pop_poolosyn_1_poolosyncell_v" quantity="pop_poolosyn/1/poolosyncell/v"/> 
+            <OutputColumn id="pop_poolosyn_2_poolosyncell_v" quantity="pop_poolosyn/2/poolosyncell/v"/> 
+            <OutputColumn id="pop_poolosyn_3_poolosyncell_v" quantity="pop_poolosyn/3/poolosyncell/v"/> 
+            <OutputColumn id="pop_poolosyn_4_poolosyncell_v" quantity="pop_poolosyn/4/poolosyncell/v"/> 
         </OutputFile>
         
-        <OutputFile id="Volts_file__pop_pvbasket" fileName="Sim_PINGNet.pop_pvbasket.v.dat">
-            <OutputColumn id="v_pop_pvbasket_0_pvbasketcell_v" quantity="pop_pvbasket/0/pvbasketcell/v"/> 
-            <OutputColumn id="v_pop_pvbasket_1_pvbasketcell_v" quantity="pop_pvbasket/1/pvbasketcell/v"/> 
-            <OutputColumn id="v_pop_pvbasket_2_pvbasketcell_v" quantity="pop_pvbasket/2/pvbasketcell/v"/> 
-            <OutputColumn id="v_pop_pvbasket_3_pvbasketcell_v" quantity="pop_pvbasket/3/pvbasketcell/v"/> 
-            <OutputColumn id="v_pop_pvbasket_4_pvbasketcell_v" quantity="pop_pvbasket/4/pvbasketcell/v"/> 
-            <OutputColumn id="v_pop_pvbasket_5_pvbasketcell_v" quantity="pop_pvbasket/5/pvbasketcell/v"/> 
-            <OutputColumn id="v_pop_pvbasket_6_pvbasketcell_v" quantity="pop_pvbasket/6/pvbasketcell/v"/> 
-            <OutputColumn id="v_pop_pvbasket_7_pvbasketcell_v" quantity="pop_pvbasket/7/pvbasketcell/v"/> 
-            <OutputColumn id="v_pop_pvbasket_8_pvbasketcell_v" quantity="pop_pvbasket/8/pvbasketcell/v"/> 
-            <OutputColumn id="v_pop_pvbasket_9_pvbasketcell_v" quantity="pop_pvbasket/9/pvbasketcell/v"/> 
-            <OutputColumn id="v_pop_pvbasket_10_pvbasketcell_v" quantity="pop_pvbasket/10/pvbasketcell/v"/> 
-            <OutputColumn id="v_pop_pvbasket_11_pvbasketcell_v" quantity="pop_pvbasket/11/pvbasketcell/v"/> 
-            <OutputColumn id="v_pop_pvbasket_12_pvbasketcell_v" quantity="pop_pvbasket/12/pvbasketcell/v"/> 
-            <OutputColumn id="v_pop_pvbasket_13_pvbasketcell_v" quantity="pop_pvbasket/13/pvbasketcell/v"/> 
-            <OutputColumn id="v_pop_pvbasket_14_pvbasketcell_v" quantity="pop_pvbasket/14/pvbasketcell/v"/> 
-            <OutputColumn id="v_pop_pvbasket_15_pvbasketcell_v" quantity="pop_pvbasket/15/pvbasketcell/v"/> 
-            <OutputColumn id="v_pop_pvbasket_16_pvbasketcell_v" quantity="pop_pvbasket/16/pvbasketcell/v"/> 
-            <OutputColumn id="v_pop_pvbasket_17_pvbasketcell_v" quantity="pop_pvbasket/17/pvbasketcell/v"/> 
-            <OutputColumn id="v_pop_pvbasket_18_pvbasketcell_v" quantity="pop_pvbasket/18/pvbasketcell/v"/> 
-            <OutputColumn id="v_pop_pvbasket_19_pvbasketcell_v" quantity="pop_pvbasket/19/pvbasketcell/v"/> 
+        <OutputFile id="Sim_PINGNet_pop_pvbasket_v_dat" fileName="Sim_PINGNet.pop_pvbasket.v.dat">
+            <OutputColumn id="pop_pvbasket_0_pvbasketcell_v" quantity="pop_pvbasket/0/pvbasketcell/v"/> 
+            <OutputColumn id="pop_pvbasket_1_pvbasketcell_v" quantity="pop_pvbasket/1/pvbasketcell/v"/> 
+            <OutputColumn id="pop_pvbasket_2_pvbasketcell_v" quantity="pop_pvbasket/2/pvbasketcell/v"/> 
+            <OutputColumn id="pop_pvbasket_3_pvbasketcell_v" quantity="pop_pvbasket/3/pvbasketcell/v"/> 
+            <OutputColumn id="pop_pvbasket_4_pvbasketcell_v" quantity="pop_pvbasket/4/pvbasketcell/v"/> 
         </OutputFile>
         
         <EventOutputFile id="Spikes_file__pop_poolosyn" fileName="Sim_PINGNet.pop_poolosyn.spikes" format="ID_TIME">
@@ -185,92 +128,6 @@
             <EventSelection id="17" select="pop_pvbasket/17/pvbasketcell" eventPort="spike"/> 
             <EventSelection id="18" select="pop_pvbasket/18/pvbasketcell" eventPort="spike"/> 
             <EventSelection id="19" select="pop_pvbasket/19/pvbasketcell" eventPort="spike"/> 
-        </EventOutputFile>
-        
-        <EventOutputFile id="Spikes_file__pop_ca3" fileName="Sim_PINGNet.pop_ca3.spikes" format="ID_TIME">
-            <EventSelection id="0" select="pop_ca3/0/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="1" select="pop_ca3/1/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="2" select="pop_ca3/2/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="3" select="pop_ca3/3/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="4" select="pop_ca3/4/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="5" select="pop_ca3/5/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="6" select="pop_ca3/6/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="7" select="pop_ca3/7/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="8" select="pop_ca3/8/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="9" select="pop_ca3/9/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="10" select="pop_ca3/10/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="11" select="pop_ca3/11/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="12" select="pop_ca3/12/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="13" select="pop_ca3/13/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="14" select="pop_ca3/14/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="15" select="pop_ca3/15/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="16" select="pop_ca3/16/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="17" select="pop_ca3/17/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="18" select="pop_ca3/18/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="19" select="pop_ca3/19/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="20" select="pop_ca3/20/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="21" select="pop_ca3/21/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="22" select="pop_ca3/22/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="23" select="pop_ca3/23/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="24" select="pop_ca3/24/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="25" select="pop_ca3/25/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="26" select="pop_ca3/26/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="27" select="pop_ca3/27/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="28" select="pop_ca3/28/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="29" select="pop_ca3/29/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="30" select="pop_ca3/30/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="31" select="pop_ca3/31/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="32" select="pop_ca3/32/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="33" select="pop_ca3/33/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="34" select="pop_ca3/34/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="35" select="pop_ca3/35/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="36" select="pop_ca3/36/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="37" select="pop_ca3/37/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="38" select="pop_ca3/38/stim_ca3" eventPort="spike"/> 
-            <EventSelection id="39" select="pop_ca3/39/stim_ca3" eventPort="spike"/> 
-        </EventOutputFile>
-        
-        <EventOutputFile id="Spikes_file__pop_ec" fileName="Sim_PINGNet.pop_ec.spikes" format="ID_TIME">
-            <EventSelection id="0" select="pop_ec/0/stim_ec" eventPort="spike"/> 
-            <EventSelection id="1" select="pop_ec/1/stim_ec" eventPort="spike"/> 
-            <EventSelection id="2" select="pop_ec/2/stim_ec" eventPort="spike"/> 
-            <EventSelection id="3" select="pop_ec/3/stim_ec" eventPort="spike"/> 
-            <EventSelection id="4" select="pop_ec/4/stim_ec" eventPort="spike"/> 
-            <EventSelection id="5" select="pop_ec/5/stim_ec" eventPort="spike"/> 
-            <EventSelection id="6" select="pop_ec/6/stim_ec" eventPort="spike"/> 
-            <EventSelection id="7" select="pop_ec/7/stim_ec" eventPort="spike"/> 
-            <EventSelection id="8" select="pop_ec/8/stim_ec" eventPort="spike"/> 
-            <EventSelection id="9" select="pop_ec/9/stim_ec" eventPort="spike"/> 
-            <EventSelection id="10" select="pop_ec/10/stim_ec" eventPort="spike"/> 
-            <EventSelection id="11" select="pop_ec/11/stim_ec" eventPort="spike"/> 
-            <EventSelection id="12" select="pop_ec/12/stim_ec" eventPort="spike"/> 
-            <EventSelection id="13" select="pop_ec/13/stim_ec" eventPort="spike"/> 
-            <EventSelection id="14" select="pop_ec/14/stim_ec" eventPort="spike"/> 
-            <EventSelection id="15" select="pop_ec/15/stim_ec" eventPort="spike"/> 
-            <EventSelection id="16" select="pop_ec/16/stim_ec" eventPort="spike"/> 
-            <EventSelection id="17" select="pop_ec/17/stim_ec" eventPort="spike"/> 
-            <EventSelection id="18" select="pop_ec/18/stim_ec" eventPort="spike"/> 
-            <EventSelection id="19" select="pop_ec/19/stim_ec" eventPort="spike"/> 
-            <EventSelection id="20" select="pop_ec/20/stim_ec" eventPort="spike"/> 
-            <EventSelection id="21" select="pop_ec/21/stim_ec" eventPort="spike"/> 
-            <EventSelection id="22" select="pop_ec/22/stim_ec" eventPort="spike"/> 
-            <EventSelection id="23" select="pop_ec/23/stim_ec" eventPort="spike"/> 
-            <EventSelection id="24" select="pop_ec/24/stim_ec" eventPort="spike"/> 
-            <EventSelection id="25" select="pop_ec/25/stim_ec" eventPort="spike"/> 
-            <EventSelection id="26" select="pop_ec/26/stim_ec" eventPort="spike"/> 
-            <EventSelection id="27" select="pop_ec/27/stim_ec" eventPort="spike"/> 
-            <EventSelection id="28" select="pop_ec/28/stim_ec" eventPort="spike"/> 
-            <EventSelection id="29" select="pop_ec/29/stim_ec" eventPort="spike"/> 
-            <EventSelection id="30" select="pop_ec/30/stim_ec" eventPort="spike"/> 
-            <EventSelection id="31" select="pop_ec/31/stim_ec" eventPort="spike"/> 
-            <EventSelection id="32" select="pop_ec/32/stim_ec" eventPort="spike"/> 
-            <EventSelection id="33" select="pop_ec/33/stim_ec" eventPort="spike"/> 
-            <EventSelection id="34" select="pop_ec/34/stim_ec" eventPort="spike"/> 
-            <EventSelection id="35" select="pop_ec/35/stim_ec" eventPort="spike"/> 
-            <EventSelection id="36" select="pop_ec/36/stim_ec" eventPort="spike"/> 
-            <EventSelection id="37" select="pop_ec/37/stim_ec" eventPort="spike"/> 
-            <EventSelection id="38" select="pop_ec/38/stim_ec" eventPort="spike"/> 
-            <EventSelection id="39" select="pop_ec/39/stim_ec" eventPort="spike"/> 
         </EventOutputFile>
         
     </Simulation>
