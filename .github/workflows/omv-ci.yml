@@ -32,7 +32,7 @@ jobs:
         
         
     - name: Compile some mod files
-      if: ${{ matrix.engine == 'PyNEURON' }}
+      if: ${{ matrix.engine == 'NEURON' }}
       run: |
         omv install NEURON
         cd NeuroML2
