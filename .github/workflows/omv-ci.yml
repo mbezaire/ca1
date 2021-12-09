@@ -15,7 +15,7 @@ jobs:
       fail-fast: false
       matrix:
         python-version: [ 3.7, 3.9 ]
-        engine: [ NetPyNE, jNeuroML, jNeuroML_NEURON, jNeuroML_NetPyNE, jNeuroML_validate ]
+        engine: [ NEURON, jNeuroML, jNeuroML_NEURON, jNeuroML_NetPyNE, jNeuroML_validate ]
 
     steps:
     - uses: actions/checkout@v2
@@ -29,6 +29,14 @@ jobs:
       run: |
         pip install git+https://github.com/OpenSourceBrain/osb-model-validation
         pip install scipy sympy matplotlib cython pandas tables
+        
+        
+    - name: Compile some mod files
+      if: ${{ matrix.engine == 'PyNEURON' }}
+      run: |
+        omv install NEURON
+        cd NeuroML2
+        nrnivmodl ..
         
     - name: Run OMV tests on engine ${{ matrix.engine }}
       run: |
