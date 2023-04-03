@@ -1,6 +1,9 @@
 ca1: a NEURON network model
 ########################################
 
+.. image:: https://github.com/mbezaire/ca1/actions/workflows/omv-ci.yml/badge.svg
+   :target: https://github.com/mbezaire/ca1/actions/workflows/omv-ci.yml
+
 ca1 is a large-scale, detailed, biologically constrained NEURON network model of the rodent hippocampal CA1 area.
 
 .. contents::
