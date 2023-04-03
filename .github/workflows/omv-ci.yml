@@ -32,11 +32,9 @@ jobs:
         
         
     - name: Compile some mod files
-      if: ${{ matrix.engine == *'NEURON'* }}
       run: |
-        omv install NEURON
-        cd NeuroML2
-        nrnivmodl ..
+        if [[  ${{ matrix.engine }} == *"NEURON"* ]]; then omv install NEURON; cd NeuroML2; nrnivmodl .. ; fi
+
         
     - name: Run OMV tests on engine ${{ matrix.engine }}
       run: |
