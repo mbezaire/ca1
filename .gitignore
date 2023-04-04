@@ -135,3 +135,4 @@ NSG/results_nml_scale*/
 /NeuroML2/network/nmllite/*.channel.nml
 /NeuroML2/network/nmllite/LEMS_Sim_PING.xml
 /NeuroML2/network/nmllite/*.cell.nml
+arm64
