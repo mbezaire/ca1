@@ -39,9 +39,12 @@ proc init() {
 	mechinit()			// local fcn: set values for max conductances and reversal potentials of ion channels and other ephys parameters that are subject to fitting
 	insert_mechs()		// local fcn: insert ion channels and actually set values determined in the mechinit fcn
 	set_chanparams()	// local fcn: after all channels have been inserted, then their other parameters can be set	
-	// synapses
-	pre_list = new List() // define a list for the presynaptic connections
-	define_synapses($3)	// local fcn: define all possible synaptic connections received by this cell
+	
+    // synapses
+	if ($3 >= 0) {        // using the cell alone/outside of the network (eg. test with omv call with (0,0,-1)), András
+	    pre_list = new List() // define a list for the presynaptic connections	
+	    define_synapses($3)	// local fcn: define all possible synaptic connections received by this cell
+    }
 }
 
 proc connect_sections() { local i
@@ -191,22 +194,22 @@ proc set_nseg() {
 proc mechinit() {
 
 	// resting membrane potential. Must lie between Na+ and K+ reversal potentials
-	Vrest=-57
+	Vrest = -72
 	
 	// Temperature of simulation
 	celsius = 34.0  
 
 	// Membrane resistance in ohm*cm2
-	RmDend = 45000 // 60000
-	RmSoma = 45000 // 60000 
+	RmDend = 35000 // 60000
+	RmSoma = 35000 // 60000 
 
 	// Membrane capacitance in uF/cm2
-	CmSoma= 1.0 // 1.8
-	CmDend = 1.0 // 1.8
+	CmSoma = 1.2 // 1.8
+	CmDend = 1.2 // 1.8
 
 	// Axial resistance in ohm*cm
-	RaDend= 150 //75*3
-	RaSoma= 150 //75*3	
+	RaDend = 150 //75*3
+	RaSoma = 150 //75*3	
 	
 	// Calcium concentrations in mM
 	ca_outside = 2
@@ -224,78 +227,72 @@ proc mechinit() {
 	eleakval = Vrest
 
 	// max ion channel conductances in mho/cm2
-	gNav     = 0.04*.1 // soma: // 0.12 //original 0.030 to .055 ; lm: //0.5  	//original 0.015
-	gKdr     = 0.000006*1.2    // Delayed rectifier potassium
-	gKGroup  = 0.0011*.8 //0.1465/1
-	gKvA 	 = 0.00010 // Proximal A-type potassium
+	gNav     = 0.04 // soma: // 0.12 //original 0.030 to .055 ; lm: //0.5  	//original 0.015
+	gKdr     = 0.000006    // Delayed rectifier potassium
+	gKGroup  = 0.0011 //0.1465/1
+	gKvA 	 = 0.0001 // Proximal A-type potassium
 	gHCN     = 0.00007 // HCN (hyperpolarization-activated cyclic nucleotide-gated channel)
-	gCavN    = 0.00002*2 //   T-type calcium
-	gCavL    = 0.0010*1.5 //  L-type calcium
-	gKvCaB	 = 0.000007*1.1 // Big potassium channel: voltage and calcium gated 
-	gKCaS	 = 0.000001*1.1 //  Small potassium channel: calcium gated		
-	gKvM	 = 0.06*2
+	gCavN    = 0.00002 //   T-type calcium
+	gCavL    = 0.001 //  L-type calcium
+	gKvCaB	 = 0.000007 // Big potassium channel: voltage and calcium gated 
+	gKCaS	 = 0.000001 //  Small potassium channel: calcium gated
 }
 
 proc insert_mechs() {
 
 	forsec all {
-		insert iconc_Ca
-						
+		insert iconc_Ca						
 		
-		insert ch_KvA
-		gmax_ch_KvA = gKvA		// A-type K+ conductance
-		
+		insert ch_KvA               // A-type K+ conductance
+		    gmax_ch_KvA = gKvA				
 		insert ch_CavN  			// N-type Ca2+ conductance
-		gmax_ch_CavN = gCavN
-		
+		    gmax_ch_CavN = gCavN
 		insert ch_CavL
-		gmax_ch_CavL = gCavL
-		
+		    gmax_ch_CavL = gCavL		
 		insert ch_KCaS
-		gmax_ch_KCaS = gKCaS
-		
+	        gmax_ch_KCaS = gKCaS		
 		insert ch_KvCaB
-		gmax_ch_KvCaB = gKvCaB
-
+		    gmax_ch_KvCaB = gKvCaB
 		insert ch_HCN
-		gmax_ch_HCN=gHCN
-		
+            gmax_ch_HCN = gHCN		
+		    
 		Ra = RaSoma
 	} 
 
 	soma {
-		insert ch_Navcck	
-		gmax_ch_Navcck = gNav
-		ena = enaval
+		insert ch_Navcck
+		    gmax_ch_Navcck = gNav
+		    ena = enaval
 		insert ch_Kdrfast
-		gmax_ch_Kdrfast = gKdr
+		    gmax_ch_Kdrfast = gKdr
 		insert ch_KvGroup
-		gmax_ch_KvGroup = gKGroup
-		
-		insert ch_KvM
-		gmax_ch_KvM = gKvM		// M-type K+ conductance
+		    gmax_ch_KvGroup = gKGroup
 		
 		insert ch_leak
-		gmax_ch_leak = 1/RmSoma
-		cm=CmSoma
+		    gmax_ch_leak = 1/RmSoma
+
+		cm = CmSoma
 	} 
 
 	access soma
 	distance()
+
 	forsec dendrite_list {
 		insert ch_leak
-		gmax_ch_leak = 1/RmDend
-		cm=CmDend
+		    gmax_ch_leak = 1/RmDend
+
+		cm = CmDend
 		
 		for (x,0) {
-			if (distance(x)<100) {
+			if (distance(x) < 100) {
 				insert ch_Navcck
-				gmax_ch_Navcck=gNav*.5
-				ena = enaval
+                    //gmax_ch_Navcck = gNav*.5 <- sets gmax uniformly in the whole section, not only in the segments, whose (midpoints) are closer than 100 um (it changed the behaviour of the cell dramatically (tested with 0.5nA somatic IClamp))
+				    gmax_ch_Navcck(x) = gNav*.5
+				    ena = enaval
 				insert ch_Kdrfast
-				gmax_ch_Kdrfast=gKdr*10
+				    gmax_ch_Kdrfast(x) = gKdr*10  // <- see above - András
 				insert ch_KvGroup
-				gmax_ch_KvGroup = gKGroup*2
+				    gmax_ch_KvGroup(x) = gKGroup*2  // <- see above András
 			}
 		}
 	}	

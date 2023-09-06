@@ -1,8 +1,6 @@
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
-""" 
-    Rotates poolosyncell (just to be consistent with the other cells -> will look better on OSB):
-    Authors: András Ecker, Padraig Gleeson
-"""
+"""Rotates poolosyncell (just to be consistent with the other cells -> will look better on OSB)"""
 
 import neuroml
 import neuroml.loaders as loaders
@@ -12,7 +10,7 @@ orig_nml_file = "poolosyn_orig_unrotated.cell.nml"
 doc = loaders.NeuroMLLoader.load(orig_nml_file)
 print("Loaded morphology file from: " + orig_nml_file)
 
-# iterating over segments and changeing x and y coordinates 
+# iterating over segments and changing x and y coordinates 
 for seg in doc.cells[0].morphology.segments:
     if seg.proximal:
         prox = [seg.proximal.x, seg.proximal.y, seg.proximal.z]

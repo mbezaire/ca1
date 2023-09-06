@@ -1,8 +1,12 @@
-#!/usr/bin/ipython -i
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+""" 
+Runs NEURON and plots membrane potential, [Ca++]_i and I_Ca (to compare Ca++ dynamics)
+Authors: András Ecker, Boris Marin, Padraig Gleeson, last update: 11.2017
+"""
 
 from neuron import *
 from nrn import *
-#from neuron import gui
 
 
 def create_comp(name = 'soma'):
@@ -11,6 +15,8 @@ def create_comp(name = 'soma'):
     
     comp.insert('iconc_Ca')
     comp.catau_iconc_Ca = 9
+    h.cao0_ca_ion = 2
+    h.cai0_ca_ion = 5e-6
 
     #comp.insert('ica_clamp')    
 
@@ -22,6 +28,8 @@ def create_comp(name = 'soma'):
 
     comp.insert('ch_KvCaB')
     comp.gmax_ch_KvCaB = 10e-3
+    comp.insert('ch_KCaS')
+    comp.gmax_ch_KvCaB = 10e-3
     comp.ek = -90
 
     comp.nseg = 1
@@ -32,23 +40,10 @@ def create_comp(name = 'soma'):
     comp(0.5).g_pas = 3e-4 # S/cm2
     comp(0.5).e_pas = -65
 
-    h.cao0_ca_ion = 2
-    h.cai0_ca_ion = 5e-5
-
     h.celsius = 34
 
     return comp
 
-    
-def plot_timeseries(vdict, varlist):
-    from pylab import plot, show, figure, title
-    t = vdict['t']
-    for n in varlist:
-        figure()
-        plot(t, vdict[n], label=n, color='r')
-        title(n)
-    
-    show()
 
 def create_dumps(section, varlist):
     recordings = {n: h.Vector() for n in varlist}
@@ -61,14 +56,6 @@ def create_dumps(section, varlist):
     return recordings 
 
 
-def dump_to_file(vdict, varlist, fname='nrn_ca.dat'):
-    from numpy import savetxt, array
-
-    vnames = ['t'] + varlist
-    X = array([vdict[x].to_python() for x in vnames]).T
-    savetxt(fname, X)
-
-
 def run(tstop=10, dt=0.001):
     h.dt = dt
     h.finitialize(-65)
@@ -78,18 +65,38 @@ def run(tstop=10, dt=0.001):
         h.fadvance()
 
 
+def plot_timeseries(vdict, varlist):
+    from pylab import plot, show, figure, title
+    t = vdict['t']
+    for n in varlist:
+        figure()
+        plot(t, vdict[n], label=n, color='r')
+        title(n)
+    
+    show()
 
-comp = create_comp('soma')
 
-stim = h.IClamp(0.5, sec=comp)
-stim.delay = 40
-stim.dur = 120
-stim.amp = 0.01
+def dump_to_file(vdict, varlist, fname='nrn_ca.dat'):
+    from numpy import savetxt, array
 
-varlist = ['v', 'cai', 'ica']
-ds = create_dumps(comp, varlist)
+    vnames = ['t'] + varlist
+    X = array([vdict[x].to_python() for x in vnames]).T
+    savetxt(fname, X)
 
-run(200, 0.001)
 
-plot_timeseries(ds, varlist)
-dump_to_file(ds, varlist)
+if __name__ == "__main__":
+
+    comp = create_comp('soma')
+
+    stim = h.IClamp(0.5, sec=comp)
+    stim.delay = 40
+    stim.dur = 120
+    stim.amp = 0.01
+
+    varlist = ['v', 'cai', 'ica']
+    ds = create_dumps(comp, varlist)
+
+    run(200, 0.001)
+
+    plot_timeseries(ds, varlist)
+    dump_to_file(ds, varlist)

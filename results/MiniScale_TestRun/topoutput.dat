@@ -1,0 +1,78 @@
+Prior to creating cells	
+After creating cells	
+After creating cells	
+Defined bistratifiedcell to axoaxoniccell conns	
+Defined cckcell to axoaxoniccell conns	
+Defined ivycell to axoaxoniccell conns	
+Defined olmcell to axoaxoniccell conns	
+Defined pyramidalcell to axoaxoniccell conns	
+Defined pvbasketcell to axoaxoniccell conns	
+Defined scacell to axoaxoniccell conns	
+Defined ca3cell to axoaxoniccell conns	
+Defined eccell to axoaxoniccell conns	
+Defined bistratifiedcell to bistratifiedcell conns	
+Defined cckcell to bistratifiedcell conns	
+Defined ivycell to bistratifiedcell conns	
+Defined olmcell to bistratifiedcell conns	
+Defined pyramidalcell to bistratifiedcell conns	
+Defined pvbasketcell to bistratifiedcell conns	
+Defined scacell to bistratifiedcell conns	
+Defined ca3cell to bistratifiedcell conns	
+Defined eccell to bistratifiedcell conns	
+Defined bistratifiedcell to cckcell conns	
+Defined cckcell to cckcell conns	
+Defined ivycell to cckcell conns	
+Defined olmcell to cckcell conns	
+Defined pvbasketcell to cckcell conns	
+Defined scacell to cckcell conns	
+Defined ca3cell to cckcell conns	
+Defined eccell to cckcell conns	
+Defined bistratifiedcell to ivycell conns	
+Defined cckcell to ivycell conns	
+Defined ivycell to ivycell conns	
+Defined pyramidalcell to ivycell conns	
+Defined pvbasketcell to ivycell conns	
+Defined scacell to ivycell conns	
+Defined ca3cell to ivycell conns	
+Defined ivycell to ngfcell conns	
+Defined ngfcell to ngfcell conns	
+Defined olmcell to ngfcell conns	
+Defined eccell to ngfcell conns	
+Defined bistratifiedcell to olmcell conns	
+Defined cckcell to olmcell conns	
+Defined ivycell to olmcell conns	
+Defined olmcell to olmcell conns	
+Defined pyramidalcell to olmcell conns	
+Defined scacell to olmcell conns	
+Defined axoaxoniccell to pyramidalcell conns	
+Defined bistratifiedcell to pyramidalcell conns	
+Defined cckcell to pyramidalcell conns	
+Defined ivycell to pyramidalcell conns	
+Defined ngfcell to pyramidalcell conns	
+Defined olmcell to pyramidalcell conns	
+Defined pyramidalcell to pyramidalcell conns	
+Defined pvbasketcell to pyramidalcell conns	
+Defined scacell to pyramidalcell conns	
+Defined ca3cell to pyramidalcell conns	
+Defined eccell to pyramidalcell conns	
+Defined bistratifiedcell to pvbasketcell conns	
+Defined cckcell to pvbasketcell conns	
+Defined ivycell to pvbasketcell conns	
+Defined olmcell to pvbasketcell conns	
+Defined pyramidalcell to pvbasketcell conns	
+Defined pvbasketcell to pvbasketcell conns	
+Defined scacell to pvbasketcell conns	
+Defined ca3cell to pvbasketcell conns	
+Defined bistratifiedcell to scacell conns	
+Defined cckcell to scacell conns	
+Defined ivycell to scacell conns	
+Defined olmcell to scacell conns	
+Defined pyramidalcell to scacell conns	
+Defined pvbasketcell to scacell conns	
+Defined scacell to scacell conns	
+Defined ca3cell to scacell conns	
+Defined eccell to scacell conns	
+After connecting cells	
+After defining stimulation	
+Before running simulation	
+After running simulation	

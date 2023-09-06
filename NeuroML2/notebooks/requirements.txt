@@ -1,0 +1,5 @@
+numpy
+matplotlib
+-e git+https://github.com/NeuralEnsemble/libNeuroML.git@development#egg=libNeuroML
+-e git+https://github.com/lxml/lxml#egg=lxml
+pyneuroml

@@ -3,7 +3,7 @@
 
     <notes>NeuroML file containing a single ion channel</notes>
 
-    <ionChannel id="HCN" conductance="1pS" type="ionChannelHH" species="non_specific">
+    <ionChannel id="HCN" conductance="10pS" type="ionChannelHH" species="non_specific">
         
         <notes>Hyperpolarization-activated, CN-gated channel description (from Chen 2001 - modeled by Ildiko Aradi)</notes>
         

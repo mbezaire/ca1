@@ -3,7 +3,7 @@
 
     <notes>NeuroML file containing a single ion channel</notes>
 
-    <ionChannel id="KvAngf" conductance="1pS" type="ionChannelHH" species="k">
+    <ionChannel id="KvAngf" conductance="10pS" type="ionChannelHH" species="k">
         
         <notes>A-type K+ channel description for neurogliaform family (unknown - modeled by Marianne Bezaire)</notes>
         

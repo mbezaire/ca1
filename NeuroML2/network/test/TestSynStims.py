@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+"""Helper script to test stimulations"""
 
 import opencortex.core as oc
 

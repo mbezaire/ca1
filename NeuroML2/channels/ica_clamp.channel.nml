@@ -3,7 +3,7 @@
 
     <notes> Simple ion-channel to fix iCa (capool testing)</notes>
 
-    <ionChannel id="ica_clamp" conductance="1pS" type="ionChannelHH" species="ca">
+    <ionChannel id="ica_clamp" conductance="10pS" type="ionChannelHH" species="ca">
         
         <gateHHInstantaneous id="x" instances="1">
             <steadyState type="test_chan_ss"/>

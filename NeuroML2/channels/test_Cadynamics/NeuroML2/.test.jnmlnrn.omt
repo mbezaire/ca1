@@ -14,6 +14,6 @@ experiments:
         spike detection:
           method: threshold
           threshold: -50
-        tolerance: 0.0
+        tolerance: 2.46069046974e-05 # Gives different results on NEURON 7.4 (1370) and (1380)...
 
       
