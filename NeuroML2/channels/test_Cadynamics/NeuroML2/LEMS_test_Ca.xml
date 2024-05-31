@@ -15,6 +15,7 @@
     <Include file="../../CavL.channel.nml"/>
     <Include file="../../CavN.channel.nml"/>
     <Include file="../../KvCaB.channel.nml"/>
+    <Include file="../../KCaS.channel.nml"/>
     
 
  
@@ -48,6 +49,7 @@
         <OutputColumn id="CavL" quantity="pop/0/cell1/biophysicalProperties/membraneProperties/CavL_all/iDensity"/>
         <OutputColumn id="CavN" quantity="pop/0/cell1/biophysicalProperties/membraneProperties/CavN_all/iDensity"/>
         <OutputColumn id="KvCaB" quantity="pop/0/cell1/biophysicalProperties/membraneProperties/KvCaB_all/iDensity"/>
+        <OutputColumn id="KCaS" quantity="pop/0/cell1/biophysicalProperties/membraneProperties/KCaS_all/iDensity"/>
       </OutputFile>
     
     </Simulation>

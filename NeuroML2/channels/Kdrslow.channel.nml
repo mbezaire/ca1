@@ -3,7 +3,7 @@
 
     <notes>NeuroML file containing a single ion channel</notes>
 
-    <ionChannel id="Kdrslow" conductance="1pS" type="ionChannelHH" species="k">
+    <ionChannel id="Kdrslow" conductance="10pS" type="ionChannelHH" species="k">
         
         <notes>Slow delayed rectifier K+ channel description (from Storm 1990, modeled by Marianne Bezaire)</notes>
         

@@ -3,6 +3,6 @@
 
     <notes>NeuroML file containing a random (Poisson distribution with specified rate) spike generator</notes>
 
-    <spikeGeneratorPoisson id="spikeGenPoisson" averageRate="50 Hz"/>
+    <spikeGeneratorPoisson id="spikeGenPoisson065" averageRate="0.65 Hz"/>
  
 </neuroml>

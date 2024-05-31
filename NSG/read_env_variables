@@ -1,0 +1,18 @@
+#!/bin/bash
+# reads nsgrest.conf - from /home
+
+while IFS= read -r line; do
+
+    if [[ $line == *"="* ]]
+    then
+      lineclean=$( echo ${line} | xargs)
+      var=$(echo $lineclean | cut -d'=' -f 1 )
+      val=$(echo $lineclean | cut -d'=' -f 2 )
+      #echo "Setting: $var to $val ...";
+      export $var=$val
+    fi
+    
+done < ~/nsgrest.conf
+
+echo "Read in data for NSG REST API user: $USERNAME to access: $URL..."
+

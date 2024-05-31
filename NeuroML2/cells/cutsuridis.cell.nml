@@ -366,7 +366,7 @@
                 <specificCapacitance value="1uF_per_cm2" segmentGroup="soma_group"/>
                 <specificCapacitance value="2uF_per_cm2" segmentGroup="dendrite_group"/>
                 <specificCapacitance value="1uF_per_cm2" segmentGroup="axon_group"/>
-                <initMembPotential value="-65.0mV"/>
+                <initMembPotential value="-66.0mV"/>
             </membraneProperties>
             <intracellularProperties>
                 <resistivity value="0.15kohm_cm" segmentGroup="soma_group"/>

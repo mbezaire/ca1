@@ -1,0 +1,1468 @@
+{
+    "Varied parameters": {
+        "number_per_cell": [
+            5, 
+            20, 
+            50, 
+            100, 
+            200
+        ], 
+        "average_rate": [
+            "1Hz", 
+            "51Hz", 
+            "101Hz", 
+            "151Hz", 
+            "201Hz", 
+            "251Hz", 
+            "301Hz", 
+            "351Hz", 
+            "401Hz", 
+            "451Hz"
+        ], 
+        "seed": [
+            0
+        ]
+    }, 
+    "Fixed parameters": {
+        "duration": 1000, 
+        "dt": 0.005
+    }, 
+    "Simulations": {
+        "RUN0_Sim_PoissonFiringSynapse_olm_-number_per_cell5-average_rate1Hz_seed0": {
+            "parameters": {
+                "average_rate": "1Hz", 
+                "reference": "RUN0_Sim_PoissonFiringSynapse_olm_-number_per_cell5-average_rate1Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 5, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -68.74113292999982, 
+                    "max_peak_no": 0, 
+                    "maximum": -66.9452, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -69.00135999999999
+                }
+            }
+        }, 
+        "RUN1_Sim_PoissonFiringSynapse_olm_-number_per_cell5-average_rate51Hz_seed0": {
+            "parameters": {
+                "average_rate": "51Hz", 
+                "reference": "RUN1_Sim_PoissonFiringSynapse_olm_-number_per_cell5-average_rate51Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 5, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -67.22028368000012, 
+                    "max_peak_no": 0, 
+                    "maximum": -66.6598, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -68.50263
+                }
+            }
+        }, 
+        "RUN2_Sim_PoissonFiringSynapse_olm_-number_per_cell5-average_rate101Hz_seed0": {
+            "parameters": {
+                "average_rate": "101Hz", 
+                "reference": "RUN2_Sim_PoissonFiringSynapse_olm_-number_per_cell5-average_rate101Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 5, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -65.98302394500007, 
+                    "max_peak_no": 0, 
+                    "maximum": -65.00591999999999, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -67.58118
+                }
+            }
+        }, 
+        "RUN3_Sim_PoissonFiringSynapse_olm_-number_per_cell5-average_rate151Hz_seed0": {
+            "parameters": {
+                "average_rate": "151Hz", 
+                "reference": "RUN3_Sim_PoissonFiringSynapse_olm_-number_per_cell5-average_rate151Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 5, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -64.25733907000001, 
+                    "max_peak_no": 0, 
+                    "maximum": -63.19867, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -67.0
+                }
+            }
+        }, 
+        "RUN4_Sim_PoissonFiringSynapse_olm_-number_per_cell5-average_rate201Hz_seed0": {
+            "parameters": {
+                "average_rate": "201Hz", 
+                "reference": "RUN4_Sim_PoissonFiringSynapse_olm_-number_per_cell5-average_rate201Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 5, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -62.49016941500004, 
+                    "max_peak_no": 0, 
+                    "maximum": -61.30728, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -67.0
+                }
+            }
+        }, 
+        "RUN5_Sim_PoissonFiringSynapse_olm_-number_per_cell5-average_rate251Hz_seed0": {
+            "parameters": {
+                "average_rate": "251Hz", 
+                "reference": "RUN5_Sim_PoissonFiringSynapse_olm_-number_per_cell5-average_rate251Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 5, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -62.976914790000016, 
+                    "max_peak_no": 0, 
+                    "maximum": -59.38822, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -67.0
+                }
+            }
+        }, 
+        "RUN6_Sim_PoissonFiringSynapse_olm_-number_per_cell5-average_rate301Hz_seed0": {
+            "parameters": {
+                "average_rate": "301Hz", 
+                "reference": "RUN6_Sim_PoissonFiringSynapse_olm_-number_per_cell5-average_rate301Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 5, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -60.15822255999993, 
+                    "max_peak_no": 0, 
+                    "maximum": -56.99855, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -67.0
+                }
+            }
+        }, 
+        "RUN7_Sim_PoissonFiringSynapse_olm_-number_per_cell5-average_rate351Hz_seed0": {
+            "parameters": {
+                "average_rate": "351Hz", 
+                "reference": "RUN7_Sim_PoissonFiringSynapse_olm_-number_per_cell5-average_rate351Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 5, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -57.846615325, 
+                    "max_peak_no": 0, 
+                    "maximum": -53.29761, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -67.0
+                }
+            }
+        }, 
+        "RUN8_Sim_PoissonFiringSynapse_olm_-number_per_cell5-average_rate401Hz_seed0": {
+            "parameters": {
+                "average_rate": "401Hz", 
+                "reference": "RUN8_Sim_PoissonFiringSynapse_olm_-number_per_cell5-average_rate401Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 5, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -49.43799124499994, 
+                    "average_maximum": 3.894415, 
+                    "first_spike_time": 397.8, 
+                    "max_peak_no": 1, 
+                    "maximum": 3.894415, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -72.87612
+                }
+            }
+        }, 
+        "RUN9_Sim_PoissonFiringSynapse_olm_-number_per_cell5-average_rate451Hz_seed0": {
+            "parameters": {
+                "average_rate": "451Hz", 
+                "reference": "RUN9_Sim_PoissonFiringSynapse_olm_-number_per_cell5-average_rate451Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 5, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -54.00692556, 
+                    "average_maximum": 3.746706, 
+                    "average_minimum": -72.60096999999999, 
+                    "first_spike_time": 286.675, 
+                    "interspike_time_covar": 0.21627982470378182, 
+                    "max_interspike_time": 299.73999999999995, 
+                    "max_peak_no": 3, 
+                    "maximum": 4.100258, 
+                    "mean_spike_frequency": 4.0577828274630745, 
+                    "min_interspike_time": 193.14, 
+                    "min_peak_no": 2, 
+                    "minimum": -73.21216, 
+                    "peak_decay_exponent": -0.0007798393744111914, 
+                    "peak_linear_gradient": -0.0007798393744111914, 
+                    "spike_broadening": 1.0542671676626525, 
+                    "spike_frequency_adaptation": -0.11045756384719752, 
+                    "spike_width_adaptation": 0.002284495730027775, 
+                    "trough_decay_exponent": 0.002238550161812339, 
+                    "trough_phase_adaptation": -0.07705711676638748
+                }
+            }
+        }, 
+        "RUN10_Sim_PoissonFiringSynapse_olm_-number_per_cell20-average_rate1Hz_seed0": {
+            "parameters": {
+                "average_rate": "1Hz", 
+                "reference": "RUN10_Sim_PoissonFiringSynapse_olm_-number_per_cell20-average_rate1Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 20, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -68.68669834500002, 
+                    "max_peak_no": 0, 
+                    "maximum": -66.9452, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -68.96988
+                }
+            }
+        }, 
+        "RUN11_Sim_PoissonFiringSynapse_olm_-number_per_cell20-average_rate51Hz_seed0": {
+            "parameters": {
+                "average_rate": "51Hz", 
+                "reference": "RUN11_Sim_PoissonFiringSynapse_olm_-number_per_cell20-average_rate51Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 20, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -63.44326821500012, 
+                    "max_peak_no": 0, 
+                    "maximum": -61.78308, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -67.03877
+                }
+            }
+        }, 
+        "RUN12_Sim_PoissonFiringSynapse_olm_-number_per_cell20-average_rate101Hz_seed0": {
+            "parameters": {
+                "average_rate": "101Hz", 
+                "reference": "RUN12_Sim_PoissonFiringSynapse_olm_-number_per_cell20-average_rate101Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 20, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -53.770521390000084, 
+                    "average_maximum": 3.798921, 
+                    "first_spike_time": 613.53, 
+                    "max_peak_no": 1, 
+                    "maximum": 3.798921, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -72.83051
+                }
+            }
+        }, 
+        "RUN13_Sim_PoissonFiringSynapse_olm_-number_per_cell20-average_rate151Hz_seed0": {
+            "parameters": {
+                "average_rate": "151Hz", 
+                "reference": "RUN13_Sim_PoissonFiringSynapse_olm_-number_per_cell20-average_rate151Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 20, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -52.002033230000116, 
+                    "average_maximum": 4.010006375, 
+                    "average_minimum": -72.54531714285716, 
+                    "first_spike_time": 186.76000000000002, 
+                    "interspike_time_covar": 0.07440825043591316, 
+                    "max_interspike_time": 119.79999999999984, 
+                    "max_peak_no": 8, 
+                    "maximum": 4.73335, 
+                    "mean_spike_frequency": 9.531201067494521, 
+                    "min_interspike_time": 92.84999999999991, 
+                    "min_peak_no": 7, 
+                    "minimum": -73.2808, 
+                    "peak_decay_exponent": -0.0016530517591290877, 
+                    "peak_linear_gradient": -0.0010972768548838067, 
+                    "spike_broadening": 1.0788962984424104, 
+                    "spike_frequency_adaptation": -0.020452368064126834, 
+                    "spike_width_adaptation": -0.006295442348612955, 
+                    "trough_decay_exponent": -0.00020654329457534565, 
+                    "trough_phase_adaptation": -0.011599626556858162
+                }
+            }
+        }, 
+        "RUN14_Sim_PoissonFiringSynapse_olm_-number_per_cell20-average_rate201Hz_seed0": {
+            "parameters": {
+                "average_rate": "201Hz", 
+                "reference": "RUN14_Sim_PoissonFiringSynapse_olm_-number_per_cell20-average_rate201Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 20, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -66.40737239499997, 
+                    "average_maximum": 4.506312866666667, 
+                    "average_minimum": -72.46556999999999, 
+                    "first_spike_time": 116.405, 
+                    "interspike_time_covar": 0.0627052455474263, 
+                    "max_interspike_time": 68.18500000000006, 
+                    "max_peak_no": 15, 
+                    "maximum": 5.224716, 
+                    "mean_spike_frequency": 16.123552479284115, 
+                    "min_interspike_time": 54.28500000000008, 
+                    "min_peak_no": 14, 
+                    "minimum": -73.0856, 
+                    "peak_decay_exponent": 0.0028803636755453553, 
+                    "peak_linear_gradient": 0.0008717689982864817, 
+                    "spike_broadening": 0.9787145720422116, 
+                    "spike_frequency_adaptation": -0.005145978717414203, 
+                    "spike_width_adaptation": -0.0018766783531223785, 
+                    "trough_decay_exponent": -0.0064064851029125664, 
+                    "trough_phase_adaptation": -0.0030750204391262327
+                }
+            }
+        }, 
+        "RUN15_Sim_PoissonFiringSynapse_olm_-number_per_cell20-average_rate251Hz_seed0": {
+            "parameters": {
+                "average_rate": "251Hz", 
+                "reference": "RUN15_Sim_PoissonFiringSynapse_olm_-number_per_cell20-average_rate251Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 20, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -49.78178578499997, 
+                    "average_maximum": 5.12867445, 
+                    "average_minimum": -72.39357578947369, 
+                    "first_spike_time": 85.04, 
+                    "interspike_time_covar": 0.10519672111206445, 
+                    "max_interspike_time": 55.72000000000003, 
+                    "max_peak_no": 20, 
+                    "maximum": 5.767604, 
+                    "mean_spike_frequency": 21.913005368686314, 
+                    "min_interspike_time": 34.559999999999945, 
+                    "min_peak_no": 19, 
+                    "minimum": -73.09581, 
+                    "peak_decay_exponent": 0.005015089307795223, 
+                    "peak_linear_gradient": 0.0003332457829764035, 
+                    "spike_broadening": 0.9414853755932127, 
+                    "spike_frequency_adaptation": -0.0027040052064252022, 
+                    "spike_width_adaptation": -0.0036247058109102268, 
+                    "trough_decay_exponent": -0.0020060955677716013, 
+                    "trough_phase_adaptation": -0.004364462070898212
+                }
+            }
+        }, 
+        "RUN16_Sim_PoissonFiringSynapse_olm_-number_per_cell20-average_rate301Hz_seed0": {
+            "parameters": {
+                "average_rate": "301Hz", 
+                "reference": "RUN16_Sim_PoissonFiringSynapse_olm_-number_per_cell20-average_rate301Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 20, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -62.69174044375004, 
+                    "average_maximum": 5.9516103461538465, 
+                    "average_minimum": -72.2313968, 
+                    "first_spike_time": 66.455, 
+                    "interspike_time_covar": 0.08491850882773112, 
+                    "max_interspike_time": 42.539999999999964, 
+                    "max_peak_no": 26, 
+                    "maximum": 7.284925, 
+                    "mean_spike_frequency": 27.04983661898682, 
+                    "min_interspike_time": 30.684999999999945, 
+                    "min_peak_no": 25, 
+                    "minimum": -73.20298, 
+                    "peak_decay_exponent": 0.014026469786344021, 
+                    "peak_linear_gradient": 0.0005260082579230371, 
+                    "spike_broadening": 0.852222843572195, 
+                    "spike_frequency_adaptation": -0.0038933072650173036, 
+                    "spike_width_adaptation": 0.004037091394941109, 
+                    "trough_decay_exponent": 0.016158629334259624, 
+                    "trough_phase_adaptation": -0.0019928742499884947
+                }
+            }
+        }, 
+        "RUN17_Sim_PoissonFiringSynapse_olm_-number_per_cell20-average_rate351Hz_seed0": {
+            "parameters": {
+                "average_rate": "351Hz", 
+                "reference": "RUN17_Sim_PoissonFiringSynapse_olm_-number_per_cell20-average_rate351Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 20, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -60.38273819999992, 
+                    "average_maximum": 6.802781032258064, 
+                    "average_minimum": -72.34259933333333, 
+                    "first_spike_time": 52.385, 
+                    "interspike_time_covar": 0.08357193933913067, 
+                    "max_interspike_time": 35.575000000000045, 
+                    "max_peak_no": 31, 
+                    "maximum": 8.64474, 
+                    "mean_spike_frequency": 32.2618804374711, 
+                    "min_interspike_time": 25.889999999999986, 
+                    "min_peak_no": 30, 
+                    "minimum": -73.20027, 
+                    "peak_decay_exponent": 0.06558758582200917, 
+                    "peak_linear_gradient": 0.0008194529869634912, 
+                    "spike_broadening": 0.7122585748309761, 
+                    "spike_frequency_adaptation": 6.625409894820502e-05, 
+                    "spike_width_adaptation": 0.0035099937358903507, 
+                    "trough_decay_exponent": -0.008939847319223364, 
+                    "trough_phase_adaptation": 0.0030535015974330003
+                }
+            }
+        }, 
+        "RUN18_Sim_PoissonFiringSynapse_olm_-number_per_cell20-average_rate401Hz_seed0": {
+            "parameters": {
+                "average_rate": "401Hz", 
+                "reference": "RUN18_Sim_PoissonFiringSynapse_olm_-number_per_cell20-average_rate401Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 20, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -46.601404715000015, 
+                    "average_maximum": 7.581196257142858, 
+                    "average_minimum": -72.27572911764707, 
+                    "first_spike_time": 41.725, 
+                    "interspike_time_covar": 0.07908526990759109, 
+                    "max_interspike_time": 31.479999999999905, 
+                    "max_peak_no": 35, 
+                    "maximum": 9.193969999999998, 
+                    "mean_spike_frequency": 36.753180771600604, 
+                    "min_interspike_time": 23.28000000000003, 
+                    "min_peak_no": 34, 
+                    "minimum": -73.57137, 
+                    "peak_decay_exponent": 0.08030940819290058, 
+                    "peak_linear_gradient": 0.0008711867667051887, 
+                    "spike_broadening": 0.6752655087596116, 
+                    "spike_frequency_adaptation": -0.0033158366938453583, 
+                    "spike_width_adaptation": 0.0031704743642951582, 
+                    "trough_decay_exponent": -0.0320556187893135, 
+                    "trough_phase_adaptation": -0.0007306299645708056
+                }
+            }
+        }, 
+        "RUN19_Sim_PoissonFiringSynapse_olm_-number_per_cell20-average_rate451Hz_seed0": {
+            "parameters": {
+                "average_rate": "451Hz", 
+                "reference": "RUN19_Sim_PoissonFiringSynapse_olm_-number_per_cell20-average_rate451Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 20, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -63.88664904499997, 
+                    "average_maximum": 8.260520175, 
+                    "average_minimum": -72.15168435897435, 
+                    "first_spike_time": 34.49, 
+                    "interspike_time_covar": 0.08100562393567261, 
+                    "max_interspike_time": 29.74000000000001, 
+                    "max_peak_no": 40, 
+                    "maximum": 9.837332, 
+                    "mean_spike_frequency": 40.86037277232391, 
+                    "min_interspike_time": 20.82499999999999, 
+                    "min_peak_no": 39, 
+                    "minimum": -73.27127999999999, 
+                    "peak_decay_exponent": 0.08651480970839436, 
+                    "peak_linear_gradient": 0.0010260785031007546, 
+                    "spike_broadening": 0.7092824041620568, 
+                    "spike_frequency_adaptation": -0.0028231580110313534, 
+                    "spike_width_adaptation": 0.0027457458772263887, 
+                    "trough_decay_exponent": -0.015362118211963541, 
+                    "trough_phase_adaptation": -0.0015392188064673894
+                }
+            }
+        }, 
+        "RUN20_Sim_PoissonFiringSynapse_olm_-number_per_cell50-average_rate1Hz_seed0": {
+            "parameters": {
+                "average_rate": "1Hz", 
+                "reference": "RUN20_Sim_PoissonFiringSynapse_olm_-number_per_cell50-average_rate1Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 50, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -68.30571783499994, 
+                    "max_peak_no": 0, 
+                    "maximum": -66.9452, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -68.90773
+                }
+            }
+        }, 
+        "RUN21_Sim_PoissonFiringSynapse_olm_-number_per_cell50-average_rate51Hz_seed0": {
+            "parameters": {
+                "average_rate": "51Hz", 
+                "reference": "RUN21_Sim_PoissonFiringSynapse_olm_-number_per_cell50-average_rate51Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 50, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -56.04099942935494, 
+                    "average_maximum": 4.049741600000001, 
+                    "average_minimum": -72.78649, 
+                    "first_spike_time": 251.695, 
+                    "interspike_time_covar": 0.09134084339763644, 
+                    "max_interspike_time": 202.56000000000006, 
+                    "max_peak_no": 5, 
+                    "maximum": 4.3867, 
+                    "mean_spike_frequency": 5.389854945528778, 
+                    "min_interspike_time": 168.41000000000003, 
+                    "min_peak_no": 4, 
+                    "minimum": -73.01111, 
+                    "peak_decay_exponent": -0.00107519131250571, 
+                    "peak_linear_gradient": 0.00032984881151750634, 
+                    "spike_broadening": 1.0166434521377608, 
+                    "spike_frequency_adaptation": -0.03863300872302098, 
+                    "spike_width_adaptation": 0.0026220233431100705, 
+                    "trough_decay_exponent": 0.00022741902416573687, 
+                    "trough_phase_adaptation": -0.00884309863157978
+                }
+            }
+        }, 
+        "RUN22_Sim_PoissonFiringSynapse_olm_-number_per_cell50-average_rate101Hz_seed0": {
+            "parameters": {
+                "average_rate": "101Hz", 
+                "reference": "RUN22_Sim_PoissonFiringSynapse_olm_-number_per_cell50-average_rate101Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 50, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -63.786617135000064, 
+                    "average_maximum": 5.069251750000001, 
+                    "average_minimum": -72.33861105263156, 
+                    "first_spike_time": 75.38, 
+                    "interspike_time_covar": 0.08979520402579386, 
+                    "max_interspike_time": 55.295000000000016, 
+                    "max_peak_no": 20, 
+                    "maximum": 5.6897459999999995, 
+                    "mean_spike_frequency": 20.908185554644643, 
+                    "min_interspike_time": 39.54000000000002, 
+                    "min_peak_no": 19, 
+                    "minimum": -72.89047, 
+                    "peak_decay_exponent": 0.010108568356151797, 
+                    "peak_linear_gradient": 0.0008514397582022306, 
+                    "spike_broadening": 0.894939485699231, 
+                    "spike_frequency_adaptation": 0.0031644176757141093, 
+                    "spike_width_adaptation": 0.005453615371213205, 
+                    "trough_decay_exponent": -0.007603726567088149, 
+                    "trough_phase_adaptation": -0.004431555451212654
+                }
+            }
+        }, 
+        "RUN23_Sim_PoissonFiringSynapse_olm_-number_per_cell50-average_rate151Hz_seed0": {
+            "parameters": {
+                "average_rate": "151Hz", 
+                "reference": "RUN23_Sim_PoissonFiringSynapse_olm_-number_per_cell50-average_rate151Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 50, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -63.59997986000005, 
+                    "average_maximum": 7.071100757575757, 
+                    "average_minimum": -72.0584634375, 
+                    "first_spike_time": 41.775, 
+                    "interspike_time_covar": 0.07051683821283133, 
+                    "max_interspike_time": 33.64499999999998, 
+                    "max_peak_no": 33, 
+                    "maximum": 8.573891, 
+                    "mean_spike_frequency": 33.81377065810051, 
+                    "min_interspike_time": 24.414999999999964, 
+                    "min_peak_no": 32, 
+                    "minimum": -73.15583000000001, 
+                    "peak_decay_exponent": 0.04212270194114081, 
+                    "peak_linear_gradient": 0.0014334670533120548, 
+                    "spike_broadening": 0.7493685681543786, 
+                    "spike_frequency_adaptation": 0.00287076731696476, 
+                    "spike_width_adaptation": 0.0034175925476865572, 
+                    "trough_decay_exponent": -0.010941102571870118, 
+                    "trough_phase_adaptation": 0.0005842083022039901
+                }
+            }
+        }, 
+        "RUN24_Sim_PoissonFiringSynapse_olm_-number_per_cell50-average_rate201Hz_seed0": {
+            "parameters": {
+                "average_rate": "201Hz", 
+                "reference": "RUN24_Sim_PoissonFiringSynapse_olm_-number_per_cell50-average_rate201Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 50, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -48.54037593999993, 
+                    "average_maximum": 8.574507681818181, 
+                    "average_minimum": -71.89720023255813, 
+                    "first_spike_time": 27.654999999999998, 
+                    "interspike_time_covar": 0.08096994880016828, 
+                    "max_interspike_time": 26.819999999999936, 
+                    "max_peak_no": 44, 
+                    "maximum": 9.973279, 
+                    "mean_spike_frequency": 45.23387491255661, 
+                    "min_interspike_time": 18.555000000000064, 
+                    "min_peak_no": 43, 
+                    "minimum": -73.18968, 
+                    "peak_decay_exponent": 0.06775667629055127, 
+                    "peak_linear_gradient": 0.0007582621632429687, 
+                    "spike_broadening": 0.7714177068097507, 
+                    "spike_frequency_adaptation": -0.0018614970556236417, 
+                    "spike_width_adaptation": 0.0025118789138065026, 
+                    "trough_decay_exponent": -0.00045833927944077487, 
+                    "trough_phase_adaptation": 0.0006772291119244181
+                }
+            }
+        }, 
+        "RUN25_Sim_PoissonFiringSynapse_olm_-number_per_cell50-average_rate251Hz_seed0": {
+            "parameters": {
+                "average_rate": "251Hz", 
+                "reference": "RUN25_Sim_PoissonFiringSynapse_olm_-number_per_cell50-average_rate251Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 50, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -49.13108401399996, 
+                    "average_maximum": 9.714013018181817, 
+                    "average_minimum": -71.9006988888889, 
+                    "first_spike_time": 19.634999999999998, 
+                    "interspike_time_covar": 0.062013120094704326, 
+                    "max_interspike_time": 21.53500000000001, 
+                    "max_peak_no": 55, 
+                    "maximum": 11.22934, 
+                    "mean_spike_frequency": 55.23336095001382, 
+                    "min_interspike_time": 16.145000000000095, 
+                    "min_peak_no": 54, 
+                    "minimum": -73.48895, 
+                    "peak_decay_exponent": 0.0962294817271381, 
+                    "peak_linear_gradient": 0.0010433108313799956, 
+                    "spike_broadening": 0.760787547281733, 
+                    "spike_frequency_adaptation": 0.002675754083808226, 
+                    "spike_width_adaptation": 0.0020262289281649326, 
+                    "trough_decay_exponent": -0.01712830655598335, 
+                    "trough_phase_adaptation": -0.0002952155584593192
+                }
+            }
+        }, 
+        "RUN26_Sim_PoissonFiringSynapse_olm_-number_per_cell50-average_rate301Hz_seed0": {
+            "parameters": {
+                "average_rate": "301Hz", 
+                "reference": "RUN26_Sim_PoissonFiringSynapse_olm_-number_per_cell50-average_rate301Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 50, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -58.93129966500003, 
+                    "average_maximum": 10.11861090625, 
+                    "average_minimum": -71.37096492063492, 
+                    "first_spike_time": 14.545, 
+                    "interspike_time_covar": 0.06627163870365797, 
+                    "max_interspike_time": 18.680000000000007, 
+                    "max_peak_no": 64, 
+                    "maximum": 11.51275, 
+                    "mean_spike_frequency": 64.67475272172918, 
+                    "min_interspike_time": 13.060000000000002, 
+                    "min_peak_no": 63, 
+                    "minimum": -72.48643, 
+                    "peak_decay_exponent": 0.06436237961004163, 
+                    "peak_linear_gradient": 0.0008641707817590006, 
+                    "spike_broadening": 0.8697092398388107, 
+                    "spike_frequency_adaptation": 0.002359965160014395, 
+                    "spike_width_adaptation": 0.0017863424989517972, 
+                    "trough_decay_exponent": -0.04022920576788381, 
+                    "trough_phase_adaptation": 0.0016315387499929955
+                }
+            }
+        }, 
+        "RUN27_Sim_PoissonFiringSynapse_olm_-number_per_cell50-average_rate351Hz_seed0": {
+            "parameters": {
+                "average_rate": "351Hz", 
+                "reference": "RUN27_Sim_PoissonFiringSynapse_olm_-number_per_cell50-average_rate351Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 50, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -54.18242184690503, 
+                    "average_maximum": 10.201984068493152, 
+                    "average_minimum": -70.98029013888889, 
+                    "first_spike_time": 11.68, 
+                    "interspike_time_covar": 0.06503778016613478, 
+                    "max_interspike_time": 16.555, 
+                    "max_peak_no": 73, 
+                    "maximum": 11.470030000000001, 
+                    "mean_spike_frequency": 73.28654530279049, 
+                    "min_interspike_time": 11.845000000000027, 
+                    "min_peak_no": 72, 
+                    "minimum": -72.80937, 
+                    "peak_decay_exponent": 0.007549227141942767, 
+                    "peak_linear_gradient": 0.0006803187618529323, 
+                    "spike_broadening": 0.9509331666010118, 
+                    "spike_frequency_adaptation": 0.001998667215356879, 
+                    "spike_width_adaptation": 0.0016067610070637942, 
+                    "trough_decay_exponent": 0.00848259653035072, 
+                    "trough_phase_adaptation": -0.0005761617624203739
+                }
+            }
+        }, 
+        "RUN28_Sim_PoissonFiringSynapse_olm_-number_per_cell50-average_rate401Hz_seed0": {
+            "parameters": {
+                "average_rate": "401Hz", 
+                "reference": "RUN28_Sim_PoissonFiringSynapse_olm_-number_per_cell50-average_rate401Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 50, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -51.65247946378008, 
+                    "average_maximum": 10.25589924691358, 
+                    "average_minimum": -70.60275175, 
+                    "first_spike_time": 9.945, 
+                    "interspike_time_covar": 0.060170517885818765, 
+                    "max_interspike_time": 14.929999999999996, 
+                    "max_peak_no": 81, 
+                    "maximum": 11.39772, 
+                    "mean_spike_frequency": 81.30039989634199, 
+                    "min_interspike_time": 10.995000000000061, 
+                    "min_peak_no": 80, 
+                    "minimum": -72.07560000000001, 
+                    "peak_decay_exponent": -0.03731042679434662, 
+                    "peak_linear_gradient": 0.00036821480146572236, 
+                    "spike_broadening": 0.9992814577962778, 
+                    "spike_frequency_adaptation": 0.0017722152825525573, 
+                    "spike_width_adaptation": 0.0013057073418513542, 
+                    "trough_decay_exponent": -0.006260355305469708, 
+                    "trough_phase_adaptation": 0.0003285834804457292
+                }
+            }
+        }, 
+        "RUN29_Sim_PoissonFiringSynapse_olm_-number_per_cell50-average_rate451Hz_seed0": {
+            "parameters": {
+                "average_rate": "451Hz", 
+                "reference": "RUN29_Sim_PoissonFiringSynapse_olm_-number_per_cell50-average_rate451Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 50, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -55.794525534999956, 
+                    "average_maximum": 10.025211556818181, 
+                    "average_minimum": -70.2676427586207, 
+                    "first_spike_time": 8.755, 
+                    "interspike_time_covar": 0.05735094866026056, 
+                    "max_interspike_time": 13.639999999999997, 
+                    "max_peak_no": 88, 
+                    "maximum": 11.66921, 
+                    "mean_spike_frequency": 88.68230329347723, 
+                    "min_interspike_time": 10.129999999999939, 
+                    "min_peak_no": 87, 
+                    "minimum": -72.22034, 
+                    "peak_decay_exponent": -0.07450489200009107, 
+                    "peak_linear_gradient": 0.0006844196215442723, 
+                    "spike_broadening": 1.0340198274175396, 
+                    "spike_frequency_adaptation": 0.0015487349262143294, 
+                    "spike_width_adaptation": 0.0014294482487855653, 
+                    "trough_decay_exponent": 0.01625760996534499, 
+                    "trough_phase_adaptation": 0.0008844155960936143
+                }
+            }
+        }, 
+        "RUN30_Sim_PoissonFiringSynapse_olm_-number_per_cell100-average_rate1Hz_seed0": {
+            "parameters": {
+                "average_rate": "1Hz", 
+                "reference": "RUN30_Sim_PoissonFiringSynapse_olm_-number_per_cell100-average_rate1Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 100, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -68.26851937500005, 
+                    "max_peak_no": 0, 
+                    "maximum": -66.9452, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -68.80050999999999
+                }
+            }
+        }, 
+        "RUN31_Sim_PoissonFiringSynapse_olm_-number_per_cell100-average_rate51Hz_seed0": {
+            "parameters": {
+                "average_rate": "51Hz", 
+                "reference": "RUN31_Sim_PoissonFiringSynapse_olm_-number_per_cell100-average_rate51Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 100, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -61.386895980000084, 
+                    "average_maximum": 5.02276935, 
+                    "average_minimum": -72.3333505263158, 
+                    "first_spike_time": 75.465, 
+                    "interspike_time_covar": 0.09668931440003829, 
+                    "max_interspike_time": 55.70499999999993, 
+                    "max_peak_no": 20, 
+                    "maximum": 6.179376, 
+                    "mean_spike_frequency": 20.938484935311106, 
+                    "min_interspike_time": 37.825, 
+                    "min_peak_no": 19, 
+                    "minimum": -73.43713, 
+                    "peak_decay_exponent": 0.020231764244751482, 
+                    "peak_linear_gradient": 0.0008512475819547209, 
+                    "spike_broadening": 0.8700954314641894, 
+                    "spike_frequency_adaptation": -0.003064338638168905, 
+                    "spike_width_adaptation": 0.005098929867942515, 
+                    "trough_decay_exponent": 0.005704229513583823, 
+                    "trough_phase_adaptation": -0.002125936470389169
+                }
+            }
+        }, 
+        "RUN32_Sim_PoissonFiringSynapse_olm_-number_per_cell100-average_rate101Hz_seed0": {
+            "parameters": {
+                "average_rate": "101Hz", 
+                "reference": "RUN32_Sim_PoissonFiringSynapse_olm_-number_per_cell100-average_rate101Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 100, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -53.90181566000006, 
+                    "average_maximum": 8.651815159090908, 
+                    "average_minimum": -72.03532627906976, 
+                    "first_spike_time": 26.375, 
+                    "interspike_time_covar": 0.0802781587869699, 
+                    "max_interspike_time": 26.52999999999986, 
+                    "max_peak_no": 44, 
+                    "maximum": 10.19662, 
+                    "mean_spike_frequency": 45.08424462920829, 
+                    "min_interspike_time": 18.265000000000043, 
+                    "min_peak_no": 43, 
+                    "minimum": -73.61971, 
+                    "peak_decay_exponent": 0.10986971729674448, 
+                    "peak_linear_gradient": 0.0013834637256947707, 
+                    "spike_broadening": 0.7736857057147479, 
+                    "spike_frequency_adaptation": -0.001816456125853709, 
+                    "spike_width_adaptation": 0.002588110360011442, 
+                    "trough_decay_exponent": -0.02508356167156387, 
+                    "trough_phase_adaptation": -0.0013456335489065159
+                }
+            }
+        }, 
+        "RUN33_Sim_PoissonFiringSynapse_olm_-number_per_cell100-average_rate151Hz_seed0": {
+            "parameters": {
+                "average_rate": "151Hz", 
+                "reference": "RUN33_Sim_PoissonFiringSynapse_olm_-number_per_cell100-average_rate151Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 100, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -47.17244025504992, 
+                    "average_maximum": 10.14833309375, 
+                    "average_minimum": -71.45360015873017, 
+                    "first_spike_time": 14.840000000000002, 
+                    "interspike_time_covar": 0.06089175522294676, 
+                    "max_interspike_time": 18.11, 
+                    "max_peak_no": 64, 
+                    "maximum": 11.5259, 
+                    "mean_spike_frequency": 64.02406491836932, 
+                    "min_interspike_time": 13.730000000000018, 
+                    "min_peak_no": 63, 
+                    "minimum": -72.82217, 
+                    "peak_decay_exponent": 0.06794013560547887, 
+                    "peak_linear_gradient": 0.0007767236217433413, 
+                    "spike_broadening": 0.9152928742951754, 
+                    "spike_frequency_adaptation": 0.002464098109570432, 
+                    "spike_width_adaptation": 0.0017725719312559468, 
+                    "trough_decay_exponent": 0.002276913599004399, 
+                    "trough_phase_adaptation": 0.0013531014834120612
+                }
+            }
+        }, 
+        "RUN34_Sim_PoissonFiringSynapse_olm_-number_per_cell100-average_rate201Hz_seed0": {
+            "parameters": {
+                "average_rate": "201Hz", 
+                "reference": "RUN34_Sim_PoissonFiringSynapse_olm_-number_per_cell100-average_rate201Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 100, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -54.540085106039996, 
+                    "average_maximum": 10.343147283950618, 
+                    "average_minimum": -70.82832912500001, 
+                    "first_spike_time": 10.534999999999998, 
+                    "interspike_time_covar": 0.057082228124759375, 
+                    "max_interspike_time": 14.260000000000003, 
+                    "max_peak_no": 81, 
+                    "maximum": 11.73746, 
+                    "mean_spike_frequency": 81.4527090661956, 
+                    "min_interspike_time": 10.704999999999927, 
+                    "min_peak_no": 80, 
+                    "minimum": -72.54249999999999, 
+                    "peak_decay_exponent": -0.03284897390074861, 
+                    "peak_linear_gradient": -0.0003111732768008228, 
+                    "spike_broadening": 0.9990844569665227, 
+                    "spike_frequency_adaptation": 0.002112393309489538, 
+                    "spike_width_adaptation": -0.0005241956302577229, 
+                    "trough_decay_exponent": -0.026199034511796067, 
+                    "trough_phase_adaptation": -0.0008963535836916196
+                }
+            }
+        }, 
+        "RUN35_Sim_PoissonFiringSynapse_olm_-number_per_cell100-average_rate251Hz_seed0": {
+            "parameters": {
+                "average_rate": "251Hz", 
+                "reference": "RUN35_Sim_PoissonFiringSynapse_olm_-number_per_cell100-average_rate251Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 100, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -51.73296649163499, 
+                    "average_maximum": 9.638780270833335, 
+                    "average_minimum": -69.89727589473685, 
+                    "first_spike_time": 8.35, 
+                    "interspike_time_covar": 0.0534613434675355, 
+                    "max_interspike_time": 11.905, 
+                    "max_peak_no": 96, 
+                    "maximum": 11.87124, 
+                    "mean_spike_frequency": 96.52852926084549, 
+                    "min_interspike_time": 9.129999999999995, 
+                    "min_peak_no": 95, 
+                    "minimum": -71.94739999999999, 
+                    "peak_decay_exponent": -0.14331844397193388, 
+                    "peak_linear_gradient": 0.00015981586767078692, 
+                    "spike_broadening": 1.0686413931481678, 
+                    "spike_frequency_adaptation": 0.001893395857732697, 
+                    "spike_width_adaptation": -0.0004664772042956646, 
+                    "trough_decay_exponent": 0.027831653520964027, 
+                    "trough_phase_adaptation": 0.00021185057091393679
+                }
+            }
+        }, 
+        "RUN36_Sim_PoissonFiringSynapse_olm_-number_per_cell100-average_rate301Hz_seed0": {
+            "parameters": {
+                "average_rate": "301Hz", 
+                "reference": "RUN36_Sim_PoissonFiringSynapse_olm_-number_per_cell100-average_rate301Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 100, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -50.284066279794885, 
+                    "average_maximum": 8.788193541284404, 
+                    "average_minimum": -68.82133592592592, 
+                    "first_spike_time": 7.015000000000001, 
+                    "interspike_time_covar": 0.046840459419122286, 
+                    "max_interspike_time": 10.32, 
+                    "max_peak_no": 109, 
+                    "maximum": 12.74245, 
+                    "mean_spike_frequency": 109.43468876977168, 
+                    "min_interspike_time": 8.259999999999991, 
+                    "min_peak_no": 108, 
+                    "minimum": -71.68259, 
+                    "peak_decay_exponent": -0.24734490014252006, 
+                    "peak_linear_gradient": -7.01245625026837e-05, 
+                    "spike_broadening": 1.132923223246069, 
+                    "spike_frequency_adaptation": 0.0013921987995814855, 
+                    "spike_width_adaptation": 0.0001864613571821478, 
+                    "trough_decay_exponent": -0.009453611105411128, 
+                    "trough_phase_adaptation": -0.00023742828056930892
+                }
+            }
+        }, 
+        "RUN37_Sim_PoissonFiringSynapse_olm_-number_per_cell100-average_rate351Hz_seed0": {
+            "parameters": {
+                "average_rate": "351Hz", 
+                "reference": "RUN37_Sim_PoissonFiringSynapse_olm_-number_per_cell100-average_rate351Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 100, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -50.850598072299995, 
+                    "average_maximum": 7.75831611570248, 
+                    "average_minimum": -68.11113916666666, 
+                    "first_spike_time": 6.105, 
+                    "interspike_time_covar": 0.04742309933885229, 
+                    "max_interspike_time": 9.215, 
+                    "max_peak_no": 121, 
+                    "maximum": 13.307889999999999, 
+                    "mean_spike_frequency": 121.10141739117272, 
+                    "min_interspike_time": 7.235000000000014, 
+                    "min_peak_no": 120, 
+                    "minimum": -70.36019, 
+                    "peak_decay_exponent": -0.38977049760541, 
+                    "peak_linear_gradient": -0.00012658052594879165, 
+                    "spike_broadening": 1.2060712208734556, 
+                    "spike_frequency_adaptation": 0.0014736225701432546, 
+                    "spike_width_adaptation": -8.656089852700556e-05, 
+                    "trough_decay_exponent": 0.008054681853831964, 
+                    "trough_phase_adaptation": -0.00015715555322870636
+                }
+            }
+        }, 
+        "RUN38_Sim_PoissonFiringSynapse_olm_-number_per_cell100-average_rate401Hz_seed0": {
+            "parameters": {
+                "average_rate": "401Hz", 
+                "reference": "RUN38_Sim_PoissonFiringSynapse_olm_-number_per_cell100-average_rate401Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 100, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -48.25535207725006, 
+                    "average_maximum": 6.701475053435115, 
+                    "average_minimum": -67.25075676923076, 
+                    "first_spike_time": 5.44, 
+                    "interspike_time_covar": 0.04466831980853059, 
+                    "max_interspike_time": 8.689999999999998, 
+                    "max_peak_no": 131, 
+                    "maximum": 13.68055, 
+                    "mean_spike_frequency": 131.50441045561223, 
+                    "min_interspike_time": 6.900000000000034, 
+                    "min_peak_no": 130, 
+                    "minimum": -69.73456, 
+                    "peak_decay_exponent": -0.5211608821405872, 
+                    "peak_linear_gradient": 0.00013755828214651606, 
+                    "spike_broadening": 1.2925424586327379, 
+                    "spike_frequency_adaptation": 0.0011298978653540917, 
+                    "spike_width_adaptation": 0.0007626553145394842, 
+                    "trough_decay_exponent": 0.21593433315017124, 
+                    "trough_phase_adaptation": 0.0009414363715727638
+                }
+            }
+        }, 
+        "RUN39_Sim_PoissonFiringSynapse_olm_-number_per_cell100-average_rate451Hz_seed0": {
+            "parameters": {
+                "average_rate": "451Hz", 
+                "reference": "RUN39_Sim_PoissonFiringSynapse_olm_-number_per_cell100-average_rate451Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 100, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -46.144269277150016, 
+                    "average_maximum": 5.596309428571429, 
+                    "average_minimum": -66.48466237410072, 
+                    "first_spike_time": 4.9350000000000005, 
+                    "interspike_time_covar": 0.04352138033712295, 
+                    "max_interspike_time": 8.2, 
+                    "max_peak_no": 140, 
+                    "maximum": 13.948739999999999, 
+                    "mean_spike_frequency": 140.61709661102682, 
+                    "min_interspike_time": 6.410000000000025, 
+                    "min_peak_no": 139, 
+                    "minimum": -69.03959, 
+                    "peak_decay_exponent": -0.6712283767040904, 
+                    "peak_linear_gradient": 0.00016479656601811238, 
+                    "spike_broadening": 1.4017047436568215, 
+                    "spike_frequency_adaptation": 0.0010263844437308279, 
+                    "spike_width_adaptation": 0.0005655398073735683, 
+                    "trough_decay_exponent": 0.17565660574662606, 
+                    "trough_phase_adaptation": 0.0009578280022359152
+                }
+            }
+        }, 
+        "RUN40_Sim_PoissonFiringSynapse_olm_-number_per_cell200-average_rate1Hz_seed0": {
+            "parameters": {
+                "average_rate": "1Hz", 
+                "reference": "RUN40_Sim_PoissonFiringSynapse_olm_-number_per_cell200-average_rate1Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 200, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -68.02613281500001, 
+                    "max_peak_no": 0, 
+                    "maximum": -66.6704, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -68.52281
+                }
+            }
+        }, 
+        "RUN41_Sim_PoissonFiringSynapse_olm_-number_per_cell200-average_rate51Hz_seed0": {
+            "parameters": {
+                "average_rate": "51Hz", 
+                "reference": "RUN41_Sim_PoissonFiringSynapse_olm_-number_per_cell200-average_rate51Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 200, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -50.957001349350094, 
+                    "average_maximum": 8.688580955555556, 
+                    "average_minimum": -72.1180975, 
+                    "first_spike_time": 29.47, 
+                    "interspike_time_covar": 0.06598789525703869, 
+                    "max_interspike_time": 27.100000000000023, 
+                    "max_peak_no": 45, 
+                    "maximum": 10.08665, 
+                    "mean_spike_frequency": 45.5356911852216, 
+                    "min_interspike_time": 18.465000000000146, 
+                    "min_peak_no": 44, 
+                    "minimum": -73.32244, 
+                    "peak_decay_exponent": 0.10378022713868332, 
+                    "peak_linear_gradient": 0.001005019522575361, 
+                    "spike_broadening": 0.7123054086255165, 
+                    "spike_frequency_adaptation": 0.0012809656419816738, 
+                    "spike_width_adaptation": 0.0024369833771611445, 
+                    "trough_decay_exponent": -0.042044049637111544, 
+                    "trough_phase_adaptation": 0.0017442514796868547
+                }
+            }
+        }, 
+        "RUN42_Sim_PoissonFiringSynapse_olm_-number_per_cell200-average_rate101Hz_seed0": {
+            "parameters": {
+                "average_rate": "101Hz", 
+                "reference": "RUN42_Sim_PoissonFiringSynapse_olm_-number_per_cell200-average_rate101Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 200, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -54.685561124799925, 
+                    "average_maximum": 10.303305312500001, 
+                    "average_minimum": -70.5252888607595, 
+                    "first_spike_time": 10.885, 
+                    "interspike_time_covar": 0.05115703508317026, 
+                    "max_interspike_time": 14.25, 
+                    "max_peak_no": 80, 
+                    "maximum": 11.28263, 
+                    "mean_spike_frequency": 80.66657136438826, 
+                    "min_interspike_time": 10.795000000000073, 
+                    "min_peak_no": 79, 
+                    "minimum": -71.96337999999999, 
+                    "peak_decay_exponent": -0.03855814288030154, 
+                    "peak_linear_gradient": 0.0003788063683800062, 
+                    "spike_broadening": 0.9827176471758228, 
+                    "spike_frequency_adaptation": -0.0016300386247443033, 
+                    "spike_width_adaptation": 0.0013653652367649003, 
+                    "trough_decay_exponent": -0.001333869380015223, 
+                    "trough_phase_adaptation": -0.0012589448669535705
+                }
+            }
+        }, 
+        "RUN43_Sim_PoissonFiringSynapse_olm_-number_per_cell200-average_rate151Hz_seed0": {
+            "parameters": {
+                "average_rate": "151Hz", 
+                "reference": "RUN43_Sim_PoissonFiringSynapse_olm_-number_per_cell200-average_rate151Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 200, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -47.456957368899985, 
+                    "average_maximum": 8.810522, 
+                    "average_minimum": -69.0219576851852, 
+                    "first_spike_time": 7.1850000000000005, 
+                    "interspike_time_covar": 0.05024939697373929, 
+                    "max_interspike_time": 10.5, 
+                    "max_peak_no": 108, 
+                    "maximum": 12.54345, 
+                    "mean_spike_frequency": 108.79290710915896, 
+                    "min_interspike_time": 8.21000000000015, 
+                    "min_peak_no": 108, 
+                    "minimum": -71.58366, 
+                    "peak_decay_exponent": -0.2446837960864673, 
+                    "peak_linear_gradient": 0.00034245747637375696, 
+                    "spike_broadening": 1.118639872512792, 
+                    "spike_frequency_adaptation": -0.00014610422267254575, 
+                    "spike_width_adaptation": -1.563693851145227e-05, 
+                    "trough_decay_exponent": 0.12284642531193224
+                }
+            }
+        }, 
+        "RUN44_Sim_PoissonFiringSynapse_olm_-number_per_cell200-average_rate201Hz_seed0": {
+            "parameters": {
+                "average_rate": "201Hz", 
+                "reference": "RUN44_Sim_PoissonFiringSynapse_olm_-number_per_cell200-average_rate201Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 200, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -47.80668042730002, 
+                    "average_maximum": 6.6740874351145045, 
+                    "average_minimum": -67.30574053846154, 
+                    "first_spike_time": 5.56, 
+                    "interspike_time_covar": 0.04451623672874884, 
+                    "max_interspike_time": 8.529999999999987, 
+                    "max_peak_no": 131, 
+                    "maximum": 13.63016, 
+                    "mean_spike_frequency": 131.57295467311712, 
+                    "min_interspike_time": 6.845000000000027, 
+                    "min_peak_no": 130, 
+                    "minimum": -70.84416, 
+                    "peak_decay_exponent": -0.47394633650283013, 
+                    "peak_linear_gradient": -3.1550916717862774e-05, 
+                    "spike_broadening": 1.2829878322516868, 
+                    "spike_frequency_adaptation": 0.0011686414504525396, 
+                    "spike_width_adaptation": -0.00042165399133284646, 
+                    "trough_decay_exponent": 0.12190450798464614, 
+                    "trough_phase_adaptation": 0.0010579778981148794
+                }
+            }
+        }, 
+        "RUN45_Sim_PoissonFiringSynapse_olm_-number_per_cell200-average_rate251Hz_seed0": {
+            "parameters": {
+                "average_rate": "251Hz", 
+                "reference": "RUN45_Sim_PoissonFiringSynapse_olm_-number_per_cell200-average_rate251Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 200, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -50.682829126835, 
+                    "average_maximum": 4.414675959731543, 
+                    "average_minimum": -65.51576932432431, 
+                    "first_spike_time": 4.63, 
+                    "interspike_time_covar": 0.03757240442941732, 
+                    "max_interspike_time": 7.484999999999999, 
+                    "max_peak_no": 149, 
+                    "maximum": 14.06329, 
+                    "mean_spike_frequency": 149.25749439023775, 
+                    "min_interspike_time": 6.175000000000068, 
+                    "min_peak_no": 148, 
+                    "minimum": -69.23564, 
+                    "peak_decay_exponent": -0.7015059065987975, 
+                    "peak_linear_gradient": 0.00019159873655834786, 
+                    "spike_broadening": 1.54389779973081, 
+                    "spike_frequency_adaptation": 0.0009996187321566568, 
+                    "spike_width_adaptation": 0.0003976134578522282, 
+                    "trough_decay_exponent": 0.1489403700840183, 
+                    "trough_phase_adaptation": 0.0004688640551274037
+                }
+            }
+        }, 
+        "RUN46_Sim_PoissonFiringSynapse_olm_-number_per_cell200-average_rate301Hz_seed0": {
+            "parameters": {
+                "average_rate": "301Hz", 
+                "reference": "RUN46_Sim_PoissonFiringSynapse_olm_-number_per_cell200-average_rate301Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 200, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -47.101324655255034, 
+                    "average_maximum": 2.087440926993865, 
+                    "average_minimum": -63.79986450617284, 
+                    "first_spike_time": 4.0200000000000005, 
+                    "interspike_time_covar": 0.0802619620856189, 
+                    "max_interspike_time": 11.675000000000068, 
+                    "max_peak_no": 163, 
+                    "maximum": 14.09689, 
+                    "mean_spike_frequency": 163.47866452058875, 
+                    "min_interspike_time": 5.564999999999941, 
+                    "min_peak_no": 162, 
+                    "minimum": -67.0, 
+                    "peak_decay_exponent": -0.9276985226079295, 
+                    "peak_linear_gradient": -0.0006056066812446646, 
+                    "spike_broadening": 2.2278852727921152, 
+                    "spike_frequency_adaptation": -0.0007665919640502866, 
+                    "spike_width_adaptation": -9.555513670456451e-05, 
+                    "trough_decay_exponent": 0.1516262704536262, 
+                    "trough_phase_adaptation": -0.00011737799233384605
+                }
+            }
+        }, 
+        "RUN47_Sim_PoissonFiringSynapse_olm_-number_per_cell200-average_rate351Hz_seed0": {
+            "parameters": {
+                "average_rate": "351Hz", 
+                "reference": "RUN47_Sim_PoissonFiringSynapse_olm_-number_per_cell200-average_rate351Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 200, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -46.07162725673497, 
+                    "average_maximum": 0.6706421703333333, 
+                    "average_minimum": -62.92682807228916, 
+                    "first_spike_time": 3.585, 
+                    "interspike_time_covar": 0.7854713897976004, 
+                    "max_interspike_time": 50.925000000000004, 
+                    "max_peak_no": 84, 
+                    "maximum": 14.18252, 
+                    "mean_spike_frequency": 84.13753953450652, 
+                    "min_interspike_time": 5.4850000000000705, 
+                    "min_peak_no": 83, 
+                    "minimum": -67.0, 
+                    "peak_decay_exponent": -0.2553735977415851, 
+                    "peak_linear_gradient": -0.0012541153577666638, 
+                    "spike_broadening": 4.6618961300213515, 
+                    "spike_frequency_adaptation": 0.002115616317113418, 
+                    "spike_width_adaptation": -8.50731038909964e-05, 
+                    "trough_decay_exponent": 0.023670771872656846, 
+                    "trough_phase_adaptation": -0.0008566821259838283
+                }
+            }
+        }, 
+        "RUN48_Sim_PoissonFiringSynapse_olm_-number_per_cell200-average_rate401Hz_seed0": {
+            "parameters": {
+                "average_rate": "401Hz", 
+                "reference": "RUN48_Sim_PoissonFiringSynapse_olm_-number_per_cell200-average_rate401Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 200, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -42.11735817699996, 
+                    "average_maximum": 14.28312, 
+                    "first_spike_time": 3.255, 
+                    "max_peak_no": 1, 
+                    "maximum": 14.28312, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -67.0
+                }
+            }
+        }, 
+        "RUN49_Sim_PoissonFiringSynapse_olm_-number_per_cell200-average_rate451Hz_seed0": {
+            "parameters": {
+                "average_rate": "451Hz", 
+                "reference": "RUN49_Sim_PoissonFiringSynapse_olm_-number_per_cell200-average_rate451Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 200, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_olmcell/0/olmcell/v": {
+                    "average_last_1percent": -41.593968098999916, 
+                    "average_maximum": 14.11886, 
+                    "first_spike_time": 3.0, 
+                    "max_peak_no": 1, 
+                    "maximum": 14.11886, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -67.0
+                }
+            }
+        }
+    }
+}

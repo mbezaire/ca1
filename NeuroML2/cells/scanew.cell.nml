@@ -1,0 +1,497 @@
+<neuroml xmlns="http://www.neuroml.org/schema/neuroml2"  xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.neuroml.org/schema/neuroml2 https://raw.github.com/NeuroML/NeuroML2/development/Schemas/NeuroML2/NeuroML_v2beta5.xsd" id="NeuroML2_file_exported_from_NEURON">
+    <include href="../channels/CavL.channel.nml"></include>
+    <include href="../channels/CavN.channel.nml"></include>
+    <include href="../channels/HCN.channel.nml"></include>
+    <include href="../channels/KCaSnew.channel.nml"></include>
+    <include href="../channels/Kdrfast.channel.nml"></include>
+    <include href="../channels/KvA.channel.nml"></include>
+    <include href="../channels/KvCaB.channel.nml"></include>
+    <include href="../channels/KvGroup.channel.nml"></include>
+    <include href="../channels/KvMnew.channel.nml"></include>
+    <include href="../channels/Navccknew.channel.nml"></include>
+    <include href="../channels/leak_chan.channel.nml"></include>
+    <include href="../channels/Capool.nml"></include>
+    <cell id="scacellnew">
+        <notes>Cell: scacell exported from NEURON ModelView</notes>
+        <morphology id="morphology">
+            <segment id="0" name="Seg0_soma_0">
+                <proximal x="0.000000e+00" y="1.000000e+01" z="0.000000e+00" diameter="10.0"/>
+                <distal x="0.000000e+00" y="1.500000e+01" z="0.000000e+00" diameter="10.0"/>
+            </segment>
+            <segment id="2" name="Seg1_soma_0">
+                <parent segment="0"/>
+                <distal x="0.000000e+00" y="2.000000e+01" z="0.000000e+00" diameter="10.0"/>
+            </segment>
+            <segment id="29" name="Seg0_dend_13">
+                <parent segment="0" fractionAlong="0.0"/>
+                <proximal x="0.000000e+00" y="1.000000e+01" z="0.000000e+00" diameter="2.0"/>
+                <distal x="1.947090e+01" y="-3.605300e+01" z="0.000000e+00" diameter="1.5"/>
+            </segment>
+            <segment id="30" name="Seg1_dend_13">
+                <parent segment="29"/>
+                <distal x="3.894190e+01" y="-8.210610e+01" z="0.000000e+00" diameter="1.5"/>
+            </segment>
+            <segment id="23" name="Seg0_dend_10">
+                <parent segment="0" fractionAlong="0.0"/>
+                <proximal x="0.000000e+00" y="1.000000e+01" z="0.000000e+00" diameter="2.0"/>
+                <distal x="-1.947090e+01" y="-3.605310e+01" z="0.000000e+00" diameter="1.5"/>
+            </segment>
+            <segment id="24" name="Seg1_dend_10">
+                <parent segment="23"/>
+                <distal x="-3.894180e+01" y="-8.210610e+01" z="0.000000e+00" diameter="1.5"/>
+            </segment>
+            <segment id="13" name="Seg0_dend_5">
+                <parent segment="2"/>
+                <proximal x="0.000000e+00" y="2.000000e+01" z="0.000000e+00" diameter="4.0"/>
+                <distal x="-1.947090e+01" y="6.605300e+01" z="0.000000e+00" diameter="3.5"/>
+            </segment>
+            <segment id="14" name="Seg1_dend_5">
+                <parent segment="13"/>
+                <distal x="-3.894180e+01" y="1.121060e+02" z="0.000000e+00" diameter="3.5"/>
+            </segment>
+            <segment id="3" name="Seg0_dend_0">
+                <parent segment="2"/>
+                <proximal x="0.000000e+00" y="2.000000e+01" z="0.000000e+00" diameter="3.5"/>
+                <distal x="1.947090e+01" y="6.605300e+01" z="0.000000e+00" diameter="3.5"/>
+            </segment>
+            <segment id="4" name="Seg1_dend_0">
+                <parent segment="3"/>
+                <distal x="3.894180e+01" y="1.121060e+02" z="0.000000e+00" diameter="3.5"/>
+            </segment>
+            <segment id="31" name="Seg0_dend_14">
+                <parent segment="30"/>
+                <proximal x="3.894190e+01" y="-8.210610e+01" z="0.000000e+00" diameter="1.2"/>
+                <distal x="5.841280e+01" y="-1.281590e+02" z="0.000000e+00" diameter="1.2"/>
+            </segment>
+            <segment id="32" name="Seg1_dend_14">
+                <parent segment="31"/>
+                <distal x="7.788370e+01" y="-1.742120e+02" z="0.000000e+00" diameter="1.2"/>
+            </segment>
+            <segment id="25" name="Seg0_dend_11">
+                <parent segment="24"/>
+                <proximal x="-3.894180e+01" y="-8.210610e+01" z="0.000000e+00" diameter="1.2"/>
+                <distal x="-5.841280e+01" y="-1.281590e+02" z="0.000000e+00" diameter="1.2"/>
+            </segment>
+            <segment id="26" name="Seg1_dend_11">
+                <parent segment="25"/>
+                <distal x="-7.788370e+01" y="-1.742120e+02" z="0.000000e+00" diameter="1.2"/>
+            </segment>
+            <segment id="15" name="Seg0_dend_6">
+                <parent segment="14"/>
+                <proximal x="-3.894180e+01" y="1.121060e+02" z="0.000000e+00" diameter="2.5"/>
+                <distal x="-5.841280e+01" y="1.581590e+02" z="0.000000e+00" diameter="2.5"/>
+            </segment>
+            <segment id="16" name="Seg1_dend_6">
+                <parent segment="15"/>
+                <distal x="-7.788370e+01" y="2.042120e+02" z="0.000000e+00" diameter="2.5"/>
+            </segment>
+            <segment id="5" name="Seg0_dend_1">
+                <parent segment="4"/>
+                <proximal x="3.894180e+01" y="1.121060e+02" z="0.000000e+00" diameter="2.5"/>
+                <distal x="5.841280e+01" y="1.581590e+02" z="0.000000e+00" diameter="2.5"/>
+            </segment>
+            <segment id="6" name="Seg1_dend_1">
+                <parent segment="5"/>
+                <distal x="7.788370e+01" y="2.042120e+02" z="0.000000e+00" diameter="2.5"/>
+            </segment>
+            <segment id="33" name="Seg0_dend_15">
+                <parent segment="32"/>
+                <proximal x="7.788370e+01" y="-1.742120e+02" z="0.000000e+00" diameter="1.0"/>
+                <distal x="9.735460e+01" y="-2.202650e+02" z="0.000000e+00" diameter="1.0"/>
+            </segment>
+            <segment id="34" name="Seg1_dend_15">
+                <parent segment="33"/>
+                <distal x="1.168260e+02" y="-2.663180e+02" z="0.000000e+00" diameter="1.0"/>
+            </segment>
+            <segment id="27" name="Seg0_dend_12">
+                <parent segment="26"/>
+                <proximal x="-7.788370e+01" y="-1.742120e+02" z="0.000000e+00" diameter="1.0"/>
+                <distal x="-9.735460e+01" y="-2.202650e+02" z="0.000000e+00" diameter="1.0"/>
+            </segment>
+            <segment id="28" name="Seg1_dend_12">
+                <parent segment="27"/>
+                <distal x="-1.168260e+02" y="-2.663180e+02" z="0.000000e+00" diameter="1.0"/>
+            </segment>
+            <segment id="17" name="Seg0_dend_7">
+                <parent segment="16"/>
+                <proximal x="-7.788370e+01" y="2.042120e+02" z="0.000000e+00" diameter="1.5"/>
+                <distal x="-1.168260e+02" y="2.963180e+02" z="0.000000e+00" diameter="1.5"/>
+            </segment>
+            <segment id="18" name="Seg1_dend_7">
+                <parent segment="17"/>
+                <distal x="-1.557670e+02" y="3.884240e+02" z="0.000000e+00" diameter="1.5"/>
+            </segment>
+            <segment id="7" name="Seg0_dend_2">
+                <parent segment="6"/>
+                <proximal x="7.788370e+01" y="2.042120e+02" z="0.000000e+00" diameter="1.5"/>
+                <distal x="1.168260e+02" y="2.963180e+02" z="0.000000e+00" diameter="1.5"/>
+            </segment>
+            <segment id="8" name="Seg1_dend_2">
+                <parent segment="7"/>
+                <distal x="1.557670e+02" y="3.884240e+02" z="0.000000e+00" diameter="1.5"/>
+            </segment>
+            <segment id="19" name="Seg0_dend_8">
+                <parent segment="18"/>
+                <proximal x="-1.557670e+02" y="3.884240e+02" z="0.000000e+00" diameter="1.2"/>
+                <distal x="-1.752380e+02" y="4.344770e+02" z="0.000000e+00" diameter="1.2"/>
+            </segment>
+            <segment id="20" name="Seg1_dend_8">
+                <parent segment="19"/>
+                <distal x="-1.947090e+02" y="4.805310e+02" z="0.000000e+00" diameter="1.2"/>
+            </segment>
+            <segment id="9" name="Seg0_dend_3">
+                <parent segment="8"/>
+                <proximal x="1.557670e+02" y="3.884240e+02" z="0.000000e+00" diameter="1.2"/>
+                <distal x="1.752380e+02" y="4.344770e+02" z="0.000000e+00" diameter="1.2"/>
+            </segment>
+            <segment id="10" name="Seg1_dend_3">
+                <parent segment="9"/>
+                <distal x="1.947090e+02" y="4.805310e+02" z="0.000000e+00" diameter="1.2"/>
+            </segment>
+            <segment id="21" name="Seg0_dend_9">
+                <parent segment="20"/>
+                <proximal x="-1.947090e+02" y="4.805310e+02" z="0.000000e+00" diameter="1.0"/>
+                <distal x="-2.141800e+02" y="5.265840e+02" z="0.000000e+00" diameter="1.0"/>
+            </segment>
+            <segment id="22" name="Seg1_dend_9">
+                <parent segment="21"/>
+                <distal x="-2.336510e+02" y="5.726370e+02" z="0.000000e+00" diameter="1.0"/>
+            </segment>
+            <segment id="11" name="Seg0_dend_4">
+                <parent segment="10"/>
+                <proximal x="1.947090e+02" y="4.805310e+02" z="0.000000e+00" diameter="1.0"/>
+                <distal x="2.141800e+02" y="5.265840e+02" z="0.000000e+00" diameter="1.0"/>
+            </segment>
+            <segment id="12" name="Seg1_dend_4">
+                <parent segment="11"/>
+                <distal x="2.336510e+02" y="5.726370e+02" z="0.000000e+00" diameter="1.0"/>
+            </segment>
+            <segmentGroup neuroLexId="sao864921383" id="soma_0">
+                <notes>This group contains an unbranched set of segments, and all of the segmentGroups marked with
+             neuroLexId = sao864921383 form a non-overlapping set of all of the segments.
+             These segmentGroups correspond to the 'cables' of NeuroML v1.8.1, and map to/from NEURON sections.</notes>
+                <member segment="0"/>
+                <member segment="2"/>
+            </segmentGroup>
+            <segmentGroup neuroLexId="sao864921383" id="dend_13">
+                <notes>This group contains an unbranched set of segments, and all of the segmentGroups marked with
+             neuroLexId = sao864921383 form a non-overlapping set of all of the segments.
+             These segmentGroups correspond to the 'cables' of NeuroML v1.8.1, and map to/from NEURON sections.</notes>
+                <property tag="numberInternalDivisions" value="3"/>
+                <member segment="29"/>
+                <member segment="30"/>
+            </segmentGroup>
+            <segmentGroup neuroLexId="sao864921383" id="dend_10">
+                <notes>This group contains an unbranched set of segments, and all of the segmentGroups marked with
+             neuroLexId = sao864921383 form a non-overlapping set of all of the segments.
+             These segmentGroups correspond to the 'cables' of NeuroML v1.8.1, and map to/from NEURON sections.</notes>
+                <property tag="numberInternalDivisions" value="3"/>
+                <member segment="23"/>
+                <member segment="24"/>
+            </segmentGroup>
+            <segmentGroup neuroLexId="sao864921383" id="dend_5">
+                <notes>This group contains an unbranched set of segments, and all of the segmentGroups marked with
+             neuroLexId = sao864921383 form a non-overlapping set of all of the segments.
+             These segmentGroups correspond to the 'cables' of NeuroML v1.8.1, and map to/from NEURON sections.</notes>
+                <property tag="numberInternalDivisions" value="3"/>
+                <member segment="13"/>
+                <member segment="14"/>
+            </segmentGroup>
+            <segmentGroup neuroLexId="sao864921383" id="dend_0">
+                <notes>This group contains an unbranched set of segments, and all of the segmentGroups marked with
+             neuroLexId = sao864921383 form a non-overlapping set of all of the segments.
+             These segmentGroups correspond to the 'cables' of NeuroML v1.8.1, and map to/from NEURON sections.</notes>
+                <property tag="numberInternalDivisions" value="3"/>
+                <member segment="3"/>
+                <member segment="4"/>
+            </segmentGroup>
+            <segmentGroup neuroLexId="sao864921383" id="dend_14">
+                <notes>This group contains an unbranched set of segments, and all of the segmentGroups marked with
+             neuroLexId = sao864921383 form a non-overlapping set of all of the segments.
+             These segmentGroups correspond to the 'cables' of NeuroML v1.8.1, and map to/from NEURON sections.</notes>
+                <property tag="numberInternalDivisions" value="3"/>
+                <member segment="31"/>
+                <member segment="32"/>
+            </segmentGroup>
+            <segmentGroup neuroLexId="sao864921383" id="dend_11">
+                <notes>This group contains an unbranched set of segments, and all of the segmentGroups marked with
+             neuroLexId = sao864921383 form a non-overlapping set of all of the segments.
+             These segmentGroups correspond to the 'cables' of NeuroML v1.8.1, and map to/from NEURON sections.</notes>
+                <property tag="numberInternalDivisions" value="3"/>
+                <member segment="25"/>
+                <member segment="26"/>
+            </segmentGroup>
+            <segmentGroup neuroLexId="sao864921383" id="dend_6">
+                <notes>This group contains an unbranched set of segments, and all of the segmentGroups marked with
+             neuroLexId = sao864921383 form a non-overlapping set of all of the segments.
+             These segmentGroups correspond to the 'cables' of NeuroML v1.8.1, and map to/from NEURON sections.</notes>
+                <property tag="numberInternalDivisions" value="3"/>
+                <member segment="15"/>
+                <member segment="16"/>
+            </segmentGroup>
+            <segmentGroup neuroLexId="sao864921383" id="dend_1">
+                <notes>This group contains an unbranched set of segments, and all of the segmentGroups marked with
+             neuroLexId = sao864921383 form a non-overlapping set of all of the segments.
+             These segmentGroups correspond to the 'cables' of NeuroML v1.8.1, and map to/from NEURON sections.</notes>
+                <property tag="numberInternalDivisions" value="3"/>
+                <member segment="5"/>
+                <member segment="6"/>
+            </segmentGroup>
+            <segmentGroup neuroLexId="sao864921383" id="dend_15">
+                <notes>This group contains an unbranched set of segments, and all of the segmentGroups marked with
+             neuroLexId = sao864921383 form a non-overlapping set of all of the segments.
+             These segmentGroups correspond to the 'cables' of NeuroML v1.8.1, and map to/from NEURON sections.</notes>
+                <property tag="numberInternalDivisions" value="3"/>
+                <member segment="33"/>
+                <member segment="34"/>
+            </segmentGroup>
+            <segmentGroup neuroLexId="sao864921383" id="dend_12">
+                <notes>This group contains an unbranched set of segments, and all of the segmentGroups marked with
+             neuroLexId = sao864921383 form a non-overlapping set of all of the segments.
+             These segmentGroups correspond to the 'cables' of NeuroML v1.8.1, and map to/from NEURON sections.</notes>
+                <property tag="numberInternalDivisions" value="3"/>
+                <member segment="27"/>
+                <member segment="28"/>
+            </segmentGroup>
+            <segmentGroup neuroLexId="sao864921383" id="dend_7">
+                <notes>This group contains an unbranched set of segments, and all of the segmentGroups marked with
+             neuroLexId = sao864921383 form a non-overlapping set of all of the segments.
+             These segmentGroups correspond to the 'cables' of NeuroML v1.8.1, and map to/from NEURON sections.</notes>
+                <property tag="numberInternalDivisions" value="5"/>
+                <member segment="17"/>
+                <member segment="18"/>
+            </segmentGroup>
+            <segmentGroup neuroLexId="sao864921383" id="dend_2">
+                <notes>This group contains an unbranched set of segments, and all of the segmentGroups marked with
+             neuroLexId = sao864921383 form a non-overlapping set of all of the segments.
+             These segmentGroups correspond to the 'cables' of NeuroML v1.8.1, and map to/from NEURON sections.</notes>
+                <property tag="numberInternalDivisions" value="5"/>
+                <member segment="7"/>
+                <member segment="8"/>
+            </segmentGroup>
+            <segmentGroup neuroLexId="sao864921383" id="dend_8">
+                <notes>This group contains an unbranched set of segments, and all of the segmentGroups marked with
+             neuroLexId = sao864921383 form a non-overlapping set of all of the segments.
+             These segmentGroups correspond to the 'cables' of NeuroML v1.8.1, and map to/from NEURON sections.</notes>
+                <property tag="numberInternalDivisions" value="3"/>
+                <member segment="19"/>
+                <member segment="20"/>
+            </segmentGroup>
+            <segmentGroup neuroLexId="sao864921383" id="dend_3">
+                <notes>This group contains an unbranched set of segments, and all of the segmentGroups marked with
+             neuroLexId = sao864921383 form a non-overlapping set of all of the segments.
+             These segmentGroups correspond to the 'cables' of NeuroML v1.8.1, and map to/from NEURON sections.</notes>
+                <property tag="numberInternalDivisions" value="3"/>
+                <member segment="9"/>
+                <member segment="10"/>
+            </segmentGroup>
+            <segmentGroup neuroLexId="sao864921383" id="dend_9">
+                <notes>This group contains an unbranched set of segments, and all of the segmentGroups marked with
+             neuroLexId = sao864921383 form a non-overlapping set of all of the segments.
+             These segmentGroups correspond to the 'cables' of NeuroML v1.8.1, and map to/from NEURON sections.</notes>
+                <property tag="numberInternalDivisions" value="3"/>
+                <member segment="21"/>
+                <member segment="22"/>
+            </segmentGroup>
+            <segmentGroup neuroLexId="sao864921383" id="dend_4">
+                <notes>This group contains an unbranched set of segments, and all of the segmentGroups marked with
+             neuroLexId = sao864921383 form a non-overlapping set of all of the segments.
+             These segmentGroups correspond to the 'cables' of NeuroML v1.8.1, and map to/from NEURON sections.</notes>
+                <property tag="numberInternalDivisions" value="3"/>
+                <member segment="11"/>
+                <member segment="12"/>
+            </segmentGroup>
+            <segmentGroup id="all">
+                <include segmentGroup="soma_0"/>
+                <include segmentGroup="dend_13"/>
+                <include segmentGroup="dend_10"/>
+                <include segmentGroup="dend_5"/>
+                <include segmentGroup="dend_0"/>
+                <include segmentGroup="dend_14"/>
+                <include segmentGroup="dend_11"/>
+                <include segmentGroup="dend_6"/>
+                <include segmentGroup="dend_1"/>
+                <include segmentGroup="dend_15"/>
+                <include segmentGroup="dend_12"/>
+                <include segmentGroup="dend_7"/>
+                <include segmentGroup="dend_2"/>
+                <include segmentGroup="dend_8"/>
+                <include segmentGroup="dend_3"/>
+                <include segmentGroup="dend_9"/>
+                <include segmentGroup="dend_4"/>
+            </segmentGroup>
+            <segmentGroup id="soma_group">
+                <include segmentGroup="soma_0"/>
+            </segmentGroup>
+            <segmentGroup id="dendrite_group">
+                <include segmentGroup="dend_13"/>
+                <include segmentGroup="dend_10"/>
+                <include segmentGroup="dend_5"/>
+                <include segmentGroup="dend_0"/>
+                <include segmentGroup="dend_14"/>
+                <include segmentGroup="dend_11"/>
+                <include segmentGroup="dend_6"/>
+                <include segmentGroup="dend_1"/>
+                <include segmentGroup="dend_15"/>
+                <include segmentGroup="dend_12"/>
+                <include segmentGroup="dend_7"/>
+                <include segmentGroup="dend_2"/>
+                <include segmentGroup="dend_8"/>
+                <include segmentGroup="dend_3"/>
+                <include segmentGroup="dend_9"/>
+                <include segmentGroup="dend_4"/>
+                <inhomogeneousParameter id="PathLengthOverDendrites" variable="p" metric="Path Length from root"/>
+            </segmentGroup>
+            <segmentGroup id="apical_group">
+                <notes>segmentGroup added by A.Ecker to exactly match NEURON version (not added to segGroup id="all")</notes>
+                <include segmentGroup="dend_0"/>
+                <include segmentGroup="dend_1"/>
+                <include segmentGroup="dend_2"/>
+                <include segmentGroup="dend_3"/>
+                <include segmentGroup="dend_4"/>
+                <include segmentGroup="dend_5"/>
+                <include segmentGroup="dend_6"/>
+                <include segmentGroup="dend_7"/>
+                <include segmentGroup="dend_8"/>
+                <include segmentGroup="dend_9"/>
+            </segmentGroup>
+            <segmentGroup id="basal_group">
+                <notes>segmentGroup added by A.Ecker to exactly match NEURON version (not added to segGroup id="all")</notes>
+                <include segmentGroup="dend_10"/>
+                <include segmentGroup="dend_11"/>
+                <include segmentGroup="dend_12"/>
+                <include segmentGroup="dend_13"/>
+                <include segmentGroup="dend_14"/>
+                <include segmentGroup="dend_15"/>
+            </segmentGroup>
+            <segmentGroup id="dendrite_list_0_to_50">
+                <notes>segmentGroup added by A.Ecker to specify connection targets for opencortex (not added to segGroup id="all")</notes>
+                <member segment="29"/>
+                <member segment="23"/>
+            </segmentGroup>
+            <segmentGroup id="dendrite_list_50_to_200">
+                <notes>segmentGroup added by A.Ecker to specify connection targets for opencortex (not added to segGroup id="all")</notes>
+                <member segment="31"/>
+                <member segment="32"/>
+                <member segment="30"/>
+                <member segment="24"/>
+                <member segment="25"/>
+                <member segment="26"/>
+                <member segment="13"/>
+                <member segment="14"/>
+                <member segment="15"/>
+                <member segment="3"/>
+                <member segment="4"/>
+                <member segment="5"/>
+            </segmentGroup>
+            <segmentGroup id="dendrite_list_200_to_1000">
+                <notes>segmentGroup added by A.Ecker to specify connection targets for opencortex (not added to segGroup id="all")</notes>
+                <member segment="33"/>
+                <member segment="34"/>
+                <member segment="27"/>
+                <member segment="28"/>
+                <member segment="19"/>
+                <member segment="20"/>
+                <member segment="21"/>
+                <member segment="22"/>
+                <member segment="11"/>
+                <member segment="12"/>
+                <member segment="16"/>
+                <member segment="17"/>
+                <member segment="18"/>
+                <member segment="6"/>
+                <member segment="7"/>
+                <member segment="8"/>
+                <member segment="9"/>
+                <member segment="10"/>
+            </segmentGroup>
+            <segmentGroup id="apical_list_100_to_1000">
+                <notes>segmentGroup added by A.Ecker to specify connection targets for opencortex (not added to segGroup id="all")</notes>
+                <member segment="31"/>
+                <member segment="32"/>
+                <member segment="33"/>
+                <member segment="34"/>
+                <member segment="27"/>
+                <member segment="28"/>
+                <member segment="25"/>
+                <member segment="26"/>
+                <member segment="19"/>
+                <member segment="20"/>
+                <member segment="21"/>
+                <member segment="22"/>
+                <member segment="11"/>
+                <member segment="12"/>
+                <member segment="14"/>
+                <member segment="15"/>
+                <member segment="16"/>
+                <member segment="17"/>
+                <member segment="18"/>
+                <member segment="4"/>
+                <member segment="5"/>
+                <member segment="6"/>
+                <member segment="7"/>
+                <member segment="8"/>
+                <member segment="9"/>
+                <member segment="10"/>
+            </segmentGroup>
+            <segmentGroup id="apical_list_200_to_1000">
+                <notes>segmentGroup added by A.Ecker to specify connection targets for opencortex (not added to segGroup id="all")</notes>
+                <member segment="33"/>
+                <member segment="34"/>
+                <member segment="27"/>
+                <member segment="28"/>
+                <member segment="19"/>
+                <member segment="20"/>
+                <member segment="21"/>
+                <member segment="22"/>
+                <member segment="11"/>
+                <member segment="12"/>
+                <member segment="16"/>
+                <member segment="17"/>
+                <member segment="18"/>
+                <member segment="6"/>
+                <member segment="7"/>
+                <member segment="8"/>
+                <member segment="9"/>
+                <member segment="10"/>
+            </segmentGroup>
+        </morphology>
+        <biophysicalProperties id="biophys">
+            <membraneProperties>
+                <channelDensity id="HCN_all" ionChannel="HCN" condDensity="0.07mS_per_cm2" erev="0mV" ion="non_specific"/>  <!--0.07-->
+                <channelDensity id="KCaS_all" ionChannel="KCaSnew" condDensity="0.0011mS_per_cm2" erev="-90mV" ion="k"/>  <!--0.001-->
+                <channelDensity id="Kdrfast_soma" ionChannel="Kdrfast" condDensity="0.0066mS_per_cm2" erev="-90mV" segmentGroup="soma_group" ion="k"/>  <!--0.006-->
+                <channelDensity id="KvA_all" ionChannel="KvA" condDensity="0.1mS_per_cm2" erev="-90mV" ion="k"/>  <!--0.1-->
+                <channelDensity id="KvCaB_all" ionChannel="KvCaB" condDensity="0.0077mS_per_cm2" erev="-90mV" ion="k"/>  <!--0.007-->
+                <channelDensity id="KvGroup_soma" ionChannel="KvGroup" condDensity="0.88mS_per_cm2" erev="-90mV" segmentGroup="soma_group" ion="k"/>  <!--1.1-->
+                <channelDensity id="KvM_soma" ionChannel="KvMnew" condDensity="0.1mS_per_cm2" erev="-90mV" segmentGroup="soma_group" ion="k"/>  <!--supposed to be 120-->
+                <channelDensity id="Navcck_soma" ionChannel="Navccknew" condDensity="4mS_per_cm2" erev="55mV" segmentGroup="soma_group" ion="na"/>  <!--40-->
+                <channelDensity id="leak_all" ionChannel="leak_chan" condDensity="0.022222222222222223mS_per_cm2" erev="-57mV" ion="non_specific"/>  <!--0.0285714-->
+                <channelDensityNernst id="CavN_all" ionChannel="CavN" condDensity="0.04mS_per_cm2" ion="ca"/>  <!--0.02-->
+                <channelDensityGHK2 id="CavL_all" ionChannel="CavL" condDensity="1.5mS_per_cm2" ion="ca"/>  <!--1-->
+                <channelDensityNonUniform id="Kdrfast_dendrite" ionChannel="Kdrfast" erev="-90mV" ion="k">
+                    <variableParameter parameter="condDensity" segmentGroup="dendrite_group">
+                        <inhomogeneousValue inhomogeneousParameter="PathLengthOverDendrites" value="H(100 - p) * 0.66"/>  <!--0.6-->
+                    </variableParameter>
+                </channelDensityNonUniform>
+                <channelDensityNonUniform id="KvGroup_dendrite" ionChannel="KvGroup" erev="-90mV" ion="k">
+                    <variableParameter parameter="condDensity" segmentGroup="dendrite_group">
+                        <inhomogeneousValue inhomogeneousParameter="PathLengthOverDendrites" value="H(100 - p) * 17.6"/>  <!--22-->
+                    </variableParameter>
+                </channelDensityNonUniform>
+                <channelDensityNonUniform id="Navcck_dendrite" ionChannel="Navccknew" erev="50mV" ion="na">
+                    <variableParameter parameter="condDensity" segmentGroup="dendrite_group">
+                        <inhomogeneousValue inhomogeneousParameter="PathLengthOverDendrites" value="H(100 - p) * 20"/>  <!--200-->
+                    </variableParameter>
+                </channelDensityNonUniform>
+                <spikeThresh value="0mV"/>
+                <specificCapacitance value="1.0uF_per_cm2"/>  <!--1.2-->
+                <initMembPotential value="-57.0mV"/>  <!---72-->
+            </membraneProperties>
+            <intracellularProperties>
+                <species id="ca" concentrationModel="Capool" ion="ca" initialConcentration="5e-5 mM" initialExtConcentration="2 mM"/>
+                <resistivity value="0.15 kohm_cm"/>
+            </intracellularProperties>
+        </biophysicalProperties>
+    </cell>
+</neuroml>

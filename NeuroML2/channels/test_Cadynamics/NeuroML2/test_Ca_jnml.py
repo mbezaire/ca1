@@ -1,10 +1,14 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+""" 
+Runs jNeuroML and plots membrane potential, [Ca++]_i and single channel currents (to compare Ca++ dynamics)
+Authors: András Ecker, Padraig Gleeson, last update: 11.2017
+"""
+
 import sys
 from pyneuroml import pynml
 
-
-lems_file = 'LEMS_test_Ca.xml'
-
-results = pynml.run_lems_with_jneuroml(lems_file, max_memory='2G', nogui=True, load_saved_data=True)
+results = pynml.run_lems_with_jneuroml_neuron("LEMS_test_Ca.xml", nogui=True, load_saved_data=True)
 
 if not '-nogui' in sys.argv:
     

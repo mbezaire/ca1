@@ -40,9 +40,12 @@ proc init() {
 	mechinit()			// local fcn: set values for max conductances and reversal potentials of ion channels and other ephys parameters that are subject to fitting
 	insert_mechs()		// local fcn: insert ion channels and actually set values determined in the mechinit fcn
 	set_chanparams()	// local fcn: after all channels have been inserted, then their other parameters can be set	
+
 	// synapses
-	pre_list = new List() // define a list for the presynaptic connections
-	define_synapses($3)	// local fcn: define all possible synaptic connections received by this cell
+	if ($3 >= 0) {        // using the cell alone/outside of the network (eg. test with omv call with (0,0,-1)), András
+	    pre_list = new List() // define a list for the presynaptic connections	
+	    define_synapses($3)	// local fcn: define all possible synaptic connections received by this cell
+	}
 }
 
 proc connect_sections() { local i
@@ -124,8 +127,8 @@ proc mechinit() {
 	
 	gH = 0.0005
 	
-	gKvAsoma = 0.0165*.3*1.5
-	gKvAdend = 0.004*.7*1.5
+	gKvAsoma = 0.0165*.3//*1.5
+	gKvAdend = 0.004*.7//*1.5
 	
 	// *2.3 gives 2x frequency & no depol. block
 	gKvEaxon =  0.05104*2.3
@@ -198,6 +201,8 @@ proc set_chanparams() {
 		cm = 1.3	// capacitance in uF/cm^2. default = 1.0
 		//ena = 55
 		//ek = -90
+        insert h_ion  // added by Andras (h ion used by HCNolm)
+            eh = -32.9
 	}  // make catau slower70e-3 	cao=2 cai=50.e-6 
 }
 
