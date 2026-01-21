@@ -1,0 +1,1188 @@
+{
+    "Varied parameters": {
+        "number_per_cell": [
+            5, 
+            20, 
+            50, 
+            100, 
+            200
+        ], 
+        "average_rate": [
+            "1Hz", 
+            "51Hz", 
+            "101Hz", 
+            "151Hz", 
+            "201Hz", 
+            "251Hz", 
+            "301Hz", 
+            "351Hz", 
+            "401Hz", 
+            "451Hz"
+        ], 
+        "seed": [
+            0
+        ]
+    }, 
+    "Fixed parameters": {
+        "duration": 1000, 
+        "dt": 0.005
+    }, 
+    "Simulations": {
+        "RUN0_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell5-average_rate1Hz_seed0": {
+            "parameters": {
+                "average_rate": "1Hz", 
+                "reference": "RUN0_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell5-average_rate1Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 5, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -64.99463955, 
+                    "max_peak_no": 0, 
+                    "maximum": -64.86168, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -65.02299000000001
+                }
+            }
+        }, 
+        "RUN1_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell5-average_rate51Hz_seed0": {
+            "parameters": {
+                "average_rate": "51Hz", 
+                "reference": "RUN1_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell5-average_rate51Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 5, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -64.67064199000005, 
+                    "max_peak_no": 0, 
+                    "maximum": -64.28468, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -65.01687000000001
+                }
+            }
+        }, 
+        "RUN2_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell5-average_rate101Hz_seed0": {
+            "parameters": {
+                "average_rate": "101Hz", 
+                "reference": "RUN2_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell5-average_rate101Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 5, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -64.54732017499994, 
+                    "max_peak_no": 0, 
+                    "maximum": -63.92863, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -65.00235
+                }
+            }
+        }, 
+        "RUN3_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell5-average_rate151Hz_seed0": {
+            "parameters": {
+                "average_rate": "151Hz", 
+                "reference": "RUN3_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell5-average_rate151Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 5, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -64.17363442499997, 
+                    "max_peak_no": 0, 
+                    "maximum": -63.67954000000001, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -65.00161
+                }
+            }
+        }, 
+        "RUN4_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell5-average_rate201Hz_seed0": {
+            "parameters": {
+                "average_rate": "201Hz", 
+                "reference": "RUN4_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell5-average_rate201Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 5, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -64.00144120499999, 
+                    "max_peak_no": 0, 
+                    "maximum": -63.23268, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -65.00122
+                }
+            }
+        }, 
+        "RUN5_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell5-average_rate251Hz_seed0": {
+            "parameters": {
+                "average_rate": "251Hz", 
+                "reference": "RUN5_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell5-average_rate251Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 5, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -64.17535687999992, 
+                    "max_peak_no": 0, 
+                    "maximum": -62.95042000000001, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -65.00099
+                }
+            }
+        }, 
+        "RUN6_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell5-average_rate301Hz_seed0": {
+            "parameters": {
+                "average_rate": "301Hz", 
+                "reference": "RUN6_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell5-average_rate301Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 5, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -63.73573960500004, 
+                    "max_peak_no": 0, 
+                    "maximum": -62.681749999999994, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -65.00082
+                }
+            }
+        }, 
+        "RUN7_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell5-average_rate351Hz_seed0": {
+            "parameters": {
+                "average_rate": "351Hz", 
+                "reference": "RUN7_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell5-average_rate351Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 5, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -63.61323538000006, 
+                    "max_peak_no": 0, 
+                    "maximum": -62.41825, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -65.00071
+                }
+            }
+        }, 
+        "RUN8_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell5-average_rate401Hz_seed0": {
+            "parameters": {
+                "average_rate": "401Hz", 
+                "reference": "RUN8_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell5-average_rate401Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 5, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -63.33287259499999, 
+                    "max_peak_no": 0, 
+                    "maximum": -62.15325, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -65.00064
+                }
+            }
+        }, 
+        "RUN9_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell5-average_rate451Hz_seed0": {
+            "parameters": {
+                "average_rate": "451Hz", 
+                "reference": "RUN9_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell5-average_rate451Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 5, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -63.073820319999975, 
+                    "max_peak_no": 0, 
+                    "maximum": -61.91829, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -65.00057
+                }
+            }
+        }, 
+        "RUN10_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell20-average_rate1Hz_seed0": {
+            "parameters": {
+                "average_rate": "1Hz", 
+                "reference": "RUN10_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell20-average_rate1Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 20, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -64.99269526500005, 
+                    "max_peak_no": 0, 
+                    "maximum": -64.73683, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -65.02299000000001
+                }
+            }
+        }, 
+        "RUN11_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell20-average_rate51Hz_seed0": {
+            "parameters": {
+                "average_rate": "51Hz", 
+                "reference": "RUN11_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell20-average_rate51Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 20, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -64.0894927649999, 
+                    "max_peak_no": 0, 
+                    "maximum": -63.4107, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -65.0044
+                }
+            }
+        }, 
+        "RUN12_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell20-average_rate101Hz_seed0": {
+            "parameters": {
+                "average_rate": "101Hz", 
+                "reference": "RUN12_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell20-average_rate101Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 20, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -63.317305500000096, 
+                    "max_peak_no": 0, 
+                    "maximum": -62.46031, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -65.00235
+                }
+            }
+        }, 
+        "RUN13_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell20-average_rate151Hz_seed0": {
+            "parameters": {
+                "average_rate": "151Hz", 
+                "reference": "RUN13_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell20-average_rate151Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 20, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -62.257694315000045, 
+                    "max_peak_no": 0, 
+                    "maximum": -61.27927, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -65.00161
+                }
+            }
+        }, 
+        "RUN14_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell20-average_rate201Hz_seed0": {
+            "parameters": {
+                "average_rate": "201Hz", 
+                "reference": "RUN14_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell20-average_rate201Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 20, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -61.74872753499991, 
+                    "max_peak_no": 0, 
+                    "maximum": -60.17054, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -65.00122
+                }
+            }
+        }, 
+        "RUN15_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell20-average_rate251Hz_seed0": {
+            "parameters": {
+                "average_rate": "251Hz", 
+                "reference": "RUN15_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell20-average_rate251Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 20, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -61.71381532999998, 
+                    "max_peak_no": 0, 
+                    "maximum": -59.16399, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -65.00099
+                }
+            }
+        }, 
+        "RUN16_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell20-average_rate301Hz_seed0": {
+            "parameters": {
+                "average_rate": "301Hz", 
+                "reference": "RUN16_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell20-average_rate301Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 20, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -60.09432938999993, 
+                    "max_peak_no": 0, 
+                    "maximum": -58.35563, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -65.00082
+                }
+            }
+        }, 
+        "RUN17_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell20-average_rate351Hz_seed0": {
+            "parameters": {
+                "average_rate": "351Hz", 
+                "reference": "RUN17_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell20-average_rate351Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 20, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -60.11049280500001, 
+                    "max_peak_no": 0, 
+                    "maximum": -57.505559999999996, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -65.00071
+                }
+            }
+        }, 
+        "RUN18_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell20-average_rate401Hz_seed0": {
+            "parameters": {
+                "average_rate": "401Hz", 
+                "reference": "RUN18_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell20-average_rate401Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 20, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -59.403053844999945, 
+                    "max_peak_no": 0, 
+                    "maximum": -56.67116, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -65.00064
+                }
+            }
+        }, 
+        "RUN19_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell20-average_rate451Hz_seed0": {
+            "parameters": {
+                "average_rate": "451Hz", 
+                "reference": "RUN19_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell20-average_rate451Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 20, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -57.914565805000066, 
+                    "max_peak_no": 0, 
+                    "maximum": -55.876290000000004, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -65.00057
+                }
+            }
+        }, 
+        "RUN20_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell50-average_rate1Hz_seed0": {
+            "parameters": {
+                "average_rate": "1Hz", 
+                "reference": "RUN20_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell50-average_rate1Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 50, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -64.94745409499997, 
+                    "max_peak_no": 0, 
+                    "maximum": -64.57101, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -65.02299000000001
+                }
+            }
+        }, 
+        "RUN21_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell50-average_rate51Hz_seed0": {
+            "parameters": {
+                "average_rate": "51Hz", 
+                "reference": "RUN21_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell50-average_rate51Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 50, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -62.72919962499984, 
+                    "max_peak_no": 0, 
+                    "maximum": -61.70457, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -65.0044
+                }
+            }
+        }, 
+        "RUN22_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell50-average_rate101Hz_seed0": {
+            "parameters": {
+                "average_rate": "101Hz", 
+                "reference": "RUN22_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell50-average_rate101Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 50, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -61.19344259999994, 
+                    "max_peak_no": 0, 
+                    "maximum": -59.43304, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -65.00235
+                }
+            }
+        }, 
+        "RUN23_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell50-average_rate151Hz_seed0": {
+            "parameters": {
+                "average_rate": "151Hz", 
+                "reference": "RUN23_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell50-average_rate151Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 50, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -58.55662459999992, 
+                    "max_peak_no": 0, 
+                    "maximum": -57.391659999999995, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -65.00161
+                }
+            }
+        }, 
+        "RUN24_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell50-average_rate201Hz_seed0": {
+            "parameters": {
+                "average_rate": "201Hz", 
+                "reference": "RUN24_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell50-average_rate201Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 50, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -57.83332187999993, 
+                    "max_peak_no": 0, 
+                    "maximum": -55.380430000000004, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -65.00122
+                }
+            }
+        }, 
+        "RUN25_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell50-average_rate251Hz_seed0": {
+            "parameters": {
+                "average_rate": "251Hz", 
+                "reference": "RUN25_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell50-average_rate251Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 50, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -56.26901926500005, 
+                    "max_peak_no": 0, 
+                    "maximum": -53.57271, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -65.00099
+                }
+            }
+        }, 
+        "RUN26_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell50-average_rate301Hz_seed0": {
+            "parameters": {
+                "average_rate": "301Hz", 
+                "reference": "RUN26_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell50-average_rate301Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 50, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -54.00625191000001, 
+                    "max_peak_no": 0, 
+                    "maximum": -51.882419999999996, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -65.00082
+                }
+            }
+        }, 
+        "RUN27_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell50-average_rate351Hz_seed0": {
+            "parameters": {
+                "average_rate": "351Hz", 
+                "reference": "RUN27_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell50-average_rate351Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 50, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -53.698549189999966, 
+                    "max_peak_no": 0, 
+                    "maximum": -50.22851, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -65.00071
+                }
+            }
+        }, 
+        "RUN28_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell50-average_rate401Hz_seed0": {
+            "parameters": {
+                "average_rate": "401Hz", 
+                "reference": "RUN28_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell50-average_rate401Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 50, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -51.360491024999924, 
+                    "max_peak_no": 0, 
+                    "maximum": -48.458189999999995, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -65.00064
+                }
+            }
+        }, 
+        "RUN29_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell50-average_rate451Hz_seed0": {
+            "parameters": {
+                "average_rate": "451Hz", 
+                "reference": "RUN29_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell50-average_rate451Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 50, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -50.035777774999964, 
+                    "max_peak_no": 0, 
+                    "maximum": -46.14162, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -65.00057
+                }
+            }
+        }, 
+        "RUN30_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell100-average_rate1Hz_seed0": {
+            "parameters": {
+                "average_rate": "1Hz", 
+                "reference": "RUN30_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell100-average_rate1Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 100, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -64.94728785000004, 
+                    "max_peak_no": 0, 
+                    "maximum": -64.5267, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -65.02264000000001
+                }
+            }
+        }, 
+        "RUN31_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell100-average_rate51Hz_seed0": {
+            "parameters": {
+                "average_rate": "51Hz", 
+                "reference": "RUN31_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell100-average_rate51Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 100, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -60.78442055999989, 
+                    "max_peak_no": 0, 
+                    "maximum": -59.36408, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -65.00182
+                }
+            }
+        }, 
+        "RUN32_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell100-average_rate101Hz_seed0": {
+            "parameters": {
+                "average_rate": "101Hz", 
+                "reference": "RUN32_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell100-average_rate101Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 100, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -57.78572759500002, 
+                    "max_peak_no": 0, 
+                    "maximum": -55.50236, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -65.00095
+                }
+            }
+        }, 
+        "RUN33_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell100-average_rate151Hz_seed0": {
+            "parameters": {
+                "average_rate": "151Hz", 
+                "reference": "RUN33_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell100-average_rate151Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 100, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -53.84290491499996, 
+                    "max_peak_no": 0, 
+                    "maximum": -51.867799999999995, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -65.00065
+                }
+            }
+        }, 
+        "RUN34_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell100-average_rate201Hz_seed0": {
+            "parameters": {
+                "average_rate": "201Hz", 
+                "reference": "RUN34_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell100-average_rate201Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 100, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -50.56368975000002, 
+                    "max_peak_no": 0, 
+                    "maximum": -47.46966, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -65.0005
+                }
+            }
+        }, 
+        "RUN35_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell100-average_rate251Hz_seed0": {
+            "parameters": {
+                "average_rate": "251Hz", 
+                "reference": "RUN35_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell100-average_rate251Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 100, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -47.88755791500007, 
+                    "average_maximum": 53.244252, 
+                    "average_minimum": -76.9625275, 
+                    "first_spike_time": 162.70999999999998, 
+                    "interspike_time_covar": 0.043389976520011544, 
+                    "max_interspike_time": 163.35500000000002, 
+                    "max_peak_no": 5, 
+                    "maximum": 53.43725, 
+                    "mean_spike_frequency": 6.371151426341526, 
+                    "min_interspike_time": 147.075, 
+                    "min_peak_no": 4, 
+                    "minimum": -79.71818999999999, 
+                    "peak_decay_exponent": -0.000492936175486482, 
+                    "peak_linear_gradient": -0.0001824887055482278, 
+                    "spike_broadening": 1.0245394668080245, 
+                    "spike_frequency_adaptation": -0.034241083580610183, 
+                    "spike_width_adaptation": -0.0124602108137853, 
+                    "trough_decay_exponent": -0.014492636511802473, 
+                    "trough_phase_adaptation": -0.029555646779932065
+                }
+            }
+        }, 
+        "RUN36_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell100-average_rate301Hz_seed0": {
+            "parameters": {
+                "average_rate": "301Hz", 
+                "reference": "RUN36_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell100-average_rate301Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 100, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -59.53012931500005, 
+                    "average_maximum": 53.161739230769236, 
+                    "average_minimum": -79.35518520000001, 
+                    "first_spike_time": 25.335, 
+                    "interspike_time_covar": 0.1072322165821548, 
+                    "max_interspike_time": 44.915, 
+                    "max_peak_no": 26, 
+                    "maximum": 53.373909999999995, 
+                    "mean_spike_frequency": 25.998336106489187, 
+                    "min_interspike_time": 29.97500000000001, 
+                    "min_peak_no": 25, 
+                    "minimum": -81.03474, 
+                    "peak_decay_exponent": -0.0003351927048533536, 
+                    "peak_linear_gradient": -8.852881722640543e-05, 
+                    "spike_broadening": 1.0400642378860474, 
+                    "spike_frequency_adaptation": 0.005638287469863444, 
+                    "spike_width_adaptation": -0.004209104184022021, 
+                    "trough_decay_exponent": -0.03148282261199077, 
+                    "trough_phase_adaptation": 0.0006750727890716577
+                }
+            }
+        }, 
+        "RUN37_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell100-average_rate351Hz_seed0": {
+            "parameters": {
+                "average_rate": "351Hz", 
+                "reference": "RUN37_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell100-average_rate351Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 100, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -52.37820149499995, 
+                    "average_maximum": 53.119179473684206, 
+                    "average_minimum": -79.24069675675676, 
+                    "first_spike_time": 18.185, 
+                    "interspike_time_covar": 0.08090379938757396, 
+                    "max_interspike_time": 32.280000000000086, 
+                    "max_peak_no": 38, 
+                    "maximum": 53.32721, 
+                    "mean_spike_frequency": 38.35110959088695, 
+                    "min_interspike_time": 22.80499999999995, 
+                    "min_peak_no": 37, 
+                    "minimum": -81.12152999999999, 
+                    "peak_decay_exponent": -0.00048705049069648214, 
+                    "peak_linear_gradient": -0.00019774106667430367, 
+                    "spike_broadening": 1.038930085258656, 
+                    "spike_frequency_adaptation": -0.001727489680779231, 
+                    "spike_width_adaptation": -0.0034143704797011684, 
+                    "trough_decay_exponent": -0.07956495030590019, 
+                    "trough_phase_adaptation": -0.0018284426753768651
+                }
+            }
+        }, 
+        "RUN38_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell100-average_rate401Hz_seed0": {
+            "parameters": {
+                "average_rate": "401Hz", 
+                "reference": "RUN38_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell100-average_rate401Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 100, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -47.68632311624999, 
+                    "average_maximum": 53.08267229166666, 
+                    "average_minimum": -78.95576148936172, 
+                    "first_spike_time": 14.155, 
+                    "interspike_time_covar": 0.053148690704822005, 
+                    "max_interspike_time": 24.45000000000016, 
+                    "max_peak_no": 48, 
+                    "maximum": 53.31098, 
+                    "mean_spike_frequency": 48.04915326146407, 
+                    "min_interspike_time": 18.735000000000014, 
+                    "min_peak_no": 47, 
+                    "minimum": -80.92389, 
+                    "peak_decay_exponent": -0.002818553434288142, 
+                    "peak_linear_gradient": -3.509415748054236e-05, 
+                    "spike_broadening": 1.0394607861819936, 
+                    "spike_frequency_adaptation": -0.0010031294169496666, 
+                    "spike_width_adaptation": -0.0009209705406531263, 
+                    "trough_decay_exponent": -0.11567624675200945, 
+                    "trough_phase_adaptation": -0.00112882335783836
+                }
+            }
+        }, 
+        "RUN39_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell100-average_rate451Hz_seed0": {
+            "parameters": {
+                "average_rate": "451Hz", 
+                "reference": "RUN39_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell100-average_rate451Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 100, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -49.55373386999998, 
+                    "average_maximum": 53.04367428571428, 
+                    "average_minimum": -78.80006509090909, 
+                    "first_spike_time": 11.754999999999999, 
+                    "interspike_time_covar": 0.0473192310429265, 
+                    "max_interspike_time": 19.61500000000001, 
+                    "max_peak_no": 56, 
+                    "maximum": 53.24718, 
+                    "mean_spike_frequency": 56.54538538250383, 
+                    "min_interspike_time": 16.220000000000027, 
+                    "min_peak_no": 55, 
+                    "minimum": -80.54132999999999, 
+                    "peak_decay_exponent": 0.0028586805551874253, 
+                    "peak_linear_gradient": -7.304818739691382e-05, 
+                    "spike_broadening": 1.0400197840882919, 
+                    "spike_frequency_adaptation": -0.0003564956996244871, 
+                    "spike_width_adaptation": -0.0014207043831203287, 
+                    "trough_decay_exponent": -0.09597195891508985, 
+                    "trough_phase_adaptation": -0.0008060171051768973
+                }
+            }
+        }, 
+        "RUN40_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell200-average_rate1Hz_seed0": {
+            "parameters": {
+                "average_rate": "1Hz", 
+                "reference": "RUN40_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell200-average_rate1Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 200, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -64.90765111499994, 
+                    "max_peak_no": 0, 
+                    "maximum": -64.35141, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -65.01711999999999
+                }
+            }
+        }, 
+        "RUN41_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell200-average_rate51Hz_seed0": {
+            "parameters": {
+                "average_rate": "51Hz", 
+                "reference": "RUN41_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell200-average_rate51Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 200, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -57.05053965499996, 
+                    "max_peak_no": 0, 
+                    "maximum": -55.31007, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -65.00019
+                }
+            }
+        }, 
+        "RUN42_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell200-average_rate101Hz_seed0": {
+            "parameters": {
+                "average_rate": "101Hz", 
+                "reference": "RUN42_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell200-average_rate101Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 200, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -51.54948054999996, 
+                    "max_peak_no": 0, 
+                    "maximum": -47.98814, 
+                    "mean_spike_frequency": 0, 
+                    "min_peak_no": 0, 
+                    "minimum": -65.0001
+                }
+            }
+        }, 
+        "RUN43_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell200-average_rate151Hz_seed0": {
+            "parameters": {
+                "average_rate": "151Hz", 
+                "reference": "RUN43_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell200-average_rate151Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 200, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -55.70535999500003, 
+                    "average_maximum": 53.13580230769231, 
+                    "average_minimum": -79.4875236, 
+                    "first_spike_time": 24.415, 
+                    "interspike_time_covar": 0.11226236485639984, 
+                    "max_interspike_time": 51.21500000000001, 
+                    "max_peak_no": 26, 
+                    "maximum": 53.3728, 
+                    "mean_spike_frequency": 26.03542901179926, 
+                    "min_interspike_time": 32.045000000000016, 
+                    "min_peak_no": 25, 
+                    "minimum": -81.72574, 
+                    "peak_decay_exponent": -0.001771396514689763, 
+                    "peak_linear_gradient": -0.00016502844250456907, 
+                    "spike_broadening": 1.0368729737880271, 
+                    "spike_frequency_adaptation": 0.00474543281060549, 
+                    "spike_width_adaptation": -0.004248182235196004, 
+                    "trough_decay_exponent": -0.04711387410032094, 
+                    "trough_phase_adaptation": -0.0001403076189518921
+                }
+            }
+        }, 
+        "RUN44_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell200-average_rate201Hz_seed0": {
+            "parameters": {
+                "average_rate": "201Hz", 
+                "reference": "RUN44_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell200-average_rate201Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 200, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -46.86893185500015, 
+                    "average_maximum": 53.077648333333336, 
+                    "average_minimum": -79.07916106382977, 
+                    "first_spike_time": 13.265, 
+                    "interspike_time_covar": 0.058911897327820165, 
+                    "max_interspike_time": 23.75999999999999, 
+                    "max_peak_no": 48, 
+                    "maximum": 53.33131, 
+                    "mean_spike_frequency": 48.561996621324916, 
+                    "min_interspike_time": 17.934999999999945, 
+                    "min_peak_no": 47, 
+                    "minimum": -80.5691, 
+                    "peak_decay_exponent": 0.0022492819086458336, 
+                    "peak_linear_gradient": 5.09959401563178e-05, 
+                    "spike_broadening": 1.0395007964047245, 
+                    "spike_frequency_adaptation": 0.0026743343534612446, 
+                    "spike_width_adaptation": -0.00047102037715384825, 
+                    "trough_decay_exponent": -0.09787488905065005, 
+                    "trough_phase_adaptation": 0.001694169037072681
+                }
+            }
+        }, 
+        "RUN45_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell200-average_rate251Hz_seed0": {
+            "parameters": {
+                "average_rate": "251Hz", 
+                "reference": "RUN45_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell200-average_rate251Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 200, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -44.885717108112004, 
+                    "average_maximum": 52.997570468750006, 
+                    "average_minimum": -78.20469571428572, 
+                    "first_spike_time": 9.549999999999999, 
+                    "interspike_time_covar": 0.04883055121268025, 
+                    "max_interspike_time": 18.285000000000004, 
+                    "max_peak_no": 64, 
+                    "maximum": 53.27082, 
+                    "mean_spike_frequency": 64.01886015943745, 
+                    "min_interspike_time": 14.034999999999968, 
+                    "min_peak_no": 63, 
+                    "minimum": -79.96728999999999, 
+                    "peak_decay_exponent": -0.005259677302977993, 
+                    "peak_linear_gradient": -1.4890634278517771e-05, 
+                    "spike_broadening": 1.0429988028787565, 
+                    "spike_frequency_adaptation": 0.0021976415941620505, 
+                    "spike_width_adaptation": -0.00019250955799071597, 
+                    "trough_decay_exponent": -0.13652588585149986, 
+                    "trough_phase_adaptation": -0.0007933303463889346
+                }
+            }
+        }, 
+        "RUN46_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell200-average_rate301Hz_seed0": {
+            "parameters": {
+                "average_rate": "301Hz", 
+                "reference": "RUN46_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell200-average_rate301Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 200, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -42.398693251625076, 
+                    "average_maximum": 52.83764551282051, 
+                    "average_minimum": -77.5369938961039, 
+                    "first_spike_time": 7.62, 
+                    "interspike_time_covar": 0.04188778670707496, 
+                    "max_interspike_time": 14.740000000000002, 
+                    "max_peak_no": 78, 
+                    "maximum": 53.11192, 
+                    "mean_spike_frequency": 77.94508414526129, 
+                    "min_interspike_time": 11.844999999999914, 
+                    "min_peak_no": 77, 
+                    "minimum": -79.64625, 
+                    "peak_decay_exponent": -0.012091662285550262, 
+                    "peak_linear_gradient": -6.581224318243715e-05, 
+                    "spike_broadening": 1.0448403358238694, 
+                    "spike_frequency_adaptation": 0.0018485312928628954, 
+                    "spike_width_adaptation": -0.0003522384016616798, 
+                    "trough_decay_exponent": -0.18734375457476934, 
+                    "trough_phase_adaptation": 0.0010309957610595594
+                }
+            }
+        }, 
+        "RUN47_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell200-average_rate351Hz_seed0": {
+            "parameters": {
+                "average_rate": "351Hz", 
+                "reference": "RUN47_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell200-average_rate351Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 200, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -50.23980118669996, 
+                    "average_maximum": 52.69114876404493, 
+                    "average_minimum": -76.69082920454547, 
+                    "first_spike_time": 6.395, 
+                    "interspike_time_covar": 0.037401272215915805, 
+                    "max_interspike_time": 12.71, 
+                    "max_peak_no": 89, 
+                    "maximum": 53.03741, 
+                    "mean_spike_frequency": 89.5100342782745, 
+                    "min_interspike_time": 10.28000000000003, 
+                    "min_peak_no": 88, 
+                    "minimum": -78.51003, 
+                    "peak_decay_exponent": -0.010253434557693024, 
+                    "peak_linear_gradient": 5.0426722501421146e-05, 
+                    "spike_broadening": 1.0482132591248883, 
+                    "spike_frequency_adaptation": 0.0016150788108305132, 
+                    "spike_width_adaptation": -0.000562624315012758, 
+                    "trough_decay_exponent": -0.19527800031951809, 
+                    "trough_phase_adaptation": -0.0008845652361532376
+                }
+            }
+        }, 
+        "RUN48_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell200-average_rate401Hz_seed0": {
+            "parameters": {
+                "average_rate": "401Hz", 
+                "reference": "RUN48_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell200-average_rate401Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 200, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -42.68900367906003, 
+                    "average_maximum": 52.5208291, 
+                    "average_minimum": -76.14503787878789, 
+                    "first_spike_time": 5.54, 
+                    "interspike_time_covar": 0.03864342223001067, 
+                    "max_interspike_time": 11.249999999999996, 
+                    "max_peak_no": 100, 
+                    "maximum": 52.86031, 
+                    "mean_spike_frequency": 100.07581501137226, 
+                    "min_interspike_time": 9.079999999999927, 
+                    "min_peak_no": 99, 
+                    "minimum": -79.02411, 
+                    "peak_decay_exponent": -0.021297281951268517, 
+                    "peak_linear_gradient": -1.0279379959630508e-05, 
+                    "spike_broadening": 1.0513597003440616, 
+                    "spike_frequency_adaptation": 0.001382440572328231, 
+                    "spike_width_adaptation": -0.0006906738717178849, 
+                    "trough_decay_exponent": -0.2730653843022493, 
+                    "trough_phase_adaptation": -0.001071059090303604
+                }
+            }
+        }, 
+        "RUN49_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell200-average_rate451Hz_seed0": {
+            "parameters": {
+                "average_rate": "451Hz", 
+                "reference": "RUN49_Sim_PoissonFiringSynapse_pvbasket_-number_per_cell200-average_rate451Hz_seed0", 
+                "seed": 0, 
+                "duration": 1000, 
+                "number_per_cell": 200, 
+                "dt": 0.005
+            }, 
+            "analysis": {
+                "pop_pvbasketcell/0/pvbasketcell/v": {
+                    "average_last_1percent": -42.38992095116245, 
+                    "average_maximum": 52.326139082568815, 
+                    "average_minimum": -75.27124620370371, 
+                    "first_spike_time": 4.91, 
+                    "interspike_time_covar": 0.03358495752508858, 
+                    "max_interspike_time": 10.115000000000002, 
+                    "max_peak_no": 109, 
+                    "maximum": 52.71597, 
+                    "mean_spike_frequency": 109.14437881184217, 
+                    "min_interspike_time": 8.38000000000011, 
+                    "min_peak_no": 108, 
+                    "minimum": -77.29904, 
+                    "peak_decay_exponent": -0.017073150379879564, 
+                    "peak_linear_gradient": 2.328140585579746e-05, 
+                    "spike_broadening": 1.0551767655902007, 
+                    "spike_frequency_adaptation": 0.0010998226450726562, 
+                    "spike_width_adaptation": -0.0007877768897307468, 
+                    "trough_decay_exponent": -0.26831480221996884, 
+                    "trough_phase_adaptation": -2.0532023690449904e-05
+                }
+            }
+        }
+    }
+}

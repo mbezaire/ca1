@@ -12,7 +12,7 @@ default_var("RandomSeeds",0)		// Method used to assign seeds to random processor
 default_var("Positioning","")		// Algorithm used to position the cells
 default_var("PrintVoltage",1)		// Flag for recording and printing intracellular voltage traces for select cells
 default_var("PrintTerminal",1)		// Level of printouts to screen (affects run time) 0: minimal, 1: some, 2: max printouts
-default_var("PrintConnDetails",0)		// Flag for printing the detailed connection matrix
+default_var("PrintConnDetails",1)		// Flag for printing the detailed connection matrix
 default_var("PrintCellPositions",1)		// Flag for printing the cell positions
 default_var("PrintConnSummary",1)		// Flag for printing the summary connection matrix
 default_var("TransverseLength",1000)		// Length of the network subfield in the transverse direction in microns

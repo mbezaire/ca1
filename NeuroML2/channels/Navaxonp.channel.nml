@@ -3,7 +3,7 @@
 
     <notes>NeuroML file containing a single ion channel</notes>
 
-    <ionChannel id="Navaxonp" conductance="1pS" type="ionChannelHH" species="na">
+    <ionChannel id="Navaxonp" conductance="10pS" type="ionChannelHH" species="na">
 
         <notes>Na+ channel description for axon (from Migliore 1997, modified in 2002).
         Navp without the slow inactivation (s - gating variable)</notes>

@@ -1,7 +1,4 @@
-show_plot = 1
-
-{load_file("nrngui.hoc")}
-
+show_plot = 0
 
 {load_file("nCtools.hoc")}	
 {load_file("cellCheck.hoc")}	
@@ -17,6 +14,7 @@ print "##### ngf started #####"
 {load_file("../cells/class_ngfcell.hoc")}
 
 CELL = new ngfcell(0,0,-1)
+v_init = -60  // set to eleakval
 
 objectvar stim
 CELL.soma {

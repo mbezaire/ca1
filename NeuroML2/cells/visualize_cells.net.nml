@@ -1,0 +1,81 @@
+<neuroml xmlns="http://www.neuroml.org/schema/neuroml2"  xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.neuroml.org/schema/neuroml2 https://raw.github.com/NeuroML/NeuroML2/development/Schemas/NeuroML2/NeuroML_v2beta5.xsd" id="HippocampalNet">
+
+    <include href="../cells/axoaxonic.cell.nml"></include>
+    <include href="../cells/bistratified.cell.nml"></include>
+    <include href="../cells/cck.cell.nml"></include>
+    <include href="../cells/ivy.cell.nml"></include>
+    <include href="../cells/ngf.cell.nml"></include>
+    <include href="../cells/olm.cell.nml"></include>
+    <include href="../cells/poolosyn.cell.nml"></include>
+    <include href="../cells/pvbasket.cell.nml"></include>
+    <include href="../cells/sca.cell.nml"></include>
+    
+    <network id="HippocampalNet" type="networkWithTemperature" temperature="34.0 degC">
+    
+        <notes>Network to visualize cells alongside</notes>
+        
+        <population id="pop_poolosyn" component="poolosyncell" size="1" type="populationList">
+            <property tag="color" value="0.25490196 0.41176471 0.88235294"/>
+            <instance id="0">
+                <location x="0." y="125." z="0."/>  <!-- y-z changed only for OSB -->
+            </instance>
+        </population>
+        
+        <population id="pop_pvbasket" component="pvbasketcell" size="1" type="populationList">
+            <property tag="color" value="0.1254902 0.69803922 0.66666667"/>
+            <instance id="0">
+                <location x="200." y="125." z="0."/>  <!-- y-z changed only for OSB -->
+            </instance>
+        </population>
+        
+        <population id="pop_cck" component="cckcell" size="1" type="populationList">
+            <property tag="color" value="0.85490196 0.64705882 0.1254902"/>
+            <instance id="0">
+                <location x="400." y="125." z="0."/>  <!-- y-z changed only for OSB -->
+            </instance>
+        </population>
+        
+        <population id="pop_sca" component="scacell" size="1" type="populationList">
+            <property tag="color" value="1 0.62745098 0.47843137"/>
+            <instance id="0">
+                <location x="600." y="250." z="0."/>  <!-- y-z changed only for OSB -->
+            </instance>
+        </population>
+        
+        <population id="pop_axoaxonic" component="axoaxoniccell" size="1" type="populationList">
+            <property tag="color" value="1 0 0"/>
+            <instance id="0">
+                <location x="800." y="125." z="0."/>  <!-- y-z changed only for OSB -->
+            </instance>
+        </population>
+        
+        <population id="pop_bistratified" component="bistratifiedcell" size="1" type="populationList">
+            <property tag="color" value="0.62745098 0.32156863 0.17647059"/>
+            <instance id="0">
+                <location x="1000." y="125." z="0."/>  <!-- y-z changed only for OSB -->
+            </instance>
+        </population>
+        
+        <population id="pop_olm" component="olmcell" size="1" type="populationList">
+            <property tag="color" value="0.4 0.2 0.6"/>
+            <instance id="0">
+                <location x="1200." y="50." z="0."/>  <!-- y-z changed only for OSB -->
+            </instance>
+        </population>
+               
+        <population id="pop_ivy" component="ivycell" size="1" type="populationList">
+            <property tag="color" value="0.6627451 0.6627451 0.6627451"/>
+            <instance id="0">
+                <location x="1400." y="125." z="0."/>  <!-- y-z changed only for OSB -->
+            </instance>
+        </population>
+        
+        <population id="pop_ngf" component="ngfcell" size="1" type="populationList">
+            <property tag="color" value="0.85490196 0.43921569 0.83921569"/>
+            <instance id="0">
+                <location x="1600." y="400." z="0."/>  <!-- y-z changed only for OSB -->
+            </instance>
+        </population>
+
+    </network>
+</neuroml>

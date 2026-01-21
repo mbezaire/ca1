@@ -3,9 +3,9 @@
 
     <notes>NeuroML file containing a single ion channel</notes>
 
-    <ionChannel id="Navcck" conductance="1pS" type="ionChannelHH" species="na">
+    <ionChannel id="Navcck" conductance="10pS" type="ionChannelHH" species="na">
         
-        <notes>Na+ channel description (modeled by Marianne Bezaire)</notes>
+        <notes>Na+ channel description; modified from Nav to have higher threshold and slow inactivation (suitable for cck cells)</notes>
     
         <gateHHrates id="m" instances="3">
             <q10Settings type="q10ExpTemp" q10Factor="3" experimentalTemp="34 degC"/>
@@ -32,7 +32,7 @@
         <Dynamics>
             <DerivedVariable name="V" dimension="none" value="v / VOLT_SCALE"/> 
                   
-            <DerivedVariable name="r" dimension="per_time" value="( 0.35 / (exp((V+65)/20))) / TIME_SCALE" exposure="r"/>          
+            <DerivedVariable name="r" dimension="per_time" value="(0.35 / (exp((V+65)/20))) / TIME_SCALE" exposure="r"/>          
         </Dynamics>
         
     </ComponentType>

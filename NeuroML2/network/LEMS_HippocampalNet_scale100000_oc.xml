@@ -1,0 +1,109 @@
+<Lems>
+    
+    <!-- 
+
+        This LEMS file has been automatically generated using PyNeuroML v0.5.6 (libNeuroML v0.2.53)
+
+     -->
+    
+    <!-- Specify which component to run -->
+    <Target component="Sim_HippocampalNet_scale100000_oc"/>
+
+    <!-- Include core NeuroML2 ComponentType definitions -->
+    <Include file="Cells.xml"/>
+    <Include file="Networks.xml"/>
+    <Include file="Simulation.xml"/>
+    
+    <Include file="PyNN.xml"/>
+    <Include file="HippocampalNet_scale100000_oc.net.nml"/>
+    <Include file="../cells/axoaxonic.cell.nml"/>
+    <Include file="../cells/bistratified.cell.nml"/>
+    <Include file="../cells/cck.cell.nml"/>
+    <Include file="../cells/ivy.cell.nml"/>
+    <Include file="../cells/ngf.cell.nml"/>
+    <Include file="../cells/olm.cell.nml"/>
+    <Include file="../cells/poolosyn.cell.nml"/>
+    <Include file="../cells/pvbasket.cell.nml"/>
+    <Include file="../cells/sca.cell.nml"/>
+   
+    <Simulation id="Sim_HippocampalNet_scale100000_oc" length="500ms" step="0.01ms" target="HippocampalNet_scale100000_oc" seed="12345">  <!-- Note seed: ensures same random numbers used every run -->
+        
+        <OutputFile id="Sim_HippocampalNet_scale100000_oc_axoaxoniccell_v_dat" fileName="Sim_HippocampalNet_scale100000_oc.axoaxoniccell.v.dat">
+            <OutputColumn id="pop_axoaxonic_0_axoaxoniccell_v" quantity="pop_axoaxonic/0/axoaxoniccell/v"/> 
+        </OutputFile>
+        
+        <OutputFile id="Sim_HippocampalNet_scale100000_oc_bistratifiedcell_v_dat" fileName="Sim_HippocampalNet_scale100000_oc.bistratifiedcell.v.dat">
+            <OutputColumn id="pop_bistratified_0_bistratifiedcell_v" quantity="pop_bistratified/0/bistratifiedcell/v"/> 
+        </OutputFile>
+        
+        <OutputFile id="Sim_HippocampalNet_scale100000_oc_cckcell_v_dat" fileName="Sim_HippocampalNet_scale100000_oc.cckcell.v.dat">
+            <OutputColumn id="pop_cck_0_cckcell_v" quantity="pop_cck/0/cckcell/v"/> 
+        </OutputFile>
+        
+        <OutputFile id="Sim_HippocampalNet_scale100000_oc_ivycell_v_dat" fileName="Sim_HippocampalNet_scale100000_oc.ivycell.v.dat">
+            <OutputColumn id="pop_ivy_0_ivycell_v" quantity="pop_ivy/0/ivycell/v"/> 
+        </OutputFile>
+        
+        <OutputFile id="Sim_HippocampalNet_scale100000_oc_ngfcell_v_dat" fileName="Sim_HippocampalNet_scale100000_oc.ngfcell.v.dat">
+            <OutputColumn id="pop_ngf_0_ngfcell_v" quantity="pop_ngf/0/ngfcell/v"/> 
+        </OutputFile>
+        
+        <OutputFile id="Sim_HippocampalNet_scale100000_oc_olmcell_v_dat" fileName="Sim_HippocampalNet_scale100000_oc.olmcell.v.dat">
+            <OutputColumn id="pop_olm_0_olmcell_v" quantity="pop_olm/0/olmcell/v"/> 
+        </OutputFile>
+        
+        <OutputFile id="Sim_HippocampalNet_scale100000_oc_poolosyncell_v_dat" fileName="Sim_HippocampalNet_scale100000_oc.poolosyncell.v.dat">
+            <OutputColumn id="pop_poolosyn_0_poolosyncell_v" quantity="pop_poolosyn/0/poolosyncell/v"/> 
+            <OutputColumn id="pop_poolosyn_1_poolosyncell_v" quantity="pop_poolosyn/1/poolosyncell/v"/> 
+            <OutputColumn id="pop_poolosyn_2_poolosyncell_v" quantity="pop_poolosyn/2/poolosyncell/v"/> 
+        </OutputFile>
+        
+        <OutputFile id="Sim_HippocampalNet_scale100000_oc_pvbasketcell_v_dat" fileName="Sim_HippocampalNet_scale100000_oc.pvbasketcell.v.dat">
+            <OutputColumn id="pop_pvbasket_0_pvbasketcell_v" quantity="pop_pvbasket/0/pvbasketcell/v"/> 
+        </OutputFile>
+        
+        <OutputFile id="Sim_HippocampalNet_scale100000_oc_scacell_v_dat" fileName="Sim_HippocampalNet_scale100000_oc.scacell.v.dat">
+            <OutputColumn id="pop_sca_0_scacell_v" quantity="pop_sca/0/scacell/v"/> 
+        </OutputFile>
+        
+        <EventOutputFile id="Spikes_file__pop_axoaxonic" fileName="Sim_HippocampalNet_scale100000_oc.pop_axoaxonic.spikes" format="ID_TIME">
+            <EventSelection id="0" select="pop_axoaxonic/0/axoaxoniccell" eventPort="spike"/> 
+        </EventOutputFile>
+        
+        <EventOutputFile id="Spikes_file__pop_bistratified" fileName="Sim_HippocampalNet_scale100000_oc.pop_bistratified.spikes" format="ID_TIME">
+            <EventSelection id="0" select="pop_bistratified/0/bistratifiedcell" eventPort="spike"/> 
+        </EventOutputFile>
+        
+        <EventOutputFile id="Spikes_file__pop_cck" fileName="Sim_HippocampalNet_scale100000_oc.pop_cck.spikes" format="ID_TIME">
+            <EventSelection id="0" select="pop_cck/0/cckcell" eventPort="spike"/> 
+        </EventOutputFile>
+        
+        <EventOutputFile id="Spikes_file__pop_ivy" fileName="Sim_HippocampalNet_scale100000_oc.pop_ivy.spikes" format="ID_TIME">
+            <EventSelection id="0" select="pop_ivy/0/ivycell" eventPort="spike"/> 
+        </EventOutputFile>
+        
+        <EventOutputFile id="Spikes_file__pop_ngf" fileName="Sim_HippocampalNet_scale100000_oc.pop_ngf.spikes" format="ID_TIME">
+            <EventSelection id="0" select="pop_ngf/0/ngfcell" eventPort="spike"/> 
+        </EventOutputFile>
+        
+        <EventOutputFile id="Spikes_file__pop_olm" fileName="Sim_HippocampalNet_scale100000_oc.pop_olm.spikes" format="ID_TIME">
+            <EventSelection id="0" select="pop_olm/0/olmcell" eventPort="spike"/> 
+        </EventOutputFile>
+        
+        <EventOutputFile id="Spikes_file__pop_pvbasket" fileName="Sim_HippocampalNet_scale100000_oc.pop_pvbasket.spikes" format="ID_TIME">
+            <EventSelection id="0" select="pop_pvbasket/0/pvbasketcell" eventPort="spike"/> 
+        </EventOutputFile>
+        
+        <EventOutputFile id="Spikes_file__pop_sca" fileName="Sim_HippocampalNet_scale100000_oc.pop_sca.spikes" format="ID_TIME">
+            <EventSelection id="0" select="pop_sca/0/scacell" eventPort="spike"/> 
+        </EventOutputFile>
+        
+        <EventOutputFile id="Sim_HippocampalNet_scale100000_oc_poolosyncell_spikes" fileName="Sim_HippocampalNet_scale100000_oc.poolosyncell.spikes" format="ID_TIME">
+            <EventSelection id="0" select="pop_poolosyn/0/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="1" select="pop_poolosyn/1/poolosyncell" eventPort="spike"/> 
+            <EventSelection id="2" select="pop_poolosyn/2/poolosyncell" eventPort="spike"/> 
+        </EventOutputFile>
+        
+    </Simulation>
+
+</Lems>

@@ -1,0 +1,12 @@
+celltype	techtype	typeIndex	rangeStart	rangeEnd
+axoaxoniccell	axoaxoniccell	0	0	0
+bistratifiedcell	bistratifiedcell	1	1	1
+cckcell	cckcell	2	2	2
+ivycell	ivycell	3	3	3
+ngfcell	ngfcell	4	4	4
+olmcell	olmcell	5	5	5
+pyramidalcell	poolosyncell	6	6	8
+pvbasketcell	pvbasketcell	7	9	9
+scacell	scacell	8	10	10
+ca3cell	ppspont	9	11	12
+eccell	ppspont	10	13	15

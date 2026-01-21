@@ -15,7 +15,7 @@
 
     <Simulation id="sim1" length="300ms" step="0.001ms" target="network">
 
-        <Display id="d1" title="cck cell with 0.5nA input" timeScale="1ms" xmin="-10" xmax="310" ymin="-85" ymax="55">
+        <Display id="d1" title="cck cell with 0.08nA input" timeScale="1ms" xmin="-10" xmax="310" ymin="-85" ymax="55">
             <Line id="cck V(mV)" quantity="Pop_cckcell/0/cckcell/v" scale="1mV" color="#0000FF" timeScale="1ms"/>
         </Display>
     

@@ -1,0 +1,108 @@
+{
+    "TestNet": {
+        "version": "NeuroMLlite v0.2.1",
+        "temperature": 34.0,
+        "parameters": {
+            "num_ngf": 3,
+            "rate_ec": 50
+        },
+        "notes": "A network model: TestNet",
+        "cells": [
+            {
+                "ngfcell": {
+                    "neuroml2_source_file": "../../cells/ngf.cell.nml"
+                }
+            },
+            {
+                "eccell": {
+                    "pynn_cell": "SpikeSourcePoisson",
+                    "parameters": {
+                        "rate": "rate_ec",
+                        "start": 0,
+                        "duration": 1000000000.0
+                    }
+                }
+            }
+        ],
+        "synapses": [
+            {
+                "syn_ec_to_ngf": {
+                    "neuroml2_source_file": "../../synapses/exp2Synapses.synapse.nml"
+                }
+            }
+        ],
+        "regions": [
+            {
+                "CA1": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0,
+                    "width": 2000.0,
+                    "height": 500.0,
+                    "depth": 1000.0
+                }
+            },
+            {
+                "CA3": {
+                    "x": 0.0,
+                    "y": 550.0,
+                    "z": 450.0,
+                    "width": 100.0,
+                    "height": 100.0,
+                    "depth": 100.0
+                }
+            },
+            {
+                "EC": {
+                    "x": 1900.0,
+                    "y": 550.0,
+                    "z": 450.0,
+                    "width": 100.0,
+                    "height": 100.0,
+                    "depth": 100.0
+                }
+            }
+        ],
+        "populations": [
+            {
+                "pop_ngf": {
+                    "size": "num_ngf",
+                    "component": "ngfcell",
+                    "properties": {
+                        "color": "0.85490196 0.43921569 0.83921569"
+                    },
+                    "random_layout": {
+                        "region": "CA1"
+                    }
+                }
+            },
+            {
+                "pop_ec": {
+                    "size": 5,
+                    "component": "eccell",
+                    "properties": {
+                        "color": "0.75 0.75 0.75",
+                        "radius": 5
+                    },
+                    "random_layout": {
+                        "region": "EC"
+                    }
+                }
+            }
+        ],
+        "projections": [
+            {
+                "proj_ec_ngf": {
+                    "presynaptic": "pop_ec",
+                    "postsynaptic": "pop_ngf",
+                    "synapse": "syn_ec_to_ngf",
+                    "delay": 0.02,
+                    "weight": 1,
+                    "random_connectivity": {
+                        "probability": 0.5
+                    }
+                }
+            }
+        ]
+    }
+}

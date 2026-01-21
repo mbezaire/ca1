@@ -52,8 +52,11 @@ proc init() {
 					// and inserting the mechanisms, as it depends on those
 	get_root()
 	
-	pre_list = new List() // define a list for the presynaptic connections
-	define_synapses($3)	// local fcn: define all possible synaptic connections received by this cell
+    // synapses
+    if ($3 >= 0) {        // using the cell alone/outside of the network (eg. test with omv call with (0,0,-1)), András
+	    pre_list = new List() // define a list for the presynaptic connections	
+	    define_synapses($3)	// local fcn: define all possible synaptic connections received by this cell
+    }
 
 }
 
@@ -300,48 +303,83 @@ proc insert_mechs() {
 	distance() // calculates the distance between location 0 of the currently accessed section (as the origin) to a second point (but with this usage, it just sets the origin point) 
 
 	axon[0] {
-		insert ch_Navaxonp  gmax_ch_Navaxonp=gNavaxon
-		insert ch_Kdrp  gmax_ch_Kdrp=gKdr 
-		insert pas e_pas=eleakval g_pas = 1/RmAx Ra=RaAx cm=CmAx
-		insert ch_KvAproxp gmax_ch_KvAproxp = gKvAprox*0.2
+		//insert ch_Navaxonp
+		    //gmax_ch_Navaxonp = gNavaxon 
+		insert ch_Kdrp
+            gmax_ch_Kdrp = gKdr
+        insert ch_KvAproxp
+            gmax_ch_KvAproxp = gKvAprox*0.2
+		insert pas
+            e_pas=eleakval
+            g_pas = 1/RmAx
+        Ra = RaAx
+        cm = CmAx		
 	}
 
 	for i=0,NumSoma-1 soma[i] {   
-		insert ch_HCNp gmax_ch_HCNp=gHCN
-		vhalfl_ch_HCNp=-82
-		insert ch_Navp  gmax_ch_Navp=gNav     
-		ar2_ch_Navp=1
-		insert ch_Kdrp gmax_ch_Kdrp=gKdr
-		insert ch_KvAproxp gmax_ch_KvAproxp = gKvAprox
-		insert pas e_pas=eleakval g_pas = 1/RmSoma Ra=RaSoma cm=CmSoma
+		insert ch_HCNp
+            gmax_ch_HCNp = gHCN
+		    vhalfl_ch_HCNp=-82
+		insert ch_Navp 
+            gmax_ch_Navp = gNav     
+		    ar2_ch_Navp=1
+		insert ch_Kdrp
+            gmax_ch_Kdrp = gKdr
+		insert ch_KvAproxp
+            gmax_ch_KvAproxp = gKvAprox
+
+		insert pas
+            e_pas=eleakval
+            g_pas = 1/RmSoma
+        Ra = RaSoma
+        cm = CmSoma
 	}
 
 	for i=0,NumBasal-1 basal[i] {
-		insert ch_Navp    gmax_ch_Navp=gNav   
-		ar2_ch_Navp=1
-		insert ch_Kdrp gmax_ch_Kdrp=gKdr 
-		insert ch_KvAproxp gmax_ch_KvAproxp = gKvAprox
-		insert pas e_pas=eleakval g_pas = 1/RmDend Ra=RaAll cm=CmDend
+		insert ch_Navp
+            gmax_ch_Navp = gNav   
+		    ar2_ch_Navp = 1
+		insert ch_Kdrp
+            gmax_ch_Kdrp = gKdr 
+		insert ch_KvAproxp
+            gmax_ch_KvAproxp = gKvAprox
+
+		insert pas
+            e_pas=eleakval
+            g_pas = 1/RmDend
+        Ra = RaAll
+        cm = CmDend
 	}
 
 	for i=0,NumApical-1 apical[i] {
-		insert pas e_pas=eleakval g_pas = 1/RmDend Ra=RaAll  cm=CmDend
-		if (diam>0.5 && distance(0.5)<500) {
-			insert ch_HCNp gmax_ch_HCNp = gHCN
-			insert ch_Navp 
-			ar2_ch_Navp=0.8
-			gmax_ch_Navp=gNav
-			insert ch_Kdrp 
-			gmax_ch_Kdrp=gKdr
-			insert ch_KvAproxp
-			insert ch_KvAdistp
-			gmax_ch_KvAproxp=0
-			gmax_ch_KvAdistp=0
+		insert pas 
+            e_pas=eleakval
+            g_pas = 1/RmDend
+        Ra = RaAll
+        cm = CmDend
 
-			for (x,0){ xdist = distance(x)
-				if (xdist>500) {xdist=500}
+		if (diam > 0.5 && distance(0.5) < 500) {
+			insert ch_HCNp
+                gmax_ch_HCNp = gHCN
+			insert ch_Navp 
+			    ar2_ch_Navp = 0.8
+			    gmax_ch_Navp = gNav
+			insert ch_Kdrp 
+			    gmax_ch_Kdrp = gKdr
+			insert ch_KvAproxp
+                gmax_ch_KvAproxp = 0
+			insert ch_KvAdistp
+			    gmax_ch_KvAdistp = 0
+
+            //for(x) { <- changed to for(x,0), András
+            // for(x) iterates over 0, midpoint of segments and 1; while for(x,0) ierates only over the midpoint of the segments
+            // (the last iteration of for(x) overwrites the value of the last segment of the section and with this model it caused a huge shift in the spike times (tested with 0.5nA somatic IClamp) )
+			for(x,0) {
+                xdist = distance(x)
+				if (xdist>500) {xdist=500} // (previosly checked, that distance(0.5 < 500) ...)
+
 				gmax_ch_HCNp(x) = gHCN*(1+1.5*xdist/100)
-				if (xdist > 100){
+				if (xdist > 100) {
 					vhalfl_ch_HCNp=-90
 					gmax_ch_KvAdistp(x) = gKvAdist*(1+xdist/100)
 				} else {
